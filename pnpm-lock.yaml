@@ -222,32 +222,32 @@ importers:
         specifier: 2.13.1
         version: 2.13.1(@types/node@25.9.5)
       '@ckeditor/ckeditor5-dev-build-tools':
-        specifier: ^62.5.0
-        version: 62.5.0(rollup@4.61.1)
+        specifier: ^63.0.0
+        version: 63.1.0(rollup@4.61.1)
       '@ckeditor/ckeditor5-dev-bump-year':
-        specifier: ^62.5.0
-        version: 62.5.0
+        specifier: ^63.0.0
+        version: 63.1.0
       '@ckeditor/ckeditor5-dev-changelog':
-        specifier: ^62.5.0
-        version: 62.5.0(@types/node@25.9.5)(supports-color@7.2.0)
+        specifier: ^63.0.0
+        version: 63.1.0(@types/node@25.9.5)(supports-color@7.2.0)
       '@ckeditor/ckeditor5-dev-docs':
-        specifier: ^62.5.0
-        version: 62.5.0(typescript@5.8.3)
+        specifier: ^63.0.0
+        version: 63.1.0(typescript@5.8.3)
       '@ckeditor/ckeditor5-dev-license-checker':
-        specifier: ^62.5.0
-        version: 62.5.0
+        specifier: ^63.0.0
+        version: 63.1.0
       '@ckeditor/ckeditor5-dev-manual-server':
-        specifier: ^62.5.0
-        version: 62.5.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
+        specifier: ^63.0.0
+        version: 63.1.0(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
       '@ckeditor/ckeditor5-dev-release-tools':
-        specifier: ^62.5.0
-        version: 62.5.0(@types/node@25.9.5)(supports-color@7.2.0)
+        specifier: ^63.0.0
+        version: 63.1.0(@types/node@25.9.5)(supports-color@7.2.0)
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^62.5.0
-        version: 62.5.0(supports-color@7.2.0)
+        specifier: ^63.0.0
+        version: 63.1.0(supports-color@7.2.0)
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^62.5.0
-        version: 62.5.0(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0)
+        specifier: ^63.0.0
+        version: 63.1.0(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.1
         version: 5.0.2
@@ -268,7 +268,7 @@ importers:
         version: 2.0.22(@inquirer/prompts@7.10.1(@types/node@25.9.5))
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
@@ -292,7 +292,7 @@ importers:
         version: 2.13.1(@types/node@25.9.5)
       esbuild:
         specifier: ^0.28.1
-        version: 0.28.1
+        version: 0.28.2
       eslint:
         specifier: ^10.0.0
         version: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
@@ -376,10 +376,10 @@ importers:
         version: 2.0.1
       vite:
         specifier: ^8.2.2
-        version: 8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
+        version: 8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5:
     dependencies:
@@ -563,7 +563,7 @@ importers:
     devDependencies:
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
@@ -572,7 +572,7 @@ importers:
         version: 8.15.2(ckeditor5@packages+ckeditor5)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-adapter-ckfinder:
     dependencies:
@@ -618,13 +618,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-alignment:
     dependencies:
@@ -670,13 +670,13 @@ importers:
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-autoformat:
     dependencies:
@@ -725,13 +725,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-autosave:
     dependencies:
@@ -759,13 +759,13 @@ importers:
         version: link:../ckeditor5-source-editing
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-basic-styles:
     dependencies:
@@ -799,13 +799,13 @@ importers:
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-block-quote:
     dependencies:
@@ -854,13 +854,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-bookmark:
     dependencies:
@@ -936,13 +936,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-ckbox:
     dependencies:
@@ -1006,13 +1006,13 @@ importers:
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-ckfinder:
     dependencies:
@@ -1052,13 +1052,13 @@ importers:
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-clipboard:
     dependencies:
@@ -1185,13 +1185,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-cloud-services:
     dependencies:
@@ -1210,13 +1210,13 @@ importers:
         version: link:../ckeditor5-editor-classic
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-code-block:
     dependencies:
@@ -1280,13 +1280,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-core:
     dependencies:
@@ -1344,13 +1344,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-easy-image:
     dependencies:
@@ -1381,13 +1381,13 @@ importers:
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-balloon:
     dependencies:
@@ -1430,13 +1430,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-classic:
     dependencies:
@@ -1482,13 +1482,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-decoupled:
     dependencies:
@@ -1531,13 +1531,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-inline:
     dependencies:
@@ -1583,13 +1583,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-editor-multi-root:
     dependencies:
@@ -1641,13 +1641,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-emoji:
     dependencies:
@@ -1705,13 +1705,13 @@ importers:
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-engine:
     dependencies:
@@ -1781,13 +1781,13 @@ importers:
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-enter:
     dependencies:
@@ -1824,13 +1824,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-essentials:
     dependencies:
@@ -1864,13 +1864,13 @@ importers:
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-find-and-replace:
     dependencies:
@@ -1937,13 +1937,13 @@ importers:
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-font:
     dependencies:
@@ -1980,13 +1980,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-fullscreen:
     dependencies:
@@ -2110,13 +2110,13 @@ importers:
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-heading:
     dependencies:
@@ -2174,13 +2174,13 @@ importers:
         version: link:../ckeditor5-upload
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-highlight:
     dependencies:
@@ -2226,13 +2226,13 @@ importers:
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-horizontal-line:
     dependencies:
@@ -2272,13 +2272,13 @@ importers:
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-html-embed:
     dependencies:
@@ -2321,7 +2321,7 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
@@ -2333,7 +2333,7 @@ importers:
         version: 2.17.7
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-html-support:
     dependencies:
@@ -2451,25 +2451,25 @@ importers:
         version: link:../ckeditor5-ui
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-icons:
     devDependencies:
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-image:
     dependencies:
@@ -2575,13 +2575,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-indent:
     dependencies:
@@ -2669,13 +2669,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-language:
     dependencies:
@@ -2700,13 +2700,13 @@ importers:
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-link:
     dependencies:
@@ -2776,13 +2776,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-list:
     dependencies:
@@ -2897,13 +2897,13 @@ importers:
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-markdown-gfm:
     dependencies:
@@ -3012,7 +3012,7 @@ importers:
         version: 3.0.4
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
@@ -3021,7 +3021,7 @@ importers:
         version: 10.1.2
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-media-embed:
     dependencies:
@@ -3079,7 +3079,7 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
@@ -3088,7 +3088,7 @@ importers:
         version: 1.52.0
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-mention:
     dependencies:
@@ -3149,13 +3149,13 @@ importers:
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-minimap:
     dependencies:
@@ -3210,13 +3210,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-page-break:
     dependencies:
@@ -3256,13 +3256,13 @@ importers:
         version: link:../ckeditor5-paragraph
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-paragraph:
     dependencies:
@@ -3308,13 +3308,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-paste-from-office:
     dependencies:
@@ -3384,13 +3384,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-remove-format:
     dependencies:
@@ -3442,13 +3442,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-restricted-editing:
     dependencies:
@@ -3509,13 +3509,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-select-all:
     dependencies:
@@ -3558,13 +3558,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-show-blocks:
     dependencies:
@@ -3688,13 +3688,13 @@ importers:
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-source-editing:
     dependencies:
@@ -3737,13 +3737,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-special-characters:
     dependencies:
@@ -3777,13 +3777,13 @@ importers:
         version: link:../ckeditor5-image
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-style:
     dependencies:
@@ -3895,13 +3895,13 @@ importers:
         version: link:../ckeditor5-word-count
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-table:
     dependencies:
@@ -3998,7 +3998,7 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
@@ -4007,7 +4007,7 @@ importers:
         version: 4.10.4
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-typing:
     dependencies:
@@ -4080,13 +4080,13 @@ importers:
         version: link:../ckeditor5-widget
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-ui:
     dependencies:
@@ -4207,13 +4207,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-undo:
     dependencies:
@@ -4259,13 +4259,13 @@ importers:
         version: link:../ckeditor5-typing
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-upload:
     dependencies:
@@ -4278,13 +4278,13 @@ importers:
     devDependencies:
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-utils:
     dependencies:
@@ -4306,13 +4306,13 @@ importers:
         version: link:../ckeditor5-engine
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-widget:
     dependencies:
@@ -4385,13 +4385,13 @@ importers:
         version: link:../ckeditor5-undo
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   packages/ckeditor5-word-count:
     dependencies:
@@ -4443,13 +4443,13 @@ importers:
         version: link:../ckeditor5-table
       '@vitest/browser-playwright':
         specifier: 'catalog:'
-        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+        version: 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       vitest:
         specifier: 'catalog:'
-        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+        version: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
 packages:
 
@@ -4542,43 +4542,43 @@ packages:
   '@ckbox/uploader@2.13.1':
     resolution: {integrity: sha512-fIRGmBNA6O64YIb4TuPiNj8Kdx+kDpL9b2L5/yUMGFOiRORRncITKUHmd4sazljdfCFknxkxOm+ifKfrd7tyZQ==}
 
-  '@ckeditor/ckeditor5-dev-build-tools@62.5.0':
-    resolution: {integrity: sha512-qAhZTza4UI6EItuTfxStK/3juggJKTIC9TfH3TgdR1HKSTELh/bLh4gf1i3zupnJxokPk0aqkMCJi18Z9TagUg==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-build-tools@63.1.0':
+    resolution: {integrity: sha512-v/ClotjJW68/+GQgQsyPB/BOB1dfmN2dg2lSWi2MFp4Ngw8BlBvynpOiZYD52ImO3JcyGLC2MBtD3B1X9L3QxQ==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-bump-year@62.5.0':
-    resolution: {integrity: sha512-T9XMy7dj2B/pyr6OZaegf/e+660SMc9R8sWq+zTM96XIlGa5ODWgIUDC9XLaftqemRQPD5E6zZc1BiKUokQ8fQ==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-bump-year@63.1.0':
+    resolution: {integrity: sha512-P7phFFVoclIWe644remA2rcOx8bp31CxKe6zJ2rPCOaz5mvgQ7VPnRFhA3gNshw4dP/unCNsAyiQLSkuyRqdvw==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-changelog@62.5.0':
-    resolution: {integrity: sha512-by1UFfNm9KWMnTEzkW07Mk8Ph0+x/a3fhieJrOpu0LqLXyEH3aMj8XIk5W8X9OoiD1PeXgL6NOZzFphOpxtoTg==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-changelog@63.1.0':
+    resolution: {integrity: sha512-PV3jf9xXKoc/aT0wE4JZsNC0MGpEX5XjDigZu5uOaL79o/cZLG6bDKD5H8tWtzNcDf6//aL1ybS0xyeipzcE4g==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-docs@62.5.0':
-    resolution: {integrity: sha512-GkwFr+KBIYb18gcjucNn1QlXC70wfNTFxZ/gFi6wzyM/AgnesN/8Fwbioy9Q+vNQOrddSxdv+IO4XAUkrRDs8g==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-docs@63.1.0':
+    resolution: {integrity: sha512-U88XLBRd23dt4HZTEzsyqNc9i3wzS6iP9ArA3vXPA72fbL/RWeQTsDLCLUE/O5VHdEpkQFyP2jrZQCCHqwwLvA==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-license-checker@62.5.0':
-    resolution: {integrity: sha512-ztC6vIOdU6YPxCpUXOuBmbfshi0jnploIGMqen3h3WLVtynX62JVf3UutSoO2dQt/LWWdA9X+ES7/SFF2kNqzg==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-license-checker@63.1.0':
+    resolution: {integrity: sha512-HhfKey5bidTZpn9Ml3FLMGrbgl8q7a3yr8mCQH+oO56GOlUwIaHbZm4CmCNdTBrlpqDEZFnwnL8ic9KBntQrQg==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-manual-server@62.5.0':
-    resolution: {integrity: sha512-/TAlXGS5vd5kwRP53U+4NozJTr2oeK5OJvF5S5/EBMl9NFNhVn4orUbqdmDsR93PJRFBDEwcvMTJw/VCMg/TLg==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-manual-server@63.1.0':
+    resolution: {integrity: sha512-2PiMGWWfiN4d3kSCsyxFirOtrmdTFCMI3S1u++wiBWngWQNiBD2LoSMHsfLiqDkj83FitBGcULqhIb3SXjMyJw==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-release-tools@62.5.0':
-    resolution: {integrity: sha512-NlwKq6qRbGyGGF+2yT0e3ccaIgT/ZCkborhztr7fp+SQ5a05XEsExbbkWq8EgFpL6abFX1VH2Z7A5/3AKws6wA==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-release-tools@63.1.0':
+    resolution: {integrity: sha512-gkSoC6uY9ETCDvtsou5KAmo6yL9A9GHNnsPd35Y3DIAnCu6ywg6iqnGJHtHsOoTCkJzJm+tRcjlbhnj9IMousw==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@62.5.0':
-    resolution: {integrity: sha512-BOsGnG15kUZtGC6GzoaauwKHU+/yFuAfPZNK1VZ6jxQR5kicWQRf9vKC6SdOXdS6D7nEKj32iiliaEKUsqT/Og==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-utils@63.1.0':
+    resolution: {integrity: sha512-sm4K9Gb+kBY+ujNckiQwmMxaGbR6jpcn6SgULuJpBQ5E9SrnmxhfWfeX7rRM6ToN/cS+nu38XmBULVsZcnKl0Q==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-web-crawler@62.5.0':
-    resolution: {integrity: sha512-7Pb2Y0VrsDJ4JMJxuZX4fYey+UBkPm55Tx7/9C04p/QRRlAXKvNAI6R2eq/w12sNB+xe8m2T+I6jXFDWrTCcng==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-web-crawler@63.1.0':
+    resolution: {integrity: sha512-/eXRE5SkWZHYel3NrgVUH+ERt4RTLh2Z7ngGUX2GXSZEgAb4HtiD9BOl1pgwZw2ozplJGpchkEpfNKaLhBvfLg==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-inspector@5.0.2':
     resolution: {integrity: sha512-+UCE9p1gmPumLvYE5DRBnatifj4MhsCAIfxYnkYsOhQ6eOTDXQMofjvof29cM+zB7N+UziL5hJGw0ql3xbVEGw==}
@@ -4612,9 +4612,9 @@ packages:
       ckeditor5: '>=49.0.0 || ^0.0.0-nightly || ^0.0.0-internal'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@ckeditor/typedoc-plugins@62.5.0':
-    resolution: {integrity: sha512-x2MICEyIp+LEYWJzWnYklvwzYvPQM8UHCrdaCvTY38W4KifvnADOcgopy/yb/eNhwVYmarsBK3AD2GvFIGgw1Q==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/typedoc-plugins@63.1.0':
+    resolution: {integrity: sha512-veuxhsy6t8DfJNZE9btvvbGDPKlw6yusdR1PFsSqscwlCBEUCXwVyswznFKrx6fqE7A1+QhyeLT2aCw1ELvn5Q==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
     peerDependencies:
       typedoc: ^0.28.20
 
@@ -4634,158 +4634,158 @@ packages:
     resolution: {integrity: sha512-YAdE/IJSpwbOTiaURNCKECdAwqrJuFiZhylmesBcIRawtYKnBR2wxPhoIewMg+Yu+QuYvHfJNReWpoxGBKOChA==}
     engines: {node: '>=18'}
 
-  '@esbuild/aix-ppc64@0.28.1':
-    resolution: {integrity: sha512-Svl7tq8k/08+p6CXPpRjQ1fKX+1odH/BQbb48fV6fj3CWHhsoIOoY87w1oHXm0qEpkIK3ZfVgp0hed3XBXzXMQ==}
+  '@esbuild/aix-ppc64@0.28.2':
+    resolution: {integrity: sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==}
     engines: {node: '>=18'}
     cpu: [ppc64]
     os: [aix]
 
-  '@esbuild/android-arm64@0.28.1':
-    resolution: {integrity: sha512-34EGEbCIAgosYz6goLcopX6Mo7NyGv9tfwEM2/7Ce2VcVRk568iSvniGWcUXIy7wEDR1wzolcxcriFVrWYcwBg==}
+  '@esbuild/android-arm64@0.28.2':
+    resolution: {integrity: sha512-5YfKeeI8qWfBZIX+u2xZC3Zlb3Os/gLS2sbEKM+I4ZOcsWmHS2WLysCcQZDAFRslDUU5Oiq44gf6PYN1vGwG5A==}
     engines: {node: '>=18'}
     cpu: [arm64]
     os: [android]
 
-  '@esbuild/android-arm@0.28.1':
-    resolution: {integrity: sha512-0k2F129Xdio1TdJfzJ8sy1Q47vUD2NnwdhiAf7drUN1EBTfPf4hsFCtmMgu/6m8JSzsBrlmVjudMBQqOfG8usQ==}
+  '@esbuild/android-arm@0.28.2':
+    resolution: {integrity: sha512-kXXoiPVVGQcnIYGOeaovwOURpniDBpSq4A03qkQ+BMQqtGG6HYap3xne9C1O1yo4TR3qxlCX5IqqmX6fFo2Lqg==}
     engines: {node: '>=18'}
     cpu: [arm]
     os: [android]
 
-  '@esbuild/android-x64@0.28.1':
-    resolution: {integrity: sha512-dbwY7ltSMDWsRatcRpCnES4F+im88OCUgGZjy52shC7GqHRE/cYlxNbB4Z4UpJswpcc4Qxd2oE/ufM0p61IKng==}
+  '@esbuild/android-x64@0.28.2':
+    resolution: {integrity: sha512-O387ite7SzUyCcy3JQX4P4bLtEA7bLLkx+esve5JHnyYfNTxcVpXZo9jhdB0lTKN44gztELTdU7nS8Nr16Fs1Q==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [android]
 
-  '@esbuild/darwin-arm64@0.28.1':
-    resolution: {integrity: sha512-TZbWkQY7kvTAXbXUT7uVACR5cMHsDiSz9z7ZKAX/RTq/WJEk3QyRr0wZpNhBDX+/0CtdqUIJlOiodQcta6tY3Q==}
+  '@esbuild/darwin-arm64@0.28.2':
+    resolution: {integrity: sha512-n4KqkOQrraxHJcgjM1RvwbigfQKIKJVpM7xp+KsxiyUSrRdIXnt73VhrPAx0fV44hgfmIVKjxMN9J1t5jySVkw==}
     engines: {node: '>=18'}
     cpu: [arm64]
     os: [darwin]
 
-  '@esbuild/darwin-x64@0.28.1':
-    resolution: {integrity: sha512-zfdzgK9ACBNZLI/CyHTOx81SyNbM6YXn7rxSgX97VjyiPl9W1i4Ka4fgKECEoFCKGpvBj5qArWIGgQjOwkgskQ==}
+  '@esbuild/darwin-x64@0.28.2':
+    resolution: {integrity: sha512-uq6suIWYP37qzGddBKPw5QEQPi6HiLGsO7UmkpfyaYNQ3D+rN6w6WfwH+nuqcGXWvawGwxOEroO4YGnFh95azw==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [darwin]
 
-  '@esbuild/freebsd-arm64@0.28.1':
-    resolution: {integrity: sha512-wG2EA8ENdEI0qhkSZMjfqrdY+ziCYCPMmtZjjIwOmXFjmyzEHn+UUxk5of+SYsjtfs3VpnlC7QLzSI5hY/rOAw==}
+  '@esbuild/freebsd-arm64@0.28.2':
+    resolution: {integrity: sha512-n+I0BTSRIoy+d6RPKnEVwql5UwBJolytvY4mAOIEJorKlqgPII8ix6slVVrfZ5Tnj7glIZvloylbB/EJPMWEXw==}
     engines: {node: '>=18'}
     cpu: [arm64]
     os: [freebsd]
 
-  '@esbuild/freebsd-x64@0.28.1':
-    resolution: {integrity: sha512-i7dZ9vQgnvSCzi/rYCXNgtF/U+eKZNJBzu3eTQbRgHnM7tNSizLOkRFAl3qzVc/Op/u5YkHHa4pf/3DOYHthLQ==}
+  '@esbuild/freebsd-x64@0.28.2':
+    resolution: {integrity: sha512-78XJTJkvPs0kz2w61301PJjXl4g7q3JqiYMZ/M/yVI73EHBrCRTgkhu9oqG7vPqq+a/yadEW8aD+agKlk5xrmg==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [freebsd]
 
-  '@esbuild/linux-arm64@0.28.1':
-    resolution: {integrity: sha512-yHs+0uc8+nvEAfAfxrWQKK5peSNzBc4PegcMO0EJ2hT71uA7vB8Ihg2e77R2P7SG5uYjPbHlLLmve4LLLRCf0g==}
+  '@esbuild/linux-arm64@0.28.2':
+    resolution: {integrity: sha512-pW4AC0P3it8c7do9MVM4p51FzHzdM/TZrerurgRcHJ2WTa1VQ1CIq18xncfpBJw4ojkiZZrKW2yIBWBP92j6Ug==}
     engines: {node: '>=18'}
     cpu: [arm64]
     os: [linux]
 
-  '@esbuild/linux-arm@0.28.1':
-    resolution: {integrity: sha512-qVXBOHQS+d5Y722GwJzJUtOLlX7km3CraOaGormF1pDtPd2C/l1SHRPgjLunLGe51Sh5YYWKMFDyV4SxgMQYTQ==}
+  '@esbuild/linux-arm@0.28.2':
+    resolution: {integrity: sha512-XlDnu2q5yoqems+xay6wSAcg9DDD7K9RLKZEBOMZm3ckNpJBvOX20tSfby8KfrrhINDyv9V2YVZKY/SpoGJI8w==}
     engines: {node: '>=18'}
     cpu: [arm]
     os: [linux]
 
-  '@esbuild/linux-ia32@0.28.1':
-    resolution: {integrity: sha512-d1z4ZuP0ajrfz/FhGT4vv278rX8KnPPJx8i5+AtK7TYbx9Le9F1hyzurZpkEyjkGa9dUGhQow4C1NmeGvqxN2w==}
+  '@esbuild/linux-ia32@0.28.2':
+    resolution: {integrity: sha512-CYbnj78HsIeA+DhgUKgFCfvNsTHFhMMrinUrMZpDXJXKN8T3XViTZ/+wtHeVxEWY8ewSzTFN+nRmSwO2tZaLUQ==}
     engines: {node: '>=18'}
     cpu: [ia32]
     os: [linux]
 
-  '@esbuild/linux-loong64@0.28.1':
-    resolution: {integrity: sha512-M5sRjUVZrkm1OAPR3dlOYzNmN+loZKGVi1VUQGrwuqLcbR6qeAz+famMhjASeH3YVKvZz+zT1jlh/keC3Rj/lg==}
+  '@esbuild/linux-loong64@0.28.2':
+    resolution: {integrity: sha512-buwkd8nsph4R+ajRvw0qM5Hja/TXQow3ptzWO2EbG/cqcIkHloRrdlBtQlshyYGTNFvfkfJ5tpPLVkY4DtsPfQ==}
     engines: {node: '>=18'}
     cpu: [loong64]
     os: [linux]
 
-  '@esbuild/linux-mips64el@0.28.1':
-    resolution: {integrity: sha512-mRObBZeHh2OxcBFPWE/FjylkRgZdYuiTR3vaTozquCGOH14iP9oN4x4Ge81CoIDYQrXmIxpFumJBu5MtZpnQJQ==}
+  '@esbuild/linux-mips64el@0.28.2':
+    resolution: {integrity: sha512-ZVykbDyk7519VwiNb9Lcj9m8XM6v5V9uKPvrEMkkEedVewf+0itkhahp4HDpgERXhwLRpWFypsGbG/J8s0QjJA==}
     engines: {node: '>=18'}
     cpu: [mips64el]
     os: [linux]
 
-  '@esbuild/linux-ppc64@0.28.1':
-    resolution: {integrity: sha512-slScBsMAb3GFDcdrCgLwZtPYRoH2H/youv10QiZyRjmsP48fznoveWytSgCI/R0ZcUgpc0ZhIUEx6LHts8yrfQ==}
+  '@esbuild/linux-ppc64@0.28.2':
+    resolution: {integrity: sha512-CAXl+Dtd9UUuJd8pKKdwh6MLm3MUMiqMPmhZ3tTSXPqfyQ3vDl6R5hZdZ/kYojK4ofXtdfSv1tFq8XzWx3heNQ==}
     engines: {node: '>=18'}
     cpu: [ppc64]
     os: [linux]
 
-  '@esbuild/linux-riscv64@0.28.1':
-    resolution: {integrity: sha512-kw0owk1o0GFETUJyW0jc0G4Yzs0BHZn0JDZ8JRT088vjJYX777BAs1fDGxAC+q831qOs2DTC96mNsG2opdfyyQ==}
+  '@esbuild/linux-riscv64@0.28.2':
+    resolution: {integrity: sha512-GeXCej4IQtU1B+QlDV8W/RRvbzI3O/Stss+/bCXv4lZls5WGRtu2a+3JkA3i4qIUlMXpcHebWpF8AkJhATowuA==}
     engines: {node: '>=18'}
     cpu: [riscv64]
     os: [linux]
 
-  '@esbuild/linux-s390x@0.28.1':
-    resolution: {integrity: sha512-/lAIjX8aYFRByhh6L5rYtPEDRqa9de/4V/juOXcta5frjvzXO4/sqEtyytse0g3zZFuWu5cDN0MkLz2qRDD2Ag==}
+  '@esbuild/linux-s390x@0.28.2':
+    resolution: {integrity: sha512-3H1weTYZPxt/WOhByszQZybS9w5lKzUn1FDMsgEChbHWQwHYQQRfBxgCcZvPhjHfKyJjIievvMmEUawJrdY9Dg==}
     engines: {node: '>=18'}
     cpu: [s390x]
     os: [linux]
 
-  '@esbuild/linux-x64@0.28.1':
-    resolution: {integrity: sha512-u/anNYF2mmVOEDwLtnQ1wOr3EZ9sTNGLWrsYGYwHWzGA3Si84IOkHXlbWTD1NB+9/1lcnweYKO54uhxZydNzfA==}
+  '@esbuild/linux-x64@0.28.2':
+    resolution: {integrity: sha512-4xTZr1FUmSoQW4XIWmit3tzQrUTZM+N3P0XV8xROKYF50XfI7xeO90+1bZvNwxIufQ9hDQVRJH5YhgPVF8A/HQ==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [linux]
 
-  '@esbuild/netbsd-arm64@0.28.1':
-    resolution: {integrity: sha512-oks0DYbLwWMmaakTsCb+zL4E+aHRVLom9IJZOAthMQEPiQmydXHkziYEsGYRx0uNV/IjEKGAV941JzH02pflqw==}
+  '@esbuild/netbsd-arm64@0.28.2':
+    resolution: {integrity: sha512-sSATRjPeDBg3pdgHoQfoYBob11Kk1FGa9lui5RIHZCoCkJa9QKlvl3/vKz2usCmYYjs7ymJR/2Nnsqe+Hjt5nw==}
     engines: {node: '>=18'}
     cpu: [arm64]
     os: [netbsd]
 
-  '@esbuild/netbsd-x64@0.28.1':
-    resolution: {integrity: sha512-aeL6lAnN89Hz43Mlh1G8ARasbuoYvSITDEx0tHh5b7jJnHcssqgjy9Yx430GDpmCa6OyrKoS0aNRjKundRizGg==}
+  '@esbuild/netbsd-x64@0.28.2':
+    resolution: {integrity: sha512-lqnzCV+mM0gIADaKihiCg6ifgfU2L3h5E33rNQBN1Y4MaVGnzryzmvvf7UHxprpQdE8hpqLolJ9Rl+SkIRDpyw==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [netbsd]
 
-  '@esbuild/openbsd-arm64@0.28.1':
-    resolution: {integrity: sha512-MEFJe5C3R8pwXdZ5Y21oo6m7ePiS0d9pWucn99O/wvyJZChoIQKrQDxKrGeW8F5+T0okTHesAmDeiHDTIq0V/Q==}
+  '@esbuild/openbsd-arm64@0.28.2':
+    resolution: {integrity: sha512-AL2qJILH7lNjrDmCQDvdxMfAUIv8KMNZOvrwAQ8i8//ntL9FflhOyMJ8OZSMBb8/AWXe3/5v5S20y3zCoZWKoQ==}
     engines: {node: '>=18'}
     cpu: [arm64]
     os: [openbsd]
 
-  '@esbuild/openbsd-x64@0.28.1':
-    resolution: {integrity: sha512-i/ZLIOafE0Z8cI/XANJAixoJL/uRAoS2xOA3rb0xN+KK0K177cMAsQYkzHtBrtMXAKuAc7HGgcWiZ/sRC1Nxgw==}
+  '@esbuild/openbsd-x64@0.28.2':
+    resolution: {integrity: sha512-QtiuPytchRyC4rwUKhexJdQKvDuZ6hWloi3igqPQNUJCS1/v9EiO3UTOXR6A3FoMo4fnAKbWJdqaIwhOzh8qEw==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [openbsd]
 
-  '@esbuild/openharmony-arm64@0.28.1':
-    resolution: {integrity: sha512-ge+Z7EXFNt2BO1oAMsVpiQ8EwndV9i1xXerAeTIK7AtPs3bKFXQM7nlRxDSIUIMeueR1CNXxqztLzdNeReKBJg==}
+  '@esbuild/openharmony-arm64@0.28.2':
+    resolution: {integrity: sha512-WkhYDmpTjLvGlScA1rwjRUmhl4k8oXR3cIbtqWmELgU/dFeHHlEllxDvdWcNJV9rbzCexB5vz8gtNewWLgCT7Q==}
     engines: {node: '>=18'}
     cpu: [arm64]
     os: [openharmony]
 
-  '@esbuild/sunos-x64@0.28.1':
-    resolution: {integrity: sha512-BEjgtECkL3vY+SaSQ6nzVfiALUeFxpawyp8Jmf5PtYhf1Ug40N1h/hxlhts+f1FvSvarEigdxS3BlSMI2PJLcQ==}
+  '@esbuild/sunos-x64@0.28.2':
+    resolution: {integrity: sha512-GPMSkTOtMnv2U2F8gxe4Io6qmVs+YKyp832Etqqxr0hFngmXQ3rzwytelm3GIn7T4VviRUlf3sOgBOiTdvaf7g==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [sunos]
 
-  '@esbuild/win32-arm64@0.28.1':
-    resolution: {integrity: sha512-lCv9eK/H6ZJWbE7bh2nw54CZ9M2nupBxJcTsdk/QQnWkdSjKGuxmmH8/GWrlT1eMmZfn4dGcCjRte397WqfQXA==}
+  '@esbuild/win32-arm64@0.28.2':
+    resolution: {integrity: sha512-PIhhEkE9uPBleRBrQEJpUn7MBnibZzbGzYWPmY3x+YoVg/95zbjB4CxPPOQ8l5tYYM4mMaCthF8/1DIfBQQyWQ==}
     engines: {node: '>=18'}
     cpu: [arm64]
     os: [win32]
 
-  '@esbuild/win32-ia32@0.28.1':
-    resolution: {integrity: sha512-zvb/mB2bSCoJOpoCBgYKKpX6YM6mJBlBUVUtVj41DlZJVEB6/0CKlRYxP5wWl1C1ILiCoAU5wZZ4q1P3qeS6Eg==}
+  '@esbuild/win32-ia32@0.28.2':
+    resolution: {integrity: sha512-YmJbfTlvU7Sdn9BB+4PRES4oB6pxgS37MAONj+hBr/cpXS1aBPKXxNnDbu+QCWPj0o9dgyxeq79g6c5P8KeuYA==}
     engines: {node: '>=18'}
     cpu: [ia32]
     os: [win32]
 
-  '@esbuild/win32-x64@0.28.1':
-    resolution: {integrity: sha512-bm4Mowrv+GXMlpWX++EcXw/iLyd1o3+bJkC2DkWXYVvgZCqD/bSj9ctZeAMC3cIxgjRVR2Dufaiu4YPxr5gW1A==}
+  '@esbuild/win32-x64@0.28.2':
+    resolution: {integrity: sha512-5ebpxr3nWMzrL/rnUI755Jkuee0bHL/Gq0WTF9lvcpv73wAp5eu8MfBUgWK9bhWvZjj7yX8etf/8tI8Ney695g==}
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
@@ -7396,8 +7396,8 @@ packages:
   es-toolkit@1.52.0:
     resolution: {integrity: sha512-XTNEJQh1tY1ZJVcf6ayP/2n4ZPyaHlW2FWs7xvw5ddPuhUVjLD3olQVQS7kf58JbAB48iL0uL/jerTrjtV3lDA==}
 
-  esbuild@0.28.1:
-    resolution: {integrity: sha512-HrJrvZv5ayxBzPfwphOoNzkzOIIlifzk0KJrGK2c8R4+LKpMtpYLQeUdjnwjWv/LZlkH2laZk+4w78pi99D4Vw==}
+  esbuild@0.28.2:
+    resolution: {integrity: sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -7921,8 +7921,8 @@ packages:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
 
-  ignore@7.0.5:
-    resolution: {integrity: sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg==}
+  ignore@7.0.8:
+    resolution: {integrity: sha512-YYNsSlXBjMk92SKnkwvB5LOVSa6OznlFUGcsvrFgNJbJCd0M1XKeFVRc8ZByeCqz32FivYNHJVooLmdqrmvp/Q==}
     engines: {node: '>= 4'}
 
   immutable@5.1.9:
@@ -8686,8 +8686,8 @@ packages:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
 
-  minimatch@10.2.5:
-    resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
+  minimatch@10.2.6:
+    resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
     engines: {node: 18 || 20 || >=22}
 
   minimatch@9.0.9:
@@ -10287,7 +10287,7 @@ snapshots:
       - '@types/hoist-non-react-statics'
       - '@types/node'
 
-  '@ckeditor/ckeditor5-dev-build-tools@62.5.0(rollup@4.61.1)':
+  '@ckeditor/ckeditor5-dev-build-tools@63.1.0(rollup@4.61.1)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.61.1)
       es-toolkit: 1.52.0
@@ -10299,14 +10299,14 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@ckeditor/ckeditor5-dev-bump-year@62.5.0':
+  '@ckeditor/ckeditor5-dev-bump-year@63.1.0':
     dependencies:
       glob: 13.0.6
 
-  '@ckeditor/ckeditor5-dev-changelog@62.5.0(@types/node@25.9.5)(supports-color@7.2.0)':
+  '@ckeditor/ckeditor5-dev-changelog@63.1.0(@types/node@25.9.5)(supports-color@7.2.0)':
     dependencies:
       '@11ty/gray-matter': 2.1.0
-      '@ckeditor/ckeditor5-dev-utils': 62.5.0(supports-color@7.2.0)
+      '@ckeditor/ckeditor5-dev-utils': 63.1.0(supports-color@7.2.0)
       '@types/semver': 7.8.0
       cac: 7.0.0
       date-fns: 4.4.0
@@ -10318,9 +10318,9 @@ snapshots:
       - '@types/node'
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-docs@62.5.0(typescript@5.8.3)':
+  '@ckeditor/ckeditor5-dev-docs@63.1.0(typescript@5.8.3)':
     dependencies:
-      '@ckeditor/typedoc-plugins': 62.5.0(typedoc@0.28.20(typescript@5.8.3))
+      '@ckeditor/typedoc-plugins': 63.1.0(typedoc@0.28.20(typescript@5.8.3))
       glob: 13.0.6
       typedoc: 0.28.20(typescript@5.8.3)
       typedoc-plugin-rename-defaults: 0.7.3(typedoc@0.28.20(typescript@5.8.3))
@@ -10328,15 +10328,15 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@ckeditor/ckeditor5-dev-license-checker@62.5.0':
+  '@ckeditor/ckeditor5-dev-license-checker@63.1.0':
     dependencies:
       diff: 8.0.4
       upath: 2.0.1
 
-  '@ckeditor/ckeditor5-dev-manual-server@62.5.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)':
+  '@ckeditor/ckeditor5-dev-manual-server@63.1.0(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)':
     dependencies:
       '@ckeditor/ckeditor5-inspector': 5.0.2
-      vite: 8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
+      vite: 8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
     transitivePeerDependencies:
       - '@types/node'
       - '@vitejs/devtools'
@@ -10351,9 +10351,9 @@ snapshots:
       - tsx
       - yaml
 
-  '@ckeditor/ckeditor5-dev-release-tools@62.5.0(@types/node@25.9.5)(supports-color@7.2.0)':
+  '@ckeditor/ckeditor5-dev-release-tools@63.1.0(@types/node@25.9.5)(supports-color@7.2.0)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 62.5.0(supports-color@7.2.0)
+      '@ckeditor/ckeditor5-dev-utils': 63.1.0(supports-color@7.2.0)
       '@octokit/rest': 22.0.1
       cli-columns: 4.0.0
       glob: 13.0.6
@@ -10366,7 +10366,7 @@ snapshots:
       - '@types/node'
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-utils@62.5.0(supports-color@7.2.0)':
+  '@ckeditor/ckeditor5-dev-utils@63.1.0(supports-color@7.2.0)':
     dependencies:
       '@types/pacote': 11.1.8
       '@types/shelljs': 0.10.0
@@ -10383,7 +10383,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-web-crawler@62.5.0(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0)':
+  '@ckeditor/ckeditor5-dev-web-crawler@63.1.0(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0)':
     dependencies:
       puppeteer: 24.43.1(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0)
       puppeteer-cluster: 0.24.0(puppeteer@24.43.1(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0))(supports-color@7.2.0)
@@ -10414,7 +10414,7 @@ snapshots:
       ckeditor5: link:packages/ckeditor5
       react: 18.3.1
 
-  '@ckeditor/typedoc-plugins@62.5.0(typedoc@0.28.20(typescript@5.8.3))':
+  '@ckeditor/typedoc-plugins@63.1.0(typedoc@0.28.20(typescript@5.8.3))':
     dependencies:
       typedoc: 0.28.20(typescript@5.8.3)
       upath: 2.0.1
@@ -10448,82 +10448,82 @@ snapshots:
       esquery: 1.7.0
       jsdoc-type-pratt-parser: 4.1.0
 
-  '@esbuild/aix-ppc64@0.28.1':
+  '@esbuild/aix-ppc64@0.28.2':
     optional: true
 
-  '@esbuild/android-arm64@0.28.1':
+  '@esbuild/android-arm64@0.28.2':
     optional: true
 
-  '@esbuild/android-arm@0.28.1':
+  '@esbuild/android-arm@0.28.2':
     optional: true
 
-  '@esbuild/android-x64@0.28.1':
+  '@esbuild/android-x64@0.28.2':
     optional: true
 
-  '@esbuild/darwin-arm64@0.28.1':
+  '@esbuild/darwin-arm64@0.28.2':
     optional: true
 
-  '@esbuild/darwin-x64@0.28.1':
+  '@esbuild/darwin-x64@0.28.2':
     optional: true
 
-  '@esbuild/freebsd-arm64@0.28.1':
+  '@esbuild/freebsd-arm64@0.28.2':
     optional: true
 
-  '@esbuild/freebsd-x64@0.28.1':
+  '@esbuild/freebsd-x64@0.28.2':
     optional: true
 
-  '@esbuild/linux-arm64@0.28.1':
+  '@esbuild/linux-arm64@0.28.2':
     optional: true
 
-  '@esbuild/linux-arm@0.28.1':
+  '@esbuild/linux-arm@0.28.2':
     optional: true
 
-  '@esbuild/linux-ia32@0.28.1':
+  '@esbuild/linux-ia32@0.28.2':
     optional: true
 
-  '@esbuild/linux-loong64@0.28.1':
+  '@esbuild/linux-loong64@0.28.2':
     optional: true
 
-  '@esbuild/linux-mips64el@0.28.1':
+  '@esbuild/linux-mips64el@0.28.2':
     optional: true
 
-  '@esbuild/linux-ppc64@0.28.1':
+  '@esbuild/linux-ppc64@0.28.2':
     optional: true
 
-  '@esbuild/linux-riscv64@0.28.1':
+  '@esbuild/linux-riscv64@0.28.2':
     optional: true
 
-  '@esbuild/linux-s390x@0.28.1':
+  '@esbuild/linux-s390x@0.28.2':
     optional: true
 
-  '@esbuild/linux-x64@0.28.1':
+  '@esbuild/linux-x64@0.28.2':
     optional: true
 
-  '@esbuild/netbsd-arm64@0.28.1':
+  '@esbuild/netbsd-arm64@0.28.2':
     optional: true
 
-  '@esbuild/netbsd-x64@0.28.1':
+  '@esbuild/netbsd-x64@0.28.2':
     optional: true
 
-  '@esbuild/openbsd-arm64@0.28.1':
+  '@esbuild/openbsd-arm64@0.28.2':
     optional: true
 
-  '@esbuild/openbsd-x64@0.28.1':
+  '@esbuild/openbsd-x64@0.28.2':
     optional: true
 
-  '@esbuild/openharmony-arm64@0.28.1':
+  '@esbuild/openharmony-arm64@0.28.2':
     optional: true
 
-  '@esbuild/sunos-x64@0.28.1':
+  '@esbuild/sunos-x64@0.28.2':
     optional: true
 
-  '@esbuild/win32-arm64@0.28.1':
+  '@esbuild/win32-arm64@0.28.2':
     optional: true
 
-  '@esbuild/win32-ia32@0.28.1':
+  '@esbuild/win32-ia32@0.28.2':
     optional: true
 
-  '@esbuild/win32-x64@0.28.1':
+  '@esbuild/win32-x64@0.28.2':
     optional: true
 
   '@eslint-community/eslint-utils@4.9.1(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))':
@@ -10537,7 +10537,7 @@ snapshots:
     dependencies:
       '@eslint/object-schema': 3.0.5
       debug: 4.4.3(supports-color@7.2.0)
-      minimatch: 10.2.5
+      minimatch: 10.2.6
     transitivePeerDependencies:
       - supports-color
 
@@ -11614,7 +11614,7 @@ snapshots:
   '@tufjs/models@4.1.0':
     dependencies:
       '@tufjs/canonical-json': 2.0.0
-      minimatch: 10.2.5
+      minimatch: 10.2.6
 
   '@tybys/wasm-util@0.10.3':
     dependencies:
@@ -11850,7 +11850,7 @@ snapshots:
       '@typescript-eslint/utils': 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3)
       '@typescript-eslint/visitor-keys': 8.61.0
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
-      ignore: 7.0.5
+      ignore: 7.0.8
       natural-compare: 1.4.0
       ts-api-utils: 2.5.0(typescript@5.8.3)
       typescript: 5.8.3
@@ -11908,7 +11908,7 @@ snapshots:
       '@typescript-eslint/types': 8.61.0
       '@typescript-eslint/visitor-keys': 8.61.0
       debug: 4.4.3(supports-color@7.2.0)
-      minimatch: 10.2.5
+      minimatch: 10.2.6
       semver: 7.8.5
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(typescript@5.8.3)
@@ -11939,30 +11939,30 @@ snapshots:
       d3-selection: 3.0.0
       d3-transition: 3.0.1(d3-selection@3.0.0)
 
-  '@vitest/browser-playwright@5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)':
+  '@vitest/browser-playwright@5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)':
     dependencies:
-      '@vitest/browser': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
-      '@vitest/mocker': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      '@vitest/browser': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+      '@vitest/mocker': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
       playwright: 1.60.0
       tinyrainbow: 3.1.1
-      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
     transitivePeerDependencies:
       - bufferutil
       - msw
       - utf-8-validate
       - vite
 
-  '@vitest/browser@5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)':
+  '@vitest/browser@5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)':
     dependencies:
       '@blazediff/core': 1.10.0
-      '@vitest/mocker': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      '@vitest/mocker': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
       '@vitest/ui': 5.0.2(vitest@5.0.2)
       '@vitest/utils': 5.0.2
       magic-string: 1.4.1
       pngjs: 7.0.0
       sirv: 3.0.2
       tinyrainbow: 3.1.1
-      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
       ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
@@ -11980,9 +11980,9 @@ snapshots:
       obug: 2.2.1
       std-env: 4.2.0
       tinyrainbow: 3.1.1
-      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
     optionalDependencies:
-      '@vitest/browser': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+      '@vitest/browser': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
 
   '@vitest/eslint-plugin@1.6.24(@typescript-eslint/eslint-plugin@8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3)(vitest@5.0.2)':
     dependencies:
@@ -11992,7 +11992,7 @@ snapshots:
     optionalDependencies:
       '@typescript-eslint/eslint-plugin': 8.61.0(@typescript-eslint/parser@8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3))(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3)
       typescript: 5.8.3
-      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
     transitivePeerDependencies:
       - supports-color
 
@@ -12002,14 +12002,14 @@ snapshots:
     dependencies:
       '@vitest/istanbul-lib-coverage': 1.0.1
 
-  '@vitest/mocker@5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))':
+  '@vitest/mocker@5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.2
       estree-walker: 3.0.3
       magic-string: 1.4.1
     optionalDependencies:
-      vite: 8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
+      vite: 8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
 
   '@vitest/pretty-format@5.0.2':
     dependencies:
@@ -12025,7 +12025,7 @@ snapshots:
       pathe: 2.0.3
       sirv: 3.0.2
       tinyrainbow: 3.1.1
-      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
 
   '@vitest/utils@5.0.2':
     dependencies:
@@ -12847,34 +12847,34 @@ snapshots:
 
   es-toolkit@1.52.0: {}
 
-  esbuild@0.28.1:
+  esbuild@0.28.2:
     optionalDependencies:
-      '@esbuild/aix-ppc64': 0.28.1
-      '@esbuild/android-arm': 0.28.1
-      '@esbuild/android-arm64': 0.28.1
-      '@esbuild/android-x64': 0.28.1
-      '@esbuild/darwin-arm64': 0.28.1
-      '@esbuild/darwin-x64': 0.28.1
-      '@esbuild/freebsd-arm64': 0.28.1
-      '@esbuild/freebsd-x64': 0.28.1
-      '@esbuild/linux-arm': 0.28.1
-      '@esbuild/linux-arm64': 0.28.1
-      '@esbuild/linux-ia32': 0.28.1
-      '@esbuild/linux-loong64': 0.28.1
-      '@esbuild/linux-mips64el': 0.28.1
-      '@esbuild/linux-ppc64': 0.28.1
-      '@esbuild/linux-riscv64': 0.28.1
-      '@esbuild/linux-s390x': 0.28.1
-      '@esbuild/linux-x64': 0.28.1
-      '@esbuild/netbsd-arm64': 0.28.1
-      '@esbuild/netbsd-x64': 0.28.1
-      '@esbuild/openbsd-arm64': 0.28.1
-      '@esbuild/openbsd-x64': 0.28.1
-      '@esbuild/openharmony-arm64': 0.28.1
-      '@esbuild/sunos-x64': 0.28.1
-      '@esbuild/win32-arm64': 0.28.1
-      '@esbuild/win32-ia32': 0.28.1
-      '@esbuild/win32-x64': 0.28.1
+      '@esbuild/aix-ppc64': 0.28.2
+      '@esbuild/android-arm': 0.28.2
+      '@esbuild/android-arm64': 0.28.2
+      '@esbuild/android-x64': 0.28.2
+      '@esbuild/darwin-arm64': 0.28.2
+      '@esbuild/darwin-x64': 0.28.2
+      '@esbuild/freebsd-arm64': 0.28.2
+      '@esbuild/freebsd-x64': 0.28.2
+      '@esbuild/linux-arm': 0.28.2
+      '@esbuild/linux-arm64': 0.28.2
+      '@esbuild/linux-ia32': 0.28.2
+      '@esbuild/linux-loong64': 0.28.2
+      '@esbuild/linux-mips64el': 0.28.2
+      '@esbuild/linux-ppc64': 0.28.2
+      '@esbuild/linux-riscv64': 0.28.2
+      '@esbuild/linux-s390x': 0.28.2
+      '@esbuild/linux-x64': 0.28.2
+      '@esbuild/netbsd-arm64': 0.28.2
+      '@esbuild/netbsd-x64': 0.28.2
+      '@esbuild/openbsd-arm64': 0.28.2
+      '@esbuild/openbsd-x64': 0.28.2
+      '@esbuild/openharmony-arm64': 0.28.2
+      '@esbuild/sunos-x64': 0.28.2
+      '@esbuild/win32-arm64': 0.28.2
+      '@esbuild/win32-ia32': 0.28.2
+      '@esbuild/win32-x64': 0.28.2
 
   escalade@3.2.0: {}
 
@@ -12955,7 +12955,7 @@ snapshots:
       imurmurhash: 0.1.4
       is-glob: 4.0.3
       json-stable-stringify-without-jsonify: 1.0.1
-      minimatch: 10.2.5
+      minimatch: 10.2.6
       natural-compare: 1.4.0
       optionator: 0.9.4
     optionalDependencies:
@@ -13189,14 +13189,14 @@ snapshots:
     dependencies:
       foreground-child: 3.3.1
       jackspeak: 4.2.3
-      minimatch: 10.2.5
+      minimatch: 10.2.6
       minipass: 7.1.3
       package-json-from-dist: 1.0.1
       path-scurry: 2.0.2
 
   glob@13.0.6:
     dependencies:
-      minimatch: 10.2.5
+      minimatch: 10.2.6
       minipass: 7.1.3
       path-scurry: 2.0.2
 
@@ -13535,11 +13535,11 @@ snapshots:
 
   ignore-walk@8.0.0:
     dependencies:
-      minimatch: 10.2.5
+      minimatch: 10.2.6
 
   ignore@5.3.2: {}
 
-  ignore@7.0.5: {}
+  ignore@7.0.8: {}
 
   immutable@5.1.9: {}
 
@@ -14544,7 +14544,7 @@ snapshots:
 
   min-indent@1.0.1: {}
 
-  minimatch@10.2.5:
+  minimatch@10.2.6:
     dependencies:
       brace-expansion: 5.0.12
 
@@ -15902,7 +15902,7 @@ snapshots:
       '@gerrit0/mini-shiki': 3.23.0
       lunr: 2.3.9
       markdown-it: 14.3.2
-      minimatch: 10.2.5
+      minimatch: 10.2.6
       typescript: 5.8.3
       yaml: 2.9.0
 
@@ -15961,7 +15961,7 @@ snapshots:
       markdown-it-sub: 1.0.0
       markdown-it-sup: 1.0.0
       medium-zoom: 1.1.0
-      minimatch: 10.2.5
+      minimatch: 10.2.6
       moment: 2.31.0
       pug: 3.0.4
       rolldown: 1.2.15
@@ -16067,7 +16067,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0):
+  vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -16076,17 +16076,17 @@ snapshots:
       tinyglobby: 0.2.17
     optionalDependencies:
       '@types/node': 25.9.5
-      esbuild: 0.28.1
+      esbuild: 0.28.2
       fsevents: 2.3.3
       jiti: 2.7.0
       sass: 1.101.0
       terser: 5.49.0
       yaml: 2.9.0
 
-  vitest@5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)):
+  vitest@5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
+      '@vitest/mocker': 5.0.2(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
       chai: 6.2.2
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -16097,11 +16097,11 @@ snapshots:
       tinybench: 6.1.4
       tinyexec: 1.3.0
       tinyglobby: 0.2.17
-      vite: 8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
+      vite: 8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
       why-is-node-running: 3.2.2
     optionalDependencies:
       '@types/node': 25.9.5
-      '@vitest/browser-playwright': 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
+      '@vitest/browser-playwright': 5.0.2(playwright@1.60.0)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))(vitest@5.0.2)
       '@vitest/coverage-v8': 5.0.2(@vitest/browser@5.0.2)(vitest@5.0.2)
       '@vitest/ui': 5.0.2(vitest@5.0.2)
     transitivePeerDependencies:
