@@ -95,7 +95,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 		.catch( /* ... */ );
 	```
 
-* `definitionsUrl` &ndash; the URL to the emoji definitions file. The URL should return a JSON array with emoji definitions specified by the {@link module:emoji/emojirepository~EmojiCdnResource `EmojiCdnResource`} interface.
+* `definitionsUrl` &ndash; the URL to the emoji definitions file. The URL should return a JSON array with emoji definitions specified by the {@link module:emoji/emojirepository~EmojiDefinition `EmojiDefinition`} interface. This option is ignored if the `definitions` setting is provided.
 
 	<info-box warning>
 		If the `definitionsUrl` is not provided, the feature will fetch the emoji definitions from the CKEditor&nbsp;5 CDN.
@@ -113,7 +113,21 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 		.catch( /* ... */ );
 	```
 
-* `version` &ndash; the emoji database version. By default, version 16 is used. This option is ignored if the `definitionsUrl` setting is provided.
+* `definitions` &ndash; the emoji definitions passed directly to the editor, as an array of {@link module:emoji/emojirepository~EmojiDefinition `EmojiDefinition`} items. If this option is provided, the feature does not download anything, and the `definitionsUrl` and `version` settings are ignored. Read more in the [Bundling the emoji database](#bundling-the-emoji-database) section.
+
+	```js
+	ClassicEditor
+		.create( {
+			// ... Other configuration options ...
+			emoji: {
+				definitions
+			}
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+	```
+
+* `version` &ndash; the emoji database version. By default, version 16 is used. This option is ignored if the `definitionsUrl` or `definitions` setting is provided.
 
 	```js
 	ClassicEditor
@@ -186,6 +200,36 @@ If you do not want to use our distribution and prefer to self-host emoji, you ca
 
 You can prepare your own database with a different emoji set, but it must have an identical structure as ours. Otherwise, the Emoji feature will not work.
 
+### Bundling the emoji database
+
+The feature downloads the emoji database with a network request. Some pages do not allow it, for example, when their {@link getting-started/setup/csp Content Security Policy} only accepts connections to the page's own origin and you cannot host the file there. In such a case, you can bundle the database with your application and pass it in the {@link module:emoji/emojiconfig~EmojiConfig#definitions `definitions`} option:
+
+```js
+import definitions from './emoji/en.json';
+
+ClassicEditor
+	.create( {
+		// ... Other configuration options ...
+		emoji: {
+			definitions
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+The database has several hundred kilobytes, so bundling it makes your application bigger. To keep it out of the main bundle, load it as a separate chunk before you create the editor:
+
+```js
+const { default: definitions } = await import( './emoji/en.json' );
+```
+
+<info-box warning>
+	Your bundler turns the imported JSON file into a JavaScript file, so the {@link getting-started/setup/csp CSP} `script-src` rule applies to it. If you use a native JSON module in the browser without a bundler (`import ... with { type: 'json' }`), the `connect-src` rule applies to it instead, just like to a network request.
+</info-box>
+
+When the `definitions` option is provided, the feature ignores the `definitionsUrl` and `version` options. If you set them as well, the editor logs the `emoji-repository-redundant-options` warning.
+
 ### Marker conflicts
 
 The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you use the {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key. Those keys may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
@@ -230,8 +274,19 @@ The emoji repository could not be loaded due to a network issue, CORS restrictio
 * Verify that the URL is correct and accessible.
 * Check your internet connection.
 * If applicable, update your Content Security Policy (CSP) settings to allow connections to the emoji repository.
+* If you cannot change the CSP settings, [bundle the emoji database](#bundling-the-emoji-database) with your application.
 
 For more details on configuring CSP, see the {@link getting-started/setup/csp Content Security Policy} guide.
+
+### Empty bundled emoji database
+
+**Problem**:
+The {@link module:emoji/emojiconfig~EmojiConfig#definitions `definitions`} option is provided, but the feature does not show any emoji.
+
+**Solution**:
+
+* Make sure that the option contains a non-empty array, not a promise or a module object. Wait for the dynamic `import()` to finish before you create the editor.
+* Make sure that the definitions have the same structure as the database hosted on the CKEditor&nbsp;5 CDN.
 
 By following these steps, you should be able to resolve common issues with the emoji plugin in CKEditor&nbsp;5. If problems persist, check your browser console for additional error messages or consult the CKEditor 5 [GitHub repository for support](https://github.com/ckeditor/ckeditor5/issues).
 

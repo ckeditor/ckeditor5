@@ -25,7 +25,9 @@ const DEFAULT_EMOJI_VERSION = 16;
 /**
  * The emoji repository plugin.
  *
- * Loads the emoji repository from URL during plugin initialization and provides utility methods to search it.
+ * Loads the emoji repository during plugin initialization and provides utility methods to search it.
+ * The repository comes from the {@link module:emoji/emojiconfig~EmojiConfig#definitions `emoji.definitions`}
+ * configuration option, if provided. Otherwise, it is downloaded from URL.
  */
 export class EmojiRepository extends Plugin {
 	/**
@@ -39,8 +41,25 @@ export class EmojiRepository extends Plugin {
 
 	/**
 	 * The resolved URL from which the emoji repository is downloaded.
+	 *
+	 * It is `null` when the emoji definitions are passed in the configuration.
 	 */
-	private readonly _url: URL;
+	private readonly _url: URL | null;
+
+	/**
+	 * The emoji definitions passed in the configuration.
+	 *
+	 * It is `null` when the emoji definitions are downloaded from URL.
+	 */
+	private readonly _definitions: Array<EmojiDefinition> | null;
+
+	/**
+	 * The normalized emoji definitions passed in the configuration.
+	 *
+	 * They are stored per editor instance instead of the process-global cache, because each editor
+	 * can be configured with its own set of definitions.
+	 */
+	private _definitionsItems: Array<EmojiEntry> | null = null;
 
 	/**
 	 * @inheritDoc
@@ -73,46 +92,53 @@ export class EmojiRepository extends Plugin {
 			version: undefined,
 			skinTone: 'default',
 			definitionsUrl: undefined,
+			definitions: undefined,
 			useCustomFont: false
 		} );
 
 		this.set( 'isRepositoryReady', null );
-		this._url = this._getUrl();
+
+		// Read the definitions only once. The configuration returns a deep copy of an array on each read.
+		const definitions = editor.config.get( 'emoji.definitions' );
+
+		if ( definitions ) {
+			this._definitions = definitions;
+			this._url = null;
+			this._warnAboutRedundantOptions();
+		} else {
+			this._definitions = null;
+			this._url = this._getUrl();
+		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
+		if ( this._definitions ) {
+			const definitions = this._definitions;
+
+			// Normalize asynchronously, so the repository becomes ready in the same way as when it is downloaded.
+			Promise.resolve()
+				.then( () => this._normalizeEmoji( definitions ) )
+				.catch( () => [] )
+				.then( items => {
+					this._definitionsItems = items;
+					this._onRepositoryLoaded();
+				} );
+
+			return;
+		}
+
 		this._warnAboutCdnUse();
 
 		EmojiRepository._cache
 			.fetch( {
-				url: this._url.toString(),
+				url: this._url!.toString(),
 				cacheKeys: this._cacheKeys,
 				transform: raw => this._normalizeEmoji( raw )
 			} )
-			.then( () => {
-				if ( this.editor.state === 'destroyed' ) {
-					return;
-				}
-
-				const ready = !!this._getItems();
-
-				if ( !ready ) {
-					/**
-					 * Unable to identify the available emoji to display.
-					 *
-					 * See the {@glink features/emoji#troubleshooting troubleshooting} section in
-					 * the {@glink features/emoji Emoji feature} guide for more details.
-					 *
-					 * @error emoji-repository-empty
-					 */
-					logWarning( 'emoji-repository-empty' );
-				}
-
-				this.isRepositoryReady = ready;
-			} );
+			.then( () => this._onRepositoryLoaded() );
 	}
 
 	/**
@@ -214,7 +240,7 @@ export class EmojiRepository extends Plugin {
 		return categories.map( category => {
 			return {
 				...category,
-				items: groups[ category.groupId ]
+				items: groups[ category.groupId ] || []
 			};
 		} );
 	}
@@ -334,12 +360,61 @@ export class EmojiRepository extends Plugin {
 	 * a non-empty array, or `null` otherwise.
 	 */
 	private _getItems(): Array<EmojiEntry> | null {
-		const repository = EmojiRepository._cache.getSync( {
-			url: this._url.toString(),
+		const repository = this._definitions ? this._definitionsItems : EmojiRepository._cache.getSync( {
+			url: this._url!.toString(),
 			cacheKeys: this._cacheKeys
 		} );
 
 		return repository && repository.length ? repository : null;
+	}
+
+	/**
+	 * Updates the {@link #isRepositoryReady} flag once the repository finishes loading.
+	 */
+	private _onRepositoryLoaded(): void {
+		if ( this.editor.state === 'destroyed' ) {
+			return;
+		}
+
+		const ready = !!this._getItems();
+
+		if ( !ready ) {
+			/**
+			 * Unable to identify the available emoji to display.
+			 *
+			 * See the {@glink features/emoji#troubleshooting troubleshooting} section in
+			 * the {@glink features/emoji Emoji feature} guide for more details.
+			 *
+			 * @error emoji-repository-empty
+			 */
+			logWarning( 'emoji-repository-empty' );
+		}
+
+		this.isRepositoryReady = ready;
+	}
+
+	/**
+	 * Warns about the options that are ignored because the emoji definitions are passed in the configuration.
+	 */
+	private _warnAboutRedundantOptions(): void {
+		// Read the options separately. Reading the whole `emoji` object would also copy the `definitions` array.
+		const definitionsUrl = this.editor.config.get( 'emoji.definitionsUrl' );
+		const version = this.editor.config.get( 'emoji.version' );
+
+		// The `cdn` value only suppresses the warning about using CDN. It does not point to any emoji database.
+		if ( ( definitionsUrl && definitionsUrl !== 'cdn' ) || version ) {
+			/**
+			 * The {@link module:emoji/emojiconfig~EmojiConfig#definitions `emoji.definitions`} configuration option is set
+			 * together with other options that point to the emoji database: {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl
+			 * `emoji.definitionsUrl`} or {@link module:emoji/emojiconfig~EmojiConfig#version `emoji.version`}.
+			 * Only the `emoji.definitions` option will be used.
+			 *
+			 * The other options will be ignored and should be removed from the configuration.
+			 *
+			 * @error emoji-repository-redundant-options
+			 */
+			logWarning( 'emoji-repository-redundant-options' );
+		}
 	}
 
 	/**
@@ -348,7 +423,7 @@ export class EmojiRepository extends Plugin {
 	 *  * Filter out unsupported emoji (these that will not render correctly),
 	 *  * Prepare skin tone variants if an emoji defines them.
 	 */
-	private _normalizeEmoji( data: Array<EmojiCdnResource> ): Array<EmojiEntry> {
+	private _normalizeEmoji( data: Array<EmojiDefinition> ): Array<EmojiEntry> {
 		const editor = this.editor;
 		const useCustomFont = editor.config.get( 'emoji.useCustomFont' );
 		const emojiUtils = editor.plugins.get( 'EmojiUtils' );
@@ -424,9 +499,11 @@ export type EmojiCategory = {
 };
 
 /**
- * Represents a single item fetched from the CDN.
+ * Represents a single emoji definition, as stored in the emoji database. The database is either downloaded
+ * from {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`} or passed directly
+ * in {@link module:emoji/emojiconfig~EmojiConfig#definitions `emoji.definitions`}.
  */
-export type EmojiCdnResource = {
+export type EmojiDefinition = {
 	annotation: string;
 	emoji: string;
 	group: number;
@@ -443,9 +520,16 @@ export type EmojiCdnResource = {
 };
 
 /**
+ * Represents a single item fetched from the CDN.
+ *
+ * @deprecated Use {@link module:emoji/emojirepository~EmojiDefinition `EmojiDefinition`} instead.
+ */
+export type EmojiCdnResource = EmojiDefinition;
+
+/**
  * Represents a single emoji item used by the Emoji feature.
  */
-export type EmojiEntry = Omit<EmojiCdnResource, 'skins'> & {
+export type EmojiEntry = Omit<EmojiDefinition, 'skins'> & {
 	skins: EmojiMap;
 };
 

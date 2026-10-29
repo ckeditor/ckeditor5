@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Teruskan menaip untuk melihat emoji.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'Pertanyaan mesti mengandungi sekurang-kurangnya dua aksara.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'Tiada emoji dalam kategori ini.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Wajah tersenyum & Ekspresi',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

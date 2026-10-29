@@ -243,6 +243,13 @@ export class EmojiPickerView extends View<HTMLDivElement> {
 					secondaryText: t( 'The query must contain at least two characters.' ),
 					isVisible: true
 				} );
+			} else if ( !data.query && !data.resultsCount ) {
+				// The selected category is empty, for example, when the emoji definitions passed in the configuration do not cover it.
+				this.infoView.set( {
+					primaryText: t( 'There are no emojis in this category.' ),
+					secondaryText: '',
+					isVisible: true
+				} );
 			} else if ( !data.resultsCount ) {
 				this.infoView.set( {
 					primaryText: t( 'No emojis were found matching "%0".', data.query ),
