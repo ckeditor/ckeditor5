@@ -407,7 +407,7 @@ export class Dialog extends Plugin {
 	}
 
 	/**
-	 * Makes the <body> unscrollable (e.g. when the modal shows up).
+	 * Makes the `<body>` unscrollable (e.g. when the modal shows up).
 	 */
 	private _lockBodyScroll(): void {
 		adoptGlobalStyleSheet( document, SCROLL_LOCK_STYLES );
@@ -415,7 +415,7 @@ export class Dialog extends Plugin {
 	}
 
 	/**
-	 * Makes the <body> scrollable again (e.g. once the modal hides).
+	 * Makes the `<body>` scrollable again (e.g. once the modal hides).
 	 */
 	private _unlockBodyScroll(): void {
 		document.documentElement.classList.remove( 'ck-dialog-scroll-locked' );

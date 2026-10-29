@@ -26,7 +26,7 @@ import {
 
 /**
  * Returns a upcast helper that ensures the number of `<tableColumn>` elements corresponds to the actual number of columns in the table,
- * because the input data might have too few or too many <col> elements.
+ * because the input data might have too few or too many `<col>` elements.
  *
  * @internal
  */

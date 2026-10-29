@@ -63,7 +63,7 @@ export function getCaptionFromModelSelection( selection: ModelDocumentSelection 
  *
  * There are two possible forms of the valid caption:
  *  - A `<figcaption>` element inside a `<figure class="table">` element.
- *  - A `<caption>` inside a <table>.
+ *  - A `<caption>` inside a `<table>`.
  *
  * @returns Returns the object accepted by {@link module:engine/view/matcher~Matcher} or `null` if the element cannot be matched.
  * @internal

@@ -1908,7 +1908,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Return a <span> element with a special attribute holding the name of the original element.
+	 * Return a `<span>` element with a special attribute holding the name of the original element.
 	 * Optionally, copy all the attributes of the original element if that element is provided.
 	 *
 	 * @param elementName The name of view element.
