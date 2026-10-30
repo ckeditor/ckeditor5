@@ -28,8 +28,9 @@
 	/* Color */
 	/* Read through the `background` shorthand, so a gradient or pattern works too. */
 	--ck-form-header-background: transparent;
-	/* Declared `initial` and read with `--ck-color-text` as the fallback, the color the label had before, so overrides
-	   of `--ck-color-text` keep reaching the label. */
+	/* Text color of the whole header: the label, the header icon, and the buttons directly inside the header (for
+	   example the close button of a dialog or the back button of a form). Declared `initial` and read with
+	   `--ck-color-text` as the fallback, so overrides of `--ck-color-text` keep reaching the header. */
 	--ck-form-header-text-color: initial;
 }
 
@@ -38,6 +39,8 @@
 	height: var(--ck-form-header-height);
 	border-bottom: var(--ck-border-divider);
 	background: var(--ck-form-header-background);
+	/* The header icon inherits this color. Wins over the UI reset (same specificity) because it is imported later. */
+	color: var(--ck-form-header-text-color, var(--ck-color-text));
 	/* To prevent shrinking when placed in flexbox. */
 	flex-shrink: 0;
 	display: flex;
@@ -67,6 +70,11 @@
 	}
 
 	& > .ck.ck-button {
+		/* The header color is the default text color of the header buttons. It is set on the buttons themselves, because
+		   `button.css` sets this helper on every button inside `.ck-reset_all`. A `--ck-button-default-text-color`
+		   override still wins. */
+		--_ck-button-fallback-text-color: var(--ck-form-header-text-color, var(--ck-color-text));
+
 		flex-shrink: 0;
 		/* To have button size to be 24pxx24px */
 		padding: 1px;
