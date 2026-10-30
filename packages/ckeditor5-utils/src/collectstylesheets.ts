@@ -41,9 +41,9 @@ function getEditorStyles(): string {
 	const editorCSSVariables = [];
 
 	for ( const styleSheet of Array.from( document.styleSheets ) ) {
-		const ownerNode = styleSheet.ownerNode as Element;
+		const ownerNode = styleSheet.ownerNode as Element | null;
 
-		if ( ownerNode.hasAttribute( 'data-cke' ) ) {
+		if ( ownerNode?.hasAttribute( 'data-cke' ) ) {
 			for ( const rule of Array.from( styleSheet.cssRules ) ) {
 				if ( rule.cssText.indexOf( '.ck-content' ) !== -1 ) {
 					editorStyles.push( rule.cssText );
