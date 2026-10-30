@@ -93,6 +93,19 @@ describe( 'collectStylesheets', () => {
 		expect( styles ).toContain( '--variable2: blue' );
 	} );
 
+	// Constructed (adopted) stylesheets have no owner node. Safari lists them in `document.styleSheets`.
+	it( 'should skip stylesheets without an owner node', async () => {
+		styleSheetsMock.push( {
+			ownerNode: null,
+			cssRules: [ { cssText: '.ck-content { color: pink }' } ]
+		} );
+
+		const styles = await collectStylesheets( [ 'EDITOR_STYLES' ] );
+
+		expect( styles ).not.toContain( 'pink' );
+		expect( styles ).toContain( '.ck-content { color: black }' );
+	} );
+
 	it( 'should fetch stylesheets from the provided paths and return concat result', async () => {
 		vi.spyOn( window, 'fetch' )
 			.mockResolvedValueOnce( new Response( '.first { color: green; }' ) )
