@@ -23,7 +23,7 @@
 	}
 
 	&::before {
-		font-weight: normal;
+		font-weight: var(--ck-font-weight-ui-default);
 		font-style: normal;
 		position: absolute;
 		content: attr(data-html-object-embed-label);
