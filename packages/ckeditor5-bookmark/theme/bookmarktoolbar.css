@@ -22,7 +22,7 @@
 	max-width: var(--ck-input-width);
 	min-width: 3em;
 	font-size: var(--ck-bookmark-toolbar-preview-font-size);
-	font-weight: normal;
+	font-weight: var(--ck-font-weight-ui-default);
 	text-overflow: ellipsis;
 	text-align: center;
 	overflow: hidden;
