@@ -1812,6 +1812,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-template-dropdown-view-height: 300px;
 	--ck-template-icon-size: 45px;
 	--ck-template-list-border-radius: 0;
+	--ck-template-list-item-border-radius: var(--ck-border-radius, var(--ck-radius-base));
 	--ck-template-list-padding: var(--ck-spacing-large, var(--ck-spacing-lg));
 	--ck-template-list-gap: var(--ck-spacing-large, var(--ck-spacing-lg));
 	--ck-template-search-field-padding: var(--ck-spacing-padding-comfortable);
