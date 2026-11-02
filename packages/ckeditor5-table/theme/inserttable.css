@@ -21,6 +21,8 @@
 	--ck-insert-table-dropdown-box-on-border-color: initial;
 	--ck-insert-table-dropdown-box-hover-background: initial;
 	--ck-insert-table-dropdown-box-hover-border-color: initial;
+	/* Shadow of the selected cell under the pointer, for example an inner ring. */
+	--ck-insert-table-dropdown-box-hover-shadow: none;
 }
 
 .ck .ck-insert-table-dropdown__grid {
@@ -65,6 +67,7 @@
 		&:hover:not(.ck-disabled) {
 			border-color: var(--ck-insert-table-dropdown-box-hover-border-color, var(--ck-insert-table-dropdown-box-on-border-color, var(--ck-color-focus-border, var(--ck-color-interactive-focus-border))));
 			background: var(--ck-insert-table-dropdown-box-hover-background, var(--ck-button-hover-background));
+			box-shadow: var(--ck-insert-table-dropdown-box-hover-shadow);
 		}
 	}
 }
