@@ -7,7 +7,7 @@
 
 .ck.ck-editor__main > .ck-editor__editable {
 	/* https://github.com/ckeditor/ckeditor5/issues/3384 */
-	background: var(--ck-color-base-background);
+	background: var(--ck-editor-editable-background, var(--ck-color-base-background));
 
 	&:not(.ck-focused) {
 		border-color: var(--ck-color-base-border);
