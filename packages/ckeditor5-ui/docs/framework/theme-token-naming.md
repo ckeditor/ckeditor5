@@ -93,7 +93,7 @@ Beyond the per-layer formats, a few shared vocabulary rules keep names predictab
 
 ### States
 
-Use these state keywords: `hover`, `active`, `focus`, `disabled`, `error`, `selected`, `readonly`, `on`, and `off`. A feature can also use a state that mirrors a state class or a state of its own, such as `blurred` for `.ck-blurred`, `checked` for a checked to-do item, or `resolved` for a resolved suggestion.
+Use these state keywords: `hover`, `active`, `focus`, `disabled`, `error`, `selected`, `readonly`, `on`, `off`, and `open`. Use `on` for an item that is toggled on (for example a checked option) and `open` for an item whose menu or panel is open, as in `--ck-list-item-button-on-text-color` and `--ck-list-item-button-open-text-color`. A feature can also use a state that mirrors a state class or a state of its own, such as `blurred` for `.ck-blurred`, `checked` for a checked to-do item, or `resolved` for a resolved suggestion.
 
 Semantic roles can take a modifier that tunes the strength of the role: `subtle`, `strong`, `muted`, or `highlight`, as in `--ck-color-interactive-primary-surface-muted` or `--ck-color-interactive-hover-surface-strong`.
 
