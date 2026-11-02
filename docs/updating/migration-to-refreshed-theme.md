@@ -288,6 +288,8 @@ The split button tokens are override-only under both names. The theme does not d
 }
 ```
 
+The inner start border of the split button arrow, next to the action button, has its own width, `--ck-split-button-arrow-border-inline-start-width`, which follows `--ck-button-border-width`. If you set another border width only through the `--ck-button-border` or `--ck-toolbar-button-border` shorthand, set this token to the same width as well, or to `0` to avoid a doubled line between outlined buttons.
+
 ### Z-index layers
 
 The old z-index names keep working both ways. The default theme still declares them, so you can read them without the opt-in aliases. The editor also reads them first, so overriding them on `:root` (or `:host` in a shadow root) still works. On a narrower selector, they reach only part of the UI; see [Overriding on a narrower selector](#overriding-on-a-narrower-selector).

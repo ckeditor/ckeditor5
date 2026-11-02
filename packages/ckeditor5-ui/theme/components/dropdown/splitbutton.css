@@ -11,6 +11,10 @@
 	--ck-split-button-hover-border-color: initial;
 	--ck-split-button-focus-border-color: initial;
 	--ck-split-button-arrow-border-block-width: 0px;
+	/* Width of the arrow's inner start border, next to the action button. Set it to `0` to avoid a doubled line when
+	   the buttons are outlined. The default follows `--ck-button-border-width`, so it goes out of sync when only the
+	   `--ck-button-border` or `--ck-toolbar-button-border` shorthand sets another width. */
+	--ck-split-button-arrow-border-inline-start-width: var(--ck-button-border-width);
 	--ck-split-button-separator-width: var(--ck-border-width-divider);
 }
 
@@ -64,6 +68,8 @@
 	& > .ck-splitbutton__arrow:not(:focus) {
 		border-top-width: var(--ck-split-button-arrow-border-block-width);
 		border-bottom-width: var(--ck-split-button-arrow-border-block-width);
+		/* A focused arrow keeps the full focus border. */
+		border-inline-start-width: var(--ck-split-button-arrow-border-inline-start-width);
 	}
 
 	/* When "open", the buttons keep fully rounded corners by default, matching an open regular dropdown.
