@@ -434,7 +434,7 @@ If you are using predefined builds from npm, follow the steps below:
 	Create an additional stylesheet file with the given content:
 
 	.ck.ck-block-toolbar-button {
-		transform: translateX( calc(-1 * var(--ck-spacing-large)) );
+		transform: translateX( calc(-1 * var(--ck-spacing-lg)) );
 	}
 	*/
 
@@ -1199,7 +1199,7 @@ One notable difference between the old build and the new ESM build is that the f
 	Create an additional stylesheet file with the given content:
 
 	.ck.ck-block-toolbar-button {
-		transform: translateX( calc(-1 * var(--ck-spacing-large)) );
+		transform: translateX( calc(-1 * var(--ck-spacing-lg)) );
 	}
 	*/
 
@@ -2229,7 +2229,7 @@ One notable difference between the old build and the new ESM build is that the f
 	Create an additional stylesheet file with the given content:
 
 	.ck.ck-block-toolbar-button {
-		transform: translateX( calc(-1 * var(--ck-spacing-large)) );
+		transform: translateX( calc(-1 * var(--ck-spacing-lg)) );
 	}
 	*/
 

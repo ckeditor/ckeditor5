@@ -1075,9 +1075,8 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( matchCounterElement.textContent ).toBe( '1 of 3' );
 			} );
 
-			it.skip( 'should adjust the right padding of the find input depending on the changing size of the counter (LTR editor)', () => {
+			it( 'should adjust the right padding of the find input depending on the changing size of the counter (LTR editor)', () => {
 				editor.setData( `<p>${ new Array( 20 ).join( 'A' ) }</p>` );
-				toggleDialog();
 
 				findInput.fieldView.value = 'A';
 
@@ -1089,7 +1088,7 @@ describe( 'FindAndReplaceFormView', () => {
 
 				expect( matchCounterElement.textContent ).toBe( '1 of 19' );
 				expect( findInput.fieldView.element.style.paddingRight )
-					.toMatch( /^calc\( 2 \* var\(--ck-spacing-standard\) \+ [\d.]+px \)$/ );
+					.toMatch( /^calc\( 2 \* var\(--ck-spacing-standard, var\(--ck-spacing-base\)\) \+ [\d.]+px \)$/ );
 
 				findPrevButton.fire( 'execute' );
 
@@ -1097,17 +1096,16 @@ describe( 'FindAndReplaceFormView', () => {
 
 				expect( matchCounterElement.textContent ).toBe( '19 of 19' );
 				expect( findInput.fieldView.element.style.paddingRight )
-					.toMatch( /^calc\( 2 \* var\(--ck-spacing-standard\) \+ [\d.]+px \)$/ );
+					.toMatch( /^calc\( 2 \* var\(--ck-spacing-standard, var\(--ck-spacing-base\)\) \+ [\d.]+px \)$/ );
 
 				// "1 of 19" consumes less horizontal space than "19 of 19"
 				expect( paddingBefore ).toBeLessThan( paddingAfter );
 			} );
 
-			it.skip( 'should adjust the right padding of the find input depending on the changing size of the counter (RTL editor)', () => {
+			it( 'should adjust the right padding of the find input depending on the changing size of the counter (RTL editor)', () => {
 				editor.locale.uiLanguageDirection = 'rtl';
 
 				editor.setData( `<p>${ new Array( 20 ).join( 'A' ) }</p>` );
-				toggleDialog();
 
 				findInput.fieldView.value = 'A';
 
@@ -1119,7 +1117,7 @@ describe( 'FindAndReplaceFormView', () => {
 
 				expect( matchCounterElement.textContent ).toBe( '1 of 19' );
 				expect( findInput.fieldView.element.style.paddingLeft )
-					.toMatch( /^calc\( 2 \* var\(--ck-spacing-standard\) \+ [\d.]+px \)$/ );
+					.toMatch( /^calc\( 2 \* var\(--ck-spacing-standard, var\(--ck-spacing-base\)\) \+ [\d.]+px \)$/ );
 
 				findPrevButton.fire( 'execute' );
 
@@ -1127,15 +1125,14 @@ describe( 'FindAndReplaceFormView', () => {
 
 				expect( matchCounterElement.textContent ).toBe( '19 of 19' );
 				expect( findInput.fieldView.element.style.paddingLeft )
-					.toMatch( /^calc\( 2 \* var\(--ck-spacing-standard\) \+ [\d.]+px \)$/ );
+					.toMatch( /^calc\( 2 \* var\(--ck-spacing-standard, var\(--ck-spacing-base\)\) \+ [\d.]+px \)$/ );
 
 				// "1 of 19" consumes less horizontal space than "19 of 19"
 				expect( paddingBefore ).toBeLessThan( paddingAfter );
 			} );
 
-			it.skip( 'should adjust the right padding of the find input depending on the presence of the counter', () => {
+			it( 'should adjust the right padding of the find input depending on the presence of the counter', () => {
 				editor.setData( `<p>${ new Array( 20 ).join( 'A' ) }</p>` );
-				toggleDialog();
 
 				findInput.fieldView.value = 'A';
 
