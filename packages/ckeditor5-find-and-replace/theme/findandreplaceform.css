@@ -12,6 +12,9 @@
 	--ck-find-and-replace-form-inputs-padding: var(--ck-spacing-padding-spacious) var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-compact) var(--ck-spacing-padding-comfortable);
 	/* No top padding — the inputs' bottom padding already provides the gap between the two sections. */
 	--ck-find-and-replace-form-actions-padding: 0 var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-comfortable) var(--ck-spacing-padding-comfortable);
+	/* The font size of the results counter. Declared `initial` and read on the counter with the field font size as
+	   fallback, so the counter follows the field text, also when the field font size is overridden on the form. */
+	--ck-find-and-replace-form-results-counter-font-size: initial;
 }
 
 .ck.ck-find-and-replace-form {
@@ -87,6 +90,7 @@
 			transform: translateY(-50%);
 
 			color: var(--ck-color-base-border);
+			font-size: var(--ck-find-and-replace-form-results-counter-font-size, var(--ck-input-font-size));
 
 			[dir="ltr"] & {
 				right: var(--ck-spacing-standard, var(--ck-spacing-base));
