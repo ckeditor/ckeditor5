@@ -7,6 +7,8 @@
 :host {
 	--ck-table-properties-error-arrow-size: 6px;
 	--ck-table-properties-min-error-width: 150px;
+	--ck-table-properties-error-background: var(--ck-color-feedback-error);
+	--ck-table-properties-error-text-color: var(--ck-color-text-inverse);
 }
 
 .ck.ck-table-form {
@@ -105,8 +107,8 @@
 
 		& .ck.ck-labeled-field-view__status {
 			border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
-			background: var(--ck-color-base-error);
-			color: var(--ck-color-base-background);
+			background: var(--ck-table-properties-error-background);
+			color: var(--ck-table-properties-error-text-color);
 			padding: var(--ck-spacing-small, var(--ck-spacing-sm)) var(--ck-spacing-medium, var(--ck-spacing-base));
 			min-width: var(--ck-table-properties-min-error-width);
 			text-align: center;
@@ -119,7 +121,7 @@
 
 			/* The arrow pointing towards the field. */
 			&::after {
-				border-color: transparent transparent var(--ck-color-base-error) transparent;
+				border-color: transparent transparent var(--ck-table-properties-error-background) transparent;
 				border-width: 0 var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size);
 				border-style: solid;
 				content: "";

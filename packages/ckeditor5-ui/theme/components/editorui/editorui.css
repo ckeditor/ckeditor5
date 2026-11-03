@@ -22,9 +22,11 @@
 	/* Color */
 	--ck-editor-frame-border-color: var(--ck-color-border-container);
 	/* Background of the editing area (the main editing roots of every editor type). Read through the `background`
-	   shorthand, so a gradient or an image works too. Declared `initial`: the classic editor falls back to its
-	   current background, and the other editor types stay transparent. */
+	   shorthand, so a gradient or an image works too. Declared `initial`: the classic editor and the fullscreen page
+	   fall back to the canvas color, and the other editor types stay transparent. */
 	--ck-editor-editable-background: initial;
+	/* Background of the text selection in an editing area that does not have focus. */
+	--ck-editor-editable-blurred-selection-background: hsl(0 0% 85%);
 
 	/* State / meta */
 	--ck-editor-editable-focus-border-color: var(--ck-interactive-focus-border-color);
@@ -110,9 +112,9 @@
 
 /*
  * The editing area background of the main editing roots. Zero specificity, so any integrator rule with a class wins,
- * and the classic editor keeps its own rule with a fallback. While the token is `initial`, the declaration computes
- * to `transparent`. Nested editables and secondary editors (comment inputs, sub-editors) are not editing roots, so
- * they keep their look.
+ * and the classic editor and the fullscreen page keep their own rules with a fallback. While the token is `initial`,
+ * the declaration computes to `transparent`. Nested editables and secondary editors (comment inputs, sub-editors) are
+ * not editing roots, so they keep their look.
  */
 :where(.ck.ck-editor__editable_root:not(.ck-editor__nested-editable)) {
 	background: var(--ck-editor-editable-background);
@@ -170,8 +172,8 @@
 	keeps its normal (non-blurred) color, which is harmless. */
 	/* eslint-disable-next-line css/use-baseline */
 	&.ck-blurred ::selection {
-		/* Fallback to `--ck-color-editable-blur-selection` for backward compatibility. */
-		background: var(--ck-color-editable-blur-selection, hsl(0 0% 85%));
+		/* Backward compatibility: reads the legacy `--ck-color-editable-blur-selection` first if overridden. */
+		background: var(--ck-color-editable-blur-selection, var(--ck-editor-editable-blurred-selection-background));
 	}
 
 	&.ck-editor__editable_inline-root br {

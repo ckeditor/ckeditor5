@@ -216,6 +216,11 @@ Save the aliases block below as your own file and load it between the editor CSS
 	--ck-color-resizer-tooltip-background: var(--ck-resizer-tooltip-background-color);
 	--ck-color-resizer-tooltip-text: var(--ck-resizer-tooltip-text-color);
 
+	/* -- Color grid / Editing area ------------------------------------------------------------- */
+
+	--ck-color-color-grid-check-icon: var(--ck-color-grid-check-icon-color);
+	--ck-color-editable-blur-selection: var(--ck-editor-editable-blurred-selection-background);
+
 	/* -- Foundation: spacing ------------------------------------------------------------------- */
 
 	--ck-spacing-extra-tiny: var(--ck-spacing-2xs);
@@ -2035,10 +2040,10 @@ Color tokens moved from `--ck-color-{component}-{…}` to component-first `--ck-
 --ck-color-dialog-background			→	--ck-dialog-background-color
 ```
 
-53 such mappings follow that mechanical pattern.
+55 such mappings follow that mechanical pattern.
 
 <details>
-<summary>Full list &ndash; all 53 component color renames</summary>
+<summary>Full list &ndash; all 55 component color renames</summary>
 
 | Old                                             | New                                             |
 |-------------------------------------------------|-------------------------------------------------|
@@ -2095,6 +2100,8 @@ Color tokens moved from `--ck-color-{component}-{…}` to component-first `--ck-
 | `--ck-color-widget-type-around-button-active`   | `--ck-widget-type-around-button-active-background-color` |
 | `--ck-color-widget-type-around-button-blurred-editable` | `--ck-widget-type-around-button-blurred-background-color` |
 | `--ck-color-widget-type-around-button-icon`     | `--ck-widget-type-around-button-icon-color`     |
+| `--ck-color-color-grid-check-icon`              | `--ck-color-grid-check-icon-color`              |
+| `--ck-color-editable-blur-selection`            | `--ck-editor-editable-blurred-selection-background` |
 
 </details>
 
