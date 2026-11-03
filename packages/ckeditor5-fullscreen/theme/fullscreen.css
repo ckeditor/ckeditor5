@@ -106,9 +106,9 @@ Fullscreen layout:
 	position: absolute;
 
 	& .ck-fullscreen__top-wrapper {
-		border-top: 1px solid var(--ck-color-base-border);
-		border-left: 1px solid var(--ck-color-base-border);
-		border-right: 1px solid var(--ck-color-base-border);
+		border-top: 1px solid var(--ck-editor-frame-border-color);
+		border-left: 1px solid var(--ck-editor-frame-border-color);
+		border-right: 1px solid var(--ck-editor-frame-border-color);
 		/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
 		border-radius: var(--ck-border-radius, var(--ck-radius-base)) 0;
 	}
@@ -154,8 +154,9 @@ Fullscreen layout:
 	/* Reset margins that may be present on editable. We add them in other places. */
 	margin: 0;
 	padding: 20mm 12mm;
-	border: 1px var(--ck-color-base-border) solid;
-	background: var(--ck-color-base-background);
+	border: 1px var(--ck-editor-frame-border-color) solid;
+	/* This rule is more specific than the base editing root rule, so it reads the editing area background token too. */
+	background: var(--ck-editor-editable-background, var(--ck-color-surface-canvas));
 	box-shadow: var(--ck-fullscreen-editable-shadow);
 	border-radius: var(--ck-fullscreen-editable-border-radius);
 }

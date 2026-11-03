@@ -50,8 +50,8 @@
 				width: 100%;
 
 				& .ck.ck-labeled-field-view__status {
-					background: var(--ck-color-base-error);
-					color: var(--ck-color-base-background);
+					background: var(--ck-color-feedback-error);
+					color: var(--ck-color-text-inverse);
 					padding: var(--ck-spacing-small, var(--ck-spacing-sm)) var(--ck-spacing-medium, var(--ck-spacing-base));
 					min-width: var(--ck-table-properties-min-error-width);
 					text-align: center;
@@ -60,7 +60,7 @@
 
 					/* The arrow pointing towards the field. */
 					&::after {
-						border-color: transparent transparent var(--ck-color-base-error) transparent;
+						border-color: transparent transparent var(--ck-color-feedback-error) transparent;
 						border-width: 0 var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size) var(--ck-table-properties-error-arrow-size);
 						border-style: solid;
 					}

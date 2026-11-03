@@ -17,6 +17,9 @@
 	/* Radius */
 	--ck-color-grid-tile-border-radius: var(--ck-radius-sm);
 
+	/* Color */
+	--ck-color-grid-check-icon-color: hsl(212 81% 46%);
+
 	/* Motion */
 	--ck-color-grid-tile-hover-transform: none;
 
@@ -107,8 +110,8 @@
 
 	& .ck.ck-icon {
 		display: none;
-		/* Fallback to `--ck-color-color-grid-check-icon` for backward compatibility. */
-		color: var(--ck-color-color-grid-check-icon, hsl(212 81% 46%));
+		/* Backward compatibility: reads the legacy `--ck-color-color-grid-check-icon` first if overridden. */
+		color: var(--ck-color-color-grid-check-icon, var(--ck-color-grid-check-icon-color));
 	}
 
 	&.ck-on {
