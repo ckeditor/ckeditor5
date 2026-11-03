@@ -39,12 +39,12 @@ export function parsePasteOfficeHtml( htmlString: string, stylesProcessor: Style
 
 	normalizeSpacerunSpans( htmlDocument );
 
-	// Remove `<style>` blocks that ended up inside the `<body>`. Some sources (e.g. Excel Online) wrap a whole
-	// `<html>` document inside a `<div>`, which makes the browser flatten the document's `<style>` into the body.
-	// Such a `<style>` is not a usable stylesheet there and would otherwise be pasted as visible text.
-	// See https://github.com/ckeditor/ckeditor5/issues/20188.
-	// In-`<head>` styles are left untouched and are still collected by `extractStyles()` below.
-	removeInBodyStyleBlocks( htmlDocument );
+	// Move `<style>` blocks that ended up inside the `<body>` to the `<head>`. Some sources (e.g. Excel Online and
+	// recent desktop Excel builds) wrap a whole `<html>` document inside a `<div>`, which makes the browser flatten
+	// the document's `<style>` into the body. Left in the body, such a `<style>` would be pasted as visible text
+	// (see https://github.com/ckeditor/ckeditor5/issues/20188), but its rules (e.g. Excel `.xl*` cell classes)
+	// are still needed for inlining, so they must remain available for `extractStyles()` below.
+	moveInBodyStyleBlocksToHead( htmlDocument );
 
 	// Get `innerHTML` first as transforming to View modifies the source document.
 	const bodyString = htmlDocument.body.innerHTML;
@@ -111,16 +111,18 @@ function documentToView( htmlDocument: Document, stylesProcessor: StylesProcesso
 }
 
 /**
- * Removes all `<style>` elements found inside the `<body>` of the provided `htmlDocument`.
+ * Moves all `<style>` elements found inside the `<body>` of the provided `htmlDocument` to its `<head>`,
+ * preserving their order of occurrence.
  *
  * This guards against sources that place (or flatten) a `<style>` block into the body, where its CSS text
- * would otherwise be converted to visible text. Styles located in the `<head>` are not affected.
+ * would otherwise be converted to visible text, while keeping its rules available for style extraction.
+ * Styles already located in the `<head>` are not affected.
  *
- * @param htmlDocument Native `Document` object to be cleaned.
+ * @param htmlDocument Native `Document` object to be processed.
  */
-function removeInBodyStyleBlocks( htmlDocument: Document ): void {
+function moveInBodyStyleBlocksToHead( htmlDocument: Document ): void {
 	for ( const style of Array.from( htmlDocument.body.querySelectorAll( 'style' ) ) ) {
-		style.remove();
+		htmlDocument.head.appendChild( style );
 	}
 }
 
