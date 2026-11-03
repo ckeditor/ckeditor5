@@ -15,7 +15,7 @@
 	position: absolute;
 	-webkit-user-select: none;
 	user-select: none;
-	background: var(--ck-color-base-background);
+	background: var(--ck-color-surface-canvas);
 
 	&,
 	& iframe {

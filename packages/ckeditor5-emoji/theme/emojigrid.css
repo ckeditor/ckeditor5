@@ -17,7 +17,7 @@
 
 		overflow-y: auto;
 		overflow-x: hidden;
-		border-top: 1px solid var(--ck-color-base-border);
+		border-top: 1px solid var(--ck-color-divider);
 
 		& .ck-emoji__grid {
 			display: grid;
@@ -44,7 +44,7 @@
 			&:hover:not(.ck-disabled) {
 				/* Disable the default .ck-button's border ring. */
 				border: 0;
-				box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
+				box-shadow: inset 0 0 0 1px var(--ck-color-surface-canvas), 0 0 0 2px var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 			}
 
 			/* Make sure the glyph is rendered in the center of the button */
