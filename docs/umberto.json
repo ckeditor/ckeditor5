@@ -732,6 +732,36 @@
 					]
 				},
 				{
+					"name": "Editing Toolkit",
+					"id": "editing-toolkit",
+					"slug": "editing-toolkit",
+					"badges": [
+						"premium"
+					],
+					"categories": [
+						{
+							"name": "Compare",
+							"id": "editing-toolkit-compare",
+							"slug": "compare",
+							"order": 20,
+							"folded": true,
+							"badges": [
+								"premium"
+							]
+						},
+						{
+							"name": "Use cases",
+							"id": "editing-toolkit-use-cases",
+							"slug": "use-cases",
+							"order": 40,
+							"folded": true,
+							"badges": [
+								"premium"
+							]
+						}
+					]
+				},
+				{
 					"name": "Email editing",
 					"id": "features-email",
 					"slug": "email-editing"
