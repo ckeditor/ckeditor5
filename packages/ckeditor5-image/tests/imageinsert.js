@@ -5,12 +5,13 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Image } from '../src/image.js';
 import { ImageInsert } from '../src/imageinsert.js';
 import { ImageUpload } from '../src/imageupload.js';
 import { ImageInsertUI } from '../src/imageinsert/imageinsertui.js';
 import { ImageInsertViaUrl } from '../src/imageinsertviaurl.js';
 
-import { global } from '@ckeditor/ckeditor5-utils';
+import { global, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 describe( 'ImageInsert', () => {
 	let editorElement, editor;
@@ -20,7 +21,7 @@ describe( 'ImageInsert', () => {
 		global.document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ ImageInsert ]
+			plugins: [ Image, ImageInsert ]
 		} );
 	} );
 
@@ -52,5 +53,48 @@ describe( 'ImageInsert', () => {
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
 		expect( ImageInsert.isPremiumPlugin ).toBe( false );
+	} );
+
+	describe( 'insert image dropdown keyboard navigation', () => {
+		let dropdown, formView;
+
+		beforeEach( () => {
+			dropdown = editor.ui.componentFactory.create( 'insertImage' );
+			dropdown.render();
+			global.document.body.appendChild( dropdown.element );
+
+			dropdown.isOpen = true;
+			formView = dropdown.panelView.children.get( 0 );
+		} );
+
+		afterEach( () => {
+			dropdown.element.remove();
+			dropdown.destroy();
+		} );
+
+		it( 'should navigate the built-in integrations using the arrow keys', () => {
+			const uploadButtonView = formView.children.get( 0 );
+			const urlButtonView = formView.children.get( 1 );
+
+			formView.focus();
+			expect( formView.focusTracker.focusedElement ).toBe( uploadButtonView.element );
+
+			pressKey( formView.focusTracker.focusedElement, keyCodes.arrowdown );
+			expect( formView.focusTracker.focusedElement ).toBe( urlButtonView.element );
+
+			pressKey( formView.focusTracker.focusedElement, keyCodes.arrowup );
+			expect( formView.focusTracker.focusedElement ).toBe( uploadButtonView.element );
+		} );
+
+		it( 'should close the dropdown using the arrow left key', () => {
+			formView.focus();
+
+			pressKey( formView.focusTracker.focusedElement, keyCodes.arrowleft );
+			expect( dropdown.isOpen ).toBe( false );
+		} );
+
+		function pressKey( element, keyCode ) {
+			element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode, bubbles: true, cancelable: true } ) );
+		}
 	} );
 } );

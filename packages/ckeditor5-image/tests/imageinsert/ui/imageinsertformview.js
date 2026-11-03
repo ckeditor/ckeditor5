@@ -156,7 +156,7 @@ describe( 'ImageInsertFormView', () => {
 			view.destroy();
 		} );
 
-		describe( 'activates keyboard navigation', () => {
+		describe( 'activates keyboard navigation when all integrations are buttons', () => {
 			let view, firstIntegrationView, secondIntegrationView;
 
 			beforeEach( () => {
@@ -177,9 +177,9 @@ describe( 'ImageInsertFormView', () => {
 				view.destroy();
 			} );
 
-			it( 'so "tab" focuses the next focusable item', () => {
+			it( 'so "arrowdown" focuses the next focusable item', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
+					keyCode: keyCodes.arrowdown,
 					preventDefault: vi.fn(),
 					stopPropagation: vi.fn()
 				};
@@ -196,15 +196,14 @@ describe( 'ImageInsertFormView', () => {
 				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
-			it( 'so "shift + tab" focuses the previous focusable item', () => {
+			it( 'so "arrowup" focuses the previous focusable item', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: true,
+					keyCode: keyCodes.arrowup,
 					preventDefault: vi.fn(),
 					stopPropagation: vi.fn()
 				};
 
-				// Mock the cancel button is focused.
+				// Mock the second integration focused.
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = secondIntegrationView.element;
 
@@ -216,8 +215,108 @@ describe( 'ImageInsertFormView', () => {
 				expect( spy ).toHaveBeenCalledOnce();
 			} );
 
+			it( 'so "tab" and "shift + tab" are not handled', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				};
+
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = firstIntegrationView.element;
+
+				const spy = vi.spyOn( secondIntegrationView, 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+
+				keyEvtData.shiftKey = true;
+				view.keystrokes.press( keyEvtData );
+
+				expect( keyEvtData.preventDefault ).not.toHaveBeenCalled();
+				expect( keyEvtData.stopPropagation ).not.toHaveBeenCalled();
+				expect( spy ).not.toHaveBeenCalled();
+			} );
+
+			it( 'so "arrowleft" and "arrowright" are passed to the dropdown', () => {
+				const keyEvtData = {
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				};
+
+				keyEvtData.keyCode = keyCodes.arrowleft;
+				view.keystrokes.press( keyEvtData );
+
+				keyEvtData.keyCode = keyCodes.arrowright;
+				view.keystrokes.press( keyEvtData );
+
+				expect( keyEvtData.preventDefault ).not.toHaveBeenCalled();
+				expect( keyEvtData.stopPropagation ).not.toHaveBeenCalled();
+			} );
+		} );
+
+		describe( 'activates keyboard navigation when some integration is not a button', () => {
+			let view, buttonIntegrationView, inputIntegrationView;
+
+			beforeEach( () => {
+				buttonIntegrationView = new ButtonView( { t: val => val } );
+				inputIntegrationView = new ImageInsertUrlView( { t: val => val } );
+
+				view = new ImageInsertFormView( { t: () => {} }, [
+					buttonIntegrationView,
+					inputIntegrationView
+				] );
+
+				view.render();
+				document.body.appendChild( view.element );
+			} );
+
+			afterEach( () => {
+				view.element.remove();
+				view.destroy();
+			} );
+
+			it( 'so "tab" focuses the next focusable item', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				};
+
+				// Mock the button integration focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = buttonIntegrationView.element;
+
+				const spy = vi.spyOn( inputIntegrationView, 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'so "shift + tab" focuses the previous focusable item', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.tab,
+					shiftKey: true,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				};
+
+				// Mock the input integration focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = inputIntegrationView.element;
+
+				const spy = vi.spyOn( buttonIntegrationView, 'focus' );
+
+				view.keystrokes.press( keyEvtData );
+				expect( keyEvtData.preventDefault ).toHaveBeenCalledOnce();
+				expect( keyEvtData.stopPropagation ).toHaveBeenCalledOnce();
+				expect( spy ).toHaveBeenCalledOnce();
+			} );
+
 			it( 'intercepts the arrow* events and overrides the default toolbar behavior', () => {
 				const keyEvtData = {
+					preventDefault: vi.fn(),
 					stopPropagation: vi.fn()
 				};
 
@@ -236,6 +335,9 @@ describe( 'ImageInsertFormView', () => {
 				keyEvtData.keyCode = keyCodes.arrowright;
 				view.keystrokes.press( keyEvtData );
 				expect( keyEvtData.stopPropagation ).toHaveBeenCalledTimes( 4 );
+
+				// The caret movement in the text field must not be blocked.
+				expect( keyEvtData.preventDefault ).not.toHaveBeenCalled();
 			} );
 		} );
 	} );
@@ -293,8 +395,7 @@ describe( 'ImageInsertFormView', () => {
 
 			it( 'forward cycling', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: false,
+					keyCode: keyCodes.arrowdown,
 					stopPropagation: vi.fn(),
 					preventDefault: vi.fn()
 				};
@@ -308,8 +409,7 @@ describe( 'ImageInsertFormView', () => {
 
 			it( 'backward cycling', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: true,
+					keyCode: keyCodes.arrowup,
 					stopPropagation: vi.fn(),
 					preventDefault: vi.fn()
 				};
@@ -340,8 +440,7 @@ describe( 'ImageInsertFormView', () => {
 
 			it( 'forward cycling', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: false,
+					keyCode: keyCodes.arrowdown,
 					stopPropagation: vi.fn(),
 					preventDefault: vi.fn()
 				};
@@ -358,8 +457,7 @@ describe( 'ImageInsertFormView', () => {
 
 			it( 'backward cycling', () => {
 				const keyEvtData = {
-					keyCode: keyCodes.tab,
-					shiftKey: true,
+					keyCode: keyCodes.arrowup,
 					stopPropagation: vi.fn(),
 					preventDefault: vi.fn()
 				};
