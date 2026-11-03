@@ -87,7 +87,7 @@
 
 				& > button {
 					&:not(:focus) {
-						border: 1px solid var(--ck-color-base-border);
+						border: 1px solid var(--ck-color-border-control);
 					}
 
 					& > span {

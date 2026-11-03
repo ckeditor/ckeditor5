@@ -6,7 +6,7 @@
 
 .ck.ck-character-info {
 	padding: var(--ck-dialog-actions-padding);
-	border-top: 1px solid var(--ck-color-base-border);
+	border-top: 1px solid var(--ck-color-divider);
 	display: flex;
 
 	/*

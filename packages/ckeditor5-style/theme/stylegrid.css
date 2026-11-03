@@ -42,7 +42,7 @@
 
 		/* Let default .ck-button :focus styles apply */
 		&:not(:focus) {
-			border: 1px solid var(--ck-color-base-border);
+			border: 1px solid var(--ck-color-border-control);
 		}
 
 		& .ck-button__label {
@@ -61,8 +61,8 @@
 			opacity: .9;
 
 			padding: var(--ck-spacing-medium, var(--ck-spacing-base));
-			background: var(--ck-color-base-background);
-			border: 2px solid var(--ck-color-base-background);
+			background: var(--ck-color-surface-canvas);
+			border: 2px solid var(--ck-color-surface-canvas);
 			display: flex;
 			align-content: center;
 			justify-content: flex-start;

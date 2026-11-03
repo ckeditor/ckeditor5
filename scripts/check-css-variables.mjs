@@ -38,9 +38,6 @@ const KNOWN_UNDECLARED_VARIABLES = new Set( [
 	// Set from JavaScript by the AI review feature (`aireviewcorereviewcommandlistitemview.ts`).
 	'--ck-ai-review-check-list-item-index',
 
-	// Declared by the document outline feature from the commercial distribution.
-	'--ck-document-outline-item-default-color',
-
 	// Pre-existing gaps: consumed by the theme without a matching declaration anywhere.
 	'--ck-block-toolbar-size',
 

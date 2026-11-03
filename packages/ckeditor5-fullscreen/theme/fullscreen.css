@@ -249,7 +249,8 @@ Fullscreen layout:
 	--ck-fullscreen-presence-list-header-font-size: 0.875em;
 	font-size: var(--ck-fullscreen-presence-list-header-font-size);
 	font-weight: bold;
-	color: var(--ck-document-outline-item-default-color);
+	/* The token is declared by the document outline styles, so the header falls back to the UI text color without them. */
+	color: var(--ck-document-outline-item-default-color, var(--ck-color-text));
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
