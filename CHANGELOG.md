@@ -9,50 +9,34 @@ We are happy to announce the release of CKEditor 5 v49.1.0.
 
 #### ⭐ Editing Toolkit
 
-We are releasing [**Editing Toolkit**](https://ckeditor.com/docs/ckeditor5/latest/features/editing-toolkit/editing-toolkit-overview.html), a new group of features for developers building their own editing workflows.
+We are releasing [**Editing Toolkit**](https://ckeditor.com/docs/ckeditor5/latest/features/editing-toolkit/editing-toolkit-overview.html), a new set of APIs for developers who build their own editing experiences.
 
-Editing Toolkit grew out of our work on [CKEditor AI](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-overview.html), an AI feature set for customers who want a plug-and-play solution for AI workflows. Turn it on, and you have an editor with AI features that keep humans in the loop.
+Editing Toolkit grew out of our work on [CKEditor AI](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-overview.html), our plug-and-play AI offering. Turn it on, and you have an editor with AI that keeps humans in the loop.
 
-But some teams want to build their own workflows rather than use ready-made AI features. Editing Toolkit gives them APIs to work with content in the editor. It consists of two parts:
+But some teams want to build their own AI integration rather than use a ready-made one. Editing Toolkit gives them the building blocks to work with content in the editor. It consists of two parts:
 
 * [**Compare**](https://ckeditor.com/docs/ckeditor5/latest/features/editing-toolkit/compare/editing-toolkit-comparing-documents.html): an editor API that lets you compare two versions of HTML content, then apply or suggest individual changes. You can also preview the changes before they land in the content.
 * [**Coauthor**](https://ckeditor.com/docs/ckeditor5/latest/features/editing-toolkit/editing-toolkit-coauthor.html): think of it as MCP for CKEditor. It lets server-side agents draft content, suggest edits, or leave comments in the editor: [through ChatGPT or Claude](https://ckeditor.com/docs/ckeditor5/latest/features/editing-toolkit/use-cases/editing-toolkit-agent-apps.html), or as [background jobs](https://ckeditor.com/docs/ckeditor5/latest/features/editing-toolkit/use-cases/editing-toolkit-backend-agents.html). Coauthor is currently in early access, and if you would like to test it, [let us know](https://ckeditor.com/contact/).
 
-Editing Toolkit is not limited to AI workflows. You can also use it in [strictly deterministic flows](https://ckeditor.com/docs/ckeditor5/latest/features/editing-toolkit/use-cases/editing-toolkit-deterministic-scripts.html) like manipulating content with code or comparing it with externally generated HTML, for example, HTML converted from an updated Word file.
+Editing Toolkit is not limited to AI. You can also use it in [strictly deterministic scenarios](https://ckeditor.com/docs/ckeditor5/latest/features/editing-toolkit/use-cases/editing-toolkit-deterministic-scripts.html) like manipulating content with code or comparing it with externally generated HTML, for example, HTML converted from an updated Word file.
 
-#### Refreshed theme: restored variables and more design tokens
+#### ⭐ CKEditor AI: custom skills for your features
 
-v49.0.0 silently ignored a few legacy CSS variables, although the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/migration-to-refreshed-theme.html) said they still worked. `--ck-color-focus-border`, `--ck-drop-shadow`, and `--ck-color-annotation-wrapper-drop-shadow` now work again. If you customized focus borders or the shadows of dropdowns, balloons, menus, or comment and suggestion cards, your overrides take effect again with no changes on your side.
+[CKEditor AI](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-overview.html) can now work with the content of your plugins, such as a custom widget or a new HTML element. Upload a custom skill that describes the markup and rules of your feature, then register the plugin with `AIEditorConfig#add()`. The AI agent then writes and keeps your custom content in the shape your editor accepts, and its proposed changes follow your feature's rules.
 
-Many parts of the UI that used hard-coded values are now design tokens ([#20255](https://github.com/ckeditor/ckeditor5/issues/20255), [#20257](https://github.com/ckeditor/ckeditor5/issues/20257), [#20259](https://github.com/ckeditor/ckeditor5/issues/20259)). They include:
+See [Registering custom features](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-feature-understanding.html#registering-custom-features) for details.
 
-* button label and icon colors in the resting, hover, and active states,
-* toolbar button borders and radius,
-* form and dialog headers,
-* the insert table grid,
-* find and replace results.
+#### ⭐ CKEditor AI: hooks for your agent and policies
 
-New semantic roles cover subtle surfaces and borders, the dialog overlay, disabled inputs, placeholder text, and feedback backgrounds. Every new token defaults to the value used today, so the default theme looks the same. Buttons and inputs also use `--ck-font-family` everywhere now, including regions excluded from the UI reset ([#20258](https://github.com/ckeditor/ckeditor5/issues/20258)).
+On-premises deployments of CKEditor AI can call a service you host before the agent answers an [AI Chat](https://ckeditor.com/docs/ckeditor5/latest/features/ai/ckeditor-ai-chat.html) message. With [hooks](https://ckeditor.com/docs/cs/latest/guides/ckeditor-ai/extensions/hooks.html), your service can check each message against your policies, answer from your systems, or pass context and instructions to the CKEditor AI agent. Use them when you already have an AI platform with access to your data and want it to take part in the chat.
 
-Smaller fixes to the refreshed theme: menu bar items no longer stick out of their panels on mobile phones, and the bookmark URL preview is no longer oversized. See the [theme customization guide](https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/ui/theme-customization.html) for the full list of tokens.
+#### Other improvements and fixes
 
-#### Shadow DOM support for more features
-
-The [CKBox](https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html) file manager and image editor, the "Edit source" dialog of enhanced source editing, and footnotes now work correctly when the editor renders in a shadow root.
-
-Plugin authors get new helpers for events that do not cross a shadow boundary, such as `scroll`. `listenToEventRoots()` listens on the document and on every shadow root the editor lives in, and it follows those roots as they are added and removed. `DomTargetsListener` listens on a set of targets that you can refresh, for example the positioning target of a balloon. The editor's balloons, sticky toolbar, tooltips, and block toolbar use these helpers too. See the [Shadow DOM deep dive](https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/shadow-dom.html).
-
-#### More reliable balloons and toolbars
-
-* Balloons such as tooltips, the link balloon, and the mention list appear in the right place on scrolled pages again when `<body>` or the overlay container is positioned. This was a regression in v49.0.0 ([#20251](https://github.com/ckeditor/ckeditor5/issues/20251)).
-* The page no longer jumps back when you slowly scroll a classic editor out of view while a link or bookmark balloon is open.
-* Picking a bookmark in the link form opened from the main toolbar no longer puts the balloon toolbar on top of the form.
-
-#### Content and email fixes
-
-* Browsers have started to parse `<?target data?>` markup as processing instruction nodes instead of comments, which made the editor throw an error while loading or pasting such content. The editor now ignores these nodes, the same way it ignores comments. Data processors have a new `skipProcessingInstructions` flag for integrations that need to keep them.
-* Email integrations now convert `hsl()` and `hsla()` colors to `rgb()` and `rgba()` on export, because many email clients, including Outlook, do not support HSL. The new `transformEmailStylesColors()` transformation does this. It also means the default font and table color palettes no longer trigger color warnings in the email configuration logger.
-* On iOS, you can now paste links copied with the "Copy" option of the Safari share sheet ([#2074](https://github.com/ckeditor/ckeditor5/issues/2074)). Thanks to [@dtdesign](https://github.com/dtdesign)!
+* **New theme improvements and fixes**: [v49.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v49.0.0) introduced a refreshed default theme built on three layers of design tokens (foundation scales, semantic roles, and per-component tokens), with legacy variable names kept as aliases. Some aliases were silently ignored even though the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/migration-to-refreshed-theme.html) said they worked. They work again, so overrides of focus borders and the shadows of dropdowns, balloons, menus, and comment and suggestion cards apply with no changes on your side. Additionally, more of the UI moved from hard-coded values to tokens ([#20255](https://github.com/ckeditor/ckeditor5/issues/20255), [#20257](https://github.com/ckeditor/ckeditor5/issues/20257), [#20259](https://github.com/ckeditor/ckeditor5/issues/20259)): button colors in the resting, hover, and active states, toolbar button borders and radius, form and dialog headers, the insert table grid, and find and replace results. Every new token defaults to the value used today, so the default theme looks the same. See the full token list in the [theme customization guide](https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/ui/theme-customization.html).
+* **Shadow DOM support for more features**: the [CKBox](https://ckeditor.com/docs/ckeditor5/latest/features/file-management/ckbox.html) file manager and image editor, the "Edit source" dialog of enhanced source editing, and footnotes work correctly when the editor renders in a shadow root. Plugin authors get two helpers for events that do not cross a shadow boundary, such as `scroll`: `listenToEventRoots()` listens on the document and on every shadow root the editor lives in, and `DomTargetsListener` listens on a set of targets you can refresh, like a balloon's positioning target. See the [Shadow DOM deep dive](https://ckeditor.com/docs/ckeditor5/latest/framework/deep-dive/shadow-dom.html).
+* **More reliable balloons and toolbars**: tooltips, the link balloon, and the mention list appear in the right place again on scrolled pages when `<body>` or the overlay container is positioned (a v49.0.0 regression, [#20251](https://github.com/ckeditor/ckeditor5/issues/20251)).
+* **Content loading**: some browsers started parsing `<?target data?>` markup as processing instruction nodes instead of comments, which made the editor throw while loading or pasting such content. The editor ignores these nodes the same way it ignores comments, and data processors have a new `skipProcessingInstructions` flag for integrations that need to keep them.
+* **Email export fixes**: Email export converts `hsl()` and `hsla()` colors to `rgb()` and `rgba()` through the new `transformEmailStylesColors()` transformation, since many email clients, including Outlook, do not support HSL. The default font and table palettes also no longer trigger warnings in the email configuration logger.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
