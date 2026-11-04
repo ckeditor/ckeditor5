@@ -1,14 +1,32 @@
-<div class="shadow-dom-demo" id="snippet-shadow-dom">
-	<div class="shadow-dom-demo__editors">
-		<div class="shadow-dom-demo__column" role="group" aria-labelledby="snippet-shadow-dom-light-label">
-			<div class="shadow-dom-demo__label" id="snippet-shadow-dom-light-label">Light DOM</div>
-			<div class="shadow-dom-demo__light-editor"></div>
+<div class="shadow-dom-demo" id="snippet-shadow-dom" data-surround="docs">
+	<div class="shadow-dom-demo__frame">
+		<div class="shadow-dom-demo__frame-bar" aria-hidden="true">
+			<span class="shadow-dom-demo__frame-logo"></span>
+			<span class="shadow-dom-demo__frame-title"></span>
 		</div>
-		<div class="shadow-dom-demo__column" role="group" aria-labelledby="snippet-shadow-dom-shadow-label">
-			<div class="shadow-dom-demo__label" id="snippet-shadow-dom-shadow-label">Shadow DOM</div>
-			<snippet-shadow-root class="shadow-dom-demo__shadow-host" layers="editor snippets">
-				<div class="shadow-dom-demo__shadow-editor"></div>
-			</snippet-shadow-root>
+		<div class="shadow-dom-demo__frame-tabs" aria-hidden="true">
+			<span class="shadow-dom-demo__frame-tab shadow-dom-demo__frame-tab_active">Details</span>
+			<span class="shadow-dom-demo__frame-tab">Related</span>
+			<span class="shadow-dom-demo__frame-tab">Files</span>
+		</div>
+		<div class="shadow-dom-demo__frame-body">
+			<div class="shadow-dom-demo__frame-side" aria-hidden="true"></div>
+			<div class="shadow-dom-demo__frame-main">
+				<div class="shadow-dom-demo__app-before"></div>
+				<div class="shadow-dom-demo__editors">
+					<div class="shadow-dom-demo__column" role="group" aria-labelledby="snippet-shadow-dom-light-label">
+						<div class="shadow-dom-demo__label" id="snippet-shadow-dom-light-label">Light DOM</div>
+						<div class="shadow-dom-demo__light-editor"></div>
+					</div>
+					<div class="shadow-dom-demo__column" role="group" aria-labelledby="snippet-shadow-dom-shadow-label">
+						<div class="shadow-dom-demo__label" id="snippet-shadow-dom-shadow-label">Shadow DOM</div>
+						<snippet-shadow-root class="shadow-dom-demo__shadow-host" layers="editor snippets">
+							<div class="shadow-dom-demo__shadow-editor"></div>
+						</snippet-shadow-root>
+					</div>
+				</div>
+				<div class="shadow-dom-demo__app-after"></div>
+			</div>
 		</div>
 	</div>
 </div>

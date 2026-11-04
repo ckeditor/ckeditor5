@@ -115,9 +115,139 @@ class CollaborationDataLoader extends Plugin {
 	}
 }
 
+// The host applications the demo can put around both editors. Each one brings global rules, like any style sheet of a real
+// application would. The `{scope}` placeholder limits them to the area around the editors and the overlay layer of the light-DOM editor,
+// so the rest of the guide keeps its styles.
+const SURROUNDINGS = [
+	{
+		id: 'docs',
+		title: 'Docs site',
+		side: `
+			<div class="shadow-dom-demo__side-search">Search docs…</div>
+			<ul>
+				<li>Getting started</li>
+				<li>Installation</li>
+				<li class="shadow-dom-demo__side-active">Shadow DOM</li>
+				<li>Theming</li>
+				<li>API reference</li>
+			</ul>
+			<div class="shadow-dom-demo__side-note">v49 · stable</div>
+		`,
+		before: `
+			<p class="shadow-dom-demo__app-kicker">Guides › Setup</p>
+			<h3>Embedding the editor in your pages</h3>
+			<p>
+				This docs site sets a serif font for its body copy, teal headings, and underlined
+				<a href="#snippet-shadow-dom">links</a>. Every article inherits these rules, and so does anything placed in it.
+			</p>
+			<ul>
+				<li>The paragraph and this list are part of the docs site.</li>
+				<li>Compare them with the content of both editors below.</li>
+			</ul>
+		`,
+		after: `
+			<p class="shadow-dom-demo__app-note">Was this page helpful? Yes · No</p>
+		`,
+		styles: `
+			{scope} p, {scope} li, {scope} blockquote { font-family: Georgia, "Times New Roman", serif; color: #2d3748; }
+			{scope} h2, {scope} h3 { color: #10b981; font-family: system-ui, sans-serif; }
+			{scope} a { color: #0d9488; text-decoration: underline; }
+		`
+	},
+	{
+		id: 'crm',
+		title: 'Sales console',
+		side: `
+			<div class="shadow-dom-demo__side-card">
+				<span class="shadow-dom-demo__side-avatar">AC</span>
+				<span>
+					<span class="shadow-dom-demo__side-kicker">Account</span><br>
+					<span class="shadow-dom-demo__side-name">Acme Corp</span>
+				</span>
+			</div>
+			<div class="shadow-dom-demo__side-kicker">Activity</div>
+			<ul>
+				<li>Call with the CTO, today</li>
+				<li>Renewal email, Monday</li>
+				<li>Contract draft, Friday</li>
+			</ul>
+		`,
+		before: `
+			<p class="shadow-dom-demo__app-kicker">Account › Acme Corp › Notes</p>
+			<h3>Renewal call summary</h3>
+			<p>
+				The sales console sets every paragraph to 13 pixels and colors headings in navy. Notes are written in
+				<a href="#snippet-shadow-dom">rich text</a> right on the account record.
+			</p>
+			<ul class="shadow-dom-demo__app-fields">
+				<li><strong>Owner:</strong> Mex Haddox</li>
+				<li><strong>Stage:</strong> Negotiation</li>
+				<li><strong>Close date:</strong> Dec 12</li>
+			</ul>
+		`,
+		after: `
+			<div class="shadow-dom-demo__app-actions" aria-hidden="true">
+				<span>Cancel</span>
+				<span class="shadow-dom-demo__app-action_primary">Save note</span>
+			</div>
+		`,
+		styles: `
+			{scope} p, {scope} li, {scope} blockquote {
+				font-family: "Salesforce Sans", -apple-system, "Segoe UI", sans-serif; font-size: 13px; color: #181818;
+			}
+			{scope} h2, {scope} h3 { color: #032d60; font-weight: 700; }
+			{scope} a { color: #0176d3; }
+		`
+	},
+	{
+		id: 'cms',
+		title: 'CMS admin',
+		side: `
+			<div class="shadow-dom-demo__side-button">+ Add content</div>
+			<ul>
+				<li>Articles
+					<ul>
+						<li class="shadow-dom-demo__side-active">Shadow DOM demo</li>
+						<li>Release notes</li>
+					</ul>
+				</li>
+				<li>Pages</li>
+				<li>Media</li>
+			</ul>
+		`,
+		before: `
+			<p class="shadow-dom-demo__app-kicker">Articles › Edit</p>
+			<h3>Edit article: Shadow DOM demo</h3>
+			<p>
+				The admin panel uses a compact sans-serif font for all its text and underlines its
+				<a href="#snippet-shadow-dom">links</a>. The article body is edited in the rich-text field below.
+			</p>
+			<ul class="shadow-dom-demo__app-fields">
+				<li><strong>Status:</strong> Draft</li>
+				<li><strong>Author:</strong> Zee Croce</li>
+				<li><strong>Category:</strong> Tutorials</li>
+			</ul>
+		`,
+		after: `
+			<div class="shadow-dom-demo__app-actions" aria-hidden="true">
+				<span>Save draft</span>
+				<span>Preview</span>
+				<span class="shadow-dom-demo__app-action_primary">Publish</span>
+			</div>
+		`,
+		styles: `
+			{scope} p, {scope} li, {scope} blockquote {
+				font-family: -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 13px; color: #3c434a;
+			}
+			{scope} h2, {scope} h3 { color: #1d2327; }
+			{scope} a { color: #2271b1; text-decoration: underline; }
+		`
+	}
+];
+
 const demoElement = document.querySelector( '#snippet-shadow-dom' );
 
-setUpPageStylesButtons();
+setUpSurroundings();
 createLightDomEditor();
 createShadowDomEditor();
 
@@ -190,31 +320,35 @@ async function createEditor( attachTo, overlayContainer ) {
 	return editor;
 }
 
-// Adds global rules to the page, like any style sheet of the host application would. They are scoped to the demo and
-// the overlay layer of the light-DOM editor, so the rest of the guide keeps its styles. Like any page styles, they
-// stop at the shadow boundary.
-function setUpPageStylesButtons() {
-	// The buttons are in the guide, above the snippet, and the reset one starts disabled there.
-	const applyButton = document.querySelector( '#snippet-shadow-dom-apply-styles' );
-	const resetButton = document.querySelector( '#snippet-shadow-dom-reset-styles' );
+// Renders the picker of surrounding apps and switches between them. The rules of the selected app are added to the page
+// like any page styles, so they reach the light-DOM editor and its overlay layer, and stop at the shadow boundary.
+function setUpSurroundings() {
+	// The radio buttons are in the guide, above the snippet.
+	const radioElements = document.querySelectorAll( 'input[name="snippet-shadow-dom-surrounding"]' );
+	const titleElement = demoElement.querySelector( '.shadow-dom-demo__frame-title' );
+	const sideElement = demoElement.querySelector( '.shadow-dom-demo__frame-side' );
+	const beforeElement = demoElement.querySelector( '.shadow-dom-demo__app-before' );
+	const afterElement = demoElement.querySelector( '.shadow-dom-demo__app-after' );
 	const pageStyleSheet = new CSSStyleSheet();
+	const scope = ':is(.shadow-dom-demo__frame-main, .shadow-dom-demo__overlay)';
 
-	pageStyleSheet.replaceSync( `
-		p { color: #9a3412; font-family: Georgia, serif; font-size: 1.125em; }
-		h2 { color: #15803d; }
-		li { font-style: italic; }
-	` );
+	document.adoptedStyleSheets = [ ...document.adoptedStyleSheets, pageStyleSheet ];
 
-	const togglePageStyles = isApplied => {
-		const otherStyleSheets = document.adoptedStyleSheets.filter( sheet => sheet !== pageStyleSheet );
+	const select = id => {
+		const surrounding = SURROUNDINGS.find( surrounding => surrounding.id === id );
 
-		document.adoptedStyleSheets = isApplied ? [ ...otherStyleSheets, pageStyleSheet ] : otherStyleSheets;
-
-		applyButton.disabled = isApplied;
-		resetButton.disabled = !isApplied;
-		( isApplied ? resetButton : applyButton ).focus();
+		demoElement.dataset.surround = surrounding.id;
+		titleElement.textContent = surrounding.title;
+		sideElement.innerHTML = surrounding.side;
+		beforeElement.innerHTML = surrounding.before;
+		afterElement.innerHTML = surrounding.after;
+		pageStyleSheet.replaceSync( surrounding.styles.replaceAll( '{scope}', scope ) );
 	};
 
-	applyButton.addEventListener( 'click', () => togglePageStyles( true ) );
-	resetButton.addEventListener( 'click', () => togglePageStyles( false ) );
+	for ( const radioElement of radioElements ) {
+		radioElement.addEventListener( 'change', () => select( radioElement.value ) );
+	}
+
+	// The browser may restore a different choice when the page is reloaded.
+	select( document.querySelector( 'input[name="snippet-shadow-dom-surrounding"]:checked' )?.value ?? 'docs' );
 }

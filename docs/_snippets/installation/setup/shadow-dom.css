@@ -4,18 +4,328 @@
  */
 
 @layer snippets {
+	/* --- Surrounding app picker ------------------------------------------------------------- */
+
+	/* The radio buttons are in the guide, above the snippet. */
+	.shadow-dom-demo-picker {
+		margin: 1.5em 0 1em;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5em 1.5em;
+	}
+
+	.shadow-dom-demo-picker__label {
+		font-weight: bold;
+	}
+
+	/* --- App frame -------------------------------------------------------------------------- */
+
+	.shadow-dom-demo__frame {
+		margin: 0 0 1.5em;
+		overflow: hidden;
+		border: 1px solid transparent;
+		border-radius: 10px;
+	}
+
+	.shadow-dom-demo__frame-bar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 11px 18px;
+		font: 600 13.5px/1 system-ui, sans-serif;
+	}
+
+	.shadow-dom-demo__frame-logo {
+		flex: none;
+		width: 18px;
+		height: 18px;
+		border-radius: 4px;
+	}
+
+	.shadow-dom-demo__frame-tabs {
+		display: none;
+		gap: 2px;
+		padding: 0 18px;
+		background: #fff;
+		border-bottom: 1px solid #e5e5e5;
+	}
+
+	.shadow-dom-demo__frame-tab {
+		padding: 10px 14px;
+		border-bottom: 3px solid transparent;
+		color: #444;
+		font: 600 12.5px/1 system-ui, sans-serif;
+	}
+
+	.shadow-dom-demo__frame-tab_active {
+		border-bottom-color: #0176d3;
+		color: #0176d3;
+	}
+
+	.shadow-dom-demo__frame-body {
+		display: grid;
+		grid-template-columns: 170px minmax( 0, 1fr );
+	}
+
+	.shadow-dom-demo__frame-side {
+		min-width: 0;
+		padding: 16px 14px;
+		font: 13px/1.5 system-ui, sans-serif;
+	}
+
+	.shadow-dom-demo__frame-main {
+		min-width: 0;
+		padding: 20px;
+	}
+
+	.shadow-dom-demo__frame-side ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.shadow-dom-demo__frame-side li {
+		margin: 0;
+		padding: 4px 8px;
+		border-radius: 5px;
+	}
+
+	.shadow-dom-demo__frame-side ul ul {
+		margin: 2px 0 2px 12px;
+	}
+
+	.shadow-dom-demo__side-search {
+		margin-bottom: 12px;
+		padding: 7px 10px;
+		border: 1px solid currentColor;
+		border-radius: 6px;
+		opacity: 0.75;
+	}
+
+	.shadow-dom-demo__side-note {
+		margin-top: 14px;
+		font-size: 11px;
+		opacity: 0.6;
+	}
+
+	.shadow-dom-demo__side-button {
+		margin-bottom: 12px;
+		padding: 8px;
+		border-radius: 4px;
+		background: #2271b1;
+		color: #fff;
+		font-weight: 600;
+		text-align: center;
+	}
+
+	.shadow-dom-demo__side-card {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 12px;
+	}
+
+	.shadow-dom-demo__side-avatar {
+		flex: none;
+		width: 34px;
+		height: 34px;
+		border-radius: 6px;
+		background: #0176d3;
+		color: #fff;
+		font: 700 13px/34px system-ui, sans-serif;
+		text-align: center;
+	}
+
+	.shadow-dom-demo__side-kicker {
+		color: #706e6b;
+		font-size: 11px;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	.shadow-dom-demo__side-name {
+		color: #032d60;
+		font-size: 15px;
+		font-weight: 700;
+	}
+
+	/* --- Content of the surrounding app ------------------------------------------------------- */
+
+	.shadow-dom-demo__app-before:not(:empty) {
+		margin-bottom: 1.5em;
+	}
+
+	.shadow-dom-demo__app-before > :first-child {
+		margin-top: 0;
+	}
+
+	.shadow-dom-demo__app-after:not(:empty) {
+		margin-top: 1.5em;
+	}
+
+	.shadow-dom-demo__frame-main .shadow-dom-demo__app-kicker {
+		margin: 0 0 0.25em;
+		font-size: 12px;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		opacity: 0.7;
+	}
+
+	.shadow-dom-demo__frame-main .shadow-dom-demo__app-note {
+		margin: 0;
+		opacity: 0.7;
+	}
+
+	.shadow-dom-demo__app-fields {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5em 1.5em;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.shadow-dom-demo__app-fields li {
+		margin: 0;
+	}
+
+	.shadow-dom-demo__app-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+
+	.shadow-dom-demo__app-actions span {
+		padding: 7px 14px;
+		border: 1px solid #c9c9c9;
+		border-radius: 4px;
+		background: #fff;
+		color: #0176d3;
+		font: 600 13px/1 system-ui, sans-serif;
+	}
+
+	.shadow-dom-demo__app-actions .shadow-dom-demo__app-action_primary {
+		border-color: #0176d3;
+		background: #0176d3;
+		color: #fff;
+	}
+
+	.shadow-dom-demo[data-surround="cms"] .shadow-dom-demo__app-actions span {
+		border-color: #2271b1;
+		color: #2271b1;
+		border-radius: 3px;
+	}
+
+	.shadow-dom-demo[data-surround="cms"] .shadow-dom-demo__app-actions .shadow-dom-demo__app-action_primary {
+		background: #2271b1;
+		color: #fff;
+	}
+
+	/* Docs site: dark slate header, airy canvas. */
+	.shadow-dom-demo[data-surround="docs"] .shadow-dom-demo__frame {
+		border-color: #dde3ea;
+		background: #f5f7f9;
+		color: #2d3748;
+	}
+
+	.shadow-dom-demo[data-surround="docs"] .shadow-dom-demo__frame-bar {
+		background: #1c2331;
+		color: #fff;
+	}
+
+	.shadow-dom-demo[data-surround="docs"] .shadow-dom-demo__frame-logo {
+		background: #26dba5;
+	}
+
+	.shadow-dom-demo[data-surround="docs"] .shadow-dom-demo__frame-side {
+		border-right: 1px solid #dde3ea;
+		background: #eef1f5;
+	}
+
+	.shadow-dom-demo[data-surround="docs"] .shadow-dom-demo__side-active {
+		background: #d9f2e9;
+		color: #0d7a5f;
+		font-weight: 700;
+	}
+
+	/* CRM: an app shell inspired by Salesforce Lightning, with a blue waterline under the header. */
+	.shadow-dom-demo[data-surround="crm"] .shadow-dom-demo__frame {
+		border-color: #e5e5e5;
+		background: #f3f3f3;
+		color: #181818;
+	}
+
+	.shadow-dom-demo[data-surround="crm"] .shadow-dom-demo__frame-bar {
+		border-bottom: 3px solid #0176d3;
+		background: #fff;
+		color: #032d60;
+	}
+
+	.shadow-dom-demo[data-surround="crm"] .shadow-dom-demo__frame-logo {
+		background: #0176d3;
+	}
+
+	.shadow-dom-demo[data-surround="crm"] .shadow-dom-demo__frame-tabs {
+		display: flex;
+	}
+
+	.shadow-dom-demo[data-surround="crm"] .shadow-dom-demo__frame-side {
+		border-right: 1px solid #e5e5e5;
+		background: #fff;
+	}
+
+	/* CMS admin: dark admin bar and sidebar, cool gray canvas. */
+	.shadow-dom-demo[data-surround="cms"] .shadow-dom-demo__frame {
+		border-color: #dcdcde;
+		background: #f0f0f1;
+		color: #3c434a;
+	}
+
+	.shadow-dom-demo[data-surround="cms"] .shadow-dom-demo__frame-bar {
+		background: #1d2327;
+		color: #f0f0f1;
+	}
+
+	.shadow-dom-demo[data-surround="cms"] .shadow-dom-demo__frame-logo {
+		background: #2271b1;
+	}
+
+	.shadow-dom-demo[data-surround="cms"] .shadow-dom-demo__frame-side {
+		background: #1d2327;
+		color: #c3c4c7;
+	}
+
+	.shadow-dom-demo[data-surround="cms"] .shadow-dom-demo__side-active {
+		background: #2271b1;
+		color: #fff;
+	}
+
 	/* --- Demo layout ------------------------------------------------------------------------ */
 
 	.shadow-dom-demo__editors {
-		margin: 1.5em 0;
 		display: grid;
 		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
 		gap: 1.5em;
 	}
 
+	@media (max-width: 1200px) {
+		.shadow-dom-demo__frame-body {
+			grid-template-columns: minmax( 0, 1fr );
+		}
+
+		.shadow-dom-demo__frame-side {
+			display: none;
+		}
+	}
+
 	@media (max-width: 800px) {
 		.shadow-dom-demo__editors {
 			grid-template-columns: minmax( 0, 1fr );
+		}
+
+		.shadow-dom-demo__frame-main {
+			padding: 12px;
 		}
 	}
 
@@ -34,7 +344,6 @@
 	.shadow-dom-demo .ck.ck-editor__main > .ck-editor__editable,
 	:host(.shadow-dom-demo__shadow-host) .ck.ck-editor__main > .ck-editor__editable {
 		box-sizing: border-box;
-		height: 300px;
-		overflow-y: auto;
+		min-height: 300px;
 	}
 }

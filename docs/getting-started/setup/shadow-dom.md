@@ -4,7 +4,7 @@ menu-title: Shadow DOM
 meta-title: Running CKEditor 5 inside a shadow DOM | CKEditor 5 Documentation
 meta-description: Load the editor styles into a shadow root, choose where the floating user interface mounts, and override CSS variables on the shadow host.
 order: 100
-modified_at: 2026-10-05
+modified_at: 2026-11-03
 ---
 
 # Running CKEditor&nbsp;5 inside a shadow DOM
@@ -24,17 +24,22 @@ The integration guides show how to do both in each framework:
 
 ## Demo
 
-The two editors below have the same configuration. The one on the left runs in the regular page DOM, and the one on the right runs inside a shadow root. Use the button to add global rules that restyle every paragraph, heading, and list item on this page, and see how each editor reacts.
+The two editors below have the same configuration. The one on the left runs in the regular page DOM, and the one on the right runs inside a shadow root.
 
-<br />
-<ck:button id="snippet-shadow-dom-apply-styles">Apply page styles</ck:button>
-<ck:button id="snippet-shadow-dom-reset-styles" variant="secondary" disabled>Reset</ck:button>
+Pick a surrounding app to embed both editors in a host application: a docs site, a CRM, or a CMS admin panel. Each app has its own layout and content around the editors, and its own global styles for paragraphs, headings, list items, and links. Compare the text of the app with the content of each editor.
+
+<div class="shadow-dom-demo-picker" role="radiogroup" aria-labelledby="snippet-shadow-dom-surrounding-label">
+	<span class="shadow-dom-demo-picker__label" id="snippet-shadow-dom-surrounding-label">Surrounding app:</span>
+	<ck:checkbox type="radio" name="snippet-shadow-dom-surrounding" value="docs" label="Docs site" checked="true" />
+	<ck:checkbox type="radio" name="snippet-shadow-dom-surrounding" value="crm" label="CRM" />
+	<ck:checkbox type="radio" name="snippet-shadow-dom-surrounding" value="cms" label="CMS admin" />
+</div>
 
 {@snippet installation/setup/shadow-dom}
 
 A shadow root isolates the editor from the styles of the page that hosts it. Changes to the global styles of your application do not alter the edited content or the editor user interface, so both keep a consistent look wherever you embed the editor.
 
-In the demo, the rules reach the content of the light-DOM editor because it is part of the page, like every other paragraph, heading, and list around it. This is expected behavior, and you can handle it with additional CSS in your application. The editor on the right needs no such adjustments. Its floating user interface is isolated as well, because it renders in a separate shadow root at the end of the page. Open the developer tools of your browser and inspect the right editor to find it inside a `#shadow-root`.
+In the demo, the content of the light-DOM editor follows the styles of the surrounding app and looks like the rest of the app. This happens because the editor is part of the page, like every other paragraph, heading, and list in that app. This is expected behavior, and you can handle it with additional CSS in your application. The editor on the right needs no such adjustments. Its floating user interface is isolated as well, because it renders in a separate shadow root at the end of the page. Open the developer tools of your browser and inspect the right editor to find it inside a `#shadow-root`.
 
 The demo uses the setup described in the sections below.
 
