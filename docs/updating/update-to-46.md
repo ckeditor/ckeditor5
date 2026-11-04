@@ -61,7 +61,7 @@ We reverted a low-level change to improve stability in pagination, especially in
 
 ### Hide a user in the Server-side editing API
 
-[The Server-side editor API](https://ckeditor.com/docs/ckeditor5/latest/features/cloud-services/server-side-editor-api.html) now supports a `hidden_in_presence_list` user flag. You can use this mechanism to prevent automation script users from appearing in the editor’s presence list while scripts run.
+{@link features/server-side-editor-api The Server-side editor API} now supports a `hidden_in_presence_list` user flag. You can use this mechanism to prevent automation script users from appearing in the editor’s presence list while scripts run.
 
 ### Comments’ markers clean up
 
@@ -79,8 +79,8 @@ A Cross-Site Scripting (XSS) vulnerability has been discovered in the CKEditor&n
 
 This vulnerability affects **only** installations where the editor configuration meets one of the following criteria:
 
-* The [HTML embed plugin](https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html) is enabled
-* A custom plugin introducing an editable element that implements the view [RawElement](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_rawelement-ViewRawElement.html) is enabled
+* The {@link features/html-embed HTML embed plugin} is enabled
+* A custom plugin introducing an editable element that implements the view {@link module:engine/view/rawelement~ViewRawElement RawElement} is enabled
 
 For more details, please refer to the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-x9gp-vjh6-3wv6) and [contact us](https://ckeditor.com/contact/) if you have more questions.
 

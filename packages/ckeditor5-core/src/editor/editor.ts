@@ -1106,7 +1106,7 @@ export abstract class Editor extends EditorBase {
 				 * Your license key has expired.
 				 *
 				 * If you used our free trial, you either need to switch to
-				 * [open-source license](https://ckeditor.com/docs/ckeditor5/latest/getting-started/licensing/license-and-legal.html), or
+				 * {@glink getting-started/licensing/license-and-legal open-source license}, or
 				 * in case of a commercial plan, change the trial key to production key or development key.
 				 * Switching from trial, you also need to align the editor configuration to the features available in your plan.
 				 *
@@ -1233,7 +1233,7 @@ export abstract class Editor extends EditorBase {
 				 * {@glink getting-started/licensing/usage-based-billing#key-terms Read more about distributions in the documentation}.
 				 * Please verify your installation or [contact support](https://ckeditor.com/contact/) for assistance.
 				 * Should you need to migrate your installation from npm to CDN, please refer to our
-				 * [dedicated migration guides](https://ckeditor.com/docs/ckeditor5/latest/updating/migrations/vanilla-js.html).
+				 * {@glink updating/migrations/vanilla-js dedicated migration guides}.
 				 *
 				 * @error license-key-invalid-distribution-channel
 				 */

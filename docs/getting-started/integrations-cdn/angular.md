@@ -204,7 +204,7 @@ The following `@Output` properties are supported by the CKEditor&nbsp;5 rich tex
 
 ### `ready`
 
-Fired when the editor is ready. It corresponds with the [`editor#ready`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editor-Editor.html#event-ready) event.
+Fired when the editor is ready. It corresponds with the {@link module:core/editor/editor~Editor#event:ready `editor#ready`} event.
 It is fired with the editor instance.
 
 ### `change`

@@ -337,7 +337,7 @@ We are introducing a new {@link features/tables-styling#helper-lines-when-border
 
 ### Email compatibility improvements
 
-We improved the [email styles transformation](https://ckeditor.com/docs/ckeditor5/latest/features/email-editing/email.html#email-specific-style-transformations) with better appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email styles transformers can replace `<figure>` (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
+We improved the {@link features/email#email-specific-style-transformations email styles transformation} with better appearance of resized inline images in classic Outlook clients. Additionally, the new optional `useFigureToTableFallback` flag in the email styles transformers can replace `<figure>` (block images) with tables to improve alignment and width handling in older email clients with limited CSS support.
 
 ### Updated the Emoji plugin dataset
 
@@ -391,7 +391,7 @@ This release also brings several minor but significant enhancements and fixes:
 
 ### New experimental options
 
-We keep our [LTS version](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/using-lts-edition.html#compatibility-matrix) promise: no breaking changes until the Active LTS moves to Maintenance LTS phase (April 2026). It also means that introducing larger features can be challenging if someone is waiting for specific improvements.
+We keep our {@link getting-started/setup/using-lts-edition#compatibility-matrix LTS version} promise: no breaking changes until the Active LTS moves to Maintenance LTS phase (April 2026). It also means that introducing larger features can be challenging if someone is waiting for specific improvements.
 
 To address this, we are introducing **experimental flags** and **experimental plugins**. These options allow you to preview and test upcoming changes.
 
@@ -481,7 +481,7 @@ We are extending the sunset period for old installation methods ([#17779](https:
 This release also brings several smaller but important enhancements and fixes:
 
 * **View engine stability:** Fixed a bug where placeholders could remain visible after view changes, such as moving or replacing elements.
-* **Downcast reliability:** The [`elementToStructure`](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_conversion_downcasthelpers-DowncastHelpers.html#function-elementToStructure) helper now handles nested structures and list elements more consistently, ensuring correct reconversion and structure maintenance.
+* **Downcast reliability:** The {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure`} helper now handles nested structures and list elements more consistently, ensuring correct reconversion and structure maintenance.
 
 ## Update to CKEditor&nbsp;5 v47.1.0
 

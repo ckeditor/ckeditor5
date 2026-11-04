@@ -95,7 +95,7 @@ editor.execute( 'replaceAll', 'CKSource', 'Cksource' );
 
 This command will find all instances of "Cksource" in your documents and change them to "CKSource". This is perfect for making bulk updates in multiple documents. Simply, execute this call for every document you would like to change.
 
-Most CKEditor 5 features expose one or multiple commands that can be used to manipulate the editor's state. To learn what commands are available, visit [Features guides](https://ckeditor.com/docs/ckeditor5/latest/features/index.html), and look for the "Common API" section at the end of each guide, where commands related to that feature are described.
+Most CKEditor 5 features expose one or multiple commands that can be used to manipulate the editor's state. To learn what commands are available, visit {@link features/index Features guides}, and look for the "Common API" section at the end of each guide, where commands related to that feature are described.
 
 #### Insert HTML content
 

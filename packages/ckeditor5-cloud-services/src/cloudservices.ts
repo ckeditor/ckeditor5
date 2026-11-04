@@ -37,7 +37,8 @@ export class CloudServices extends ContextPlugin implements CloudServicesConfig 
 	 * CKEditor Ecosystem customer dashboard.
 	 *
 	 * Note: Unlike most plugins, `RealTimeCollaborativeEditing` is not included in any CKEditor 5 build and needs to be installed manually.
-	 * Check [Collaboration overview](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/overview.html) for more details.
+	 * Check the {@glink features/collaboration/real-time-collaboration/real-time-collaboration Real-time collaboration overview}
+	 * for more details.
 	 */
 	public readonly webSocketUrl?: string;
 

@@ -84,10 +84,10 @@ During a recent internal audit, we identified a Cross-Site Scripting (XSS) vulne
 
 This vulnerability affects **only** installations where the editor configuration meets the following criteria:
 
-1. The [**Block Toolbar**](https://ckeditor.com/docs/ckeditor5/latest/getting-started/setup/toolbar.html#block-toolbar) plugin is enabled.
+1. The **{@link getting-started/setup/toolbar#block-toolbar Block Toolbar}** plugin is enabled.
 2. One of the following plugins is also enabled:
-	* [**General HTML Support**](https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html) with a configuration that permits unsafe markup.
-	* [**HTML Embed**](https://ckeditor.com/docs/ckeditor5/latest/features/html/html-embed.html).
+	* **{@link features/general-html-support General HTML Support}** with a configuration that permits unsafe markup.
+	* **{@link features/html-embed HTML Embed}**.
 
 You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-rgg8-g5x8-wr9v) and [contact us](https://ckeditor.com/contact/) if you have more questions.
 
@@ -202,7 +202,7 @@ We strongly recommend that you read the release highlights to update to the late
 
 In the last major release of CKEditor&nbsp;5, we introduced new installation methods. Since then we have received a lot of feedback from you. Thanks to this, we identified several minor issues fixed in versions 42.0.1 and 42.0.2. While these fixes did not require any changes in the application, they do require some changes in the custom plugins created with the Package Generator.
 
-You can skip this section if you have not read the [Migrating custom plugins](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/custom-plugins.html) guide. However, if you have, follow the steps below to apply these fixes to your plugin.
+You can skip this section if you have not read the {@link updating/nim-migration/custom-plugins Migrating custom plugins} guide. However, if you have, follow the steps below to apply these fixes to your plugin.
 
 1. Update all packages starting with `@ckeditor/ckeditor5-dev-` to version `^42.0.0`.
 2. Open the `package.json` file and replace the content as follows:
@@ -236,6 +236,6 @@ You can skip this section if you have not read the [Migrating custom plugins](ht
 
 ### Minor breaking changes in this release
 
-* **Reverted `config.sanitizeHtml`.** In v43.0.0 we made a decision to move `config.htmlEmbed.sanitizeHtml` to a top-level property `config.sanitizeHtml`. However, we realized that it was a wrong decision to expose such a sensitive property in a top-level configuration property. Starting with v43.1.0 you should again use `config.htmlEmbed.sanitizeHtml` and/or `config.mergeFields.sanitizeHtml`. The editor will throw an error if `config.sanitizeHtml` is used. See the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-43.html#reverted-recently-introduced-configsanitizehtml) for additional context behind this decision.
+* **Reverted `config.sanitizeHtml`.** In v43.0.0 we made a decision to move `config.htmlEmbed.sanitizeHtml` to a top-level property `config.sanitizeHtml`. However, we realized that it was a wrong decision to expose such a sensitive property in a top-level configuration property. Starting with v43.1.0 you should again use `config.htmlEmbed.sanitizeHtml` and/or `config.mergeFields.sanitizeHtml`. The editor will throw an error if `config.sanitizeHtml` is used. See the {@link updating/update-to-43#reverted-recently-introduced-configsanitizehtml migration guide} for additional context behind this decision.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The structure and presentation of the list of AI commands in the toolbar have changed (a flat filtered list is now a nested menu). Additionally, if your integration customizes this user interface, please ensure your integration code is up-to-date.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The default `[aria-label]` provided by `InlineEditableUIView` is now `'Rich Text Editor. Editing area: [root name]'` (previously: `'Editor editing area: [root name]'`). You can use the `options.label` constructor property to adjust the label.
