@@ -10,6 +10,13 @@
 	--ck-accessibility-help-dialog-max-height: 400px;
 	--ck-accessibility-help-dialog-max-width: 600px;
 	--ck-accessibility-help-dialog-item-divider-width: 1px;
+
+	/* Color */
+	/* The color of the dividers between the keystroke rows. Declared `initial` and read with `--ck-color-divider` as
+	   fallback at the point of use, so a scoped override of the divider color reaches the dialog too. */
+	--ck-accessibility-help-dialog-border-color: initial;
+	--ck-accessibility-help-dialog-code-background-color: hsl(0deg 0% 92.94%);
+	--ck-accessibility-help-dialog-kbd-shadow-color: hsl(0deg 0% 61%);
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
@@ -32,7 +39,7 @@
 
 	&:focus {
 		outline: none;
-		border-color: var(--ck-focus-border-color);
+		border-color: var(--ck-interactive-focus-border-color);
 		/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow if overridden. */
 		box-shadow: var(--ck-focus-outer-shadow, var(--ck-focus-shadow)), 0 0;
 	}
@@ -68,16 +75,13 @@
 	}
 
 	& dl {
-		/* Used for third value fallback. */
-		--ck-divider-border-color: var(--ck-color-divider, hsl(220 6% 81%));
-
 		display: grid;
 		grid-template-columns: 2fr 1fr;
-		border-top: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-accessibility-help-dialog-border-color, var(--ck-divider-border-color));
+		border-top: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-accessibility-help-dialog-border-color, var(--ck-color-divider));
 		border-bottom: none;
 
 		& dt, & dd {
-			border-bottom: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-accessibility-help-dialog-border-color, var(--ck-divider-border-color));
+			border-bottom: var(--ck-accessibility-help-dialog-item-divider-width) solid var(--ck-accessibility-help-dialog-border-color, var(--ck-color-divider));
 			padding: .4em 0;
 		}
 
@@ -93,7 +97,7 @@
 
 	& kbd, & code {
 		display: inline-block;
-		background: var(--ck-accessibility-help-dialog-code-background-color, hsl(0deg 0% 92.94%));
+		background: var(--ck-accessibility-help-dialog-code-background-color);
 		padding: .4em;
 		vertical-align: middle;
 		line-height: 1;
@@ -108,7 +112,7 @@
 
 	& kbd {
 		min-width: 1.8em;
-		box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color, hsl(0deg 0% 61%));
+		box-shadow: 0px 1px 1px var(--ck-accessibility-help-dialog-kbd-shadow-color);
 		margin: 0 1px;
 
 		& + kbd {

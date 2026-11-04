@@ -31,7 +31,6 @@ The example below groups the variables by layer:
 	--ck-color-base-active: hsl(263, 59%, 52%);
 	--ck-color-base-focus: hsl(263, 59%, 52%);
 	--ck-color-base-active-focus: hsl(263, 59%, 42%);
-	--ck-focus-border-color: hsl(263, 59%, 52%);
 	--ck-radius-base: 16px;
 	--ck-font-size-base: 18px;
 	--ck-spacing-base: 12px;
@@ -60,7 +59,7 @@ A few essential variables to get started:
 |----------------------------------|------------|-------------------------------------------------------------|
 | `--ck-color-base-background`     | Foundation | Background of the toolbar and other UI surfaces.            |
 | `--ck-color-base-active`         | Foundation | Accent for active and selected buttons.                     |
-| `--ck-focus-border-color`        | Foundation | Border color of focused elements, such as the editing area. |
+| `--ck-color-base-focus`          | Foundation | Border color of focused elements, such as the editing area. |
 | `--ck-radius-base`               | Foundation | Base unit for rounded corners across the UI.                |
 | `--ck-spacing-base`              | Foundation | Base spacing unit for the UI.                               |
 | `--ck-font-size-base`            | Foundation | Base font size of the editor UI.                            |

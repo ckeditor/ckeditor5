@@ -14,39 +14,37 @@ allowBuilds:
 
 # This section must be synchronized with `ckeditor/ckeditor5-commercial`.
 overrides:
-  '@iktakahiro/markdown-it-katex>katex': ^0.16.0
   '@puppeteer/browsers@^2': '^3.0.6'
-  'body-parser@^1': '^1.20.6'
-  'brace-expansion@^1': '^1.1.18'
-  'brace-expansion@^2': '^2.1.4'
-  'brace-expansion@^5': '^5.0.9'
-  'dompurify@^3': '^3.4.12'
-  'fast-uri@^3': '^3.1.5'
   'http-proxy-agent@^5': '^6.1.1'
-  'ip-address@^10': '^10.3.1'
-  'markdown-it-toc': 'npm:@maboloshi/markdown-it-toc@1.1.1'
+  'katex@^0.16': '^0.18.10'
+  'markdown-it@^14': '^14.3.1'
   'postcss@^8': '^8.5.23'
-  'socket.io-parser@^4': '^4.2.7'
-  'tar@^7': '^7.5.21'
-  'undici@^6': '^6.28.0'
   'uuid@^8': '^14.0.0'
   'yauzl@^2': '^3.2.1'
-  # Remove after `v49` is released.
-  '@ckeditor/ckeditor5-react>ckeditor5': '>=48.0.0 || ^0.0.0-nightly || ^0.0.0-internal'
 
 minimumReleaseAge: 4320 # 3 days
 minimumReleaseAgeExclude:
+  # Company-owned scopes.
   - '@ckeditor/*'
   - '@cksource/*'
-  - '*ckeditor5*'
+  # Company-owned unscoped names, listed one by one.
+  - 'ckeditor5'
+  - 'ckeditor5-premium-features'
+  - 'ckeditor5-collaboration'
+  - 'eslint-config-ckeditor5'
+  - 'eslint-plugin-ckeditor5-rules'
   - 'umberto'
 
 shellEmulator: true
 shamefullyHoist: true
 preferFrozenLockfile: true
+autoDedupe: true
 linkWorkspacePackages: true
 ignoreWorkspaceCycles: true
 verifyDepsBeforeRun: false
+# Only registry tarballs may enter the tree as subdependencies. Direct git/tarball
+# dependencies stay allowed - see ckeditor/ckeditor5#20216.
+blockExoticSubdeps: true
 
 catalog:
   '@vitest/browser-playwright': '^5.0.0'

@@ -8,6 +8,9 @@
  */
 
 import type { InitializedToken } from '@ckeditor/ckeditor5-cloud-services';
+import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
+import { View, type EditorUIUpdateEvent } from '@ckeditor/ckeditor5-ui';
 import type { CKBoxImageUrls } from './ckboxconfig.js';
 
 import { decode } from 'blurhash';
@@ -251,4 +254,69 @@ export function getFileExtension( file: File ): string {
 	const match = fileName.match( extensionRegExp );
 
 	return match!.groups!.ext.toLowerCase();
+}
+
+/**
+ * The view of the element that acts as a mounting point for the CKBox dialogs (the file manager and the image editor).
+ *
+ * @internal
+ */
+export class CKBoxWrapperView extends View<HTMLDivElement> {
+	/**
+	 * @inheritDoc
+	 */
+	constructor( locale?: Locale ) {
+		super( locale );
+
+		this.setTemplate( {
+			tag: 'div',
+			attributes: {
+				class: [
+					'ck',
+					'ckbox-wrapper',
+					'ck-reset_all-excluded'
+				]
+			}
+		} );
+	}
+}
+
+/**
+ * Mounts a CKBox dialog in a new wrapper added to the editor body collection and returns a function unmounting it.
+ *
+ * @internal
+ * @param mount Mounts the dialog in the given element, injecting the CKBox styles into `stylesTarget`.
+ */
+export function mountCKBoxDialog(
+	editor: Editor,
+	mount: ( element: HTMLDivElement, stylesTarget: Document | ShadowRoot ) => void
+): VoidFunction {
+	const body = editor.ui.view.body;
+
+	let wrapper: CKBoxWrapperView;
+	let stylesTarget: Document | ShadowRoot;
+
+	const attach = () => {
+		wrapper = new CKBoxWrapperView( editor.locale );
+		body.add( wrapper );
+
+		stylesTarget = wrapper.element!.getRootNode() as Document | ShadowRoot;
+		mount( wrapper.element!, stylesTarget );
+	};
+
+	// Low priority, so that the body collection has already been re-mounted. A detached wrapper is not considered moved.
+	const reattachIfMoved = () => {
+		if ( wrapper.element!.isConnected && wrapper.element!.getRootNode() !== stylesTarget ) {
+			body.remove( wrapper );
+			attach();
+		}
+	};
+
+	attach();
+	editor.ui.on<EditorUIUpdateEvent>( 'update', reattachIfMoved, { priority: 'low' } );
+
+	return () => {
+		editor.ui.off( 'update', reattachIfMoved );
+		body.remove( wrapper );
+	};
 }

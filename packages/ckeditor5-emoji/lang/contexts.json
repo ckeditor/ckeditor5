@@ -5,6 +5,7 @@
 	"No emojis were found matching \"%0\".": "The main text of the message shown to the user when no emoji are available for the search criteria.",
 	"Keep on typing to see the emoji.": "The main text of the message shown to the user when the provided search query does not contain the required number of characters.",
 	"The query must contain at least two characters.": "The secondary text of the message shown to the user to explain how many characters the search query must consist of.",
+	"There are no emojis in this category.": "The main text of the message shown to the user when the selected emoji category does not contain any emoji.",
 	"Smileys & Expressions": "Tooltip for filtering the displayed emoji by the \"Smileys & Expressions\" category.",
 	"Gestures & People": "Tooltip for filtering the displayed emoji by the \"Gestures & People\" category.",
 	"Animals & Nature": "Tooltip for filtering the displayed emoji by the \"Animals & Nature\" category.",

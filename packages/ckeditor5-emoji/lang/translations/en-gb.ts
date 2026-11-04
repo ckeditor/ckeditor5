@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Keep on typing to see the emoji.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'The query must contain at least two characters.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'There are no emojis in this category.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Smileys & Expressions',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

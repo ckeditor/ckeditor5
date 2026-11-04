@@ -6,13 +6,21 @@
 :root,
 :host {
 	--ck-color-find-result-selected: hsl(29, 100%, 60%);
+
+	/* The find result highlight and the selected (current) result. Declared `initial` and read with the current values
+	   as fallbacks, so the legacy `--ck-color-find-result-selected` keeps working. */
+	--ck-find-result-background: initial;
+	--ck-find-result-text-color: initial;
+	--ck-find-result-selected-background: initial;
+	--ck-find-result-selected-text-color: initial;
 }
 
 .ck-find-result {
-	background: var(--ck-color-highlight-background);
-	color: var(--ck-color-text);
+	background: var(--ck-find-result-background, var(--ck-color-highlight-background));
+	color: var(--ck-find-result-text-color, var(--ck-color-text));
 }
 
 .ck-find-result_selected {
-	background: var(--ck-color-find-result-selected);
+	background: var(--ck-find-result-selected-background, var(--ck-color-find-result-selected));
+	color: var(--ck-find-result-selected-text-color, var(--ck-find-result-text-color, var(--ck-color-text)));
 }

@@ -19,7 +19,7 @@ import {
 	Rect,
 	ResizeObserver,
 	toUnit,
-	listenToShadowRoots,
+	listenToEventRoots,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
@@ -481,29 +481,22 @@ export class BlockToolbar extends Plugin {
 		// `useCapture: true`) never sees a scrollable ancestor of the editable that lives inside a shadow root.
 		// The editable checked above is re-read on every event rather than fixed once, since a multi-root editor
 		// can switch which root is active between scrolls — so instead of a one-time snapshot, the registry keeps
-		// the listener on every shadow root the editor UI currently lives in.
-		let stopListeningToShadowRoots: VoidFunction | null = null;
+		// the listener on `document` and every shadow root the editor UI currently lives in.
+		let stopListeningToEventRoots: VoidFunction | null = null;
 
 		// Watch scroll event only when the button is visible, it prevents attaching the scroll event listener
 		// to the document when the button is not visible.
 		buttonView.on<ObservableChangeEvent<boolean>>( 'change:isVisible', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
-				buttonView.listenTo( global.document, 'scroll', repositionOnScroll, {
-					useCapture: true,
-					usePassive: true
-				} );
-
-				stopListeningToShadowRoots = listenToShadowRoots( this.editor.ui.shadowRootRegistry, {
+				stopListeningToEventRoots = listenToEventRoots( this.editor.ui.shadowRootRegistry, {
 					emitter: buttonView,
 					event: 'scroll',
-					callback: repositionOnScroll,
-					listenerOptions: { useCapture: true, usePassive: true }
+					listenerOptions: { useCapture: true, usePassive: true },
+					callback: repositionOnScroll
 				} );
 			} else {
-				buttonView.stopListening( global.document, 'scroll', repositionOnScroll );
-
-				stopListeningToShadowRoots?.();
-				stopListeningToShadowRoots = null;
+				stopListeningToEventRoots?.();
+				stopListeningToEventRoots = null;
 			}
 		} );
 	}

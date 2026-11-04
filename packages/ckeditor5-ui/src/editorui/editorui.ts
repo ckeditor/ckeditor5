@@ -135,12 +135,15 @@ export abstract class EditorUI extends EditorUIBase {
 	public declare viewportOffset: ViewportOffset;
 
 	/**
-	 * Tracks the shadow roots hosting the DOM elements used by the editor UI (editables, toolbars, menu bar).
+	 * Tracks the event roots of the DOM elements used by the editor UI (editables, toolbars, menu bar): the shadow
+	 * roots hosting them and the documents they are connected to.
 	 *
 	 * Features that need the DOM events which do not cross a shadow boundary – `scroll`, `mouseenter`,
-	 * `mouseleave` – attach them to every tracked root with
-	 * {@link module:utils/dom/shadowrootregistry~listenToShadowRoots `listenToShadowRoots()`}. A feature that
-	 * has a node in hand wants a shadow-aware helper instead, such as
+	 * `mouseleave` – attach them to `document` and every tracked root with
+	 * {@link module:utils/dom/shadowrootregistry~listenToEventRoots `listenToEventRoots()`}, or to the shadow roots
+	 * only with {@link module:utils/dom/shadowrootregistry~listenToShadowRoots `listenToShadowRoots()`}. A feature
+	 * that has a node in hand wants a shadow-aware helper instead, such as
+	 * {@link module:utils/dom/geteventroots~getEventRoots `getEventRoots()`} or
 	 * {@link module:utils/dom/getshadowroots~getShadowRoots `getShadowRoots()`}.
 	 */
 	public readonly shadowRootRegistry: ShadowRootRegistry = new ShadowRootRegistry();

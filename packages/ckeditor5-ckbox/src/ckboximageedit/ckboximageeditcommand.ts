@@ -11,7 +11,6 @@ import { Command, PendingActions, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	CKEditorError,
 	abortableDebounce,
-	createElement,
 	retry,
 	delay,
 	isOffline,
@@ -21,7 +20,7 @@ import type { ModelElement } from '@ckeditor/ckeditor5-engine';
 import { Notification } from '@ckeditor/ckeditor5-ui';
 import { isEqual } from 'es-toolkit/compat';
 
-import { sendHttpRequest } from '../utils.js';
+import { sendHttpRequest, mountCKBoxDialog } from '../utils.js';
 import { prepareImageAssetAttributes } from '../ckboxcommand.js';
 import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ckboxconfig.js';
 
@@ -41,9 +40,9 @@ export class CKBoxImageEditCommand extends Command {
 	declare public value: boolean;
 
 	/**
-	 * The DOM element that acts as a mounting point for the CKBox Edit Image dialog.
+	 * A callback that unmounts the CKBox image editor dialog. `null` if the dialog is not open.
 	 */
-	private _wrapper: Element | null = null;
+	private _unmountDialog: VoidFunction | null = null;
 
 	/**
 	 * The states of image processing in progress.
@@ -107,16 +106,10 @@ export class CKBoxImageEditCommand extends Command {
 			return;
 		}
 
-		// CKBox is a standalone application with its own styles, so its wrapper is mounted in the light DOM
-		// (`document.body`) even when the editor lives in a shadow root. Keeping it outside the shadow root
-		// is intentional until its shadow DOM support is verified.
-		const wrapper = createElement( document, 'div', { class: 'ck ckbox-wrapper' } );
+		const unmountWhilePreparing = () => {};
 
-		this._wrapper = wrapper;
+		this._unmountDialog = unmountWhilePreparing;
 		this.value = true;
-
-		// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
-		document.body.appendChild( this._wrapper );
 
 		const imageElement = this.editor.model.document.selection.getSelectedElement()!;
 
@@ -126,11 +119,20 @@ export class CKBoxImageEditCommand extends Command {
 		};
 
 		this._prepareOptions( processingState ).then(
-			options => window.CKBox.mountImageEditor( wrapper, options ),
+			options => {
+				// The dialog this request was made for is already gone (closed or the command destroyed).
+				if ( this._unmountDialog !== unmountWhilePreparing ) {
+					return;
+				}
+
+				this._unmountDialog = mountCKBoxDialog( this.editor, ( element, stylesTarget ) => {
+					window.CKBox.mountImageEditor( element, options, { stylesTarget } );
+				} );
+			},
 			error => {
 				// The dialog this request was made for is already gone (the command has been destroyed),
-				// so there is nobody left to notify and no wrapper of ours to clean up.
-				if ( this._wrapper !== wrapper ) {
+				// so there is nobody left to notify and nothing of ours to clean up.
+				if ( this._unmountDialog !== unmountWhilePreparing ) {
 					return;
 				}
 
@@ -145,6 +147,7 @@ export class CKBoxImageEditCommand extends Command {
 					typeof error == 'string' ? error : t( 'Failed to determine category of edited image.' ),
 					{ namespace: 'ckbox' }
 				);
+
 				console.error( error );
 				this._handleImageEditorClose();
 			}
@@ -172,7 +175,7 @@ export class CKBoxImageEditCommand extends Command {
 	 * Indicates if the CKBox Image Editor dialog is already opened.
 	 */
 	private _getValue(): boolean {
-		return this._wrapper !== null;
+		return this._unmountDialog !== null;
 	}
 
 	/**
@@ -257,12 +260,12 @@ export class CKBoxImageEditCommand extends Command {
 	 * Closes the CKBox Image Editor dialog.
 	 */
 	private _handleImageEditorClose() {
-		if ( !this._wrapper ) {
+		if ( !this._unmountDialog ) {
 			return;
 		}
 
-		this._wrapper.remove();
-		this._wrapper = null;
+		this._unmountDialog();
+		this._unmountDialog = null;
 
 		this.editor.editing.view.focus();
 

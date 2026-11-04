@@ -49,7 +49,20 @@ export class XmlDataProcessor implements DataProcessor {
 	 */
 	public htmlWriter: DataProcessorHtmlWriter;
 
+	/**
+	 * If `false`, comment nodes will be converted. Otherwise, comment nodes are ignored.
+	 *
+	 * @default true
+	 */
 	public skipComments: boolean = true;
+
+	/**
+	 * If `false`, processing instruction nodes (for example `<?target data?>`) will be converted.
+	 * Otherwise, processing instruction nodes are ignored.
+	 *
+	 * @default true
+	 */
+	public skipProcessingInstructions: boolean = true;
 
 	/**
 	 * Creates a new instance of the XML data processor class.
@@ -95,7 +108,8 @@ export class XmlDataProcessor implements DataProcessor {
 			domFragment,
 			{
 				keepOriginalCase: true,
-				skipComments: this.skipComments
+				skipComments: this.skipComments,
+				skipProcessingInstructions: this.skipProcessingInstructions
 			}
 		) as ViewDocumentFragment;
 	}

@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': '이모지를 보려면 계속 입력하세요.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': '쿼리에는 2자 이상이 포함되어야 합니다.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': '이 카테고리에는 이모지가 없습니다.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': '스마일 및 표정',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

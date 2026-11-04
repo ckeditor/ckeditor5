@@ -6,9 +6,12 @@
 :root,
 :host {
 	/* Size */
+	/* Applied as the min-width of menu panels with items (see menubarmenupanel.css), so it can be capped by the panel max-width. */
 	--ck-menu-bar-menu-item-min-width: 18em;
 }
 
 .ck.ck-menu-bar__menu .ck.ck-menu-bar__menu__item {
-	min-width: var(--ck-menu-bar-menu-item-min-width);
+	/* The panel min-width (see menubarmenupanel.css) sets the width, so drop the generic list item min-width.
+	   It is not capped by the panel max-width, so the items would stick out of the panel on narrow viewports. */
+	min-width: 0;
 }

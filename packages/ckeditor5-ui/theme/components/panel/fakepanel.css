@@ -7,12 +7,13 @@
 /* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */
 
 .ck .ck-fake-panel div {
-	box-shadow: var(--ck-shadow-surface-floating), 0 0;
+	/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 
 	min-height: 15px;
 
 	background: var(--ck-color-panel-background, var(--ck-balloon-panel-background-color));
-	border: var(--ck-balloon-panel-border);
+	border: var(--ck-balloon-panel-border, var(--ck-balloon-border-width, var(--ck-border-width-surface)) solid var(--ck-color-panel-border, var(--ck-balloon-panel-border-color)));
 	border-radius: var(--ck-border-radius-surface);
 
 	width: 100%;

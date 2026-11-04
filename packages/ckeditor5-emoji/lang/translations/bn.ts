@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'ইমোজিটি দেখতে টাইপ করতে থাকুন।',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'কোয়েরিটিতে কমপক্ষে দুটি ক্যারেক্টার থাকতে হবে।',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'এই বিভাগে কোনো ইমোজি নেই।',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'স্মাইলি ও অভিব্যক্তি',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

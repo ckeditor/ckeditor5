@@ -30,6 +30,11 @@
 				<li>Tooltips should show up after a delay.</li>
 				<li>There should always be a single tooltip at a time on a web page.</li>
 				<li>
+					Keep focus in a link form or dialog and hover a toolbar button. Press
+					<code>Esc</code> once: only the tooltip should hide, and the form or dialog
+					should remain open with focus unchanged.
+				</li>
+				<li>
 					Make sure that moving mouse between buttons quickly does not result in orphaned
 					tooltips attached to elements no longer being hovered.
 				</li>
@@ -42,6 +47,10 @@
 				</li>
 				<li>
 					Tooltips should show up when items are focused and hide when they get blurred.
+				</li>
+				<li>
+					With a toolbar tooltip visible, press <code>Esc</code> once. The tooltip should
+					hide and focus should return to the editor.
 				</li>
 				<li>
 					Moving mouse to another toolbar item should hide a tooltip attached to the item
@@ -58,7 +67,25 @@
 				Repeat the same scenario but scroll the entire webpage (not just the box containing
 				the editor). The tooltip should remain visible in this case.
 			</p>
+			<h2>Tooltips with a positioned <code>&lt;body&gt;</code></h2>
+			<ol>
+				<li>Check the "<code>body { position: relative }</code>" checkbox below.</li>
+				<li>Scroll the page down so the first editor's toolbar is near the top of the viewport.</li>
+				<li>Hover any toolbar button of that editor.</li>
+				<li>
+					The tooltip should show up directly below the button, not further down by the
+					amount the page is scrolled. The same applies to other balloons, for example
+					the link balloon.
+				</li>
+			</ol>
 		</ck-manual-header>
+
+		<p>
+			<label>
+				<input type="checkbox" id="body-position-relative" />
+				<code>body { position: relative }</code>
+			</label>
+		</p>
 
 		<h2>Tooltip positions (hover to test)</h2>
 		<div class="tooltip-positions">

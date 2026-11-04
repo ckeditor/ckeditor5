@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Mai încearcă să vezi emoji.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'Interogarea trebuie să conțină cel puțin două caractere.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'Nu există emoji în această categorie.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Smiley și expresii',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

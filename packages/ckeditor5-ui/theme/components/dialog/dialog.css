@@ -20,7 +20,10 @@
 
 	/* Color */
 	--ck-dialog-background-color: var(--ck-color-surface-container);
-	--ck-dialog-overlay-background-color: hsl(0 0% 0% / .5);
+	--ck-dialog-overlay-background-color: var(--ck-color-surface-overlay);
+	/* Dialog header background. Declared `initial` and read with `--ck-form-header-background` as fallback, so it
+	   follows the form header unless set on its own. */
+	--ck-dialog-header-background: initial;
 
 	/* Spacing */
 	/* Dialog-scoped header padding: the header's own (tight) vertical padding + the overlay inline padding,
@@ -37,8 +40,8 @@
 .ck.ck-dialog-overlay {
 	animation: ck-dialog-fade-in var(--ck-animation-duration-surface-entrance);
 	background: var(--ck-dialog-overlay-background-color);
-	/* Backward compatibility: falls back to legacy --ck-z-dialog if overridden. */
-	z-index: var(--ck-z-dialog, var(--ck-z-modal));
+	/* The legacy --ck-z-dialog keeps working through --ck-layer-dialog. */
+	z-index: var(--ck-layer-dialog);
 	-webkit-user-select: none;
 	/*
 	 * Note: aisuggestionstreamablecontent.css and accessibilityhelp.css override this to `text` for
@@ -79,6 +82,7 @@
 		border-bottom: var(--ck-color-dialog-form-header-border, var(--ck-border-divider));
 		/* Dialog-scoped header padding; defaults to the generic form-header padding. */
 		padding: var(--ck-dialog-header-padding);
+		background: var(--ck-dialog-header-background, var(--ck-form-header-background));
 		flex-shrink: 0;
 	}
 

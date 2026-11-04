@@ -234,6 +234,83 @@ describe( 'ViewDomConverter', () => {
 		} );
 	} );
 
+	describe( 'viewToDom() - processing instructions', () => {
+		// Built programmatically on purpose. Parsing `<?if !supportLists?>` from an HTML string
+		// yields a processing instruction node only in Chrome 150+; elsewhere it is still
+		// a comment, so a string fixture would test a different node type depending on the browser.
+		function createViewPI( target = 'if', data = '!supportLists' ) {
+			const viewInstruction = new ViewUIElement( viewDocument, '$processingInstruction' );
+
+			viewInstruction._setCustomProperty( '$processingTarget', target );
+			viewInstruction._setCustomProperty( '$processingData', data );
+
+			return viewInstruction;
+		}
+
+		it( 'should create a processing instruction node', () => {
+			const domInstruction = converter.viewToDom( createViewPI( 'if', '!supportLists' ) );
+
+			expect( domInstruction.nodeType ).toBe( Node.PROCESSING_INSTRUCTION_NODE );
+			expect( domInstruction.target ).toBe( 'if' );
+			expect( domInstruction.data ).toBe( '!supportLists' );
+		} );
+
+		it( 'should not fall back to the generic UIElement render()', () => {
+			const viewInstruction = createViewPI();
+			const spy = vi.spyOn( viewInstruction, 'render' );
+
+			converter.viewToDom( viewInstruction );
+
+			expect( spy.mock.calls.length ).toBe( 0 );
+		} );
+
+		it( 'should create a processing instruction with empty data', () => {
+			const domInstruction = converter.viewToDom( createViewPI( 'if', '' ) );
+
+			expect( domInstruction.target ).toBe( 'if' );
+			expect( domInstruction.data ).toBe( '' );
+		} );
+
+		it( 'should preserve the target letter case', () => {
+			// Unlike tag names, processing instruction targets are case-sensitive.
+			expect( converter.viewToDom( createViewPI( 'Foo', 'bar' ) ).target ).toBe( 'Foo' );
+		} );
+
+		it( 'should keep data starting with a question mark intact', () => {
+			// `<?t?d?>` tokenizes as target "t", data "?d" - catches naive string concatenation.
+			expect( converter.viewToDom( createViewPI( 't', '?d' ) ).data ).toBe( '?d' );
+		} );
+
+		it( 'should bind the processing instruction when the `bind` option is set to `true`', () => {
+			const viewInstruction = createViewPI();
+			const domInstruction = converter.viewToDom( viewInstruction, { bind: true } );
+
+			expect( converter.mapViewToDom( viewInstruction ) ).toBe( domInstruction );
+			expect( converter.mapDomToView( domInstruction ) ).toBe( viewInstruction );
+		} );
+
+		it( 'should not bind the processing instruction by default', () => {
+			const viewInstruction = createViewPI();
+
+			converter.viewToDom( viewInstruction );
+
+			expect( converter.mapViewToDom( viewInstruction ) ).toBeUndefined();
+		} );
+
+		it( 'should create a processing instruction nested in an element', () => {
+			const viewP = new ViewContainerElement( viewDocument, 'p', null, [ createViewPI( 'if', '!supportLists' ) ] );
+
+			// A container holding only a UI element is considered empty, so it would get a block filler.
+			viewP.getFillerOffset = () => null;
+
+			const domP = converter.viewToDom( viewP );
+
+			expect( domP.childNodes.length ).toBe( 1 );
+			expect( domP.firstChild.nodeType ).toBe( Node.PROCESSING_INSTRUCTION_NODE );
+			expect( domP.firstChild.target ).toBe( 'if' );
+		} );
+	} );
+
 	describe( 'isDomSelectionCorrect()', () => {
 		function domSelection( anchorParent, anchorOffset, focusParent, focusOffset ) {
 			const sel = document.getSelection();

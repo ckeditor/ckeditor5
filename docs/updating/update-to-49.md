@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 49.x | CKEditor 5 Documentation
 menu-title: Update to v49.x
 order: 50
-modified_at: 2026-10-12
+modified_at: 2026-11-03
 ---
 
 # Update to CKEditor&nbsp;5 v49.x
@@ -17,6 +17,51 @@ modified_at: 2026-10-12
 
 	Then ask your agent, for example: _"Update CKEditor&nbsp;5 to the latest version"_ or name the version you want. Review the changes before you commit them. See the {@link getting-started/ai-coding-agents Using CKEditor&nbsp;5 with AI coding agents} guide for setup options and supported agents.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v49.1.0
+
+Released on 4 November, 2026. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v49.1.0))
+
+This release introduces the Editing Toolkit, lets CKEditor&nbsp;AI work with your features through custom skills, and restores several legacy CSS variables of the refreshed theme.
+
+### Editing Toolkit (⭐)
+
+The {@link features/editing-toolkit-overview Editing Toolkit} is a new set of APIs for developers who build their own editing experiences. {@link features/editing-toolkit-comparing-documents Compare} compares two versions of HTML content and applies or suggests individual changes, and the {@link features/editing-toolkit-proposing-changes Proposed changes UI} lets users review them first. {@link features/editing-toolkit-coauthor Coauthor} lets server-side agents draft content, suggest edits, and leave comments, and is in early access.
+
+The toolkit also works without AI, for example to {@link features/editing-toolkit-deterministic-scripts compare the document with an updated Word file}.
+
+### CKEditor&nbsp;AI: custom skills for your features (⭐)
+
+{@link features/ckeditor-ai-overview CKEditor&nbsp;AI} can now work with the content of your plugins. Upload a custom skill that describes your feature's markup and rules, and register the plugin with {@link module:ai/aicore/aieditorconfig~AIEditorConfig#add `AIEditorConfig#add()`}. See {@link features/ckeditor-ai-feature-understanding#registering-custom-features Registering custom features}.
+
+If you used the `AIEditorConfig` type, rename it to `AIEditorConfigSnapshot`. The `AIEditorConfig` name now refers to the plugin that registers custom features.
+
+### CKEditor&nbsp;AI: hooks (⭐)
+
+On-premises deployments can call a service you host before the agent answers an {@link features/ckeditor-ai-chat AI Chat} message. Use [hooks](https://ckeditor.com/docs/cs/latest/guides/ckeditor-ai/extensions/hooks.html) to enforce your policies, answer from your systems, or brief the CKEditor&nbsp;AI agent. They fit when you already have an AI platform with access to your data and want it to take part in the chat.
+
+### Other improvements and fixes
+
+* **New theme improvements and fixes**: [v49.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v49.0.0) introduced a refreshed default theme built on three layers of design tokens (foundation scales, semantic roles, and per-component tokens), with legacy variable names kept as aliases. Some aliases were silently ignored even though the {@link updating/migration-to-refreshed-theme migration guide} said they worked. They work again, so overrides of focus borders and the shadows of dropdowns, balloons, menus, and comment and suggestion cards apply with no changes on your side. Additionally, more of the UI moved from hard-coded values to tokens ([#20255](https://github.com/ckeditor/ckeditor5/issues/20255), [#20257](https://github.com/ckeditor/ckeditor5/issues/20257), [#20259](https://github.com/ckeditor/ckeditor5/issues/20259)): button colors in the resting, hover, and active states, toolbar button borders and radius, form and dialog headers, the insert table grid, and find and replace results. Every new token defaults to the value used today, so the default theme looks the same. See the full token list in the {@link framework/theme-customization theme customization guide}.
+* **Shadow DOM support for more features**: the {@link features/ckbox CKBox} file manager and image editor, the "Edit source" dialog of enhanced source editing, and footnotes work correctly when the editor renders in a shadow root. Plugin authors get two helpers for events that do not cross a shadow boundary, such as `scroll`: `listenToEventRoots()` listens on the document and on every shadow root the editor lives in, and `DomTargetsListener` listens on a set of targets you can refresh, like a balloon's positioning target. See the {@link framework/deep-dive/shadow-dom Shadow DOM deep dive}.
+* **More reliable balloons and toolbars**: tooltips, the link balloon, and the mention list appear in the right place again on scrolled pages when `<body>` or the overlay container is positioned (a v49.0.0 regression, [#20251](https://github.com/ckeditor/ckeditor5/issues/20251)).
+* **Content loading**: some browsers started parsing `<?target data?>` markup as processing instruction nodes instead of comments, which made the editor throw while loading or pasting such content. The editor ignores these nodes the same way it ignores comments, and data processors have a new `skipProcessingInstructions` flag for integrations that need to keep them.
+* **Email export fixes**: Email export converts `hsl()` and `hsla()` colors to `rgb()` and `rgba()` through the new `transformEmailStylesColors()` transformation, since many email clients, including Outlook, do not support HSL. The default font and table palettes also no longer trigger warnings in the email configuration logger.
+
+### Content styles exposed as design tokens
+
+The hardcoded colors of the content rendered inside `.ck-content` are now design tokens, so you can recolor the block quote, code block, inline code, horizontal line, page break, table, and to-do list from `:root` and `:host` without overriding element rules. Each token defaults to its previous value, so the content looks unchanged. The {@link getting-started/setup/content-styles#feature-specific-styling Content styles} guide lists them per feature.
+
+The existing table caption, image caption, and mention color tokens were renamed to the same convention. The old names still work as fallbacks but are deprecated, so update any overrides to the new names:
+
+| Old name (deprecated) | New name |
+|---|---|
+| `--ck-content-color-table-caption-background` | `--ck-content-table-caption-background-color` |
+| `--ck-content-color-table-caption-text` | `--ck-content-table-caption-text-color` |
+| `--ck-content-color-image-caption-background` | `--ck-content-image-caption-background-color` |
+| `--ck-content-color-image-caption-text` | `--ck-content-image-caption-text-color` |
+| `--ck-content-color-mention-background` | `--ck-content-mention-background` |
+| `--ck-content-color-mention-text` | `--ck-content-mention-text-color` |
 
 ## Update to CKEditor&nbsp;5 v49.0.0
 

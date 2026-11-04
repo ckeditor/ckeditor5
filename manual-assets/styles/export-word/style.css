@@ -63,16 +63,28 @@ blockquote {
 	align-items: center;
 	max-height: calc( 100vh - 100px );
 	background: hsl( 0, 0%, 95% );
+	border-radius: var(--ck-border-radius-surface);
 }
 
 .toolbar-container {
 	width: 100%;
 }
 
+.document-container > .toolbar-container .ck.ck-toolbar {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
 .editor-container {
 	width: 100%;
 	border: 1px solid hsl( 0, 0%, 80% );
 	overflow: auto;
+	border-radius: var(--ck-border-radius-surface);
+}
+
+.document-container > .toolbar-container + .editor-container {
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
 }
 
 .ck.ck-editor__editable_inline.test-editor {

@@ -7,10 +7,11 @@
 
 .ck.ck-editor__main > .ck-editor__editable {
 	/* https://github.com/ckeditor/ckeditor5/issues/3384 */
-	background: var(--ck-color-base-background);
+	background: var(--ck-editor-editable-background, var(--ck-color-surface-canvas));
 
 	&:not(.ck-focused) {
-		border-color: var(--ck-color-base-border);
+		/* The same color as the rest of the editor frame (the toolbar and the menu bar). */
+		border-color: var(--ck-editor-frame-border-color);
 	}
 }
 

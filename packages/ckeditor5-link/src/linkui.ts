@@ -380,9 +380,9 @@ export class LinkUI extends Plugin {
 				this.formView!.resetFormStatus();
 				this.formView!.urlInputView.fieldView.value = href;
 
-				// Set focus to the editing view to prevent from losing it while current view is removed.
-				this.editor.editing.view.focus();
-
+				// The links view is always displayed on top of the form, so the focus can go straight to the form
+				// once the links view is removed. Do not move it to the editing view in the meantime, because other
+				// features (e.g. the balloon toolbar) react to the editable being focused and could cover the form.
 				this._removeLinksProviderView();
 
 				// Set the focus to the URL input field.
@@ -408,9 +408,8 @@ export class LinkUI extends Plugin {
 
 		// Hide the panel after clicking the "Cancel" button.
 		this.listenTo( view, 'cancel', () => {
-			// Set focus to the editing view to prevent from losing it while current view is removed.
-			editor.editing.view.focus();
-
+			// The links view is always displayed on top of the form, so the focus can go straight to the form
+			// once the links view is removed (see the links list items above).
 			this._removeLinksProviderView();
 
 			// Set the focus to the URL input field.

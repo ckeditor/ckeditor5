@@ -36,6 +36,6 @@
 }
 
 div.ck.ck-balloon-panel.ck-emoji-picker-balloon {
-	/* Backward compatibility: falls back to legacy --ck-z-dialog if overridden. */
-	z-index: calc( var( --ck-z-dialog, var(--ck-z-modal) ) + 1 );
+	/* Above dialogs. The legacy --ck-z-dialog keeps working through --ck-layer-dialog. */
+	z-index: calc( var(--ck-layer-dialog) + 1 );
 }

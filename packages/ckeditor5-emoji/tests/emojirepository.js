@@ -603,6 +603,224 @@ describe( 'EmojiRepository', () => {
 		} );
 	} );
 
+	describe( 'emoji.definitions', () => {
+		const definitions = [
+			{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 },
+			{ annotation: 'waving hand', emoji: '👋', group: 1, version: 15 },
+			{ annotation: 'light skin tone', emoji: '🏻', group: 2, version: 15 }
+		];
+
+		beforeEach( () => {
+			mockEmojiVersion( 16 );
+		} );
+
+		it( 'should not download the emoji database', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( { emoji: { definitions } } );
+
+			expect( fetchStub ).not.toHaveBeenCalled();
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should use the normalized definitions', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( { emoji: { definitions } } );
+			const repository = editor.plugins.get( EmojiRepository );
+
+			expect( repository.isRepositoryReady ).toBe( true );
+
+			const categories = repository.getEmojiCategories();
+			const allItems = categories.flatMap( category => category.items );
+
+			// The skin tone item from group "2" is filtered out.
+			expect( allItems.map( item => item.annotation ) ).toEqual( [ 'neutral face', 'waving hand' ] );
+			expect( allItems[ 0 ].skins ).toEqual( { default: '😐️' } );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should return an empty array of items for categories without emoji', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( {
+				emoji: { definitions: [ definitions[ 0 ] ] }
+			} );
+
+			const categories = editor.plugins.get( EmojiRepository ).getEmojiCategories();
+
+			expect( categories ).toHaveLength( 9 );
+			expect( categories[ 0 ].items ).toHaveLength( 1 );
+
+			for ( const category of categories.slice( 1 ) ) {
+				expect( category.items ).toEqual( [] );
+			}
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should not store the definitions in the process-global cache', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( { emoji: { definitions } } );
+
+			expect( EmojiRepository._cache._cache.size ).toBe( 0 );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should use separate definitions for each editor', async () => {
+			const first = await createDefinitionsTestEditor( {
+				emoji: { definitions: [ definitions[ 0 ] ] }
+			} );
+
+			const second = await createDefinitionsTestEditor( {
+				emoji: { definitions: [ definitions[ 1 ] ] }
+			} );
+
+			expect( first.editor.plugins.get( EmojiRepository ).getEmojiByQuery( 'neutral' ) ).toHaveLength( 1 );
+			expect( first.editor.plugins.get( EmojiRepository ).getEmojiByQuery( 'waving' ) ).toHaveLength( 0 );
+			expect( second.editor.plugins.get( EmojiRepository ).getEmojiByQuery( 'neutral' ) ).toHaveLength( 0 );
+			expect( second.editor.plugins.get( EmojiRepository ).getEmojiByQuery( 'waving' ) ).toHaveLength( 1 );
+
+			first.domElement.remove();
+			second.domElement.remove();
+			await first.editor.destroy();
+			await second.editor.destroy();
+		} );
+
+		it( 'should take precedence over the `emoji.definitionsUrl` option', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( {
+				emoji: {
+					definitions,
+					definitionsUrl: 'https://example.com/emoji.json'
+				}
+			} );
+
+			expect( fetchStub ).not.toHaveBeenCalled();
+			expect( editor.plugins.get( EmojiRepository ).isRepositoryReady ).toBe( true );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should log a warning and mark the repository as not ready when the definitions are empty', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( {
+				emoji: {
+					definitions: [],
+					definitionsUrl: 'https://example.com/emoji.json'
+				}
+			} );
+
+			expect( fetchStub ).not.toHaveBeenCalled();
+			expect( editor.plugins.get( EmojiRepository ).isRepositoryReady ).toBe( false );
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-empty', expect.anything() );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should log a warning and mark the repository as not ready when the definitions are invalid', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( {
+				emoji: {
+					definitions: [ null ]
+				}
+			} );
+
+			expect( editor.plugins.get( EmojiRepository ).isRepositoryReady ).toBe( false );
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-empty', expect.anything() );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should not log any warning when only the `emoji.definitions` option is provided', async () => {
+			const { licenseKey } = generateLicenseKey( { licenseType: 'production' } );
+
+			const { editor, domElement } = await createDefinitionsTestEditor( {
+				licenseKey,
+				emoji: { definitions }
+			} );
+
+			expect( consoleStub ).not.toHaveBeenCalled();
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should not log a warning when the `emoji.definitionsUrl` option is set to `cdn`', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( {
+				emoji: {
+					definitions,
+					definitionsUrl: 'cdn'
+				}
+			} );
+
+			expect( consoleStub ).not.toHaveBeenCalled();
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should log a warning about the ignored `emoji.definitionsUrl` option', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( {
+				emoji: {
+					definitions,
+					definitionsUrl: 'https://example.com/emoji.json'
+				}
+			} );
+
+			expect( consoleStub ).toHaveBeenCalledOnce();
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-redundant-options', expect.anything() );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should log a warning about the ignored `emoji.version` option', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( {
+				emoji: {
+					definitions,
+					version: 15
+				}
+			} );
+
+			expect( consoleStub ).toHaveBeenCalledOnce();
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-redundant-options', expect.anything() );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should log a single warning about all ignored options', async () => {
+			const { editor, domElement } = await createDefinitionsTestEditor( {
+				emoji: {
+					definitions,
+					definitionsUrl: 'https://example.com/emoji.json',
+					version: 15
+				}
+			} );
+
+			expect( consoleStub ).toHaveBeenCalledOnce();
+			expect( consoleStub ).toHaveBeenCalledWith( 'emoji-repository-redundant-options', expect.anything() );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		async function createDefinitionsTestEditor( editorConfig ) {
+			const domElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElement );
+
+			const editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Essentials, Paragraph, EmojiRepository ],
+				...editorConfig
+			} );
+
+			await editor.plugins.get( EmojiRepository ).isReady();
+
+			return { editor, domElement };
+		}
+	} );
+
 	describe( 'getEmojiByQuery()', () => {
 		let editor, domElement, emojiRepositoryPlugin;
 

@@ -14,7 +14,7 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
-import { ContextualBalloon, ButtonView, View, MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import { ContextualBalloon, ButtonView, View, MenuBarMenuListItemButtonView, ToolbarView, BalloonToolbar } from '@ckeditor/ckeditor5-ui';
 import { toWidget } from '@ckeditor/ckeditor5-widget';
 
 import { LinkEditing } from '../src/linkediting.js';
@@ -3797,6 +3797,103 @@ describe( 'LinkUI', () => {
 				expect( formView.urlInputView.errorText ).toBeNull();
 			} );
 
+			it( 'should move the focus straight to the form (not to the editing view) after clicking link item', () => {
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				const linkButton = linkUIFeature.linkProviderItemsView.listChildren.get( 0 );
+				const editingFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+				const formFocusSpy = vi.spyOn( linkUIFeature.formView, 'focus' );
+
+				linkButton.fire( 'execute' );
+
+				expect( editingFocusSpy ).not.toHaveBeenCalled();
+				expect( formFocusSpy ).toHaveBeenCalledOnce();
+				expect( linkUIFeature._balloon.visibleView ).toBe( linkUIFeature.formView );
+			} );
+
+			it( 'should move the focus straight to the form (not to the editing view) after closing the links view', () => {
+				linkUIFeature._showUI();
+				clickNthLinksProvider( 0 );
+
+				const editingFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+				const formFocusSpy = vi.spyOn( linkUIFeature.formView, 'focus' );
+
+				backToLinksProviders();
+
+				expect( editingFocusSpy ).not.toHaveBeenCalled();
+				expect( formFocusSpy ).toHaveBeenCalledOnce();
+				expect( linkUIFeature._balloon.visibleView ).toBe( linkUIFeature.formView );
+			} );
+
+			describe( 'integration with the balloon toolbar', () => {
+				let balloonToolbarEditor, balloonToolbarEditorElement, balloonToolbarLinkUI, balloonToolbar;
+
+				beforeEach( async () => {
+					balloonToolbarEditorElement = document.createElement( 'div' );
+					document.body.appendChild( balloonToolbarEditorElement );
+
+					balloonToolbarEditor = await ClassicTestEditor.create( balloonToolbarEditorElement, {
+						plugins: [ Essentials, LinkEditing, LinkUI, Paragraph, BalloonToolbar ],
+						balloonToolbar: [ 'link' ]
+					} );
+
+					balloonToolbarLinkUI = balloonToolbarEditor.plugins.get( LinkUI );
+					balloonToolbar = balloonToolbarEditor.plugins.get( BalloonToolbar );
+
+					const balloonToolbarBalloon = balloonToolbarEditor.plugins.get( ContextualBalloon );
+
+					vi.spyOn( balloonToolbarBalloon.view, 'attachTo' ).mockReturnValue( {} );
+					vi.spyOn( balloonToolbarBalloon.view, 'pin' ).mockReturnValue( {} );
+
+					balloonToolbarLinkUI.registerLinksListProvider( {
+						label: 'Bookmarks',
+						getListItems: () => [
+							{ href: '#foo', label: 'foo', icon: IconBookmarkMedium }
+						]
+					} );
+
+					// Focusing the editable shows the balloon toolbar (if it is not already in the balloon).
+					// Simulate it so the test does not depend on the native DOM focus.
+					vi.spyOn( balloonToolbarEditor.editing.view, 'focus' ).mockImplementation( () => {
+						balloonToolbar.focusTracker.isFocused = true;
+					} );
+
+					_setModelData( balloonToolbarEditor.model, '<paragraph>[foo]</paragraph>' );
+				} );
+
+				afterEach( async () => {
+					await balloonToolbarEditor.destroy();
+					balloonToolbarEditorElement.remove();
+				} );
+
+				it( 'should not cover the link form with the balloon toolbar after clicking link item', () => {
+					// The link UI was opened from the main toolbar, so the editable was blurred and the balloon toolbar hidden.
+					balloonToolbar.focusTracker.isFocused = false;
+
+					balloonToolbarLinkUI._showUI( true );
+					clickNthLinksProvider( 0, balloonToolbarLinkUI );
+
+					balloonToolbarLinkUI.linkProviderItemsView.listChildren.get( 0 ).fire( 'execute' );
+
+					expect( balloonToolbarLinkUI._balloon.visibleView ).toBe( balloonToolbarLinkUI.formView );
+					expect( balloonToolbarLinkUI._balloon.hasView( balloonToolbar.toolbarView ) ).toBe( false );
+					expect( balloonToolbarLinkUI.formView.urlInputView.fieldView.value ).toBe( '#foo' );
+				} );
+
+				it( 'should not cover the link form with the balloon toolbar after closing the links view', () => {
+					balloonToolbar.focusTracker.isFocused = false;
+
+					balloonToolbarLinkUI._showUI( true );
+					clickNthLinksProvider( 0, balloonToolbarLinkUI );
+
+					balloonToolbarLinkUI.linkProviderItemsView.backButtonView.fire( 'execute' );
+
+					expect( balloonToolbarLinkUI._balloon.visibleView ).toBe( balloonToolbarLinkUI.formView );
+					expect( balloonToolbarLinkUI._balloon.hasView( balloonToolbar.toolbarView ) ).toBe( false );
+				} );
+			} );
+
 			function expectedShownItems( expectedLabels ) {
 				const labels = Array
 					.from( linkUIFeature.linkProviderItemsView.listChildren )
@@ -3809,8 +3906,8 @@ describe( 'LinkUI', () => {
 				linkUIFeature.linkProviderItemsView.backButtonView.fire( 'execute' );
 			}
 
-			function clickNthLinksProvider( nth ) {
-				const providersList = linkUIFeature.formView
+			function clickNthLinksProvider( nth, linkUI = linkUIFeature ) {
+				const providersList = linkUI.formView
 					.template.children[ 0 ]
 					.find( child => child.template.attributes.class.includes( 'ck-link-form__providers-list' ) );
 

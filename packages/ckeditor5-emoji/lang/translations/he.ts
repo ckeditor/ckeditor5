@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'המשיכו להקליד כדי לראות את האמוג\'י.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'השאילתה חייבת להכיל לפחות שני תווים.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'אין סמלי אמוג\'י בקטגוריה זו.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'סמיילים והבעות',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

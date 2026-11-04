@@ -15,10 +15,13 @@ import {
 	DomEmitterMixin,
 	containsNode,
 	first,
+	getActiveElement,
 	global,
 	isShadowHostOf,
 	isShadowRoot,
 	isVisible,
+	DomTargetsListener,
+	type DomEventMap,
 	type Emitter,
 	type EventInfo,
 	type Locale,
@@ -148,6 +151,12 @@ export class TooltipManager extends TooltipManagerBase {
 	private _shadowRoots = new Set<ShadowRoot>();
 
 	/**
+	 * The listeners of the DOM events the manager reacts to, each attached to `document` and to every shadow root in
+	 * {@link #_shadowRoots}. See the constructor.
+	 */
+	private _rootListeners: Array<DomTargetsListener>;
+
+	/**
 	 * Maps each DOM tree (the document or a shadow root) that hosts tooltip-bearing UI to the body collection
 	 * the shared tooltip balloon should be pinned into for targets in that tree. Rebuilt from
 	 * {@link module:ui/tooltipmanager~TooltipManager._registrations} by {@link #_rebuild}.
@@ -234,20 +243,17 @@ export class TooltipManager extends TooltipManagerBase {
 
 		this.listenTo( global.document, 'keydown', this._onKeyDown.bind( this ), { useCapture: true } );
 
-		// These are all attached on `document` to cover the light (non-shadow) DOM. Shadow roots get their
-		// own listeners for the same events, see #_resyncShadowRootListeners — `document`'s copies either never
-		// fire for shadow-originated events (`mouseenter`, `mouseleave`, `scroll`, all non-`composed`) or fire
-		// with a retargeted, unusable target (`focus`, `blur`, which are `composed`).
-		//
-		// Unlike these, set up once here, the shadow-root listeners are attached and detached over time by
-		// `#_resyncShadowRootListeners`, as registered body collections and their shadow roots come and go.
-		this.listenTo( global.document, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-		this.listenTo( global.document, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
-
-		this.listenTo( global.document, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-		this.listenTo( global.document, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
-
-		this.listenTo( global.document, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
+		// Each listener is attached to `document` and to every shadow root hosting tooltip-bearing UI (see #_rebuild).
+		// `document` alone is not enough: it never receives `mouseenter`, `mouseleave` and `scroll` from inside a shadow
+		// root, and receives `focus` and `blur` with the target retargeted to the shadow host. The `isShadowHostOf()`
+		// guards in #_onEnterOrFocus and #_onLeaveOrBlur let the innermost listener handle the event.
+		this._rootListeners = [
+			this._createRootsListener( 'mouseenter', this._onEnterOrFocus.bind( this ) ),
+			this._createRootsListener( 'mouseleave', this._onLeaveOrBlur.bind( this ) ),
+			this._createRootsListener( 'focus', this._onEnterOrFocus.bind( this ) ),
+			this._createRootsListener( 'blur', this._onLeaveOrBlur.bind( this ) ),
+			this._createRootsListener( 'scroll', this._onScroll.bind( this ) )
+		];
 
 		// Because this class is a singleton, its only instance is shared across all editors and connects them through the reference.
 		// Error attribution walks those references to work out which editor an error came from, and the shared tooltip manager
@@ -391,7 +397,7 @@ export class TooltipManager extends TooltipManagerBase {
 	/**
 	 * Rebuilds {@link #_bodyCollectionByTree} from {@link module:ui/tooltipmanager~TooltipManager._registrations}: every registered
 	 * collection claims the DOM tree it is mounted in, and – for editors – every shadow root its registry reports (ancestor-inclusive,
-	 * so nested and decoupled trees resolve too). Then re-syncs the per-shadow-root listeners.
+	 * so nested and decoupled trees resolve too). Then updates the listeners attached to the shadow roots among them.
 	 */
 	private _rebuild(): void {
 		const map = new Map<Document | ShadowRoot, BodyCollection>();
@@ -420,8 +426,26 @@ export class TooltipManager extends TooltipManagerBase {
 		}
 
 		this._bodyCollectionByTree = map;
+		this._shadowRoots = new Set( Array.from( map.keys() ).filter( isShadowRoot ) );
 
-		this._resyncShadowRootListeners();
+		for ( const rootListener of this._rootListeners ) {
+			rootListener.refresh();
+		}
+	}
+
+	/**
+	 * Attaches the callback to `document` and to every shadow root in {@link #_shadowRoots}. See the constructor.
+	 */
+	private _createRootsListener<TEvent extends keyof DomEventMap>(
+		event: TEvent,
+		callback: ( evt: EventInfo, domEvent: DomEventMap[ TEvent ] ) => void
+	): DomTargetsListener {
+		return new DomTargetsListener( () => [ global.document, ...this._shadowRoots ], {
+			emitter: this,
+			event,
+			listenerOptions: { useCapture: true },
+			callback
+		} );
 	}
 
 	/**
@@ -457,8 +481,11 @@ export class TooltipManager extends TooltipManagerBase {
 	 */
 	private _onKeyDown( evt: EventInfo, domEvent: KeyboardEvent ) {
 		if ( domEvent.key === 'Escape' && this._currentElementWithTooltip ) {
+			if ( !containsNode( this._currentElementWithTooltip, getActiveElement( this._currentElementWithTooltip ) ) ) {
+				domEvent.stopPropagation();
+			}
+
 			this._unpinTooltip();
-			domEvent.stopPropagation();
 		}
 	}
 
@@ -470,7 +497,7 @@ export class TooltipManager extends TooltipManagerBase {
 	 */
 	private _onEnterOrFocus( evt: EventInfo, domEvent: any ) {
 		// A `composed` event (`focus`/`blur`; on old browsers also `mouseenter`/`mouseleave`, see
-		// #_resyncShadowRootListeners) that originates inside a tracked shadow root reaches this listener too
+		// the constructor) that originates inside a tracked shadow root reaches this listener too
 		// when it is the one attached to `document`, but with its target retargeted to the shadow host —
 		// useless here. Nothing is lost by bailing out: the capture phase runs outwards-in, so the listener
 		// attached to that shadow root runs *after* this one and sees the real target. Without this, the
@@ -604,60 +631,6 @@ export class TooltipManager extends TooltipManagerBase {
 			// queued (debounced): it should get canceled (e.g. quick focus then quick blur using the keyboard).
 			this._pinTooltipDebounced.cancel();
 			this._unpinTooltipDebounced();
-		}
-	}
-
-	/**
-	 * Attaches or detaches listeners on shadow roots so they match the shadow roots that host tooltip-bearing UI
-	 * exactly, i.e. the shadow-root keys of {@link #_bodyCollectionByTree}.
-	 *
-	 * The listeners duplicate the ones on `document` for two different reasons:
-	 *
-	 * * `mouseenter`, `mouseleave` and `scroll` are not `composed`, so their event path ends at the shadow root
-	 * they originated in and the `document` listeners never see them at all. Here the per-root listener is what
-	 * delivers the event.
-	 * * `focus` and `blur` are `composed`, so the capturing `document` listeners do see them (the capture phase
-	 * walks the whole composed path even though these events do not bubble) — but with `target` retargeted to
-	 * the shadow host, which is useless for `getDescendantWithTooltip()`. Here the per-root listener is
-	 * what provides the real target. It cannot be replaced by reading `composedPath()[0]` on `document`,
-	 * because that path is truncated at the boundary of a `closed` root.
-	 *
-	 * Since the capture phase runs outwards-in, the `document` listener fires *before* these; see the
-	 * `isShadowHostOf()` guards in {@link #_onEnterOrFocus} and {@link #_onLeaveOrBlur}, which make the
-	 * outer listeners step aside for the innermost one.
-	 */
-	private _resyncShadowRootListeners(): void {
-		const currentRoots = new Set<ShadowRoot>();
-
-		for ( const tree of this._bodyCollectionByTree.keys() ) {
-			if ( isShadowRoot( tree ) ) {
-				currentRoots.add( tree );
-			}
-		}
-
-		for ( const root of this._shadowRoots ) {
-			if ( !currentRoots.has( root ) ) {
-				this.stopListening( root );
-				this._shadowRoots.delete( root );
-			}
-		}
-
-		for ( const root of currentRoots ) {
-			if ( this._shadowRoots.has( root ) ) {
-				continue;
-			}
-
-			// Not `composed` — the `document` listeners never receive these from inside a shadow root.
-			this.listenTo( root, 'mouseenter', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-			this.listenTo( root, 'mouseleave', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
-			this.listenTo( root, 'scroll', this._onScroll.bind( this ), { useCapture: true } );
-
-			// `composed`, so the `document` listeners do receive these — but with a retargeted `target`.
-			// These see the real one.
-			this.listenTo( root, 'focus', this._onEnterOrFocus.bind( this ), { useCapture: true } );
-			this.listenTo( root, 'blur', this._onLeaveOrBlur.bind( this ), { useCapture: true } );
-
-			this._shadowRoots.add( root );
 		}
 	}
 

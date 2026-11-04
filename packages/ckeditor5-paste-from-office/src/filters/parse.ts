@@ -104,7 +104,10 @@ function documentToView( htmlDocument: Document, stylesProcessor: StylesProcesso
 		fragment.appendChild( nodes[ 0 ] );
 	}
 
-	return domConverter.domToView( fragment, { skipComments: true } ) as ViewDocumentFragment;
+	return domConverter.domToView( fragment, {
+		skipComments: true,
+		skipProcessingInstructions: true
+	} ) as ViewDocumentFragment;
 }
 
 /**

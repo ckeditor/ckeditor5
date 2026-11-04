@@ -38,12 +38,8 @@ const KNOWN_UNDECLARED_VARIABLES = new Set( [
 	// Set from JavaScript by the AI review feature (`aireviewcorereviewcommandlistitemview.ts`).
 	'--ck-ai-review-check-list-item-index',
 
-	// Declared by the document outline feature from the commercial distribution.
-	'--ck-document-outline-item-default-color',
-
 	// Pre-existing gaps: consumed by the theme without a matching declaration anywhere.
 	'--ck-block-toolbar-size',
-	'--ck-color-widget-type-around-button',
 
 	// Pre-existing gap in the revision history styles.
 	// See https://github.com/ckeditor/ckeditor5-commercial/issues/11082.

@@ -522,7 +522,10 @@ export class FindAndReplaceFormView extends View {
 			if ( !counterWidth ) {
 				inputElement.style[ paddingPropertyName ] = '';
 			} else {
-				inputElement.style[ paddingPropertyName ] = `calc( 2 * var(--ck-spacing-standard) + ${ counterWidth }px )`;
+				// The same offset as the counter position in `findandreplaceform.css`.
+				const counterOffset = 'var(--ck-spacing-standard, var(--ck-spacing-base))';
+
+				inputElement.style[ paddingPropertyName ] = `calc( 2 * ${ counterOffset } + ${ counterWidth }px )`;
 			}
 		};
 

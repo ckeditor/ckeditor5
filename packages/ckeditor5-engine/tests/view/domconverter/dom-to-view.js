@@ -194,6 +194,20 @@ describe( 'DomConverter', () => {
 			expect( converter.mapViewToDom( viewComment ) ).not.toBe( domComment );
 		} );
 
+		it( 'should create UIElement for processing instruction', () => {
+			const domInstruction = document.createProcessingInstruction( 'if', '!supportLists' );
+
+			const viewInstruction = converter.domToView( domInstruction );
+
+			expect( viewInstruction ).toBeInstanceOf( ViewUIElement );
+			expect( viewInstruction.name ).toBe( '$processingInstruction' );
+
+			expect( viewInstruction.getCustomProperty( '$processingTarget' ) ).toBe( 'if' );
+			expect( viewInstruction.getCustomProperty( '$processingData' ) ).toBe( '!supportLists' );
+
+			expect( converter.mapViewToDom( viewInstruction ) ).not.toBe( domInstruction );
+		} );
+
 		it( 'should create UIElement for comment and bind elements', () => {
 			const domComment = document.createComment( 'abc' );
 
@@ -213,6 +227,76 @@ describe( 'DomConverter', () => {
 			const viewComment = converter.domToView( domComment, { skipComments: true } );
 
 			expect( viewComment ).toBeNull();
+		} );
+
+		it( 'should return `null` for a processing instruction when the `skipProcessingInstructions` option is set to `true`', () => {
+			const domInstruction = document.createProcessingInstruction( 'if', '!supportLists' );
+
+			const viewInstruction = converter.domToView( domInstruction, { skipProcessingInstructions: true } );
+
+			expect( viewInstruction ).toBeNull();
+		} );
+
+		it( 'should create UIElement for processing instruction and bind elements', () => {
+			const domInstruction = document.createProcessingInstruction( 'if', '!supportLists' );
+
+			const viewInstruction = converter.domToView( domInstruction, { bind: true } );
+
+			expect( viewInstruction ).toBeInstanceOf( ViewUIElement );
+			expect( viewInstruction.name ).toBe( '$processingInstruction' );
+
+			expect( converter.mapViewToDom( viewInstruction ) ).toBe( domInstruction );
+		} );
+
+		it( 'should not return `null` for a processing instruction when only the `skipComments` option is set to `true`', () => {
+			const domInstruction = document.createProcessingInstruction( 'if', '!supportLists' );
+
+			const viewInstruction = converter.domToView( domInstruction, { skipComments: true } );
+
+			expect( viewInstruction.name ).toBe( '$processingInstruction' );
+		} );
+
+		it( 'should not return `null` for a comment when only the `skipProcessingInstructions` option is set to `true`', () => {
+			const domComment = document.createComment( 'abc' );
+
+			const viewComment = converter.domToView( domComment, { skipProcessingInstructions: true } );
+
+			expect( viewComment.name ).toBe( '$comment' );
+		} );
+
+		it( 'should preserve the processing instruction target letter case', () => {
+			// Unlike tag names, processing instruction targets are case-sensitive.
+			const domInstruction = document.createProcessingInstruction( 'Foo', 'bar' );
+
+			expect( converter.domToView( domInstruction ).getCustomProperty( '$processingTarget' ) ).toBe( 'Foo' );
+
+			expect(
+				converter.domToView( domInstruction, { keepOriginalCase: false } ).getCustomProperty( '$processingTarget' )
+			).toBe( 'Foo' );
+		} );
+
+		it( 'should keep processing instruction data starting with a question mark intact', () => {
+			// `<?t?d?>` tokenizes as target "t", data "?d".
+			const domInstruction = document.createProcessingInstruction( 't', '?d' );
+
+			expect( converter.domToView( domInstruction ).getCustomProperty( '$processingData' ) ).toBe( '?d' );
+		} );
+
+		it( 'should not create children for a processing instruction', () => {
+			const domInstruction = document.createProcessingInstruction( 'if', '!supportLists' );
+
+			expect( converter.domToView( domInstruction ).childCount ).toBe( 0 );
+		} );
+
+		it( 'should create UIElement for a processing instruction nested in an element', () => {
+			const domInstruction = document.createProcessingInstruction( 'if', '!supportLists' );
+			const domP = createElement( document, 'p', {}, [ domInstruction ] );
+
+			const viewP = converter.domToView( domP );
+
+			expect( viewP.childCount ).toBe( 1 );
+			expect( viewP.getChild( 0 ) ).toBeInstanceOf( ViewUIElement );
+			expect( viewP.getChild( 0 ).name ).toBe( '$processingInstruction' );
 		} );
 
 		it( 'should set attributes in the same order as in the DOM', () => {

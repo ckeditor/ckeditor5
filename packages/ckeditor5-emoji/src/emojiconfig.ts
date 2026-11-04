@@ -7,6 +7,8 @@
  * @module emoji/emojiconfig
  */
 
+import type { EmojiDefinition } from './emojirepository.js';
+
 /**
  * The configuration of the Emoji feature.
  *
@@ -77,8 +79,38 @@ export interface EmojiConfig {
 	 *		.then( ... )
 	 *		.catch( ... );
 	 * ```
+	 *
+	 * If the {@link module:emoji/emojiconfig~EmojiConfig#definitions `emoji.definitions`}
+	 * option is provided, `definitionsUrl` is ignored as the passed definitions take precedence over the URL.
 	 */
 	definitionsUrl?: string;
+
+	/**
+	 * The emoji definitions to use instead of downloading them from URL.
+	 *
+	 * Use this option to bundle the emoji database with your application, for example, when the
+	 * {@glink getting-started/setup/csp Content Security Policy} of the page does not allow
+	 * downloading it. The definitions must have the same structure as the database hosted on the CKEditor 5 CDN.
+	 *
+	 * ```ts
+	 *	import definitions from './emoji/en.json';
+	 *
+	 *	ClassicEditor
+	 *		.create( {
+	 *			plugins: [ Emoji, ... ],
+	 *			emoji: {
+	 *				definitions
+	 *			}
+	 *		} )
+	 *		.then( ... )
+	 *		.catch( ... );
+	 * ```
+	 *
+	 * If this option is provided, it takes precedence over the
+	 * {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`} and
+	 * {@link module:emoji/emojiconfig~EmojiConfig#version `emoji.version`} options, which are ignored.
+	 */
+	definitions?: Array<EmojiDefinition>;
 
 	/**
 	 * The emoji database version.
@@ -97,6 +129,7 @@ export interface EmojiConfig {
 	 *
 	 * If the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
 	 * option is provided, `version` is ignored as the defined URL takes precedence over the `version`.
+	 * The same applies to the {@link module:emoji/emojiconfig~EmojiConfig#definitions `emoji.definitions`} option.
 	 */
 	version?: EmojiVersion;
 

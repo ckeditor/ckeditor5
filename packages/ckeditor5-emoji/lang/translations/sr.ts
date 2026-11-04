@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Nastavite da kucate da biste videli emotikone.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'Upit mora da sadrži najmanje dva znaka',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'U ovoj kategoriji nema emotikona.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Smajliji i izrazi',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

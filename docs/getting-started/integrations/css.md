@@ -124,7 +124,7 @@ Use the following CSS to address the issues with the `z-index` and selector spec
 }
 
 .ck input.ck-input.ck-input-text:focus {
-	border: var(--ck-focus-ring);
+	border-color: var(--ck-input-focus-border-color);
 	box-shadow: var(--ck-interactive-focus-shadow),var(--ck-inset-shadow-sm);
 }
 ```

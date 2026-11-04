@@ -13,7 +13,7 @@
 }
 
 .ck .ck-widget__resizer {
-	outline: 1px solid var(--ck-color-resizer);
+	outline: 1px solid var(--ck-color-resizer, var(--ck-resizer-color));
 	display: none;
 	position: absolute;
 
@@ -28,7 +28,7 @@
 	width: var(--ck-resizer-size);
 	height: var(--ck-resizer-size);
 	background: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
-	border: var(--ck-resizer-border-width) solid var(--ck-color-base-background);
+	border: var(--ck-resizer-border-width) solid var(--ck-color-surface-canvas);
 	border-radius: var(--ck-resizer-border-radius);
 	position: absolute;
 

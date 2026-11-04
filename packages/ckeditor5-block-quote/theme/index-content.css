@@ -3,7 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* content-layer: pending color palette */
+:root,
+:host {
+	/* Block quote accent border (content), themable from :root. */
+	--ck-content-block-quote-border-color: hsl(213, 40%, 90%);
+	--ck-content-block-quote-border-width: 5px;
+	--ck-content-block-quote-border-style: solid;
+}
+
 .ck-content blockquote {
 	/* See https://github.com/ckeditor/ckeditor5-block-quote/issues/12 */
 	overflow: hidden;
@@ -15,10 +22,10 @@
 	margin-left: 0;
 	margin-right: 0;
 	font-style: italic;
-	border-left: solid 5px hsl(213, 40%, 90%);
+	border-left: var(--ck-content-block-quote-border-style) var(--ck-content-block-quote-border-width) var(--ck-content-block-quote-border-color);
 }
 
 .ck-content[dir="rtl"] blockquote {
 	border-left: 0;
-	border-right: solid 5px hsl(213, 40%, 90%);
+	border-right: var(--ck-content-block-quote-border-style) var(--ck-content-block-quote-border-width) var(--ck-content-block-quote-border-color);
 }

@@ -38,7 +38,20 @@ export class HtmlDataProcessor implements DataProcessor {
 	 */
 	public htmlWriter: DataProcessorHtmlWriter;
 
+	/**
+	 * If `false`, comment nodes will be converted. Otherwise, comment nodes are ignored.
+	 *
+	 * @default true
+	 */
 	public skipComments: boolean = true;
+
+	/**
+	 * If `false`, processing instruction nodes (for example `<?target data?>`) will be converted.
+	 * Otherwise, processing instruction nodes are ignored.
+	 *
+	 * @default true
+	 */
+	public skipProcessingInstructions: boolean = true;
 
 	/**
 	 * Creates a new instance of the HTML data processor class.
@@ -76,7 +89,10 @@ export class HtmlDataProcessor implements DataProcessor {
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this.domConverter.domToView( domFragment, { skipComments: this.skipComments } ) as ViewDocumentFragment;
+		return this.domConverter.domToView( domFragment, {
+			skipComments: this.skipComments,
+			skipProcessingInstructions: this.skipProcessingInstructions
+		} ) as ViewDocumentFragment;
 	}
 
 	/**

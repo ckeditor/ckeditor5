@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import type { EmojiCdnResource, EmojiEntry } from './emojirepository.js';
+import type { EmojiDefinition, EmojiEntry } from './emojirepository.js';
 import type { EmojiSkinToneId } from './emojiconfig.js';
 import { isEmojiSupported } from './utils/isemojisupported.js';
 
@@ -79,7 +79,7 @@ export class EmojiUtils extends Plugin {
 	 * Checks if the emoji is supported by verifying the emoji version supported by the system first.
 	 * Then checks if emoji contains a zero width joiner (ZWJ), and if yes, then checks if it is supported by the system.
 	 */
-	public isEmojiSupported( item: EmojiCdnResource, emojiSupportedVersionByOs: number, container: HTMLDivElement ): boolean {
+	public isEmojiSupported( item: EmojiDefinition, emojiSupportedVersionByOs: number, container: HTMLDivElement ): boolean {
 		const isEmojiVersionSupported = item.version <= emojiSupportedVersionByOs;
 
 		if ( !isEmojiVersionSupported ) {
@@ -116,7 +116,7 @@ export class EmojiUtils extends Plugin {
 	/**
 	 * Checks whether the emoji is supported in the operating system.
 	 */
-	public isEmojiZwjSupported( item: EmojiCdnResource, container: HTMLDivElement ): boolean {
+	public isEmojiZwjSupported( item: EmojiDefinition, container: HTMLDivElement ): boolean {
 		// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
 		// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
 		// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
@@ -185,7 +185,7 @@ export class EmojiUtils extends Plugin {
 	/**
 	 * Adds default skin tone property to each emoji. If emoji defines other skin tones, they are added as well.
 	 */
-	public normalizeEmojiSkinTone( item: EmojiCdnResource ): EmojiEntry {
+	public normalizeEmojiSkinTone( item: EmojiDefinition ): EmojiEntry {
 		const entry: EmojiEntry = {
 			...item,
 			skins: {
@@ -207,7 +207,7 @@ export class EmojiUtils extends Plugin {
 	/**
 	 * Checks whether the emoji belongs to a group that is allowed.
 	 */
-	public isEmojiCategoryAllowed( item: EmojiCdnResource ): boolean {
+	public isEmojiCategoryAllowed( item: EmojiDefinition ): boolean {
 		// Category group=2 contains skin tones only, which we do not want to render.
 		return item.group !== 2;
 	}

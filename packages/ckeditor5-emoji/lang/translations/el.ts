@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Συνεχίστε να πληκτρολογείτε για να δείτε το emoji.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'Το ερώτημα πρέπει να περιέχει τουλάχιστον δύο χαρακτήρες.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'Δεν υπάρχουν emoji σε αυτήν την κατηγορία.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Χαμογελάκια και Εκφράσεις',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

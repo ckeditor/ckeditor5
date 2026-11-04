@@ -9,4 +9,9 @@
 	--ck-color-feedback-success: var(--ck-color-base-success);
 	--ck-color-feedback-warning: var(--ck-color-base-warning);
 	--ck-color-feedback-highlight: var(--ck-color-base-highlight);
+
+	/* Light, translucent backgrounds for messages and fields in a feedback state. */
+	--ck-color-feedback-error-surface: color-mix(in srgb, var(--ck-color-feedback-error) 10%, transparent);
+	--ck-color-feedback-success-surface: color-mix(in srgb, var(--ck-color-feedback-success) 10%, transparent);
+	--ck-color-feedback-warning-surface: color-mix(in srgb, var(--ck-color-feedback-warning) 10%, transparent);
 }

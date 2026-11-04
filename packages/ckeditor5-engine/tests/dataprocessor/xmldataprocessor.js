@@ -28,12 +28,14 @@ describe( 'XmlDataProcessor', () => {
 			expect( dataProcessor ).toHaveProperty( 'domConverter' );
 			expect( dataProcessor ).toHaveProperty( 'htmlWriter' );
 			expect( dataProcessor ).toHaveProperty( 'skipComments' );
+			expect( dataProcessor ).toHaveProperty( 'skipProcessingInstructions' );
 
 			expect( dataProcessor.namespaces ).toBeInstanceOf( Array );
 			expect( dataProcessor.domParser ).toBeInstanceOf( DOMParser );
 			expect( dataProcessor.domConverter ).toBeInstanceOf( ViewDomConverter );
 			expect( dataProcessor.htmlWriter ).toBeInstanceOf( BasicHtmlWriter );
 			expect( dataProcessor.skipComments ).toBe( true );
+			expect( dataProcessor.skipProcessingInstructions ).toBe( true );
 		} );
 	} );
 
@@ -187,6 +189,88 @@ describe( 'XmlDataProcessor', () => {
 			expect(
 				_stringifyView( fragment )
 			).toBe( '<$comment></$comment><foo>bar<$comment></$comment>baz</foo><$comment></$comment>' );
+		} );
+	} );
+
+	describe( 'skipProcessingInstructions', () => {
+		it( 'should pass the default flags to the DOM converter', () => {
+			const spy = vi.spyOn( dataProcessor.domConverter, 'domToView' );
+
+			dataProcessor.toView( '<foo>bar</foo>' );
+
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( expect.objectContaining( {
+				skipComments: true,
+				skipProcessingInstructions: true
+			} ) );
+		} );
+
+		it( 'should pass the changed flags to the DOM converter', () => {
+			const spy = vi.spyOn( dataProcessor.domConverter, 'domToView' );
+
+			dataProcessor.skipComments = false;
+			dataProcessor.skipProcessingInstructions = false;
+
+			dataProcessor.toView( '<foo>bar</foo>' );
+
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( expect.objectContaining( {
+				skipComments: false,
+				skipProcessingInstructions: false
+			} ) );
+		} );
+
+		it( 'should pass the flags independently of each other', () => {
+			const spy = vi.spyOn( dataProcessor.domConverter, 'domToView' );
+
+			dataProcessor.skipComments = false;
+
+			dataProcessor.toView( '<foo>bar</foo>' );
+
+			expect( spy.mock.calls[ 0 ][ 1 ] ).toEqual( expect.objectContaining( {
+				skipComments: false,
+				skipProcessingInstructions: true
+			} ) );
+		} );
+
+		it( 'should skip processing instructions when `true`', () => {
+			const fragment = dataProcessor.toView(
+				'<?instruction 1?>' +
+				'<foo>' +
+					'bar' +
+					'<?instruction 2?>' +
+					'baz' +
+				'</foo>' +
+				'<?instruction 3?>'
+			);
+
+			expect( _stringifyView( fragment ) ).toBe( '<foo>barbaz</foo>' );
+		} );
+
+		it( 'should preserve processing instructions when `false`', () => {
+			dataProcessor.skipProcessingInstructions = false;
+
+			const fragment = dataProcessor.toView(
+				'<?instruction 1?>' +
+				'<foo>' +
+					'bar' +
+					'<?instruction 2?>' +
+					'baz' +
+				'</foo>' +
+				'<?instruction 3?>'
+			);
+
+			expect( _stringifyView( fragment ) ).toBe(
+				'<$processingInstruction></$processingInstruction>' +
+				'<foo>bar<$processingInstruction></$processingInstruction>baz</foo>' +
+				'<$processingInstruction></$processingInstruction>'
+			);
+		} );
+
+		it( 'should still skip processing instructions when only comments are preserved', () => {
+			dataProcessor.skipComments = false;
+
+			const fragment = dataProcessor.toView( '<foo>bar<!-- c --><?instruction 1?>baz</foo>' );
+
+			expect( _stringifyView( fragment ) ).toBe( '<foo>bar<$comment></$comment>baz</foo>' );
 		} );
 	} );
 } );

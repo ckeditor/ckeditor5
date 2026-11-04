@@ -8,7 +8,18 @@
 	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `tableproperties.css`. */
 	--ck-content-table-style-spacing: 1.5em;
 
-	/* The variable is used by both editor and content styles. Keep it in sync with the identical declaration in `tablecaption.css`. */
+	/* Table borders and header background (content), themable from :root. */
+	--ck-content-table-border-color: hsl(0, 0%, 70%);
+	--ck-content-table-border-width: 1px;
+	--ck-content-table-border-style: double;
+	--ck-content-table-header-background: hsla(0, 0%, 0%, 5%);
+	--ck-content-table-cell-border-color: hsl(0, 0%, 75%);
+	--ck-content-table-cell-border-width: 1px;
+	--ck-content-table-cell-border-style: solid;
+
+	/* Table caption. These are the deprecated `--ck-content-color-*` names, kept as the default declaration;
+	rules read the new `--ck-content-table-caption-*` names with these as fallback (no BC break — overrides of
+	either name keep working on `:root` and in scoped selectors). Keep in sync with `tablecaption.css`. */
 	--ck-content-color-table-caption-background: hsl(0, 0%, 97%);
 	--ck-content-color-table-caption-text: hsl(0, 0%, 20%);
 }
@@ -53,7 +64,7 @@
 
 		/* The outer border of the table should be slightly darker than the inner lines.
 		Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
-		border: 1px double hsl(0, 0%, 70%);
+		border: var(--ck-content-table-border-width) var(--ck-content-table-border-style) var(--ck-content-table-border-color);
 
 		& > thead,
 		& > tfoot,
@@ -64,7 +75,7 @@
 			& > tr {
 				& > th {
 					font-weight: bold;
-					background: hsla(0, 0%, 0%, 5%);
+					background: var(--ck-content-table-header-background);
 				}
 
 				& > td,
@@ -96,7 +107,7 @@
 					/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
 					However, the border is a content style, so it should use .ck-content (so it works outside the editor).
 					Hence, the duplication. See https://github.com/ckeditor/ckeditor5/issues/6314 */
-					border: 1px solid hsl(0, 0%, 75%);
+					border: var(--ck-content-table-cell-border-width) var(--ck-content-table-cell-border-style) var(--ck-content-table-cell-border-color);
 				}
 			}
 		}
@@ -192,8 +203,8 @@
 	word-break: normal;
 	overflow-wrap: anywhere;
 	text-align: center;
-	color: var(--ck-content-color-table-caption-text);
-	background-color: var(--ck-content-color-table-caption-background);
+	color: var(--ck-content-table-caption-text-color, var(--ck-content-color-table-caption-text));
+	background-color: var(--ck-content-table-caption-background-color, var(--ck-content-color-table-caption-background));
 	padding: .6em;
 	font-size: .75em;
 	outline-offset: -1px;

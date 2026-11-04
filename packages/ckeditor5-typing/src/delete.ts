@@ -116,7 +116,7 @@ export class Delete extends Plugin {
 				const viewSelection = view.createSelection( editor.editing.mapper.toViewRange( modelRange ) );
 				const targetRange = viewSelection.getFirstRange()!;
 
-				const eventInfo = new BubblingEventInfo( document, 'delete', targetRange );
+				const eventInfo = new BubblingEventInfo( viewDocument, 'delete', targetRange );
 				const deleteData: Partial<DeleteEventData> = {
 					unit: 'selection',
 					direction: 'backward',

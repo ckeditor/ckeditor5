@@ -5,8 +5,8 @@
 
 :root,
 :host {
-	--ck-color-image-upload-icon: var(--ck-color-base-background);
-	--ck-color-image-upload-icon-background: var(--ck-color-base-success);
+	--ck-color-image-upload-icon: var(--ck-color-text-inverse);
+	--ck-color-image-upload-icon-background: var(--ck-color-feedback-success);
 
 	/* Match the icon size with the linked image indicator brought by the link image feature. */
 	--ck-image-upload-icon-size: 20;

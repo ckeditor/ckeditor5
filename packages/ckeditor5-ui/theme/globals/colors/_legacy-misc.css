@@ -7,7 +7,7 @@
 :host {
 	/* -- Engine -------------------------------------------------------------------------------- */
 
-	--ck-color-engine-placeholder-text: hsl(0 0% 44%);
+	--ck-color-engine-placeholder-text: var(--ck-color-text-placeholder);
 
 	/* -- Upload -------------------------------------------------------------------------------- */
 

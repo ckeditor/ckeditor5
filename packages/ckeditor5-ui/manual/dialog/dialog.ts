@@ -62,7 +62,7 @@ class ModalWithText extends Plugin {
 					tag: 'div',
 					attributes: {
 						style: {
-							padding: 'var(--ck-spacing-large)',
+							padding: 'var(--ck-spacing-padding-comfortable)',
 							whiteSpace: 'initial',
 							width: '100%',
 							maxWidth: '500px'

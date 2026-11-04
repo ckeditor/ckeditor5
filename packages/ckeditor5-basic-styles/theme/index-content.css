@@ -3,8 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Inline code background (content), themable from :root. */
+	--ck-content-inline-code-background-color: hsla(0, 0%, 78%, 0.3);
+}
+
 .ck-content code {
-	background-color: hsla(0, 0%, 78%, 0.3);
+	background-color: var(--ck-content-inline-code-background-color);
 	padding: .15em;
 	border-radius: 2px;
 }

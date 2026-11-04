@@ -64,6 +64,24 @@ You can also track the progress and changes done in the content with the {@link 
 
 {@img assets/img/features-revision-history.png 800 CKEditor&nbsp;5 document versioning feature.}
 
+### AI
+
+CKEditor&nbsp;AI brings AI writing support right into your editor. You have several options to transform your content with AI:
+
+* working with the {@link features/ckeditor-ai-chat AI Chat},
+* transforming selected text in one click with {@link features/ckeditor-ai-actions AI Quick Actions},
+* checking grammar, style, and tone with {@link features/ckeditor-ai-review AI Review},
+* translating content with {@link features/ckeditor-ai-translate AI Translate}.
+
+See the {@link features/ckeditor-ai-overview CKEditor&nbsp;AI overview} to learn how the features work together.
+
+To build your own AI features, use the {@link features/editing-toolkit-overview Editing Toolkit}. It provides building blocks that connect your agents, chats, and backend workflows to the editor:
+
+* {@link features/editing-toolkit-comparing-documents Compare} &ndash; Computes the differences between the original and revised content and lets users review and apply them in the editor.
+* {@link features/editing-toolkit-coauthor Coauthor} &ndash; Lets AI agents read and edit documents on the server through the Model Context Protocol (MCP).
+
+{@img assets/img/features-ckeditor-ai.png 800 CKEditor AI Quick Actions in CKEditor&nbsp;5.}
+
 ### Document conversion
 
 If you need to share the document outside your team, use the {@link features/export-pdf export to PDF feature} {@icon @ckeditor/ckeditor5-icons/theme/icons/export-pdf.svg Export to PDF} to produce industry-standard, portable, cross-platform files.
@@ -82,22 +100,11 @@ The CKEditor&nbsp;5 WYSIWYG editor by default produces HTML output that you can 
 
 ### Other productivity features
 
-CKEditor&nbsp;AI brings AI writing support right into your editor. You have several options to transform your content with AI:
-
-* working with the {@link features/ckeditor-ai-chat AI Chat},
-* transforming selected text in one click with {@link features/ckeditor-ai-actions AI Quick Actions},
-* checking grammar, style, and tone with {@link features/ckeditor-ai-review AI Review},
-* translating content with {@link features/ckeditor-ai-translate AI Translate}.
-
-See the {@link features/ckeditor-ai-overview CKEditor&nbsp;AI overview} to learn how the features work together.
-
 The {@link features/word-count word and character counter} will help you track progress and control the volume of the content.
 
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed up the editing process. Thanks to {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spell and grammar check} you can ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 
 Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Create and edit content comfortably on larger viewport in the {@link features/fullscreen fullscreen mode} with better access to the UI.
-
-{@img assets/img/features-ckeditor-ai.png 800 CKEditor AI Quick Actions in CKEditor&nbsp;5.}
 
 ### Customizable user experience
 

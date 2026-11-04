@@ -8,11 +8,24 @@
 :host {
 	/* Unset by default, so consumers fall back to their own radii. Set to a radius value to force uniform corners. */
 	--ck-sticky-panel-uniform-border-radius: initial;
+
+	/* Shadow of the panel content at rest, for example the classic editor toolbar area. The stuck panel keeps its own
+	   floating shadow. */
+	--ck-sticky-panel-content-shadow: none;
 }
 
 .ck.ck-sticky-panel {
+	/* The resting content is positioned, so its shadow is painted above the next sibling (for example the editing area)
+	   instead of under it. Scoped to the resting state, so the stuck states keep their `fixed` and `absolute`
+	   positions. */
+	& .ck-sticky-panel__content:not(.ck-sticky-panel__content_sticky) {
+		position: relative;
+		box-shadow: var(--ck-sticky-panel-content-shadow);
+	}
+
 	& .ck-sticky-panel__content_sticky {
-		box-shadow: var(--ck-shadow-surface-floating), 0 0;
+		/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+		box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 
 		border-width: 0 var(--ck-border-width-surface) var(--ck-border-width-surface);
 		border-radius: var(--ck-sticky-panel-uniform-border-radius, var(--ck-border-radius-surface-attached-top));

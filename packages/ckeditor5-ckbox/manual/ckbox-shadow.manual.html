@@ -1,0 +1,90 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8" />
+	<title>CKBox in Shadow DOM</title>
+	<meta
+		http-equiv="Content-Security-Policy"
+		content="script-src 'self' https://*.ckbox.io https://ckbox.cloud 'unsafe-inline' 'unsafe-eval'"
+	/>
+
+	<script src="https://cdn.ckbox.io/ckbox/nightly/ckbox.js"></script>
+	<script type="module" src="./ckbox-shadow.ts"></script>
+</head>
+
+<ck-manual-header>
+	<h3>CKBox in the light DOM, an open Shadow DOM or a closed one</h3>
+	<p>
+		The editor is built in the root picked below. Both CKBox dialogs (the file manager and the image editor)
+		are mounted in the editor body collection and get its root (<code>getRootNode()</code>) as
+		<code>stylesTarget</code>, so CKBox injects its styles there – into the shadow root in the shadow modes,
+		into the document in the light DOM mode.
+	</p>
+
+	<h2>Adding assets</h2>
+	<ol>
+		<li>Click the "Open file manager" icon to open the CKBox dialog.</li>
+		<li>The dialog should appear inside the selected root and be fully styled.</li>
+		<li>Chose assets that you want to insert into the editor, then click "Choose".</li>
+		<li>
+			Selected assets should be inserted into the editor with the following rules:
+			<ul>
+				<li>
+					When adding a non-embeddable asset - a text node with URL pointing to that asset
+					should be created.
+				</li>
+				<li>When adding an embeddable asset - it should be visible in the editor.</li>
+			</ul>
+		</li>
+		<li>
+			Inserted assets should have the <code>[data-ckbox-resource-id]</code> attribute in the
+			data.
+		</li>
+	</ol>
+
+	<h2>Editing images</h2>
+	<ol>
+		<li>Select an image and click the "Edit image" button in the image toolbar.</li>
+		<li>The image editor should appear inside the selected root and be fully styled.</li>
+		<li>Save the edited image – it should replace the original one in the content.</li>
+	</ol>
+
+	<h2>Overlay container</h2>
+	<p>
+		With <strong>Overlay layer in its own container</strong> on, the body collection (and so both CKBox dialogs)
+		moves to a separate container at the end of <code>&lt;body&gt;</code>. CKBox styles should follow it into
+		that container's root instead of the editor's one.
+	</p>
+	<p>
+		To check where the styles went, open a dialog and run in the console:
+		<code>editor.ui.view.body.first.element.getRootNode().querySelectorAll( 'style' )</code>.
+		In the shadow modes <code>document.head</code> should not receive any CKBox styles.
+	</p>
+</ck-manual-header>
+
+<ck-manual-shadow-mode overlay-container></ck-manual-shadow-mode>
+
+<div id="mount"></div>
+
+<template id="editor-template">
+	<!-- Styles the markup below, so they have to travel with it: cloned into a shadow root, this `<style>`
+	     goes along, while the page's own stylesheets do not reach that root. -->
+	<style>
+		.editor-container {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+	</style>
+
+	<div class="editor-container">
+		<div id="editor">
+			<h2>CKBox in Shadow DOM</h2>
+			<p>
+				Use the toolbar icon to insert an image or link to a file to the content.
+				<img src="/images/sample50.png" />
+			</p>
+			<p>
+				<a href="https://example.com" data-ckbox-resource-id="example-id-for-link">Example link</a>
+			</p>
+		</div>
+	</div>
+</template>

@@ -8,16 +8,20 @@
 	/* Spacing */
 	--ck-menu-bar-padding: var(--ck-spacing-padding-compact);
 	--ck-menu-bar-gap: var(--ck-spacing-gap-compact);
+
+	/* Menu bar background. Declared `initial` and read with the global canvas surface as fallback (no visual change),
+	   so the menu bar can be given its own color from `:root` without retargeting every canvas surface. */
+	--ck-menu-bar-background: initial;
 }
 
 .ck.ck-menu-bar {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: flex-start;
-	background: var(--ck-color-surface-canvas);
+	background: var(--ck-menu-bar-background, var(--ck-color-surface-canvas));
 	padding: var(--ck-menu-bar-padding);
 	gap: var(--ck-menu-bar-gap);
-	border: var(--ck-toolbar-border);
+	border: var(--ck-toolbar-border, var(--ck-border-width-surface) solid var(--ck-color-toolbar-border, var(--ck-toolbar-border-color)));
 	width: 100%;
 
 	/* Decoupled from inherited font-size so changes don't scale icons or spacing. */

@@ -20,9 +20,13 @@
 	/* Color */
 	--ck-list-background-color: var(--ck-color-surface-control);
 	--ck-list-button-hover-background-color: var(--ck-color-button-default-hover-background, var(--ck-button-default-hover-background-color));
-	--ck-list-button-on-background-color: var(--ck-color-button-on-color, var(--ck-button-on-text-color));
+	/* The selected item is a solid fill under inverse text, so it reads the primary surface (fill) role, not a text role.
+	   It has the same value as the selected text color in the default theme, and follows the primary color
+	   (`--ck-color-base-action`). */
+	--ck-list-button-on-background-color: var(--ck-color-button-on-color, var(--ck-color-interactive-primary-surface));
 	--ck-list-button-on-text-color: var(--ck-color-text-inverse);
 	--ck-list-divider-color: var(--ck-color-divider);
+	--ck-list-separator-height: var(--ck-border-width-divider);
 
 	/* Typography */
 	--ck-list-group-label-font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
@@ -151,7 +155,7 @@
 }
 
 .ck.ck-list__separator {
-	height: 1px;
+	height: var(--ck-list-separator-height);
 	/* Full-bleed: the negative inline margin pulls the divider across the list's inline padding to both edges. */
 	width: calc(100% - 2 * var(--ck-list-separator-inline-margin));
 	background: var(--ck-list-divider-color);

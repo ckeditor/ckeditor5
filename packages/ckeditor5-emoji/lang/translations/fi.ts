@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Tuo emoji näkyviin jatkamalla kirjoittamista.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'Haussa on oltava vähintään 2 merkkiä.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'Tässä kategoriassa ei ole emojeja.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Hymiöt & ilmeet',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

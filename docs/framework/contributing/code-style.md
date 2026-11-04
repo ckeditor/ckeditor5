@@ -1336,6 +1336,48 @@ document.caretPositionFromPoint( x, y, { shadowRoots } );
 
 If a raw API is the correct call at a given site, opt out with an `// eslint-disable-next-line` comment that explains why. The shadow-aware helpers that wrap these APIs are the main case.
 
+### Require Trusted Types for DOM injection sinks: `ckeditor5-rules/require-trusted-types-for-sinks`
+
+An application can enforce Trusted Types with the `require-trusted-types-for 'script'` CSP directive. The browser then rejects a plain string in every DOM injection sink, which is any place that turns a string into HTML or code, such as `innerHTML`. If the editor writes a plain string there, it throws. To prevent that, this rule requires every value that reaches a sink to go through one of the Trusted Types helpers from `@ckeditor/ckeditor5-utils`. See the {@link getting-started/setup/csp#trusted-types Content Security Policy} guide to learn how the editor supports Trusted Types.
+
+The rule checks three kinds of sinks:
+
+* **HTML** &ndash; assignments to `innerHTML`, `outerHTML`, and `srcdoc`, the HTML argument of `parseFromString()`, `createContextualFragment()`, `insertAdjacentHTML()`, `setHTMLUnsafe()`, and `parseHTMLUnsafe()`, and every argument of `write()` and `writeln()`, which join all the arguments they receive. The value must come directly from a call to {@link module:utils/dom/trustedtypes~trustedHtml `trustedHtml()`}.
+* **Attributes** &ndash; `setAttribute()` and `setAttributeNS()` when the attribute name can be any attribute, or when it names an event handler, such as `onclick`, or `srcdoc`. The value must come directly from a call to `_trustedAttributeValue()` with the same element and attribute name. This helper asks the browser which Trusted Type the attribute needs. A literal `src`, `href`, or `data` is not reported, because these attributes are sinks only on some elements.
+* **Functions that write HTML themselves** &ndash; third-party functions, such as `morphdom()`, that write an HTML string they receive to a sink in their own code. Neither helper can reach that sink, so these functions must receive a DOM node instead of a string. The rule checks only the functions listed in the `htmlWritingFunctions` option, each with the position of the argument to check, for example `{ htmlWritingFunctions: { morphdom: 1 } }`.
+
+Three kinds of code are reported even though they look correct. The first is a variable that holds the result of an earlier `trustedHtml()` or `_trustedAttributeValue()` call. The rule cannot know what such a variable contains, so the call must be written directly in the sink. The second is a spread argument, such as `document.write( ...parts )`. The rule cannot see what it holds either, so it reports it without a suggestion. The third is `+=` on an HTML property. It reads the property, joins the strings, and assigns a plain string, so the browser rejects it even when the added part comes from `trustedHtml()`. Build the whole HTML first and assign it once.
+
+The rule uses type information to tell sinks from methods of the same name. For this reason, enable it only for files covered by a TypeScript project, with `parserOptions.projectService` set. The rule reports a sink only when the object that owns it is typed as a DOM object, such as an `Element`, a `Document`, or a `DOMParser`. This is why `writer.setAttribute( key, value, element )` and `navigator.clipboard.write( items )` are not reported. An object of an unknown type, such as `any`, counts as a DOM object, because the rule cannot tell what it holds. Attribute names are read from their types too. A name typed as a union of string literals, for example in `for ( const name of [ 'id', 'class' ] as const )`, is reported only if one of the literals is an event handler or `srcdoc`.
+
+To fix a reported sink, apply the suggestion of the rule. It wraps the value in the right helper and imports the helper. The rule does not fix the code automatically, because the helpers do not clean anything. They only make the browser accept the value, so wrapping a value is a decision about where it comes from. Wrap only markup and attribute values that the code produces itself, never content from a user or from a server response. The suggestion can also add an import of `@ckeditor/ckeditor5-utils` to a package that does not declare this dependency yet, so check the `package.json` file of the package after you apply it.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```ts
+element.innerHTML = html;
+element.innerHTML += trustedHtml( html );
+element.insertAdjacentHTML( 'beforeend', html );
+new DOMParser().parseFromString( html, 'text/html' );
+
+element.setAttribute( attributeName, value );
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+import { trustedHtml, _trustedAttributeValue } from '@ckeditor/ckeditor5-utils';
+
+element.innerHTML = trustedHtml( html );
+element.insertAdjacentHTML( 'beforeend', trustedHtml( html ) );
+new DOMParser().parseFromString( trustedHtml( html ), 'text/html' );
+
+element.setAttribute( attributeName, _trustedAttributeValue( element, attributeName, value ) );
+element.setAttribute( 'class', value );
+```
+
+If a sink is written on purpose, opt out with an `// eslint-disable-next-line` comment that explains why. Do the same for a reported `setAttribute()` or `setAttributeNS()` call that should never set an attribute requiring a Trusted Type. The value then stays a plain string, so if the call ever sets such an attribute, the Trusted Types enforcement of the application decides about it, instead of `_trustedAttributeValue()` making the browser accept it.
+
 ## CKEditor&nbsp;5 custom CSS ESLint rules
 
 In addition to the rules provided by ESLint and its CSS plugin, CKEditor&nbsp;5 uses a few custom CSS rules described below.
@@ -1438,7 +1480,7 @@ The rule is autofixable. The fix adds `:host` as a new selector after `:root`, i
 
 ```css
 :root {
-	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
+	--ck-bookmark-icon-hover-fill-color: var(--ck-widget-hover-border-color);
 }
 ```
 
@@ -1447,6 +1489,6 @@ The rule is autofixable. The fix adds `:host` as a new selector after `:root`, i
 ```css
 :root,
 :host {
-	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
+	--ck-bookmark-icon-hover-fill-color: var(--ck-widget-hover-border-color);
 }
 ```

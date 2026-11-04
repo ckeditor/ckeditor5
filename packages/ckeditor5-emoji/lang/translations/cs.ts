@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Pokud chcete zobrazit emotikon, pokračujte v psaní.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'Dotaz musí obsahovat alespoň dva znaky.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'V této kategorii nejsou žádné emotikony.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Smajlíci a výrazy',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

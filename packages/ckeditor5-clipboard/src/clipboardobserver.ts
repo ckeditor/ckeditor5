@@ -74,6 +74,13 @@ export class ClipboardObserver extends DomEventObserver<
 					content = dataTransfer.getData( 'text/html' );
 				} else if ( dataTransfer.getData( 'text/plain' ) ) {
 					content = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
+				} else if ( type == 'clipboardInput' && dataTransfer.getData( 'text/uri-list' ) && !dataTransfer.files.length ) {
+					// Some sources provide links only as `text/uri-list`, e.g. "Copy" in the iOS Safari share sheet.
+					// See https://github.com/ckeditor/ckeditor5/issues/2074.
+					// Skip it when files are present, as it then lists their local `file://` paths (e.g. files dropped on Linux).
+					// Skip it on `dragover` too, as `dragging` does not insert content and reading files there is slow in Firefox.
+					// See https://github.com/ckeditor/ckeditor5/issues/13366.
+					content = plainTextToHtml( getUrisFromUriList( dataTransfer.getData( 'text/uri-list' ) ).join( '\n' ) );
 				}
 
 				viewDocument.fire( eventInfo, {
@@ -111,6 +118,18 @@ export class ClipboardObserver extends DomEventObserver<
 
 		this.fire( domEvent.type, domEvent, evtData );
 	}
+}
+
+/**
+ * Returns the URIs from a `text/uri-list` string, skipping empty lines and comment lines (lines starting with `#`).
+ *
+ * See https://www.rfc-editor.org/rfc/rfc2483#section-5.
+ */
+function getUrisFromUriList( uriList: string ): Array<string> {
+	return uriList
+		.split( /\r?\n/ )
+		.map( line => line.trim() )
+		.filter( line => line && !line.startsWith( '#' ) );
 }
 
 /**
@@ -185,7 +204,8 @@ export interface ClipboardInputEventData {
 	targetRanges: Array<ViewRange> | null;
 
 	/**
-	 * The content of clipboard input. Defaults to `text/html`. Falls-back to `text/plain`.
+	 * The content of clipboard input. Defaults to `text/html`. Falls back to `text/plain`, then to `text/uri-list`
+	 * (unless the data transfer contains files).
 	 */
 	content: string | ViewDocumentFragment;
 

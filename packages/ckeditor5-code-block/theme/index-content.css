@@ -3,12 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Code block (content), themable from :root. */
+	--ck-content-code-block-text-color: hsl(0, 0%, 20.8%);
+	--ck-content-code-block-background: hsl(0, 0%, 96%);
+	--ck-content-code-block-border-color: hsl(213, 40%, 90.2%);
+	--ck-content-code-block-border-width: 1px;
+	--ck-content-code-block-border-style: solid;
+	--ck-content-code-block-border-radius: 2px;
+}
+
 .ck-content pre {
 	padding: 1em;
-	color: hsl(0, 0%, 20.8%);
-	background: hsl(0, 0%, 96%);
-	border: 1px solid hsl(213, 40%, 90.2%);
-	border-radius: 2px;
+	color: var(--ck-content-code-block-text-color);
+	background: var(--ck-content-code-block-background);
+	border: var(--ck-content-code-block-border-width) var(--ck-content-code-block-border-style) var(--ck-content-code-block-border-color);
+	border-radius: var(--ck-content-code-block-border-radius);
 
 	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
 	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */

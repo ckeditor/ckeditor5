@@ -72,11 +72,11 @@
 
 	&.ck-error {
 		& > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
-			color: var(--ck-color-feedback-error);
+			color: var(--ck-color-text-error);
 		}
 
 		& .ck-input:not([readonly]) + .ck.ck-label {
-			color: var(--ck-color-feedback-error);
+			color: var(--ck-color-text-error);
 		}
 	}
 
@@ -90,7 +90,7 @@
 		white-space: normal;
 
 		&.ck-labeled-field-view__status_error {
-			color: var(--ck-color-feedback-error);
+			color: var(--ck-color-text-error);
 		}
 	}
 

@@ -7,7 +7,8 @@
 :host {
 	/* Generic focus visuals for interactive controls and actions. */
 	--ck-interactive-focus-ring: var(--ck-focus-ring);
-	--ck-interactive-focus-border-color: var(--ck-focus-border-color);
+	/* Backward compatibility: falls back to legacy --ck-color-focus-border if overridden. */
+	--ck-interactive-focus-border-color: var(--ck-color-focus-border, var(--ck-focus-border-color));
 	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow if overridden. */
 	--ck-interactive-focus-shadow: var(--ck-focus-outer-shadow, var(--ck-focus-shadow));
 	/* Backward compatibility: falls back to legacy --ck-focus-disabled-outer-shadow if overridden. */

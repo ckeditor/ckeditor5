@@ -362,15 +362,15 @@ export class Rect {
 	 * Recalculates screen coordinates to coordinates relative to the positioned ancestor offset.
 	 */
 	public toAbsoluteRect(): Rect {
-		const { scrollX, scrollY } = global.window;
-		const absoluteRect = this.clone().moveBy( scrollX, scrollY );
+		const absoluteRect = this.clone();
+		const positionedAncestor = isDomElement( this._source ) ? getPositionedAncestor( this._source ) : null;
 
-		if ( isDomElement( absoluteRect._source ) ) {
-			const positionedAncestor = getPositionedAncestor( absoluteRect._source );
-
-			if ( positionedAncestor ) {
-				shiftRectToCompensatePositionedAncestor( absoluteRect, positionedAncestor );
-			}
+		// Both this rect and the positioned ancestor's rect are relative to the viewport, so the window scroll
+		// cancels out between them and must only be added when the element is laid out against the document.
+		if ( positionedAncestor ) {
+			shiftRectToCompensatePositionedAncestor( absoluteRect, positionedAncestor );
+		} else {
+			absoluteRect.moveBy( global.window.scrollX, global.window.scrollY );
 		}
 
 		return absoluteRect;
@@ -587,7 +587,7 @@ function isPositioned( node: Node ): boolean {
 }
 
 /**
- * For a given absolute Rect coordinates object and a positioned element ancestor, it updates its
+ * For a given Rect relative to the viewport and a positioned element ancestor, it updates its
  * coordinates that make up for the position and the scroll of the ancestor.
  *
  * This is necessary because while Rects (and DOMRects) are relative to the browser's viewport, their coordinates

@@ -3,12 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root,
+:host {
+	/* Horizontal line color (content), themable from :root. */
+	--ck-content-horizontal-line-background: hsl(213, 40%, 90.2%);
+}
+
 .ck-content hr {
 	display: inline-block;
 	width: 100%;
 	margin: 15px 0;
 	height: 4px;
-	background: hsl(213, 40%, 90.2%);
+	background: var(--ck-content-horizontal-line-background);
 	border: 0;
 	vertical-align: middle;
 }

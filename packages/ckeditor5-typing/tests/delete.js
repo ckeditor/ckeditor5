@@ -297,6 +297,21 @@ describe( 'Delete feature', () => {
 			expect( _getModelData( model ) ).toEqual( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
 		} );
 
+		it( 'fires the delete event with the view document as the event source', () => {
+			const sources = [];
+
+			viewDocument.on( 'delete', evt => {
+				sources.push( evt.source );
+			}, { priority: 'highest' } );
+
+			_setModelData( model, '<widget><nested>[]</nested></widget>' );
+
+			clickBackspace( editor );
+
+			expect( sources ).toHaveLength( 1 );
+			expect( sources[ 0 ] ).toBe( viewDocument );
+		} );
+
 		it( 'handles the backspace key + meta key in a nested editable', () => {
 			_setModelData( model, '<widget><nested>[]</nested></widget>' );
 

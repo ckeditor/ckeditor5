@@ -4,7 +4,7 @@ meta-title: Migration to refreshed theme | CKEditor 5 Documentation
 meta-description: Learn what changed in the refreshed CKEditor 5 theme and design tokens, how your token overrides keep working, and how to restore the previous look.
 menu-title: Migration to refreshed theme
 order: 52
-modified_at: 2026-10-15
+modified_at: 2026-10-27
 ---
 
 # Migrating to the refreshed theme
@@ -69,7 +69,10 @@ Old token names keep working through two independent mechanisms. Which one appli
 
 ### Overriding old token names
 
-If you set a legacy token name to re-skin the editor, it still works. No changes needed.
+If you set a legacy token name to re-skin the editor, it usually still works, and you need no changes. Check the exceptions:
+
+* Some names work only on `:root` &ndash; see [Overriding on a narrower selector](#overriding-on-a-narrower-selector).
+* Some names no longer work or reach only part of the UI &ndash; see [Legacy names to replace](#legacy-names-to-replace) and [Focus styles](#focus-styles).
 
 ```css
 /* The way you re-skinned the editor on the old theme - still works as-is. */
@@ -87,6 +90,15 @@ property: var(--ck-old-token, var(--ck-new-token));
 ```
 
 Because the old name is read at each point of use, an override works on any selector, not only `:root` &ndash; set it on a wrapper (for example `.ck-sidebar`) and it applies to the editor UI inside. A few re-themed tokens are the exception; see [Overriding on a narrower selector](#overriding-on-a-narrower-selector).
+
+Some renamed tokens use the reverse order. The theme still declares the old name with its default value, so the new name is read first and has no value until you set it:
+
+```css
+/* Inside the theme: the new name is empty unless you set it, so the old name keeps working. */
+property: var(--ck-new-token, var(--ck-old-token));
+```
+
+An override of the old name still works on any selector. If you set both names, the new one wins. The renamed tokens are listed in [Feature tokens](#feature-tokens).
 
 <info-box warning>
 	Without `!important`, your override must load after the editor CSS (same `:root` specificity &ndash; last one wins).
@@ -140,7 +152,7 @@ Save the aliases block below as your own file and load it between the editor CSS
  *
  * It intentionally covers only tokens that are safe to alias globally. A few
  * internal tokens that components re-theme (for example button-state and balloon
- * panel colors, or font-size-normal, border-radius, inner-shadow) are override-only
+ * panel colors, or font-size-normal, border-radius, drop-shadow, inner-shadow) are override-only
  * and are not listed here; read their new names directly instead. The z-index
  * aliases stay in the default theme because of the fullscreen layering.
  */
@@ -193,6 +205,22 @@ Save the aliases block below as your own file and load it between the editor CSS
 	--ck-color-tooltip-background: var(--ck-tooltip-background-color);
 	--ck-color-tooltip-text: var(--ck-tooltip-text-color);
 
+	/* -- Widget / Resizer ---------------------------------------------------------------------- */
+
+	--ck-color-widget-blurred-border: var(--ck-widget-blurred-border-color);
+	--ck-color-widget-hover-border: var(--ck-widget-hover-border-color);
+	--ck-color-widget-editable-focus-background: var(--ck-widget-editable-focus-background-color);
+	--ck-color-widget-drag-handler-icon-color: var(--ck-widget-drag-handler-icon-color);
+
+	--ck-color-resizer: var(--ck-resizer-color);
+	--ck-color-resizer-tooltip-background: var(--ck-resizer-tooltip-background-color);
+	--ck-color-resizer-tooltip-text: var(--ck-resizer-tooltip-text-color);
+
+	/* -- Color grid / Editing area ------------------------------------------------------------- */
+
+	--ck-color-color-grid-check-icon: var(--ck-color-grid-check-icon-color);
+	--ck-color-editable-blur-selection: var(--ck-editor-editable-blurred-selection-background);
+
 	/* -- Foundation: spacing ------------------------------------------------------------------- */
 
 	--ck-spacing-extra-tiny: var(--ck-spacing-2xs);
@@ -220,7 +248,6 @@ Save the aliases block below as your own file and load it between the editor CSS
 	/* -- Foundation: font, shadow, focus, opacity ---------------------------------------------- */
 
 	--ck-font-face: var(--ck-font-family);
-	--ck-drop-shadow: var(--ck-shadow-md);
 	--ck-drop-shadow-active: var(--ck-shadow-lg);
 	--ck-focus-outer-shadow-geometry: var(--ck-focus-shadow-geometry);
 	--ck-focus-outer-shadow: var(--ck-focus-shadow);
@@ -250,19 +277,40 @@ Override-only tokens (set works, read does not &ndash; read the new name):
 |------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Buttons &ndash; default/on/action states | `--ck-color-button-default-background` · `-hover-` · `-active-`; `--ck-color-button-on-background` · `-hover-` · `-active-` · `-disabled-` · `--ck-color-button-on-color`; `--ck-color-button-action-background` · `-hover-` · `-active-` · `-disabled-` |
 | Switch / list                            | `--ck-color-switch-button-off-background`, `--ck-color-list-button-hover-background`                                                                                                                                                                     |
-| Balloon panel                            | `--ck-color-panel-background`, `--ck-color-panel-border`                                                                                                                                                                                                 |
-| Foundation                               | `--ck-font-size-normal`, `--ck-border-radius`, `--ck-inner-shadow`, `--ck-ui-component-min-height`                                                                                                                                                       |
+| Balloon panel                            | `--ck-color-panel-background`, `--ck-color-panel-border`, `--ck-balloon-border-width`                                                                                                                                                                    |
+| Foundation                               | `--ck-font-size-normal`, `--ck-border-radius`, `--ck-drop-shadow`, `--ck-inner-shadow`, `--ck-ui-component-min-height`                                                                                                                                   |
+
+Many newer component tokens work the same way. The theme declares them `initial` and applies their default where they are used, so an override reaches the component, but reading them in your own CSS resolves to nothing unless you set them. Examples are the button text colors (`--ck-button-default-text-color` and its hover and active variants), the list item button states (`--ck-list-item-button-text-color`, `--ck-list-item-button-open-background`), the find and replace result colors (`--ck-find-result-background`), and the presence list colors (`--ck-presence-list-counter-background-color`). To use such a color in your own component, read the token it falls back to, usually a semantic role such as `--ck-color-text-primary` or `--ck-color-interactive-hover-surface`.
+
+The border shorthands of inputs, dropdown panels, balloon panels, toolbars, and autocomplete results (`--ck-input-border`, `--ck-dropdown-panel-border`, `--ck-balloon-panel-border`, `--ck-toolbar-border`, and `--ck-autocomplete-results-border`) are override-only too. The theme composes them where they are used, so a border color set on any selector, under its old or new name, reaches the border. To read the border color, read the color token of the component, such as `--ck-input-border-color` or `--ck-dropdown-panel-border-color`, which also keeps an override of that token.
+
+The split button tokens are override-only under both names. The theme does not declare the legacy `--ck-color-split-button-hover-background` and `--ck-color-split-button-hover-border` on `:root`, and the new names are declared `initial`, so you can override them but not read them. The legacy hover border colors only the separator of a hovered split button. The focused separator follows the focus color. The new `--ck-split-button-focus-border-color` lets you set the focused separator separately. To move a legacy override to the new names:
+
+```css
+:root {
+	--ck-split-button-hover-background: hsl(0, 0%, 95%);	/* was --ck-color-split-button-hover-background */
+	--ck-split-button-hover-border-color: hsl(0, 0%, 60%);	/* was --ck-color-split-button-hover-border */
+}
+```
+
+The inner start border of the split button arrow, next to the action button, has its own width, `--ck-split-button-arrow-border-inline-start-width`, which follows `--ck-button-border-width`. If you set another border width only through the `--ck-button-border` or `--ck-toolbar-button-border` shorthand, set this token to the same width as well, or to `0` to avoid a doubled line between outlined buttons.
 
 ### Z-index layers
 
-The old z-index names keep working both ways. The default theme still declares them, so you can read them without the opt-in aliases. The editor also reads them first, so overriding them still works.
+The old z-index names keep working both ways. The default theme still declares them, so you can read them without the opt-in aliases. The editor also reads them first, so overriding them on `:root` (or `:host` in a shadow root) still works. On a narrower selector, they reach only part of the UI; see [Overriding on a narrower selector](#overriding-on-a-narrower-selector).
 
-One thing changed: the panel layer no longer derives from `--ck-z-default`. In the previous theme, overriding `--ck-z-default` also moved panels, such as menus and the sticky toolbar, by the same amount. Now it moves only the base layer. To shift the whole stack at once, override `--ck-z-base`:
+One thing changed: the panel layer no longer derives from `--ck-z-default`. In the previous theme, overriding `--ck-z-default` also moved panels, such as menus and the sticky toolbar, by the same amount. Now it moves only the base layer. To shift the base and panel layers at once, override `--ck-z-base`:
 
 ```css
 :root { --ck-z-panel: 5000; }	/* ✅ moves the panel layer */
 :root { --ck-z-default: 100; }	/* moves only the base layer now */
-:root { --ck-z-base: 100; }		/* ✅ moves the whole stack, as --ck-z-default used to */
+:root { --ck-z-base: 100; }		/* ✅ moves the base and panel layers, as --ck-z-default used to */
+```
+
+Dialogs do not move with `--ck-z-base`. They follow `--ck-layer-dialog`, which derives from the constant `--ck-z-modal` (`9999`), and so do the tooltips. The UI layered next to dialogs follows the same layer: the mention list, the emoji picker, and CKBox shown above them, and the AI tabs overlay right below them. To raise them together, override `--ck-layer-dialog`, `--ck-z-dialog`, or `--ck-z-modal` on `:root`:
+
+```css
+:root { --ck-layer-dialog: 20000; }	/* ✅ moves dialogs, tooltips, and the UI layered next to dialogs */
 ```
 
 ### Overriding on a narrower selector
@@ -273,13 +321,63 @@ Because each usage reads the old name first, a legacy override works on any sele
 .my-sidebar { --ck-color-comment-separator: #64ca6d; }   /* applies within .my-sidebar */
 ```
 
-A few tokens only honor a `:root` override, because a component re-defines the new token in its own scope, so a scoped override of the old name cannot reach it: the button state colors (the [override-only table](#override-only-tokens) above), the thread header colors, the `--ck-ui-component-min-height` control size (re-defined by anchor buttons, the form header, and the fullscreen sidebar), and the suggestion deletion / insertion / widget-deletion markers (re-skinned by AI review and revision preview). Override these on `:root`, or use the new name at the scope.
+A few legacy names work only when you override them on `:root`. A scoped override does not reach:
 
-A few legacy names have no bridge at all, because their style was redesigned &ndash; use the new mechanism instead:
+* The button state colors from the [override-only table](#override-only-tokens) above.
+* The thread header colors.
+* `--ck-color-focus-border` in buttons, inputs, the editing area, and menu bar items.
+* `--ck-ui-component-min-height` anywhere: it is read only on `:root`, through `--ck-size-control-min-height`. To set the control height in one scope, override `--ck-size-control-min-height` there.
+* `--ck-z-panel` in dropdown panels, balloons, and the sticky toolbar, which read `--ck-layer-panel` built from it on `:root`.
+* `--ck-z-default` in dropdown and balloon arrows and in focused items, such as split button actions and the items of lists, toolbar dropdowns, and menu bar menus, which read the layer tokens built from it on `:root`.
+* `--ck-z-dialog` in dialogs, tooltips, and the UI layered next to dialogs (the mention list, the emoji picker, CKBox, and the AI tabs overlay). In a scope, `--ck-layer-dialog` reaches dialogs, the mention list, the emoji picker, and CKBox, but not tooltips or the AI tabs overlay.
+* The suggestion deletion, insertion, and widget-deletion markers in AI review and revision preview.
 
-| Legacy name                 | What to do now                                                                     |
-|-----------------------------|------------------------------------------------------------------------------------|
-| `--ck-tooltip-text-padding` | The tooltip padding was restructured &ndash; use `--ck-tooltip-multiline-padding`. |
+Override these on `:root`, or use the new name at the scope.
+
+* `--ck-border-radius` also works only on `:root`, because the radius tokens that read it are derived there. On a narrower selector, it reaches only a few elements, such as the editor's outer shell (see [Rounding the editor's outer shell](#rounding-the-editors-outer-shell)). Buttons, inputs, panels, and dialogs ignore it there.
+* `--ck-border-radius` also has a new role: it is now the anchor of the radius scale. Panels, dropdowns, and dialogs use the full value, but buttons and inputs use half of it. For example, `--ck-border-radius: 6px` gave buttons a `6px` radius in the previous theme, and it gives them `3px` now. To set the radius of buttons and inputs directly, override `--ck-border-radius-control`:
+
+```css
+:root { --ck-border-radius: 6px; }			/* panels and dialogs: 6px, buttons and inputs: 3px */
+:root { --ck-border-radius-control: 6px; }	/* ✅ buttons, inputs, and open dropdown buttons: 6px */
+```
+
+### Legacy names to replace
+
+A few legacy names no longer work, or work only in part of the UI, because their style was redesigned. Use the replacements below instead:
+
+| Legacy name                           | What to do now                                                                                                                                                                                                                                                |
+|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--ck-tooltip-text-padding`           | The tooltip padding was restructured &ndash; use `--ck-tooltip-multiline-padding`.                                                                                                                                                                            |
+| `--ck-focus-ring`                     | Buttons, inputs, the editing area, and menu bar items no longer read it &ndash; use their focus border color tokens. See [Focus styles](#focus-styles).                                                                                                       |
+| `--ck-color-focus-border-coordinates` | In the default theme, it no longer sets the focus color &ndash; use `--ck-focus-border-color`. See [Focus styles](#focus-styles).                                                                                                                             |
+| `--ck-drop-shadow-active`             | Comment and suggestion cards no longer have a hover or active shadow, and `--ck-shadow-lg` does not bring it back. To add a shadow to all cards, use `--ck-annotation-wrapper-shadow`. For the active card only, use `--ck-annotation-wrapper-active-shadow`. |
+
+### Focus styles
+
+The legacy `--ck-color-focus-border` is now called `--ck-focus-border-color`. Overriding either name on `:root` changes the focus color in the whole editor UI.
+
+Buttons, inputs, the editing area, and menu bar items now change only their border color on focus, so a custom border width stays the same. That is why they no longer read `--ck-focus-ring`, which sets the whole border: width, style, and color.
+
+Other elements, such as focused image captions, still read `--ck-focus-ring`. Switch buttons, comment threads, and the source editing area, follow only a `:root` override of `--ck-focus-ring`.
+
+To change the focus border color of the particular elements, use the following tokens:
+
+| Element        | Token                                     |
+|----------------|-------------------------------------------|
+| Buttons        | `--ck-button-focus-border-color`          |
+| Inputs         | `--ck-input-focus-border-color`           |
+| Editing area   | `--ck-editor-editable-focus-border-color` |
+| Menu bar items | `--ck-menu-bar-item-focus-border-color`   |
+
+For example, an override that hid the focus border of the editing area in the previous theme needs the new token now:
+
+```css
+.ck.ck-editor__editable { --ck-focus-ring: none; }									/* ❌ no effect now */
+.ck.ck-editor__editable { --ck-editor-editable-focus-border-color: transparent; }	/* ✅ hides the focus border */
+```
+
+In the default theme, `--ck-color-focus-border-coordinates` no longer sets the focus color. It now colors only the pulse around the buttons that insert a paragraph next to a widget. To change the focus color, override `--ck-focus-border-color` or the legacy `--ck-color-focus-border`.
 
 ### Rounding the editor's outer shell
 
@@ -465,6 +563,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-color-surface-inverse: var(--ck-color-base-text);
 	--ck-color-border-control: var(--ck-color-base-border);
 	--ck-color-border-container: var(--ck-color-base-border);
+	--ck-color-border-accent: var(--ck-color-text-accent);
 	--ck-color-divider: var(--ck-color-base-border);
 
 	/* Semantic / Colors / Text */
@@ -474,6 +573,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-color-text-disabled: var(--ck-color-text-secondary);
 	--ck-color-text-inverse: var(--ck-color-base-background);
 	--ck-color-text-error: var(--ck-color-feedback-error);
+	--ck-color-text-accent: var(--ck-color-base-active);
 
 	/* Semantic / Colors / Feedback */
 	--ck-color-feedback-error: var(--ck-color-base-error);
@@ -486,7 +586,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-color-interactive-active-surface: var(--ck-color-base-hover);
 	--ck-color-interactive-selected-surface: var(--ck-color-base-selected);
 	--ck-color-interactive-selected-surface-hover: var(--ck-color-base-selected-hover);
-	--ck-color-interactive-selected-text: var(--ck-color-base-active);
+	--ck-color-interactive-selected-text: var(--ck-color-text-accent);
 	--ck-color-interactive-primary-surface: var(--ck-color-base-action);
 	--ck-color-interactive-primary-surface-hover: var(--ck-color-base-action-hover);
 	--ck-color-interactive-primary-surface-disabled: var(--ck-color-base-action-disabled);
@@ -558,8 +658,11 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 
 	/* Semantic / Width */
 	--ck-width-balloon-form: min(var(--ck-width-md), 90vw);
+	--ck-width-dialog-xs: min(var(--ck-width-xs), 90vw);
+	--ck-width-dialog-sm: min(var(--ck-width-sm), 90vw);
 	--ck-width-dialog: min(var(--ck-width-md), 90vw);
 	--ck-width-dialog-lg: min(var(--ck-width-xl), 90vw);
+	--ck-width-dialog-xl: min(var(--ck-width-2xl), 90vw);
 
 	/* Semantic / Shadow */
 	--ck-shadow-surface-floating: var(--ck-drop-shadow, var(--ck-shadow-md));
@@ -630,7 +733,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-input-padding: var(--ck-spacing-control-padding-block-compact) var(--ck-spacing-medium, var(--ck-spacing-base)); /* old: extra-tiny medium = 0.096em 0.48em */
 	--ck-input-font-size: var(--ck-font-size-control);
 	--ck-input-border-radius: var(--ck-border-radius-control);
-	--ck-input-border: var(--ck-border-width-control) solid var(--ck-input-border-color);
 	--ck-input-background-color: var(--ck-color-surface-control);
 	--ck-input-border-color: var(--ck-color-border-control);
 	--ck-input-error-border-color: var(--ck-color-feedback-error);
@@ -649,7 +751,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-toolbar-vertical-button-border-radius: 0;
 	--ck-toolbar-background-color: var(--ck-color-surface-container);
 	--ck-toolbar-border-color: var(--ck-color-border-container);
-	--ck-toolbar-border: var(--ck-border-width-surface) solid var(--ck-toolbar-border-color);
 
 	/* Component / Block Toolbar */
 	--ck-block-toolbar-button-size: var(--ck-font-size-normal, var(--ck-font-size-base));
@@ -663,7 +764,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-dropdown-panel-background-color: var(--ck-color-surface-container);
 	--ck-dropdown-panel-border-color: var(--ck-color-border-container);
 	--ck-dropdown-list-background-color: transparent;
-	--ck-dropdown-panel-border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
 
 	/* Component / List */
 	--ck-list-item-min-width: 15em;
@@ -727,7 +827,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 
 	/* Component / Balloon Panel */
 	--ck-balloon-panel-border-radius: var(--ck-border-radius-surface);
-	--ck-balloon-panel-border: var(--ck-border-width-surface) solid var(--ck-balloon-panel-border-color);
 	--ck-balloon-panel-background-color: var(--ck-color-surface-container);
 	--ck-balloon-panel-border-color: var(--ck-color-border-container);
 	--ck-balloon-panel-arrow-display: block;
@@ -828,7 +927,6 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-autocomplete-results-max-height: 200px;
 	--ck-autocomplete-results-border-radius: var(--ck-border-radius-surface-attached);
 	--ck-autocomplete-results-uniform-border-radius: var(--ck-border-radius-uniform);
-	--ck-autocomplete-results-border: var(--ck-border-width-surface) solid var(--ck-dropdown-panel-border-color);
 	--ck-autocomplete-results-background-color: var(--ck-color-surface-container);
 
 	/* Component / Responsive Form */
@@ -880,7 +978,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 }
 
 :is(.ck.ck-button, :where(a).ck.ck-button).ck-button_surface {
-	--ck-button-surface-border-color: var(--ck-color-interactive-selected-text);
+	--ck-button-surface-border-color: var(--ck-color-border-accent);
 }
 
 .ck.ck-accessibility-help-dialog .ck-accessibility-help-dialog__content {
@@ -1126,6 +1224,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-ai-chat-prompt-input-font-size: 1em;
 	--ck-ai-chat-prompt-input-line-height: 1.4em;
 	--ck-ai-chat-prompt-input-padding-vertical: 5px;
+	--ck-ai-chat-context-controls-add-context-button-inset-block-end: var(--ck-spacing-padding-compact);
 	--ck-ai-chat-prompt-input-padding-inline-start: var(--ck-spacing-control-padding-inline-compact);
 	--ck-ai-chat-prompt-input-padding-inline-end: 2.6em;
 	--ck-ai-chat-content-font-size: 13px;
@@ -1189,6 +1288,24 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 
 :is(.ck.ck-balloon-panel, .ck.ck-ai-chat) .ck-ai-chat-context-chip > .ck-ai-chat-context-chip__label {
 	line-height: 1.25;
+}
+
+.ck .ck-ai-chat-history .ck-ai-chat-history__item--edit {
+	& .ck-input {
+		min-height: 0;
+		padding: 0;
+		border: none;
+		box-shadow: none;
+		background: transparent;
+	}
+
+	& .ck-ai-chat-history__item-content {
+		gap: 0;
+	}
+
+	& .ck-ai-chat-history__item-actions {
+		align-items: center;
+	}
 }
 
 /* ============================== ckeditor5-collaboration-core ============================== */
@@ -1296,6 +1413,10 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	}
 }
 
+.ck .ck-suggestion__ai-source-pill {
+	margin-top: var(--ck-spacing-small, var(--ck-spacing-sm));
+}
+
 /* ============================== ckeditor5-comments ============================== */
 :root,
 :host {
@@ -1347,8 +1468,63 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	}
 }
 
+.ck.ck-annotation-wrapper:not(.ck-annotation-wrapper--active):hover {
+	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-md));
+}
+
+.ck.ck-annotation-wrapper--active {
+	box-shadow: var(--ck-drop-shadow-active, var(--ck-shadow-lg));
+}
+
 .ck .ck-comment__input-container {
 	background: var(--ck-comment-input-background-color);
+}
+
+.ck .ck-comment__input-container--active {
+	gap: 0;
+
+	& .ck-user {
+		margin-block: calc(var(--ck-spacing-padding) * .8) 2px;
+	}
+}
+
+.ck .ck-comment__input {
+	min-height: 0;
+	padding: var(--ck-comment-input-padding);
+	border: 0;
+	background-color: transparent;
+
+	&:focus-within {
+		box-shadow: none;
+	}
+}
+
+.ck .ck-comment__main .ck-comment__input {
+	padding: 0;
+}
+
+.ck .ck-thread__input {
+	min-height: 38px;
+}
+
+.ck .ck-comment__input .ck-editor__editable_inline {
+	line-height: 1.5;
+}
+
+.ck .ck-comment__input-actions {
+	margin-top: 0;
+
+	& .ck.ck-button {
+		min-height: var(--ck-ui-component-min-height, var(--ck-size-min-height));
+		min-width: 60px;
+		font-size: var(--ck-annotation-button-size);
+		margin-left: var(--ck-spacing-large, var(--ck-spacing-lg));
+		padding: 0 var(--ck-spacing-control-padding-inline);
+	}
+}
+
+.ck .ck-comment--edit .ck-comment__input-actions {
+	margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 }
 
 /* ============================== ckeditor5-pagination ============================== */
@@ -1394,8 +1570,11 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-revision-history-revision-delete-confirmation-background-color: var(--ck-revision-history-revision-delete-confirmation-background, hsl(0deg 100% 90%));
 	--ck-revision-history-revision-delete-confirmation-active-button-background-color: var(--ck-revision-history-revision-delete-confirmation-active-button-background, hsl(0deg 100% 85%));
 	--ck-revision-history-sidebar-period-background-color: var(--ck-revision-history-sidebar-period-background, hsl(14deg 100% 57%));
+	--ck-revision-history-sidebar-period-text-color: var(--ck-color-text-inverse);
 	--ck-revision-history-sidebar-timeline-padding: var(--ck-spacing-padding-comfortable);
 	--ck-revision-history-sidebar-revision-vertical-spacing: calc(2 * var(--ck-spacing-standard, var(--ck-spacing-base)));
+	--ck-revision-history-sidebar-time-period-vertical-spacing: var(--ck-revision-history-sidebar-revision-vertical-spacing);
+	--ck-revision-history-sidebar-header-border-bottom: var(--ck-border-divider);
 	--ck-revision-history-loading-overlay-visible-background-color: var(--ck-revision-history-loading-overlay-visible-background, hsl(0 0% 100% / 1));
 	--ck-revision-history-loading-overlay-spinner-size: 60px;
 	--ck-revision-history-loading-overlay-spinner-rotation-duration: 1s;
@@ -1409,6 +1588,189 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	&:hover:not(.ck-disabled) {
 		background: var(--ck-color-base-active-focus);
 	}
+}
+
+.ck.ck-revision-history-sidebar__header {
+	--header-height: max(
+		calc(var(--ck-ui-component-min-height, var(--ck-size-min-height)) + 2 * var(--ck-spacing-small, var(--ck-spacing-sm)) + 1px),
+		calc(var(--ck-icon-size) + 2 * var(--ck-spacing-small, var(--ck-spacing-sm)) + 2 * var(--ck-spacing-small, var(--ck-spacing-sm)) + 1px)
+	);
+
+	font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
+
+	& .ck-revision-history-sidebar__header__label {
+		font-weight: bold;
+		font-size: 1.2em;
+	}
+
+	& .ck-icon {
+		margin-inline-end: var(--ck-spacing-large, var(--ck-spacing-lg));
+	}
+}
+
+.ck.ck-revision-history-sidebar__time-period .ck-revision-history-sidebar__time-period__label {
+	display: inline;
+	width: auto;
+	font-size: 9px;
+	font-weight: bold;
+	line-height: inherit;
+	letter-spacing: normal;
+	padding: var(--ck-spacing-control-padding-block) var(--ck-spacing-control-padding-inline);
+
+	&:first-child {
+		margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
+	}
+}
+
+.ck.ck-revision-history-sidebar__revision-wrapper .ck-revision-history-sidebar__revision {
+	display: block;
+	color: inherit;
+	border: 0;
+	border-left: 3px solid var(--ck-revision-history-revision-border-color);
+
+	& .ck-revision-history-sidebar__revision__actions {
+		display: block;
+		position: absolute;
+		top: var(--ck-revision-history-revision-padding-block);
+		right: var(--ck-revision-history-revision-padding-inline);
+	}
+
+	& .ck-revision-history-sidebar__revision__date {
+		font-weight: bold;
+		line-height: inherit;
+		opacity: .8;
+	}
+
+	& .ck-revision-history-sidebar__revision-authors {
+		display: block;
+	}
+
+	& .ck-revision-history-sidebar__revision-ai-pill-row {
+		margin-top: var(--ck-spacing-small, var(--ck-spacing-sm));
+	}
+
+	&.ck-revision-history-sidebar__revision_selected,
+	&.ck-revision-history-sidebar__revision_highlighted {
+		transform: translateX(calc(-1 * var(--ck-revision-history-sidebar-timeline-padding)));
+	}
+
+	&.ck-revision-history-sidebar__revision_selected {
+		border-left-color: var(--ck-revision-history-revision-selected-border-color);
+	}
+
+	&.ck-revision-history-sidebar__revision_highlighted {
+		border-left-color: var(--ck-revision-history-revision-highlighted-border-color);
+	}
+
+	& .ck-revision-history-sidebar__revision__edit-actions {
+		gap: 0;
+		margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
+
+		& .ck.ck-button {
+			min-height: var(--ck-ui-component-min-height, var(--ck-size-min-height));
+			min-width: 60px;
+			font-size: var(--ck-annotation-button-size);
+			margin-left: var(--ck-spacing-large, var(--ck-spacing-lg));
+			padding: 0 var(--ck-spacing-control-padding-inline);
+		}
+	}
+
+	&.ck-revision-history-sidebar__revision_selected.ck-revision-history-sidebar__revision_editing {
+		background: var(--ck-revision-history-revision-background-color);
+		color: inherit;
+
+		& .ck-revision-history-sidebar__revision-author__name {
+			color: var(--ck-revision-history-revision-author-text-color);
+		}
+	}
+}
+
+.ck.ck-revision-history-sidebar__revision-name {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.ck.ck-revision-history-sidebar__revision:not(.ck-revision-history-sidebar__revision_editing) .ck-revision-history-sidebar__revision-name {
+	left: calc(-1 * var(--ck-spacing-small, var(--ck-spacing-sm)));
+	margin-right: 30px;
+
+	& > .ck-labeled-field-view__input-wrapper > .ck-input {
+		padding: var(--ck-spacing-control-padding-block) var(--ck-spacing-control-padding-inline-compact);
+		border: var(--ck-input-border, var(--ck-border-width-control) solid var(--ck-color-input-border, var(--ck-input-border-color)));
+		border-color: transparent;
+		border-radius: var(--ck-border-radius-control);
+		font-weight: bold;
+		font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
+		line-height: normal;
+	}
+}
+
+.ck.ck-revision-history-sidebar__revision_editing .ck-revision-history-sidebar__revision-name > .ck-labeled-field-view__input-wrapper > .ck-input {
+	font-weight: bold;
+	font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
+}
+
+.ck.ck-revision-history-sidebar__revision-author {
+	& .ck-revision-history-sidebar__revision-author__name {
+		font-weight: bold;
+		line-height: inherit;
+	}
+
+	& .ck-icon {
+		top: calc(var(--ck-revision-history-revision-author-font-size)/2);
+		transform: none;
+		width: 11px;
+		height: 10px;
+	}
+}
+
+.ck.ck-revision-history-sidebar__revision {
+	& .ck-revision-history-sidebar__revision__actions.ck-dropdown {
+		& .ck-dropdown__button.ck-button_small {
+			--ck-button-font-size: inherit;
+			--ck-icon-size-ratio: inherit;
+			--ck-icon-size: inherit;
+			--ck-size-control-min-height: inherit;
+			--ck-button-border-radius: inherit;
+
+			min-width: unset;
+			min-height: unset;
+			padding: var(--ck-button-padding);
+
+			& .ck-button__icon {
+				transform: scale( .7 );
+			}
+		}
+
+		& .ck-list__item > .ck-button .ck-button__label {
+			line-height: inherit;
+		}
+	}
+
+	&.ck-revision-history-sidebar__revision_selected .ck-revision-history-sidebar__revision__actions .ck-dropdown__button {
+		color: var(--ck-revision-history-revision-selected-actions-text-color, var(--ck-revision-history-revision-selected-input-text-color));
+
+		&:hover,
+		&.ck-on {
+			background: var(--ck-button-hover-background);
+			color: var(--ck-revision-history-revision-selected-actions-hover-text-color, initial);
+		}
+	}
+
+	&.ck-revision-history-sidebar__revision_highlighted .ck-revision-history-sidebar__revision__actions .ck-dropdown__button {
+		&:hover,
+		&.ck-on {
+			background: var(--ck-revision-history-revision-highlighted-hover-background-color);
+
+			&:hover {
+				filter: brightness(95%);
+			}
+		}
+	}
+}
+
+.ck .ck-revision-change > * {
+	font-size: inherit;
 }
 
 /* ============================== ckeditor5-slash-command ============================== */
@@ -1457,6 +1819,7 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-template-dropdown-view-height: 300px;
 	--ck-template-icon-size: 45px;
 	--ck-template-list-border-radius: 0;
+	--ck-template-list-item-border-radius: var(--ck-border-radius, var(--ck-radius-base));
 	--ck-template-list-padding: var(--ck-spacing-large, var(--ck-spacing-lg));
 	--ck-template-list-gap: var(--ck-spacing-large, var(--ck-spacing-lg));
 	--ck-template-search-field-padding: var(--ck-spacing-padding-comfortable);
@@ -1497,6 +1860,12 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	--ck-suggestion-widget-deletion-active-background-color: var(--ck-color-suggestion-widget-deletion-background-active, hsl(345 71% 45% / .07));
 	--ck-suggestion-widget-format-background-color: var(--ck-color-suggestion-widget-format-background, hsl(191 90% 40% / .09));
 	--ck-suggestion-widget-format-active-background-color: var(--ck-color-suggestion-widget-format-background-active, hsl(191 90% 40% / .16));
+}
+
+/* ============================== ckeditor5-uploadcare ============================== */
+:root,
+:host {
+	--ck-uploadcare-font-family: system-ui;
 }
 
 .ck.ck-ai-tabs,
@@ -1626,7 +1995,7 @@ If you already use the legacy theme preset, these same content rollbacks are inc
 
 This section maps each legacy name to its new name. You rarely need it, because overriding old names keeps working ([Overriding old token names](#overriding-old-token-names)). It matters when you want to adopt the new names or to read a token in your own CSS. The foundation tokens are listed in full below, and the color tokens follow one pattern (see [Component colors](#component-colors)).
 
-Reading an old name works with the [opt-in aliases snippet](#reading-old-token-names), except for the override-only names listed in [Override-only tokens](#override-only-tokens). Reading those resolves to nothing, so read the new name instead. The old z-index names keep their read aliases in the default theme, so they need no snippet (see [Z-index layers](#z-index-layers)).
+Reading an old name works with the [opt-in aliases snippet](#reading-old-token-names), except for the override-only names listed in [Override-only tokens](#override-only-tokens). Reading those resolves to nothing, so read the new name instead. The [feature tokens](#feature-tokens) are the reverse: the new name has no value by default, so read it with the old name as its fallback. The old z-index names keep their read aliases in the default theme, so they need no snippet (see [Z-index layers](#z-index-layers)).
 
 ### Foundation
 
@@ -1643,14 +2012,23 @@ Reading an old name works with the [opt-in aliases snippet](#reading-old-token-n
 | `--ck-font-size-tiny` / `-small` / `-normal` / `-big` / `-large`     | `--ck-font-size-xs` / `-sm` / `-base` / `-xl` / `-2xl`       |
 | `--ck-font-face`                                                     | `--ck-font-family`                                           |
 | `--ck-border-radius`                                                 | `--ck-radius-base`                                           |
-| `--ck-drop-shadow` / `-active`                                       | `--ck-shadow-md` / `-lg`                                     |
+| `--ck-drop-shadow`                                                   | `--ck-shadow-surface-floating`                               |
+| `--ck-drop-shadow-active`                                            | `--ck-shadow-lg`                                             |
+| `--ck-color-focus-border`                                            | `--ck-focus-border-color`                                    |
 | `--ck-inner-shadow`                                                  | `--ck-inset-shadow-sm`                                       |
 | `--ck-focus-outer-shadow` (+ `-geometry` / `-disabled-` / `-error-`) | `--ck-focus-shadow` (+ `-geometry` / `-disabled` / `-error`) |
 | `--ck-disabled-opacity`                                              | `--ck-opacity-disabled`                                      |
-| `--ck-ui-component-min-height`                                       | `--ck-size-min-height`                                       |
+| `--ck-ui-component-min-height`                                       | `--ck-size-control-min-height`                               |
+| `--ck-balloon-border-width`                                          | `--ck-border-width-surface`                                  |
 | `--ck-z-default` / `-panel` / `-dialog`                              | `--ck-z-base` / `-overlay` / `-modal`                        |
 
 To scale all editor spacing at once, override `--ck-spacing-unit`. It is still the anchor of the spacing scale, both in the refreshed theme and in the legacy theme preset.
+
+To place your own UI relative to dialogs, read `--ck-layer-dialog` rather than `--ck-z-modal`, for example `z-index: calc(var(--ck-layer-dialog) + 1)`. An override of the dialog layer then moves your UI too (see [Z-index layers](#z-index-layers)).
+
+<info-box>
+	Comment and suggestion cards no longer have the active shadow, so overriding `--ck-shadow-lg` does not bring it back. See [Legacy names to replace](#legacy-names-to-replace).
+</info-box>
 
 ### Component colors
 
@@ -1662,10 +2040,10 @@ Color tokens moved from `--ck-color-{component}-{…}` to component-first `--ck-
 --ck-color-dialog-background			→	--ck-dialog-background-color
 ```
 
-41 such mappings follow that mechanical pattern.
+55 such mappings follow that mechanical pattern.
 
 <details>
-<summary>Full list &ndash; all 41 component color renames</summary>
+<summary>Full list &ndash; all 55 component color renames</summary>
 
 | Old                                             | New                                             |
 |-------------------------------------------------|-------------------------------------------------|
@@ -1710,8 +2088,46 @@ Color tokens moved from `--ck-color-{component}-{…}` to component-first `--ck-
 | `--ck-color-toolbar-border`                     | `--ck-toolbar-border-color`                     |
 | `--ck-color-tooltip-background`                 | `--ck-tooltip-background-color`                 |
 | `--ck-color-tooltip-text`                       | `--ck-tooltip-text-color`                       |
+| `--ck-color-resizer`                            | `--ck-resizer-color`                            |
+| `--ck-color-resizer-tooltip-background`         | `--ck-resizer-tooltip-background-color`         |
+| `--ck-color-resizer-tooltip-text`               | `--ck-resizer-tooltip-text-color`               |
+| `--ck-color-widget-blurred-border`              | `--ck-widget-blurred-border-color`              |
+| `--ck-color-widget-hover-border`                | `--ck-widget-hover-border-color`                |
+| `--ck-color-widget-editable-focus-background`   | `--ck-widget-editable-focus-background-color`   |
+| `--ck-color-widget-drag-handler-icon-color`     | `--ck-widget-drag-handler-icon-color`           |
+| `--ck-color-widget-type-around-button`          | `--ck-widget-type-around-button-background-color` |
+| `--ck-color-widget-type-around-button-hover`    | `--ck-widget-type-around-button-hover-background-color` |
+| `--ck-color-widget-type-around-button-active`   | `--ck-widget-type-around-button-active-background-color` |
+| `--ck-color-widget-type-around-button-blurred-editable` | `--ck-widget-type-around-button-blurred-background-color` |
+| `--ck-color-widget-type-around-button-icon`     | `--ck-widget-type-around-button-icon-color`     |
+| `--ck-color-color-grid-check-icon`              | `--ck-color-grid-check-icon-color`              |
+| `--ck-color-editable-blur-selection`            | `--ck-editor-editable-blurred-selection-background` |
 
 </details>
+
+### Feature tokens
+
+Some content and feature tokens were renamed to the current naming convention. These renames use the reverse fallback order: the theme reads the new name first, and the new name has no value until you set it (see [Overriding old token names](#overriding-old-token-names)). Overriding either name works. To read the value in your own CSS, read both names in the same order, so an override of either one applies, for example `var(--ck-content-mention-text-color, var(--ck-content-color-mention-text))`.
+
+| Old                                                     | New                                                                   |
+|---------------------------------------------------------|-----------------------------------------------------------------------|
+| `--ck-content-color-table-caption-background` / `-text` | `--ck-content-table-caption-background-color` / `-text-color`         |
+| `--ck-content-color-image-caption-background` / `-text` | `--ck-content-image-caption-background-color` / `-text-color`         |
+| `--ck-content-color-mention-background` / `-text`       | `--ck-content-mention-background` / `--ck-content-mention-text-color` |
+| `--ck-color-code-block-label-background`                | `--ck-code-block-label-background`                                    |
+| `--ck-color-find-result-selected`                       | `--ck-find-result-selected-background`                                |
+| `--ck-pill-color`                                       | `--ck-pill-text-color`                                                |
+| `--ck-color-light-red` (confirmation view)              | `--ck-confirm-view-background-color`                                  |
+| `--ck-document-outline-item-hover-state-color`          | `--ck-document-outline-item-hover-text-color`                         |
+| `--ck-color-merge-fields-outline`                       | `--ck-merge-fields-outline-color`                                     |
+| `--ck-color-merge-fields-value-outline`                 | `--ck-merge-fields-value-outline-color`                               |
+| `--ck-color-merge-fields-with-warning-outline`          | `--ck-merge-fields-with-warning-outline-color`                        |
+| `--ck-color-merge-fields-block-outline`                 | `--ck-merge-fields-block-outline-color`                               |
+| `--ck-color-merge-fields-form-error-background`         | `--ck-merge-fields-form-error-background-color`                       |
+| `--ck-color-merge-fields-affix-color`                   | `--ck-merge-fields-affix-text-color`                                  |
+| `--ck-uploadcare-color-image-background`                | `--ck-uploadcare-form-image-background-color`                         |
+| `--ck-uploadcare-color-icon-error`                      | `--ck-uploadcare-form-error-icon-color`                               |
+| `--ck-uploadcare-color-skeleton`                        | `--ck-uploadcare-form-skeleton-background-color`                      |
 
 ### AI package (domain-first → component-first)
 

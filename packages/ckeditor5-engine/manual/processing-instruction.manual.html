@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Processing instructions</title>
+		<script type="module" src="./processing-instruction.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Requirements</h3>
+			<p>
+				This test needs a browser that parses <code>&#x3C;?target data?&#x3E;</code> in HTML
+				into processing instruction nodes. Engines without that support parse the same markup
+				into comments, so nothing below will be visible &#x2013; that is expected, not a
+				failure. To check, run in the console:
+			</p>
+			<pre>new DOMParser().parseFromString( '&#x3C;body&#x3E;&#x3C;?foo bar?&#x3E;&#x3C;/body&#x3E;', 'text/html' ).body.firstChild.nodeType === 7</pre>
+
+			<h3>Loading</h3>
+			<ol>
+				<li>
+					The editor should load without any error in the console. This alone covers the
+					original problem, where a processing instruction reached the converter and had no
+					<code>tagName</code>.
+				</li>
+				<li>
+					The first paragraph should show two yellow boxes,
+					<code>&#x3C;?marker start?&#x3E;</code> and <code>&#x3C;?marker end?&#x3E;</code>,
+					around the words "between the markers".
+				</li>
+				<li>
+					The second paragraph should show <code>&#x3C;?if !supportLists?&#x3E;</code>,
+					the third one <code>&#x3C;?endif?&#x3E;</code> with no data part.
+				</li>
+				<li>
+					The output below should repeat the source markup, with the instructions in the
+					same positions relative to the text.
+				</li>
+			</ol>
+
+			<h3>Testing</h3>
+			<ol>
+				<li>
+					Type text before, between and after the boxes, then press
+					<strong>Print data</strong>. The instructions should stay in place relative to
+					the surrounding text.
+				</li>
+				<li>
+					Place the caret right after a box and press <kbd>Backspace</kbd>. The whole
+					instruction should be removed and should disappear from the output.
+				</li>
+				<li>
+					Undo the removal. The instruction should come back with the same target and data.
+				</li>
+				<li>
+					Select a range covering one box and some text, then type over it. Only that
+					instruction should be gone from the output.
+				</li>
+				<li>
+					Press <strong>Reset data</strong> at any point to load the source markup again.
+				</li>
+				<li>
+					Apply bold to text spanning a box. The instruction should survive and stay in the
+					output.
+				</li>
+			</ol>
+
+			<p>Known limitations of this demo:</p>
+			<ul>
+				<li>
+					The instruction is rendered as a plain UI element, not a widget, so it cannot be
+					selected by clicking. This keeps the test free of a dependency on
+					<code>ckeditor5-widget</code>.
+				</li>
+				<li>
+					Copying and pasting an instruction does not preserve it. The clipboard uses its
+					own data processor instance, which still skips processing instructions.
+				</li>
+				<li>
+					Data containing <code>&#x3E;</code> is not handled. A processing instruction ends
+					at the first <code>&#x3E;</code> and there is no escaping, so such data would not
+					survive a round trip.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<style>
+			body {
+				font-family: Helvetica, Arial, sans-serif;
+				font-size: 14px;
+			}
+
+			.ck-content .processing-instruction {
+				background: #fff3c4;
+				border: 1px solid #e0c060;
+				border-radius: 3px;
+				padding: 0 4px;
+				font-family: monospace;
+				font-size: 0.9em;
+				white-space: nowrap;
+			}
+
+			#data-output {
+				background: #f4f4f4;
+				border: 1px solid #ddd;
+				padding: 10px;
+				white-space: pre-wrap;
+				word-break: break-word;
+			}
+		</style>
+
+		<div id="editor"></div>
+
+		<p>
+			<button id="print-data" type="button">Print data</button>
+			<button id="reset-data" type="button">Reset data</button>
+		</p>
+
+		<pre id="data-output"></pre>
+	</body>
+</html>

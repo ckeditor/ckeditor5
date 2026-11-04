@@ -63,11 +63,11 @@
 
 	& > .ck.ck-collapsible {
 		&:not(:first-child) {
-			border-top: 1px solid var(--ck-color-base-border);
+			border-top: 1px solid var(--ck-color-divider);
 		}
 
 		&:not(:last-child) {
-			border-bottom: 1px solid var(--ck-color-base-border);
+			border-bottom: 1px solid var(--ck-color-divider);
 		}
 
 		min-width: var(--ck-image-insert-insert-by-url-width);

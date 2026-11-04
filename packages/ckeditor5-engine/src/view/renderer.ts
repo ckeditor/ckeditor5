@@ -19,6 +19,7 @@ import {
 	fastDiff,
 	insertAt,
 	isComment,
+	isProcessingInstruction,
 	isNode,
 	isText,
 	remove,
@@ -1325,6 +1326,7 @@ function areSimilarElements( node1: DomNode, node2: DomNode ): boolean {
 	return isNode( node1 ) && isNode( node2 ) &&
 		!isText( node1 ) && !isText( node2 ) &&
 		!isComment( node1 ) && !isComment( node2 ) &&
+		!isProcessingInstruction( node1 ) && !isProcessingInstruction( node2 ) &&
 		( node1 as DomElement ).tagName.toLowerCase() === ( node2 as DomElement ).tagName.toLowerCase();
 }
 

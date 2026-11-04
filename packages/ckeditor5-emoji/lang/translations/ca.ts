@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Continua escrivint per veure l\'emoji.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'La consulta ha de contenir com a mínim dos caràcters.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'No hi ha cap emoji en aquesta categoria.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Emoticones i expressions',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

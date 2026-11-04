@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Írjon tovább az emoji megjelenéséhez.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'A kérés legalább 2 karaktert kell tartalmazzon.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'Ebben a kategóriában nincs emoji.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Smiley-k és arckifejezések',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

@@ -33,7 +33,7 @@ import { createFakeXHRServer } from '@ckeditor/ckeditor5-core/tests/_utils/fakex
 import { CKBoxEditing } from '../../src/ckboxediting.js';
 import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
 
-import { blurHashToDataUrl } from '../../src/utils.js';
+import { blurHashToDataUrl, CKBoxWrapperView } from '../../src/utils.js';
 import { CKBoxUtils } from '../../src/ckboxutils.js';
 
 const CKBOX_API_URL = 'https://upload.example.com';
@@ -222,48 +222,105 @@ describe( 'CKBoxImageEditCommand', () => {
 				vi.useRealTimers();
 			} );
 
-			it( 'should create a wrapper if it is not yet created and mount it in the document body', () => {
+			it( 'should not create a wrapper before the options are prepared', () => {
 				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 				command.execute();
 
-				const wrapper = command._wrapper;
-
-				expect( wrapper.nodeName ).toEqual( 'DIV' );
-				expect( wrapper.className ).toEqual( 'ck ckbox-wrapper' );
+				expect( getWrapper( editor ) ).toBeNull();
+				expect( command.value ).toBe( true );
 			} );
 
-			it( 'should create and mount a wrapper only once', () => {
+			it( 'should create a wrapper once the options are prepared and mount it in the editor body collection', async () => {
 				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
 				command.execute();
 
-				const wrapper1 = command._wrapper;
+				await vi.advanceTimersByTimeAsync( 0 );
 
-				command.execute();
+				const wrapper = getWrapper( editor );
 
-				const wrapper2 = command._wrapper;
-
-				command.execute();
-
-				const wrapper3 = command._wrapper;
-
-				expect( wrapper1 ).toEqual( wrapper2 );
-				expect( wrapper2 ).toEqual( wrapper3 );
+				expect( wrapper ).toBeInstanceOf( CKBoxWrapperView );
+				expect( wrapper.element.nodeName ).toEqual( 'DIV' );
+				expect( wrapper.element.className ).toEqual( 'ck ckbox-wrapper ck-reset_all-excluded' );
+				expect( editor.ui.view.body.has( wrapper ) ).toBe( true );
+				expect( wrapper.element.isConnected ).toBe( true );
 			} );
 
-			it( 'should not create a wrapper if the command is disabled', () => {
+			it( 'should create and mount a wrapper only once', async () => {
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				const wrapper1 = getWrapper( editor );
+
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				const wrapper2 = getWrapper( editor );
+
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				const wrapper3 = getWrapper( editor );
+
+				expect( wrapper1 ).toBe( wrapper2 );
+				expect( wrapper2 ).toBe( wrapper3 );
+				expect( getWrappersInBody( editor ) ).toEqual( [ wrapper1 ] );
+			} );
+
+			it( 'should not create a wrapper if the command is disabled', async () => {
 				command.isEnabled = false;
 				command.execute();
 
-				expect( command._wrapper ).toEqual( null );
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				expect( getWrapper( editor ) ).toBeNull();
+				expect( command._unmountDialog ).toBeNull();
 			} );
 
-			it( 'should not create a wrapper if the wrapper is already created', () => {
-				const wrapper = global.document.createElement( 'p' );
+			it( 'should not open another dialog if one is already open', async () => {
+				const unmountDialog = vi.fn();
 
-				command._wrapper = wrapper;
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
+				command._unmountDialog = unmountDialog;
 				command.execute();
 
-				expect( command._wrapper ).toEqual( wrapper );
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				expect( command._unmountDialog ).toBe( unmountDialog );
+				expect( getWrapper( editor ) ).toBeNull();
+				expect( window.CKBox.mountImageEditor ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should not mount the dialog if it was closed before the options were prepared', async () => {
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
+				command.execute();
+				command._handleImageEditorClose();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				expect( window.CKBox.mountImageEditor ).not.toHaveBeenCalled();
+				expect( getWrapper( editor ) ).toBeNull();
+				expect( command.value ).toBe( false );
+			} );
+
+			it( 'should mount only the dialog opened last if it was reopened before the options were prepared', async () => {
+				const notification = editor.plugins.get( Notification );
+				const notificationStub = vi.spyOn( notification, 'showWarning' ).mockImplementation( () => {} );
+
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
+				command.execute();
+				command._handleImageEditorClose();
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				expect( window.CKBox.mountImageEditor ).toHaveBeenCalledTimes( 1 );
+				expect( getWrappersInBody( editor ) ).toHaveLength( 1 );
+				expect( command.value ).toBe( true );
+				expect( notificationStub ).not.toHaveBeenCalled();
 			} );
 
 			it( 'should open the CKBox Image Editor dialog instance only once', async () => {
@@ -276,6 +333,26 @@ describe( 'CKBoxImageEditCommand', () => {
 				await vi.advanceTimersByTimeAsync( 0 );
 
 				expect( window.CKBox.mountImageEditor ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			it( 'should mount the CKBox Image Editor in the wrapper element', async () => {
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
+
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				expect( window.CKBox.mountImageEditor.mock.calls[ 0 ][ 0 ] ).toBe( getWrapper( editor ).element );
+			} );
+
+			it( 'should pass the document as `stylesTarget` when the editor is in the light DOM', async () => {
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
+
+				command.execute();
+
+				await vi.advanceTimersByTimeAsync( 0 );
+
+				expect( window.CKBox.mountImageEditor.mock.calls[ 0 ][ 2 ] ).toEqual( { stylesTarget: document } );
 			} );
 
 			it( 'should prepare options for the CKBox Image Editing dialog instance (ckbox image)', async () => {
@@ -375,7 +452,8 @@ describe( 'CKBoxImageEditCommand', () => {
 					call => !( call[ 0 ] instanceof PromiseRejectionEvent )
 				);
 
-				expect( command._wrapper ).toBeNull();
+				expect( getWrapper( editor ) ).toBeNull();
+				expect( command._unmountDialog ).toBeNull();
 				expect( productionCalls ).toHaveLength( 1 );
 				expect( productionCalls[ 0 ][ 0 ] ).toEqual( reason );
 				expect( notificationStub ).toHaveBeenCalledTimes( 1 );
@@ -451,7 +529,8 @@ describe( 'CKBoxImageEditCommand', () => {
 				expect( notificationStub.mock.calls[ 0 ][ 1 ] ).toEqual( { namespace: 'ckbox' } );
 
 				// The dialog must be cleaned up and the reason still logged, exactly as in the online case.
-				expect( command._wrapper ).toBeNull();
+				expect( getWrapper( editor ) ).toBeNull();
+				expect( command._unmountDialog ).toBeNull();
 				expect( productionCalls ).toHaveLength( 1 );
 			} );
 
@@ -505,6 +584,119 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 		} );
 
+		describe( 'moving the wrapper to another root', () => {
+			let hosts;
+
+			beforeEach( async () => {
+				hosts = [];
+
+				_setModelData( model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
+				command.execute();
+
+				await waitForMount();
+			} );
+
+			afterEach( () => {
+				for ( const host of hosts ) {
+					host.remove();
+				}
+			} );
+
+			it( 'should mount the dialog again in a new wrapper when the wrapper ends up in another root', () => {
+				const oldWrapper = getWrapper( editor );
+				const shadowRoot = moveToShadowRoot( oldWrapper.element );
+
+				editor.ui.update();
+
+				const newWrapper = getWrapper( editor );
+
+				expect( newWrapper ).toBeInstanceOf( CKBoxWrapperView );
+				expect( newWrapper ).not.toBe( oldWrapper );
+				expect( getWrappersInBody( editor ) ).toEqual( [ newWrapper ] );
+				expect( oldWrapper.element.isConnected ).toBe( false );
+				expect( shadowRoot.querySelector( '.ckbox-wrapper' ) ).toBeNull();
+
+				expect( window.CKBox.mountImageEditor ).toHaveBeenCalledTimes( 2 );
+				expect( window.CKBox.mountImageEditor.mock.calls[ 1 ][ 0 ] ).toBe( newWrapper.element );
+				expect( window.CKBox.mountImageEditor.mock.calls[ 1 ][ 2 ] ).toEqual( {
+					stylesTarget: newWrapper.element.getRootNode()
+				} );
+			} );
+
+			it( 'should mount the dialog again with the same options, without preparing them again', () => {
+				const spy = vi.spyOn( command, '_prepareOptions' );
+
+				moveToShadowRoot( getWrapper( editor ).element );
+				editor.ui.update();
+
+				expect( spy ).not.toHaveBeenCalled();
+				expect( window.CKBox.mountImageEditor.mock.calls[ 1 ][ 1 ] ).toBe( window.CKBox.mountImageEditor.mock.calls[ 0 ][ 1 ] );
+			} );
+
+			it( 'should keep the dialog open after mounting it again', () => {
+				moveToShadowRoot( getWrapper( editor ).element );
+				editor.ui.update();
+
+				expect( command.value ).toBe( true );
+			} );
+
+			it( 'should close the dialog mounted again', () => {
+				moveToShadowRoot( getWrapper( editor ).element );
+				editor.ui.update();
+
+				const newWrapper = getWrapper( editor );
+
+				window.CKBox.mountImageEditor.mock.calls[ 1 ][ 1 ].onClose();
+
+				expect( getWrappersInBody( editor ) ).toEqual( [] );
+				expect( newWrapper.element.isConnected ).toBe( false );
+				expect( command.value ).toBe( false );
+			} );
+
+			it( 'should not mount the dialog again if the wrapper stays in the same root', () => {
+				const wrapper = getWrapper( editor );
+
+				editor.ui.update();
+
+				expect( getWrapper( editor ) ).toBe( wrapper );
+				expect( window.CKBox.mountImageEditor ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			it( 'should not mount the dialog again if the wrapper is detached', () => {
+				const wrapper = getWrapper( editor );
+
+				wrapper.element.remove();
+				editor.ui.update();
+
+				expect( getWrapper( editor ) ).toBe( wrapper );
+				expect( window.CKBox.mountImageEditor ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			it( 'should stop following the wrapper after the dialog is closed', () => {
+				const wrapper = getWrapper( editor );
+
+				window.CKBox.mountImageEditor.mock.calls[ 0 ][ 1 ].onClose();
+
+				// Even if the removed wrapper ended up in another root, nothing is mounted for a closed dialog.
+				moveToShadowRoot( wrapper.element );
+				editor.ui.update();
+
+				expect( getWrappersInBody( editor ) ).toEqual( [] );
+				expect( window.CKBox.mountImageEditor ).toHaveBeenCalledTimes( 1 );
+			} );
+
+			function moveToShadowRoot( element ) {
+				const host = document.createElement( 'div' );
+				const shadowRoot = host.attachShadow( { mode: 'open' } );
+
+				document.body.appendChild( host );
+				hosts.push( host );
+				shadowRoot.appendChild( element );
+
+				return shadowRoot;
+			}
+		} );
+
 		describe( 'closing dialog', () => {
 			it( 'should remove the wrapper after closing the CKBox Image Editor dialog', async () => {
 				const ckboxImageId = 'example-id';
@@ -522,14 +714,21 @@ describe( 'CKBoxImageEditCommand', () => {
 
 				command.execute();
 
-				expect( command._wrapper ).not.toEqual( null );
+				await waitForMount();
 
-				const spy = vi.spyOn( command._wrapper, 'remove' );
+				const wrapper = getWrapper( editor );
+
+				expect( wrapper ).not.toBeNull();
+
+				const spy = vi.spyOn( editor.ui.view.body, 'remove' );
 
 				options.onClose();
 
 				expect( spy ).toHaveBeenCalledTimes( 1 );
-				expect( command._wrapper ).toEqual( null );
+				expect( spy ).toHaveBeenCalledWith( wrapper );
+				expect( editor.ui.view.body.has( wrapper ) ).toBe( false );
+				expect( wrapper.element.isConnected ).toBe( false );
+				expect( getWrapper( editor ) ).toBeNull();
 			} );
 
 			it( 'should focus view after closing the CKBox Image Editor dialog', async () => {
@@ -1279,7 +1478,199 @@ describe( 'CKBoxImageEditCommand', () => {
 			} );
 		} );
 	} );
+
+	describe( 'Shadow DOM', () => {
+		let hosts, shadowEditor, warnSpy;
+
+		beforeEach( () => {
+			hosts = [];
+			shadowEditor = null;
+
+			// An editor rendered in a shadow root without `config.ui.overlayContainer` warns about it on purpose.
+			// That is exactly the setup tested here, so swallow only that warning and let any other one through.
+			const originalWarn = console.warn;
+
+			warnSpy = vi.spyOn( console, 'warn' ).mockImplementation( ( message, ...args ) => {
+				if ( typeof message == 'string' && message.startsWith( 'ui-overlay-container-not-configured' ) ) {
+					return;
+				}
+
+				originalWarn( message, ...args );
+			} );
+		} );
+
+		afterEach( async () => {
+			if ( shadowEditor ) {
+				await shadowEditor.destroy();
+			}
+
+			warnSpy.mockRestore();
+
+			for ( const host of hosts ) {
+				host.remove();
+			}
+		} );
+
+		for ( const mode of [ 'open', 'closed' ] ) {
+			describe( `${ mode } shadow root`, () => {
+				it( 'should mount the wrapper in the shadow root the editor lives in', async () => {
+					const { shadowRoot, element } = createShadowElement( mode );
+
+					shadowEditor = await createShadowTestEditor( element );
+
+					const shadowCommand = shadowEditor.commands.get( 'ckboxImageEdit' );
+
+					selectCKBoxImage( shadowEditor );
+					shadowCommand.execute();
+
+					await tick();
+
+					expect( getWrapper( shadowEditor ) ).not.toBeNull();
+					expect( getWrapper( shadowEditor ).element.getRootNode() ).toBe( shadowRoot );
+					expect( document.querySelector( '.ckbox-wrapper' ) ).toBeNull();
+				} );
+
+				it( 'should pass the shadow root as `stylesTarget`', async () => {
+					const { shadowRoot, element } = createShadowElement( mode );
+
+					shadowEditor = await createShadowTestEditor( element );
+
+					const shadowCommand = shadowEditor.commands.get( 'ckboxImageEdit' );
+
+					selectCKBoxImage( shadowEditor );
+					shadowCommand.execute();
+
+					await tick();
+
+					expect( window.CKBox.mountImageEditor ).toHaveBeenCalledTimes( 1 );
+					expect( window.CKBox.mountImageEditor ).toHaveBeenCalledWith(
+						getWrapper( shadowEditor ).element,
+						expect.any( Object ),
+						{ stylesTarget: shadowRoot }
+					);
+				} );
+
+				it( 'should remove the wrapper from the shadow root after closing the dialog', async () => {
+					const { shadowRoot, element } = createShadowElement( mode );
+
+					shadowEditor = await createShadowTestEditor( element );
+
+					const shadowCommand = shadowEditor.commands.get( 'ckboxImageEdit' );
+
+					selectCKBoxImage( shadowEditor );
+					shadowCommand.execute();
+
+					await tick();
+
+					window.CKBox.mountImageEditor.mock.calls[ 0 ][ 1 ].onClose();
+
+					expect( getWrapper( shadowEditor ) ).toBeNull();
+					expect( shadowRoot.querySelector( '.ckbox-wrapper' ) ).toBeNull();
+				} );
+			} );
+		}
+
+		describe( '`config.ui.overlayContainer`', () => {
+			it( 'should pass the overlay container shadow root as `stylesTarget` (editor in the light DOM)', async () => {
+				const { shadowRoot: overlayRoot } = createShadowElement( 'open' );
+				const element = document.createElement( 'div' );
+
+				document.body.appendChild( element );
+				hosts.push( element );
+
+				shadowEditor = await createShadowTestEditor( element, { ui: { overlayContainer: overlayRoot } } );
+
+				const overlayCommand = shadowEditor.commands.get( 'ckboxImageEdit' );
+
+				selectCKBoxImage( shadowEditor );
+				overlayCommand.execute();
+
+				await tick();
+
+				expect( getWrapper( shadowEditor ).element.getRootNode() ).toBe( overlayRoot );
+				expect( window.CKBox.mountImageEditor.mock.calls[ 0 ][ 2 ] ).toEqual( { stylesTarget: overlayRoot } );
+			} );
+
+			it( 'should pass the document as `stylesTarget` (editor in a shadow root, overlay in the light DOM)', async () => {
+				const { element } = createShadowElement( 'open' );
+				const overlayContainer = document.createElement( 'div' );
+
+				document.body.appendChild( overlayContainer );
+				hosts.push( overlayContainer );
+
+				shadowEditor = await createShadowTestEditor( element, { ui: { overlayContainer } } );
+
+				const overlayCommand = shadowEditor.commands.get( 'ckboxImageEdit' );
+
+				selectCKBoxImage( shadowEditor );
+				overlayCommand.execute();
+
+				await tick();
+
+				expect( overlayContainer.contains( getWrapper( shadowEditor ).element ) ).toBe( true );
+				expect( window.CKBox.mountImageEditor.mock.calls[ 0 ][ 2 ] ).toEqual( { stylesTarget: document } );
+			} );
+		} );
+
+		function createShadowElement( mode ) {
+			const host = document.createElement( 'div' );
+			const shadowRoot = host.attachShadow( { mode } );
+			const element = document.createElement( 'div' );
+
+			shadowRoot.appendChild( element );
+			document.body.appendChild( host );
+			hosts.push( host );
+
+			return { shadowRoot, element };
+		}
+
+		function createShadowTestEditor( element, config = {} ) {
+			return ClassicTestEditor.create( element, {
+				plugins: [
+					Paragraph,
+					Heading,
+					Image,
+					CloudServices,
+					Essentials,
+					LinkEditing,
+					PictureEditing,
+					ImageUploadEditing,
+					ImageUploadProgress,
+					CKBoxEditing,
+					CKBoxImageEditEditing
+				],
+				ckbox: {
+					serviceOrigin: CKBOX_API_URL,
+					tokenUrl: 'foo',
+					allowExternalImagesEditing: () => true
+				},
+				...config
+			} );
+		}
+
+		// An image with `ckboxImageId` is mounted by its asset ID, so preparing the options does not hit the network.
+		function selectCKBoxImage( editor ) {
+			_setModelData( editor.model, '[<imageBlock alt="alt text" ckboxImageId="example-id" src="/sample.png"></imageBlock>]' );
+		}
+
+		function tick() {
+			return new Promise( resolve => setTimeout( resolve, 0 ) );
+		}
+	} );
 } );
+
+function getWrappersInBody( editor ) {
+	return Array.from( editor.ui.view.body ).filter( view => view instanceof CKBoxWrapperView );
+}
+
+function getWrapper( editor ) {
+	return getWrappersInBody( editor )[ 0 ] || null;
+}
+
+// Mounting waits for the options, which for an image with `ckboxImageId` are prepared without hitting the network.
+function waitForMount() {
+	return new Promise( resolve => setTimeout( resolve, 0 ) );
+}
 
 function createToken( tokenClaims ) {
 	return [

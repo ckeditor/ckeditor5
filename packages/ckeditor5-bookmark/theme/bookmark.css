@@ -5,7 +5,7 @@
 
 :root,
 :host {
-	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
+	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border, var(--ck-widget-hover-border-color));
 	/* Backward compatibility: falls back to legacy --ck-color-focus-border if overridden. */
 	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 	--ck-bookmark-icon-animation-duration: var(--ck-widget-handler-animation-duration);

@@ -173,6 +173,8 @@ export class IconView extends View {
 			// They can affect rendering of the entire icon (https://github.com/ckeditor/ckeditor5/issues/12597).
 			for ( const { name, value } of Array.from( svg.attributes ) ) {
 				if ( IconView.presentationalAttributeNames.includes( name ) ) {
+					// None of the presentational attributes requires a Trusted Type.
+					// eslint-disable-next-line ckeditor5-rules/require-trusted-types-for-sinks
 					this.element!.setAttribute( name, value );
 				}
 			}

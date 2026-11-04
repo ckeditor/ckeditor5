@@ -69,7 +69,7 @@ export class OverlayHost extends OverlayHostBase {
 	public readonly bodyCollection: BodyCollection;
 
 	/**
-	 * Tracks the shadow roots hosting the tooltip-bearing UI that lives outside the {@link #bodyCollection}:
+	 * Tracks the event roots (shadow roots and documents) of the tooltip-bearing UI that lives outside the {@link #bodyCollection}:
 	 * the {@link module:ui/overlayhost~OverlayHostOptions#resolveInlineContainer inline UI container} and any
 	 * nodes registered directly by the owner (an editor registers its editables, toolbars and menu bar).
 	 */

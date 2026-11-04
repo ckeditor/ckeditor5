@@ -249,11 +249,12 @@ describe( 'getOptimalPosition()', () => {
 					scrollY: 1000
 				} );
 
+				// The parent scrolls with the page, so its viewport rect is shifted by the window scroll.
 				parent = getElement( {
-					top: 1000,
-					right: 1010,
-					bottom: 1010,
-					left: 1000,
+					top: 0,
+					right: 10,
+					bottom: 10,
+					left: 0,
 					width: 10,
 					height: 10
 				}, {
@@ -309,8 +310,8 @@ describe( 'getOptimalPosition()', () => {
 				parent.scrollTop = 100;
 
 				assertPosition( { element, target, positions: [ attachLeftBottom ] }, {
-					top: 1200,
-					left: 1280,
+					top: 200,
+					left: 280,
 					name: 'left-bottom'
 				} );
 			} );
@@ -339,10 +340,10 @@ describe( 'getOptimalPosition()', () => {
 				document.body.appendChild( host );
 
 				const parent = getElement( {
-					top: 1000,
-					right: 1010,
-					bottom: 1010,
-					left: 1000,
+					top: 0,
+					right: 10,
+					bottom: 10,
+					left: 0,
 					width: 10,
 					height: 10
 				}, {

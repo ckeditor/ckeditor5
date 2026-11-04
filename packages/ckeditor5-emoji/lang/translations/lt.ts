@@ -20,6 +20,8 @@ const translations: Translations = {
 			'Keep on typing to see the emoji.': 'Kad pamatytumėte jaustuką, toliau rinkite tekstą.',
 			// The secondary text of the message shown to the user to explain how many characters the search query must consist of.
 			'The query must contain at least two characters.': 'Užklausoje turi būti bent 2 simboliai.',
+			// The main text of the message shown to the user when the selected emoji category does not contain any emoji.
+			'There are no emojis in this category.': 'Šioje kategorijoje nėra jaustukų.',
 			// Tooltip for filtering the displayed emoji by the "Smileys & Expressions" category.
 			'Smileys & Expressions': 'Šypsenos ir išraiškos',
 			// Tooltip for filtering the displayed emoji by the "Gestures & People" category.

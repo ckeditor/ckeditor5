@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-ckbox",
-  "version": "49.0.1",
+  "version": "49.1.0",
   "description": "CKBox integration for CKEditor 5.",
   "license": "SEE LICENSE IN LICENSE.md",
   "author": "CKSource (http://cksource.com/)",
@@ -55,6 +55,7 @@
     "@ckeditor/ckeditor5-essentials": "workspace:*",
     "@ckeditor/ckeditor5-heading": "workspace:*",
     "@ckeditor/ckeditor5-paragraph": "workspace:*",
+    "@ckeditor/ckeditor5-fullscreen": "workspace:*",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "vitest": "catalog:"
