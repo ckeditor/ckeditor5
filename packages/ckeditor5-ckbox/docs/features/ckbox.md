@@ -26,11 +26,9 @@ It handles file uploads and significantly reduces the effort required to build a
 			</p>
 			<div id='snippet-ckbox-ckeditor'></div>
 		</div>
-		<p>
-				<snippet-footer>
-					This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-				</snippet-footer>
-		</p>
+		<snippet-footer>
+			This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+		</snippet-footer>
 	</ck:tab>
 	<ck:tab label='Upload widget'>
 		<div class='doc live-snippet'>

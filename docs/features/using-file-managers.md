@@ -29,7 +29,7 @@ With CKBox you can:
 * Define and reuse alternative text for images.
 * Get your images served quickly through global AWS S3 CDN or via local options, such as filesystem or SQL databases.
 
-**Read the {@link features/ckbox dedicated CKBox feature guide**} to learn about its installation and configuration. The guide also lets you try CKBox in action.
+**Read the {@link features/ckbox dedicated CKBox feature guide}** to learn about its installation and configuration. The guide also lets you try CKBox in action.
 
 ## Uploadcare file manager
 
@@ -47,7 +47,7 @@ With Uploadcare you can:
 * Edit images by changing dimensions, applying filters and adjusting various image parameters.
 * Get your images served quickly through global AWS S3 CDN.
 
-**Read the {@link features/uploadcare dedicated Uploadcare feature guide**} to learn about its installation and configuration. The guide also lets you try Uploadcare in action.
+**Read the {@link features/uploadcare dedicated Uploadcare feature guide}** to learn about its installation and configuration. The guide also lets you try Uploadcare in action.
 
 ## CKFinder file manager
 
@@ -60,4 +60,4 @@ With CKFinder you can:
 * Drag and drop images and paste them from the clipboard into the editor.
 * Crop, rotate, edit, and resize images.
 
-**Read the {@link features/ckfinder dedicated CKFinder feature guide**} to learn about its installation and configuration. The guide also lets you try CKFinder in action.
+**Read the {@link features/ckfinder dedicated CKFinder feature guide}** to learn about its installation and configuration. The guide also lets you try CKFinder in action.
