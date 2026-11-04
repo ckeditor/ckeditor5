@@ -97,7 +97,7 @@ export class PasteFromMarkdownExperimental extends Plugin {
 
 	/**
 	 * Determines if the code copied from a website in the `text/html` type can be parsed as Markdown.
-	 * It removes any OS-specific HTML tags, for example, <meta> on macOS and <!--StartFragment--> on Windows.
+	 * It removes any OS-specific HTML tags, for example, `<meta>` on macOS and `<!--StartFragment-->` on Windows.
 	 * Then removes a single wrapper HTML tag or wrappers for sibling tags, and if there are no more tags left,
 	 * returns the remaining text. Returns null if there are any remaining HTML tags detected.
 	 *
@@ -138,7 +138,7 @@ export class PasteFromMarkdownExperimental extends Plugin {
 
 	/**
 	 * If the input HTML string contains any first-level formatting tags
-	 * like <b>, <strong>, or <i>, we should not treat it as Markdown.
+	 * like `<b>`, `<strong>`, or `<i>`, we should not treat it as Markdown.
 	 *
 	 * @param htmlString Clipboard content.
 	 */
