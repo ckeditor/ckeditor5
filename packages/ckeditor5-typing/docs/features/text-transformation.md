@@ -2,6 +2,7 @@
 category: features
 menu-title: Automatic text transformation
 meta-title: Automatic text transformation (autocorrect) | CKEditor 5 Documentation
+modified_at: 2026-11-04
 ---
 
 # Automatic text transformation (autocorrect)
@@ -10,7 +11,7 @@ The text transformation feature enables autocorrection. It automatically changes
 
 ## Demo
 
-Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/typingconfig~TextTransformationConfig} documentation.
+Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the editor below and see how they get transformed into their typographically nicer forms. Text emoticons such as `:)` followed by a space change into emoji. You can see the complete list of predefined transformations in the {@link module:typing/typingconfig~TextTransformationConfig} documentation.
 
 {@snippet features/text-transformation}
 
@@ -138,7 +139,6 @@ ClassicEditor
 
 				extra: [
 					// Add some custom transformations, for example, for emojis.
-					{ from: ':)', to: '🙂' },
 					{ from: ':+1:', to: '👍' },
 					{ from: ':tada:', to: '🎉' },
 
@@ -167,9 +167,78 @@ ClassicEditor
 
 You can read more about the format of transformation rules in {@link module:typing/typingconfig~TextTypingTransformationDescription}.
 
-You can test these custom rules in the demo. Try typing `:)` or `:+1:` and see how the text gets transformed into emojis. You can also write some sentences to test how the editor capitalizes words after a period, a quotation mark, or an exclamation mark.
+You can test these custom rules in the demo. Try typing `:+1:` or `:tada:` and see how the text gets transformed into emojis. You can also write some sentences to test how the editor capitalizes words after a period, a quotation mark, or an exclamation mark.
 
 {@snippet features/text-transformation-extended}
+
+### Example: Disabling emoticons
+
+The `emoticons` group transforms text emoticons such as `:)` or `<3` into emoji. This group is enabled by default. To disable it, add `emoticons` to the `transformations.remove` property:
+
+```js
+ClassicEditor
+	.create( {
+		// ... Other configuration options ...
+		typing: {
+			transformations: {
+				remove: [ 'emoticons' ]
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+You can also disable individual emoticons by their names, for example `remove: [ 'sunglasses', 'anguished' ]`.
+
+Here are some examples of emoticons from this group:
+
+<table style="width: unset">
+	<thead>
+		<tr>
+			<th>From</th>
+			<th>To</th>
+			<th>Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><code>:)</code></td>
+			<td>🙂</td>
+			<td><code>slightlySmilingFace</code></td>
+		</tr>
+		<tr>
+			<td><code>;)</code></td>
+			<td>😉</td>
+			<td><code>wink</code></td>
+		</tr>
+		<tr>
+			<td><code>:D</code></td>
+			<td>😀</td>
+			<td><code>grinning</code></td>
+		</tr>
+		<tr>
+			<td><code>XD</code></td>
+			<td>😆</td>
+			<td><code>laughing</code></td>
+		</tr>
+		<tr>
+			<td><code>&lt;3</code></td>
+			<td>❤️</td>
+			<td><code>heart</code></td>
+		</tr>
+	</tbody>
+</table>
+
+You can find the complete list of emoticons and their names in the {@link module:typing/typingconfig~TextTransformationConfig} documentation.
+
+To avoid unwanted transformations, an emoticon is transformed only when:
+
+* It is typed at the beginning of a line, after a whitespace, or right after an inline element, such as an inline image.
+* It is followed by a space. You can type punctuation marks before the space: `.`, `,`, `:`, `;`, `!`, `?`, or `…`. For example, typing `:).` and a space gives `🙂.`.
+* Its letters have the exact case. For example, `:D` and `XD` are transformed, but `:d` and `xd` are not.
+
+This way, fragments such as `https:/`, `1:3`, `ratio8)`, or `:Docs` stay untouched. However, some regular text may still match these rules. For example, typing `Plan D:` and a space gives `Plan 😧`, and typing `Windows XP.` and a space gives `Windows 😜.`. You can disable the affected emoticons with the `transformations.remove` option. As with other transformations, you can press <kbd>Backspace</kbd> right after the transformation to revert it.
 
 ## Related features
 
@@ -179,6 +248,7 @@ In addition to enabling automatic text transformations, you may want to check th
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/slash-commands Slash commands} &ndash; Execute a predefined command by writing its name or alias directly in the editor.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
+* {@link features/emoji Emoji} &ndash; Insert emoji from the toolbar or while typing, after the `:` marker.
 
 ## Contribute
 

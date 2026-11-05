@@ -55,6 +55,16 @@
 						</li>
 					</ul>
 				</li>
+				<li>
+					<p>Emoticons:</p>
+					<ul>
+						<li>
+							<code>:)</code> to <code>🙂</code>, <code>&#x3C;3</code> to <code>❤️</code>,
+							<code>XD</code> to <code>😆</code>, <code>>:(</code> to <code>😠</code>,
+							<code>&#x3C;/3</code> to <code>💔</code>. See the docs for the full list.
+						</li>
+					</ul>
+				</li>
 			</ol>
 			<h3>Testing</h3>
 			<ul>
@@ -64,6 +74,20 @@
 				</li>
 				<li>Undo a text transformation and type - it should not re-transform it.</li>
 				<li>Change selection - the not transformed elements should stay.</li>
+				<li>
+					Type an emoticon at the beginning of a line or after a space, then type a space - it should
+					change into an emoji. Press backspace right after it - the emoticon should be restored.
+				</li>
+				<li>
+					Type an emoticon, then a punctuation mark and a space (<code>:). </code>, <code>:), </code>,
+					<code>:)! </code>, <code>:)? </code>) - the emoticon should change into an emoji, and the
+					punctuation mark should stay.
+				</li>
+				<li>
+					Emoticons typed right after other characters (<code>https:/ </code>, <code>1:3 </code>,
+					<code>a8) </code>) or followed by other characters (<code>:)x </code>, <code>:).x </code>)
+					should not change.
+				</li>
 			</ul>
 		</ck-manual-header>
 

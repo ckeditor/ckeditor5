@@ -79,11 +79,45 @@ export interface TypingConfig {
  *   - `notEqual`: transforms `!=` to: `≠`
  *   - `arrowLeft`: transforms `<-` to: `←`
  *   - `arrowRight`: transforms `->` to: `→`
+ * * Emoticons (group name: `emoticons`)
+ *   - `slightlySmilingFace`: transforms `:)` to `🙂`
+ *   - `slightlyFrowningFace`: transforms `:(` to `🙁`
+ *   - `grinning`: transforms `:D` to `😀`
+ *   - `openMouth`: transforms `:O` to `😮`
+ *   - `wink`: transforms `;)` to `😉`
+ *   - `stuckOutTongue`: transforms `:P` to `😛`
+ *   - `confused`: transforms `:/` to `😕`
+ *   - `confusedBackslash`: transforms `:\` to `😕`
+ *   - `neutralFace`: transforms `:|` to `😐`
+ *   - `sunglasses`: transforms `8)` to `😎`
+ *   - `kissing`: transforms `:*` to `😗`
+ *   - `cry`: transforms `:'(` to `😢`
+ *   - `crySemicolon`: transforms `;(` to `😢`
+ *   - `joy`: transforms `:')` to `😂`
+ *   - `laughing`: transforms `XD` to `😆`
+ *   - `stuckOutTongueWinkingEye`: transforms `XP` to `😜`
+ *   - `sob`: transforms `T_T` to `😭`
+ *   - `expressionless`: transforms `-_-` to `😑`
+ *   - `dizzyFace`: transforms `x_x` to `😵`
+ *   - `smileCat`: transforms `:3` to `😸`
+ *   - `heart`: transforms `<3` to `❤️`
+ *   - `brokenHeart`: transforms `</3` to `💔`
+ *   - `angry`: transforms `>:(` to `😠`
+ *   - `anguished`: transforms `D:` to `😧`
+ *   - `zanyFace`: transforms `:^D` to `🤪`
+ *   - `victoryHand`: transforms `:v` to `✌️`
+ *   - `grin`: transforms `=D` to `😁`
+ *   - `tiredFace`: transforms `8(` to `😫`
  * * Misc:
  *   - `quotesPrimaryEnGb`: transforms `'Foo bar'` to `‘Foo bar’`
  *   - `quotesSecondaryEnGb`: transforms `"Foo bar"` to `“Foo bar”`
  *   - `quotesPrimaryPl`: transforms `"Foo bar"` to `„Foo bar”`
  *   - `quotesSecondaryPl`:  transforms `'Foo bar'` to `‚Foo bar’`
+ *
+ * An emoticon is transformed only when it is typed at the beginning of a line, after a whitespace, or right after an inline element
+ * (such as an inline image), and then followed by a space.
+ * Punctuation marks (`.`, `,`, `:`, `;`, `!`, `?`, or `…`) can come before this space, for example `:). `.
+ * Emoticons are case-sensitive.
  *
  * In order to load additional transformations, use the
  * {@link module:typing/typingconfig~TextTransformationConfig#extra `transformations.extra` option}.
@@ -112,6 +146,11 @@ export interface TypingConfig {
  * 	// Remove the 'ellipsis' transformation loaded by the 'typography' group.
  * 	remove: [ 'ellipsis' ]
  * }
+ *
+ * const transformationsConfig = {
+ * 	// Disable the 'emoticons' group that is enabled by default.
+ * 	remove: [ 'emoticons' ]
+ * };
  * ```
  */
 export interface TextTransformationConfig {

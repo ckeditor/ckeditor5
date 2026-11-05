@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 
-import type { ModelPosition } from '@ckeditor/ckeditor5-engine';
+import { ModelLiveRange, type ModelPosition } from '@ckeditor/ckeditor5-engine';
 
 import { TextWatcher, type TextWatcherMatchedDataEvent } from './textwatcher.js';
 import type { TextTransformationConfig, TextTypingTransformationDescription } from './typingconfig.js';
@@ -52,7 +52,37 @@ const TRANSFORMATIONS: Record<string, TextTypingTransformationDescription> = {
 
 	// Polish
 	quotesPrimaryPl: { from: buildQuotesRegExp( '"' ), to: [ null, '„', null, '”' ] },
-	quotesSecondaryPl: { from: buildQuotesRegExp( '\'' ), to: [ null, '‚', null, '’' ] }
+	quotesSecondaryPl: { from: buildQuotesRegExp( '\'' ), to: [ null, '‚', null, '’' ] },
+
+	// Emoticons:
+	slightlySmilingFace: { from: buildEmoticonRegExp( ':)' ), to: [ null, '🙂', null ] },
+	slightlyFrowningFace: { from: buildEmoticonRegExp( ':(' ), to: [ null, '🙁', null ] },
+	grinning: { from: buildEmoticonRegExp( ':D' ), to: [ null, '😀', null ] },
+	openMouth: { from: buildEmoticonRegExp( ':O' ), to: [ null, '😮', null ] },
+	wink: { from: buildEmoticonRegExp( ';)' ), to: [ null, '😉', null ] },
+	stuckOutTongue: { from: buildEmoticonRegExp( ':P' ), to: [ null, '😛', null ] },
+	confused: { from: buildEmoticonRegExp( ':/' ), to: [ null, '😕', null ] },
+	confusedBackslash: { from: buildEmoticonRegExp( ':\\' ), to: [ null, '😕', null ] },
+	neutralFace: { from: buildEmoticonRegExp( ':|' ), to: [ null, '😐', null ] },
+	sunglasses: { from: buildEmoticonRegExp( '8)' ), to: [ null, '😎', null ] },
+	kissing: { from: buildEmoticonRegExp( ':*' ), to: [ null, '😗', null ] },
+	cry: { from: buildEmoticonRegExp( ':\'(' ), to: [ null, '😢', null ] },
+	crySemicolon: { from: buildEmoticonRegExp( ';(' ), to: [ null, '😢', null ] },
+	joy: { from: buildEmoticonRegExp( ':\')' ), to: [ null, '😂', null ] },
+	laughing: { from: buildEmoticonRegExp( 'XD' ), to: [ null, '😆', null ] },
+	stuckOutTongueWinkingEye: { from: buildEmoticonRegExp( 'XP' ), to: [ null, '😜', null ] },
+	sob: { from: buildEmoticonRegExp( 'T_T' ), to: [ null, '😭', null ] },
+	expressionless: { from: buildEmoticonRegExp( '-_-' ), to: [ null, '😑', null ] },
+	dizzyFace: { from: buildEmoticonRegExp( 'x_x' ), to: [ null, '😵', null ] },
+	smileCat: { from: buildEmoticonRegExp( ':3' ), to: [ null, '😸', null ] },
+	heart: { from: buildEmoticonRegExp( '<3' ), to: [ null, '❤️', null ] },
+	brokenHeart: { from: buildEmoticonRegExp( '</3' ), to: [ null, '💔', null ] },
+	angry: { from: buildEmoticonRegExp( '>:(' ), to: [ null, '😠', null ] },
+	anguished: { from: buildEmoticonRegExp( 'D:' ), to: [ null, '😧', null ] },
+	zanyFace: { from: buildEmoticonRegExp( ':^D' ), to: [ null, '🤪', null ] },
+	victoryHand: { from: buildEmoticonRegExp( ':v' ), to: [ null, '✌️', null ] },
+	grin: { from: buildEmoticonRegExp( '=D' ), to: [ null, '😁', null ] },
+	tiredFace: { from: buildEmoticonRegExp( '8(' ), to: [ null, '😫', null ] }
 };
 
 // Transformation groups.
@@ -64,7 +94,14 @@ const TRANSFORMATION_GROUPS: Record<string, Array<string>> = {
 		'arrowLeft', 'arrowRight'
 	],
 	typography: [ 'horizontalEllipsis', 'enDash', 'emDash' ],
-	quotes: [ 'quotesPrimary', 'quotesSecondary' ]
+	quotes: [ 'quotesPrimary', 'quotesSecondary' ],
+	emoticons: [
+		'slightlySmilingFace', 'slightlyFrowningFace', 'grinning', 'openMouth', 'wink', 'stuckOutTongue',
+		'confused', 'confusedBackslash', 'neutralFace', 'sunglasses', 'kissing',
+		'cry', 'crySemicolon', 'joy', 'laughing', 'stuckOutTongueWinkingEye', 'sob',
+		'expressionless', 'dizzyFace', 'smileCat', 'heart', 'brokenHeart', 'angry', 'anguished',
+		'zanyFace', 'victoryHand', 'grin', 'tiredFace'
+	]
 };
 
 // A set of default transformations provided by the feature.
@@ -72,7 +109,8 @@ const DEFAULT_TRANSFORMATIONS = [
 	'symbols',
 	'mathematical',
 	'typography',
-	'quotes'
+	'quotes',
+	'emoticons'
 ];
 
 /**
@@ -170,7 +208,19 @@ export class TextTransformation extends Plugin {
 
 			let changeIndex = matches.index;
 
+			// Another queued change may run before this one and change the matched text.
+			// A live range shows if the matched range has changed.
+			const matchedLiveRange = ModelLiveRange.fromRange( matchedRange );
+
 			model.enqueueChange( writer => {
+				const isMatchedRangeUnchanged = matchedLiveRange.isEqual( matchedRange );
+
+				matchedLiveRange.detach();
+
+				if ( !isMatchedRangeUnchanged ) {
+					return;
+				}
+
 				for ( let i = 1; i < matches.length; i++ ) {
 					const match = matches[ i ];
 					const replaceWith = replaces[ i - 1 ];
@@ -247,6 +297,19 @@ function getTextAttributesAfterPosition( position: ModelPosition ) {
  */
 function buildQuotesRegExp( quoteCharacter: string ): RegExp {
 	return new RegExp( `(^|\\s)(${ quoteCharacter })([^${ quoteCharacter }]*)(${ quoteCharacter })$` );
+}
+
+/**
+ * Returns a RegExp that detects a text emoticon typed at the beginning of the text or after a whitespace,
+ * and followed by a space. Punctuation marks (`.`, `,`, `:`, `;`, `!`, `?`, or `…`) can come before this space,
+ * for example `:). `. The `…` mark is in the list because the `typography` group changes `...` into `…`
+ * before the space is typed. The whitespace before the emoticon prevents false positives such as `https://`
+ * or `1:3`, and the space after it prevents false positives such as `:Docs`.
+ *
+ * @param emoticon The text emoticon to create a pattern for.
+ */
+function buildEmoticonRegExp( emoticon: string ): RegExp {
+	return new RegExp( `(^|\\s)(${ escapeRegExp( emoticon ) })([.,:;!?…]* )$` );
 }
 
 /**

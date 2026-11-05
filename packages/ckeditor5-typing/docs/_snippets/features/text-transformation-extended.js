@@ -54,7 +54,6 @@ TextTransformationEditor
 
 				extra: [
 					// Add some custom transformations – e.g. for emojis.
-					{ from: ':)', to: '🙂' },
 					{ from: ':+1:', to: '👍' },
 					{ from: ':tada:', to: '🎉' },
 
