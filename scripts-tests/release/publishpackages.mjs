@@ -35,34 +35,76 @@ function findTask( definitions, title ) {
 }
 
 describe( 'scripts/release/publishpackages', () => {
-	let task;
+	let definitions;
 
-	beforeEach( async () => {
+	// The CLI arguments are read when the script is imported, so each set of arguments needs a fresh import.
+	async function importScript( cliArguments ) {
 		vi.resetModules();
-
-		vi.mocked( fs.readJsonSync ).mockReturnValue( { version: '47.0.0' } );
-		vi.mocked( parseArguments ).mockReturnValue( { npmTag: 'staging', ci: true } );
+		vi.mocked( Listr ).mockClear();
+		vi.mocked( parseArguments ).mockReturnValue( cliArguments );
 
 		await import( '../../scripts/release/publishpackages.mjs' );
 
-		task = findTask( vi.mocked( Listr ).mock.calls[ 0 ][ 0 ], 'Publishing packages.' );
+		return vi.mocked( Listr ).mock.calls[ 0 ][ 0 ];
+	}
+
+	beforeEach( async () => {
+		vi.mocked( fs.readJsonSync ).mockReturnValue( { version: '47.0.0' } );
+
+		definitions = await importScript( { npmTag: null, ci: true } );
+	} );
+
+	describe( 'Preparing the release options.', () => {
+		it( 'should be the first task', () => {
+			expect( definitions[ 0 ].title ).toEqual( 'Preparing the release options.' );
+		} );
+
+		it( 'should use the per-version staging tag for a stable release', () => {
+			const ctx = {};
+
+			findTask( definitions, 'Preparing the release options.' )( ctx );
+
+			expect( ctx ).toEqual( { npmTag: 'staging-v47.0.0' } );
+		} );
+
+		it( 'should use the npm tag given in the CLI arguments', async () => {
+			const nightlyDefinitions = await importScript( { npmTag: 'nightly', ci: true } );
+			const ctx = {};
+
+			findTask( nightlyDefinitions, 'Preparing the release options.' )( ctx );
+
+			expect( ctx ).toEqual( { npmTag: 'nightly' } );
+		} );
 	} );
 
 	describe( 'Publishing packages.', () => {
+		let task;
+
+		beforeEach( () => {
+			task = findTask( definitions, 'Publishing packages.' );
+		} );
+
 		it( 'should publish packages using npm Trusted Publishing (OIDC)', async () => {
-			await task( {}, {} );
+			await task( { npmTag: 'staging-v47.0.0' }, {} );
 
 			expect( releaseTools.publishPackages ).toHaveBeenCalledExactlyOnceWith( expect.objectContaining( {
-				useOidc: true,
-				npmTag: 'staging'
+				useOidc: true
 			} ) );
 
 			// `npm whoami` does not reflect OIDC authentication, so the npm account must not be verified.
 			expect( vi.mocked( releaseTools.publishPackages ).mock.calls[ 0 ][ 0 ] ).not.toHaveProperty( 'npmOwner' );
 		} );
 
+		it( 'should publish packages under the npm tag from the task context', async () => {
+			await task( { npmTag: 'example-tag' }, {} );
+
+			expect( releaseTools.publishPackages ).toHaveBeenCalledExactlyOnceWith( expect.objectContaining( {
+				npmTag: 'example-tag'
+			} ) );
+		} );
+
 		it( 'should not ask for a confirmation on CI', async () => {
-			await task( {}, {} );
+			await task( { npmTag: 'staging-v47.0.0' }, {} );
 
 			const { confirmationCallback } = vi.mocked( releaseTools.publishPackages ).mock.calls[ 0 ][ 0 ];
 

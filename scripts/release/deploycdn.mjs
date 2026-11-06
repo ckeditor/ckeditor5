@@ -5,15 +5,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import upath from 'upath';
+import fs from 'fs-extra';
 import { Listr } from 'listr2';
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import parseArguments from './utils/parsearguments.mjs';
 import { CDN_S3_BUCKET, RELEASE_CDN_DIRECTORY, S3_CONTENT_TYPE, S3_COPY_ARGS } from './utils/constants.mjs';
 import getCdnVersion from './utils/getcdnversion.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
+const { version } = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 const cliArguments = parseArguments( process.argv.slice( 2 ) );
-const cdnVersion = getCdnVersion( cliArguments );
+const cdnVersion = getCdnVersion( cliArguments, version );
 const shellModifiers = { verbosity: 'error', async: true };
 
 const tasks = new Listr( [

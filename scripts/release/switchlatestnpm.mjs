@@ -11,6 +11,7 @@ import semver from 'semver';
 import { globSync } from 'glob';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { CKEDITOR5_COMMERCIAL_PACKAGES_PATH, CKEDITOR5_PACKAGES_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import parseArguments from './utils/parsearguments.mjs';
 
 const GLOB_PATTERNS = [
 	CKEDITOR5_PACKAGES_PATH + '/*/package.json',
@@ -23,15 +24,23 @@ const currentMajor = semver.major( currentVersion );
 const ltsMajors = rootPkgJson[ 'ck-lts-versions' ];
 const isCurrentVersionLTS = ltsMajors.includes( currentMajor );
 
-const packages = globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
-	.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name );
+const cliArguments = parseArguments( process.argv.slice( 2 ) );
+
+// A CI release passes the packages it published, because the working tree may have more or fewer packages
+// by now. For example, a package added after the publish has no version to tag.
+const packages = cliArguments.releaseState ?
+	fs.readJsonSync( cliArguments.releaseState ).packages :
+	globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
+		.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name );
 
 const latestPublishedVersion = await releaseTools.getVersionForTag( 'ckeditor5', 'latest' );
 
 console.log( `Current \`@latest\` on npm: ${ latestPublishedVersion }.` );
 
-// Assign `@latest` only if the current version is newer than the one currently tagged as `@latest`.
-const shouldAssignLatest = !latestPublishedVersion || semver.compare( currentVersion, latestPublishedVersion ) > 0;
+// Assign `@latest` only if the current version is not older than the one currently tagged as `@latest`.
+// The same version is included, so a re-run retries the packages that failed before, even if `ckeditor5`
+// already points to the current version. Packages that are already tagged are skipped by `reassignNpmTags()`.
+const shouldAssignLatest = !latestPublishedVersion || semver.compare( currentVersion, latestPublishedVersion ) >= 0;
 
 if ( shouldAssignLatest ) {
 	console.log( `Moving \`@latest\` → v${ currentVersion }.` );
@@ -43,7 +52,7 @@ if ( shouldAssignLatest ) {
 		npmTag: 'latest'
 	} );
 } else {
-	console.log( `Not touching \`@latest\` (current ${ latestPublishedVersion } is >= ${ currentVersion }).` );
+	console.log( `Not touching \`@latest\` (current ${ latestPublishedVersion } is > ${ currentVersion }).` );
 }
 
 // Update the corresponding LTS tag (e.g., `lts-v47`) if the current version is part of an LTS release line.
