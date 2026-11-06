@@ -32,7 +32,7 @@ The toolkit also works without AI, for example to {@link features/editing-toolki
 
 ### CKEditor&nbsp;AI: custom skills for your features (⭐)
 
-{@link features/ckeditor-ai-overview CKEditor&nbsp;AI} can now work with the content of your plugins. Upload a custom skill that describes your feature's markup and rules, and register the plugin with {@link module:ai/aicore/aieditorconfig~AIEditorConfig#add `AIEditorConfig#add()`}. See {@link features/ckeditor-ai-feature-understanding#registering-custom-features Registering custom features}.
+{@link features/ckeditor-ai-overview CKEditor&nbsp;AI} can now work with the content of your plugins. Upload a [custom skill](https://ckeditor.com/docs/cs/latest/guides/ckeditor-ai/extensions/skills.html#custom-skills) that describes your feature's markup and rules, and register the plugin with {@link module:ai/aicore/aieditorconfig~AIEditorConfig#add `AIEditorConfig#add()`}. See {@link features/ckeditor-ai-feature-understanding#registering-custom-features Registering custom features}.
 
 If you used the `AIEditorConfig` type, rename it to `AIEditorConfigSnapshot`. The `AIEditorConfig` name now refers to the plugin that registers custom features.
 
