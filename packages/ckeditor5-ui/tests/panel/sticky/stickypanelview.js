@@ -1691,6 +1691,118 @@ describe( 'StickyPanelView', () => {
 			} );
 		} );
 
+		describe( 'if an ancestor of the panel is its containing block', () => {
+			let scrollableContainer, wrapper, styleElement, widthSpacer;
+
+			beforeEach( () => {
+				// The theme styles are not loaded in tests.
+				styleElement = document.createElement( 'style' );
+				styleElement.textContent = '.ck-sticky-panel__content_sticky { position: fixed; top: 0; }';
+				document.head.appendChild( styleElement );
+
+				// A scrollable container below the top of the viewport with the wrapper that holds the limiter.
+				scrollableContainer = document.createElement( 'div' );
+				scrollableContainer.style.cssText = 'position: absolute; top: 50px; left: 0; width: 400px; height: 200px; overflow: auto;';
+
+				wrapper = document.createElement( 'div' );
+				wrapper.style.paddingTop = '100px';
+
+				limiterElement.style.height = '1000px';
+				limiterElement.appendChild( element );
+
+				wrapper.appendChild( limiterElement );
+				scrollableContainer.appendChild( wrapper );
+				document.body.appendChild( scrollableContainer );
+
+				view.isActive = true;
+			} );
+
+			afterEach( () => {
+				window.scrollTo( 0, 0 );
+
+				if ( widthSpacer ) {
+					widthSpacer.remove();
+					widthSpacer = null;
+				}
+
+				scrollableContainer.remove();
+				styleElement.remove();
+			} );
+
+			for ( const [ property, value ] of [
+				[ 'transform', 'translateZ(0)' ],
+				[ 'filter', 'blur(0)' ],
+				[ 'contain', 'layout' ],
+				[ 'willChange', 'transform' ]
+			] ) {
+				it( `should stick the panel to the top of the scrollable container when the wrapper has \`${ property }\``, () => {
+					wrapper.style[ property ] = value;
+					scrollableContainer.scrollTop = 300;
+
+					view.checkIfShouldBeSticky();
+
+					expect( view.isSticky ).toBe( true );
+					expect( contentPanelElement.getBoundingClientRect().top ).toBeCloseTo( 50, 0 );
+				} );
+			}
+
+			it( 'should keep the panel horizontally in place when the page is scrolled horizontally', () => {
+				widthSpacer = document.createElement( 'div' );
+				widthSpacer.style.cssText = 'position: absolute; top: 0; left: 0; width: 5000px; height: 1px;';
+				document.body.appendChild( widthSpacer );
+
+				wrapper.style.transform = 'translateZ(0)';
+				scrollableContainer.scrollTop = 300;
+				window.scrollTo( 100, 0 );
+
+				view.checkIfShouldBeSticky();
+
+				const panelLeft = contentPanelElement.getBoundingClientRect().left;
+
+				expect( view.isSticky ).toBe( true );
+				expect( panelLeft ).toBeCloseTo( placeholderElement.getBoundingClientRect().left, 0 );
+				expect( panelLeft ).toBeCloseTo( -100, 0 );
+			} );
+
+			it( 'should stick the panel to the top of the scrollable container when the visual viewport is offset (iOS)', () => {
+				vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
+
+				wrapper.style.transform = 'translateZ(0)';
+				scrollableContainer.scrollTop = 300;
+
+				view.checkIfShouldBeSticky();
+
+				// The visual viewport is mocked 25px below the layout viewport in the outer `beforeEach()`, so the
+				// scrollable container top is at 75px there, and the panel rect is measured relative to the visual viewport.
+				expect( view.isSticky ).toBe( true );
+				expect( contentPanelElement.getBoundingClientRect().top + 25 ).toBeCloseTo( 75, 0 );
+				expect( view._marginLeft ).toBe( null );
+			} );
+
+			it( 'should keep the panel at the top of the scrollable container after scrolling it further', () => {
+				wrapper.style.transform = 'translateZ(0)';
+				scrollableContainer.scrollTop = 300;
+				view.checkIfShouldBeSticky();
+
+				scrollableContainer.scrollTop = 500;
+				view.checkIfShouldBeSticky();
+
+				expect( view.isSticky ).toBe( true );
+				expect( contentPanelElement.getBoundingClientRect().top ).toBeCloseTo( 50, 0 );
+			} );
+
+			it( 'should not correct the offset when the viewport is the containing block', () => {
+				scrollableContainer.scrollTop = 300;
+
+				view.checkIfShouldBeSticky();
+
+				expect( view.isSticky ).toBe( true );
+				expect( view._stickyTopOffset ).toBe( 50 );
+				expect( view._marginLeft ).toBe( '0px' );
+				expect( contentPanelElement.getBoundingClientRect().top ).toBeCloseTo( 50, 0 );
+			} );
+		} );
+
 		describe( 'view._marginLeft', () => {
 			it( 'is set if view.isSticky is true view._stickyTopOffset is set', () => {
 				vi.spyOn( limiterElement, 'getBoundingClientRect' ).mockReturnValue( {

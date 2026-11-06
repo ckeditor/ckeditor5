@@ -378,7 +378,24 @@ export class StickyPanelView extends View {
 		this._isStickyToTheBottomOfLimiter = false;
 		this._stickyTopOffset = topOffset;
 		this._stickyBottomOffset = null;
-		this._marginLeft = toPx( -global.window.scrollX + getVisualViewportOffset().left );
+
+		const visualViewportOffset = getVisualViewportOffset();
+
+		// An ancestor with `transform`, `filter`, `contain`, or similar is the containing block of the `position: fixed`
+		// panel instead of the viewport, so `top` is relative to that ancestor, which may also scroll its content.
+		// Measuring where the panel landed covers all such cases (https://github.com/ckeditor/ckeditor5/issues/18328).
+		// In Safari, the measured rect is relative to the visual viewport, like the limiter's one in `checkIfShouldBeSticky()`,
+		// so the same offset is added. The offset is rounded, so differences below 1px are not misplacements.
+		const misplacement = this._contentPanelRect.top + visualViewportOffset.top - topOffset;
+
+		if ( Math.abs( misplacement ) >= 1 ) {
+			this._stickyTopOffset = topOffset - misplacement;
+
+			// The panel's static position inside such an ancestor already follows the page's horizontal scroll.
+			this._marginLeft = null;
+		} else {
+			this._marginLeft = toPx( -global.window.scrollX + visualViewportOffset.left );
+		}
 	}
 
 	/**
