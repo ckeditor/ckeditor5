@@ -222,32 +222,32 @@ importers:
         specifier: 2.13.1
         version: 2.13.1(@types/node@25.9.5)
       '@ckeditor/ckeditor5-dev-build-tools':
-        specifier: ^62.5.0
-        version: 62.5.0(rollup@4.61.1)
+        specifier: ^63.1.2
+        version: 63.1.2(rollup@4.61.1)
       '@ckeditor/ckeditor5-dev-bump-year':
-        specifier: ^62.5.0
-        version: 62.5.0
+        specifier: ^63.1.2
+        version: 63.1.2
       '@ckeditor/ckeditor5-dev-changelog':
-        specifier: ^62.5.0
-        version: 62.5.0(@types/node@25.9.5)(supports-color@7.2.0)
+        specifier: ^63.1.2
+        version: 63.1.2(@types/node@25.9.5)(supports-color@7.2.0)
       '@ckeditor/ckeditor5-dev-docs':
-        specifier: ^62.5.0
-        version: 62.5.0(typescript@5.8.3)
+        specifier: ^63.1.2
+        version: 63.1.2(typescript@5.8.3)
       '@ckeditor/ckeditor5-dev-license-checker':
-        specifier: ^62.5.0
-        version: 62.5.0
+        specifier: ^63.1.2
+        version: 63.1.2
       '@ckeditor/ckeditor5-dev-manual-server':
-        specifier: ^62.5.0
-        version: 62.5.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
+        specifier: ^63.1.2
+        version: 63.1.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
       '@ckeditor/ckeditor5-dev-release-tools':
-        specifier: ^62.5.0
-        version: 62.5.0(@types/node@25.9.5)(supports-color@7.2.0)
+        specifier: ^63.1.2
+        version: 63.1.2(@types/node@25.9.5)(supports-color@7.2.0)
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^62.5.0
-        version: 62.5.0(supports-color@7.2.0)
+        specifier: ^63.1.2
+        version: 63.1.2(supports-color@7.2.0)
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^62.5.0
-        version: 62.5.0(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0)
+        specifier: ^63.1.2
+        version: 63.1.2(supports-color@7.2.0)(yauzl@3.4.0)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.1
         version: 5.0.2
@@ -4542,43 +4542,43 @@ packages:
   '@ckbox/uploader@2.13.1':
     resolution: {integrity: sha512-fIRGmBNA6O64YIb4TuPiNj8Kdx+kDpL9b2L5/yUMGFOiRORRncITKUHmd4sazljdfCFknxkxOm+ifKfrd7tyZQ==}
 
-  '@ckeditor/ckeditor5-dev-build-tools@62.5.0':
-    resolution: {integrity: sha512-qAhZTza4UI6EItuTfxStK/3juggJKTIC9TfH3TgdR1HKSTELh/bLh4gf1i3zupnJxokPk0aqkMCJi18Z9TagUg==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-build-tools@63.1.2':
+    resolution: {integrity: sha512-ORg6ccpa1qz5VSCdJEM4uA1AIiwfsxK5aXc7wJK/N8rQQxnzo4B/Pevj802VJSffYSe3JOs18N05K1W7LKwL2Q==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-bump-year@62.5.0':
-    resolution: {integrity: sha512-T9XMy7dj2B/pyr6OZaegf/e+660SMc9R8sWq+zTM96XIlGa5ODWgIUDC9XLaftqemRQPD5E6zZc1BiKUokQ8fQ==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-bump-year@63.1.2':
+    resolution: {integrity: sha512-a753k0bVnd4oROYPK5e/mcw7nJmXFD1ZkOOWdrU+H7BeH8w6QQuWt7+HE1iFN2zKSuHEPpMRYYGt1pW/DfQkTQ==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-changelog@62.5.0':
-    resolution: {integrity: sha512-by1UFfNm9KWMnTEzkW07Mk8Ph0+x/a3fhieJrOpu0LqLXyEH3aMj8XIk5W8X9OoiD1PeXgL6NOZzFphOpxtoTg==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-changelog@63.1.2':
+    resolution: {integrity: sha512-SuEMOv/Yvm53nAXv8NChzlh1NLnHvqTy9VAMjE82BN8gYgh6QwK7mee9ivr1kGz2sVrEHntzJLs6n0wWsu5Epg==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-docs@62.5.0':
-    resolution: {integrity: sha512-GkwFr+KBIYb18gcjucNn1QlXC70wfNTFxZ/gFi6wzyM/AgnesN/8Fwbioy9Q+vNQOrddSxdv+IO4XAUkrRDs8g==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-docs@63.1.2':
+    resolution: {integrity: sha512-sEuHih4M9aoieQxbUnLPzaicarxxBHTiWXb8GOigQRxYFAPmkteznXIN67ImusXwd84i9vG3tZOdYqAavJubYw==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-license-checker@62.5.0':
-    resolution: {integrity: sha512-ztC6vIOdU6YPxCpUXOuBmbfshi0jnploIGMqen3h3WLVtynX62JVf3UutSoO2dQt/LWWdA9X+ES7/SFF2kNqzg==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-license-checker@63.1.2':
+    resolution: {integrity: sha512-EJFr/HyolS67q+48+yGHAFlrDjc5nmfRpfPtfY/JEF6N3rdQi6D9q72PBy2GQBJPzC3sC7d9bFjhkui6XQuhcg==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-manual-server@62.5.0':
-    resolution: {integrity: sha512-/TAlXGS5vd5kwRP53U+4NozJTr2oeK5OJvF5S5/EBMl9NFNhVn4orUbqdmDsR93PJRFBDEwcvMTJw/VCMg/TLg==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-manual-server@63.1.2':
+    resolution: {integrity: sha512-YyN9Zq7FiJ9n46F8MSAAYokONn69jXK4K/7JAxCZIUIqBAId2CgV7uGsZx5+YQN3wxDPeMuF5VlPpS5Nv9tFmw==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-release-tools@62.5.0':
-    resolution: {integrity: sha512-NlwKq6qRbGyGGF+2yT0e3ccaIgT/ZCkborhztr7fp+SQ5a05XEsExbbkWq8EgFpL6abFX1VH2Z7A5/3AKws6wA==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-release-tools@63.1.2':
+    resolution: {integrity: sha512-fU152vcXzt/fZj+kt7Z22HV32hfcoC73FmAnz72OKeEo6ytUpXAMB/Z2NfN37QyGd+CAD3FTBxLUPkq0Lm65EQ==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@62.5.0':
-    resolution: {integrity: sha512-BOsGnG15kUZtGC6GzoaauwKHU+/yFuAfPZNK1VZ6jxQR5kicWQRf9vKC6SdOXdS6D7nEKj32iiliaEKUsqT/Og==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-utils@63.1.2':
+    resolution: {integrity: sha512-WI/N/IchgGEGIsruE9bhcdKUH4ZEGSYhoXHNGJ3CzJCtX3KqOpjGgZ2oj1/HE2TtDd8bGSFhLky6WBdfsRoyVw==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-web-crawler@62.5.0':
-    resolution: {integrity: sha512-7Pb2Y0VrsDJ4JMJxuZX4fYey+UBkPm55Tx7/9C04p/QRRlAXKvNAI6R2eq/w12sNB+xe8m2T+I6jXFDWrTCcng==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/ckeditor5-dev-web-crawler@63.1.2':
+    resolution: {integrity: sha512-RvYxDE1YZ/JTRCnVqLx0V7nqmgY+B5ZmLGtlIdmh//xFm3oNW+rdlG2c5wOWn/jjHbDfdFQgDM5f797jDXtjYQ==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-inspector@5.0.2':
     resolution: {integrity: sha512-+UCE9p1gmPumLvYE5DRBnatifj4MhsCAIfxYnkYsOhQ6eOTDXQMofjvof29cM+zB7N+UziL5hJGw0ql3xbVEGw==}
@@ -4612,9 +4612,9 @@ packages:
       ckeditor5: '>=49.0.0 || ^0.0.0-nightly || ^0.0.0-internal'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@ckeditor/typedoc-plugins@62.5.0':
-    resolution: {integrity: sha512-x2MICEyIp+LEYWJzWnYklvwzYvPQM8UHCrdaCvTY38W4KifvnADOcgopy/yb/eNhwVYmarsBK3AD2GvFIGgw1Q==}
-    engines: {node: '>=24.11.0', npm: '>=5.7.1'}
+  '@ckeditor/typedoc-plugins@63.1.2':
+    resolution: {integrity: sha512-FpAHC47odWgzYiFBsY/csAEI9WIDrKsjUdViSqHDt+bY0YIQkcKVwsA+L66glaFEQNn29WLdHRPLufpaRLHwAg==}
+    engines: {node: '>=26.10.0', npm: '>=5.7.1'}
     peerDependencies:
       typedoc: ^0.28.20
 
@@ -5200,6 +5200,9 @@ packages:
   '@isaacs/fs-minipass@4.0.1':
     resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
     engines: {node: '>=18.0.0'}
+
+  '@isaacs/nonrecursive-glob-match@1.0.3':
+    resolution: {integrity: sha512-SI7kyKHq4XXDRozw+r9GlRZkia1ZkFrpLW98r2IC2Bpr8YkFGE3fvjzmxCG0x78A++69HmDNrDvSMYBZmHGpKA==}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -5874,8 +5877,8 @@ packages:
     resolution: {integrity: sha512-HDVTWq3H0uTXiU0eeSQntcVUTPP3GamzeXI41+x7uU9J65JgWQh3qWZHblR1i0npXfFtF+mxBiU2nJH8znxWnQ==}
     engines: {node: '>=18'}
 
-  '@puppeteer/browsers@3.2.2':
-    resolution: {integrity: sha512-q2BU4YfO9h/Wt7IcWPcggpOOqLk2Tbs1hDwolvKZrweRjy751OJBKMN9zO5bfD0pzU7X/tvKw/exQds4pM/LOg==}
+  '@puppeteer/browsers@3.2.6':
+    resolution: {integrity: sha512-MJP29gVoHznmqmwhH1tlZqzfeQ3aylTpSSa6WKZXtkwYUH02i9imBmWGTyZrbnAou5paX78SE4jMAUqnEPf8ug==}
     engines: {node: '>=22.12.0'}
     hasBin: true
     peerDependencies:
@@ -6822,6 +6825,12 @@ packages:
     peerDependencies:
       devtools-protocol: '*'
 
+  chromium-bidi@157.0.8090-0:
+    resolution: {integrity: sha512-KJw7IQgqXwxpJgJlEIPg5mr2ZoqA+jkTRtc5EABI7sUJ3bu3cpI7NuEBoj4Gn1AsF78CaT9So5WQWspK3/wYag==}
+    engines: {node: '>=20.19.0 <22.0.0 || >=22.12.0'}
+    peerDependencies:
+      devtools-protocol: '*'
+
   ckbox@2.13.1:
     resolution: {integrity: sha512-f0WN6L8CCxr05aPc9F9dXgRubXS8odQ9OQUhdqdLXdSfgCUYXYSWLj4Yj0MyE/kR3tnG46h6+13c+PGjy4Liwg==}
 
@@ -7274,6 +7283,9 @@ packages:
   devtools-protocol@0.0.1608973:
     resolution: {integrity: sha512-Tpm17fxYzt+J7VrGdc1k8YdRqS3YV7se/M6KeemEqvUbq/n7At1rWVuXMxQgpWkdwSdIEKYbU//Bve+Shm4YNQ==}
 
+  devtools-protocol@0.0.1704951:
+    resolution: {integrity: sha512-GQhQOs9u/Mvm1zMtJIH872JS4AskuZdUSsPNPk4ChahtWAUqgz6atEtIsMt+nO7MqF1Ic4HxII/k8Cu36JivNg==}
+
   diff@8.0.4:
     resolution: {integrity: sha512-DPi0FmjiSU5EvQV0++GFDOJ9ASQUVFh5kD+OzOnYdi7n3Wpm9hWWGfB/O2blfHcMVTL5WkQXSnRiK9makhrcnw==}
     engines: {node: '>=0.3.1'}
@@ -7702,6 +7714,10 @@ packages:
 
   glob@13.0.6:
     resolution: {integrity: sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==}
+    engines: {node: 18 || 20 || >=22}
+
+  glob@14.0.3:
+    resolution: {integrity: sha512-A1vjIwC3qpdCso45Iw127gnp7sPhqgY8lUQhDrArIs+GbmfaaVPFuoyy7WyLT9EPZCRZ7j7aLdwUhQmHWesEow==}
     engines: {node: 18 || 20 || >=22}
 
   globals@16.5.0:
@@ -8309,6 +8325,10 @@ packages:
     resolution: {integrity: sha512-WkUDrojuJs0xkgGf2udWxa3yGBRxPtxUkB79i6aCZLRgc7PM8fZe9TosfPDcvEpQZbuFASnHYmRLBLUbmLOIIA==}
     engines: {node: '>= 12.0.0'}
 
+  lilconfig@3.1.4:
+    resolution: {integrity: sha512-zJZyBmQhArDRefuWTypZxwDpFDIYmrj8ypSBvwGD5P13Y95s6DjzKgu4DVdGbeQa5PDEsAOCAPNk4X+QOR006w==}
+    engines: {node: '>=14'}
+
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
@@ -8690,6 +8710,10 @@ packages:
     resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
     engines: {node: 18 || 20 || >=22}
 
+  minimatch@11.0.4:
+    resolution: {integrity: sha512-/UJ1dEoVQTjPNDh6SGlUo+ueLMmoHTas4q+8yaAR/5t6nLAIiBDJtoYUh20IYleix7ehiQkgczb84PE3uzHkxg==}
+    engines: {node: 20 || >=22}
+
   minimatch@9.0.9:
     resolution: {integrity: sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -8732,8 +8756,8 @@ packages:
   mitt@3.0.1:
     resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
 
-  modern-tar@0.8.5:
-    resolution: {integrity: sha512-snEhs+6G5Tjd4I7tLCDOaoln2RgE0bD19RzEKgvgK2hZ5VKy3MpLhLTZ2fWpXSTg4K2cyPwp+VHATFJhxfnOeA==}
+  modern-tar@0.8.6:
+    resolution: {integrity: sha512-LYSks0tNVqbtez/9OB0YFP6qLRSqkdAxJWOQpVaR67lNTbj2zNLyYpowkRMia5lXLCZKzxwoxkxH2MbbBR2aEg==}
     engines: {node: '>=18.0.0'}
 
   moize@6.1.7:
@@ -8986,6 +9010,10 @@ packages:
     resolution: {integrity: sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==}
     engines: {node: 18 || 20 || >=22}
 
+  path-scurry@3.0.0:
+    resolution: {integrity: sha512-1pTbQqH1wIwMi/eleQ5leFTTCkzFsPcgXNjwOA8YGGW/W4/kHT3dssE7Z6NH+zuqNLOzOB0uaD61yl7cAcVhgg==}
+    engines: {node: 18 || 20 || >=22}
+
   path-to-regexp@6.3.0:
     resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
 
@@ -9123,9 +9151,18 @@ packages:
     resolution: {integrity: sha512-T5ScUMAsmhdNbgDR41AGESYeS6V9MSgetkSnVhhW+gXvzC42VesKCn5ld87gAZDJ6vLHL9GkRvY9WtQWSnwFbw==}
     engines: {node: '>=18'}
 
+  puppeteer-core@25.16.0:
+    resolution: {integrity: sha512-VA5Pf54N8shfopNkZZXCdiiwfnnY8ZJYAMqFQRhlH5mGUhfwf53Ar770GPtdpTDLUqvQeYpIBtC9/G2Jij2IJw==}
+    engines: {node: '>=22.12.0'}
+
   puppeteer@24.43.1:
     resolution: {integrity: sha512-/FSOViCrqRdb1HDocpsM9Z1giA71gTQPUt3SpHGVRALKAy/rJr1fLFYZW9F23qPxqVxTHQnbh/5B5opJST3kAw==}
     engines: {node: '>=18'}
+    hasBin: true
+
+  puppeteer@25.16.0:
+    resolution: {integrity: sha512-LOr3reYnxAYYfQkpopz1fQnL0LdvqhpR5U2Fu+QnwzTX2gpVTHsn91UETo5NNC1md2/oC54Zu1ChBXgZDNSP1A==}
+    engines: {node: '>=22.12.0'}
     hasBin: true
 
   qrcode-terminal@0.12.0:
@@ -9433,9 +9470,6 @@ packages:
   shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
-
-  shell-escape@0.2.0:
-    resolution: {integrity: sha512-uRRBT2MfEOyxuECseCZd28jC1AJ8hmqqneWQ4VWUTgCAFvb3wKU1jLqj6egC4Exrr88ogg3dp+zroH4wJuaXzw==}
 
   shelljs@0.10.0:
     resolution: {integrity: sha512-Jex+xw5Mg2qMZL3qnzXIfaxEtBaC4n7xifqaqtrZDdlheR70OGkydrPJWT0V1cA1k3nanC86x9FwAmQl6w3Klw==}
@@ -9797,8 +9831,8 @@ packages:
     resolution: {integrity: sha512-TkRKr9sUTxEH8MdfuCSP7VizJyzRNMjj2J2do2Jr3Kym598JVdEksuzPQCnlFPW4ky9Q+iA+ma9BGm06XQBy8g==}
     engines: {node: '>= 0.6'}
 
-  typed-query-selector@2.12.2:
-    resolution: {integrity: sha512-EOPFbyIub4ngnEdqi2yOcNeDLaX/0jcE1JoAXQDDMIthap7FoN795lc/SHfIq2d416VufXpM8z/lD+WRm2gfOQ==}
+  typed-query-selector@2.12.3:
+    resolution: {integrity: sha512-/dtuMZyutHLlrxWhhC1uib00ELUr2dZ8C9B8YzZYsJmeE3V56OxRblrSM2UaF142pcMtak7ehZ6+poWGeehNIg==}
 
   typedoc-plugin-rename-defaults@0.7.3:
     resolution: {integrity: sha512-fDtrWZ9NcDfdGdlL865GW7uIGQXlthPscURPOhDkKUe4DBQSRRFUf33fhWw41FLlsz8ZTeSxzvvuNmh54MynFA==}
@@ -10048,6 +10082,9 @@ packages:
   webdriver-bidi-protocol@0.4.1:
     resolution: {integrity: sha512-ARrjNjtWRRs2w4Tk7nqrf2gBI0QXWuOmMCx2hU+1jUt6d00MjMxURrhxhGbrsoiZKJrhTSTzbIrc554iKI10qw==}
 
+  webdriver-bidi-protocol@1.0.1:
+    resolution: {integrity: sha512-WXWs/aXF2a6Al1Z2/V/7Gp2oPZOAAmHjJOTmv4KCXRJ122IMj3tSSMc6a4q3K4QOmhQbse/Ahr+oTVJOU2dUiw==}
+
   which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
@@ -10095,8 +10132,8 @@ packages:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
     engines: {node: '>=18'}
 
-  ws@8.21.3:
-    resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
+  ws@8.22.1:
+    resolution: {integrity: sha512-oyL6OPYme/CmiFvNuGzeoxCJ4nOrZE2O1FwM9MWM1AsGri6nLXB2pg+lNA8aLeXMSav0J6eIVS1j6vUPzUtK9g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -10150,8 +10187,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.4.3:
-    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -10287,11 +10324,11 @@ snapshots:
       - '@types/hoist-non-react-statics'
       - '@types/node'
 
-  '@ckeditor/ckeditor5-dev-build-tools@62.5.0(rollup@4.61.1)':
+  '@ckeditor/ckeditor5-dev-build-tools@63.1.2(rollup@4.61.1)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.61.1)
       es-toolkit: 1.52.0
-      glob: 13.0.6
+      glob: 14.0.3
       lightningcss: 1.33.0
       rolldown: 1.2.15
       source-map: 0.7.6
@@ -10299,18 +10336,18 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@ckeditor/ckeditor5-dev-bump-year@62.5.0':
+  '@ckeditor/ckeditor5-dev-bump-year@63.1.2':
     dependencies:
-      glob: 13.0.6
+      glob: 14.0.3
 
-  '@ckeditor/ckeditor5-dev-changelog@62.5.0(@types/node@25.9.5)(supports-color@7.2.0)':
+  '@ckeditor/ckeditor5-dev-changelog@63.1.2(@types/node@25.9.5)(supports-color@7.2.0)':
     dependencies:
       '@11ty/gray-matter': 2.1.0
-      '@ckeditor/ckeditor5-dev-utils': 62.5.0(supports-color@7.2.0)
+      '@ckeditor/ckeditor5-dev-utils': 63.1.2(supports-color@7.2.0)
       '@types/semver': 7.8.0
       cac: 7.0.0
       date-fns: 4.4.0
-      glob: 13.0.6
+      glob: 14.0.3
       inquirer: 12.11.1(@types/node@25.9.5)
       semver: 7.8.5
       upath: 2.0.1
@@ -10318,22 +10355,22 @@ snapshots:
       - '@types/node'
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-docs@62.5.0(typescript@5.8.3)':
+  '@ckeditor/ckeditor5-dev-docs@63.1.2(typescript@5.8.3)':
     dependencies:
-      '@ckeditor/typedoc-plugins': 62.5.0(typedoc@0.28.20(typescript@5.8.3))
-      glob: 13.0.6
+      '@ckeditor/typedoc-plugins': 63.1.2(typedoc@0.28.20(typescript@5.8.3))
+      glob: 14.0.3
       typedoc: 0.28.20(typescript@5.8.3)
       typedoc-plugin-rename-defaults: 0.7.3(typedoc@0.28.20(typescript@5.8.3))
       upath: 2.0.1
     transitivePeerDependencies:
       - typescript
 
-  '@ckeditor/ckeditor5-dev-license-checker@62.5.0':
+  '@ckeditor/ckeditor5-dev-license-checker@63.1.2':
     dependencies:
       diff: 8.0.4
       upath: 2.0.1
 
-  '@ckeditor/ckeditor5-dev-manual-server@62.5.0(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)':
+  '@ckeditor/ckeditor5-dev-manual-server@63.1.2(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)':
     dependencies:
       '@ckeditor/ckeditor5-inspector': 5.0.2
       vite: 8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
@@ -10351,29 +10388,28 @@ snapshots:
       - tsx
       - yaml
 
-  '@ckeditor/ckeditor5-dev-release-tools@62.5.0(@types/node@25.9.5)(supports-color@7.2.0)':
+  '@ckeditor/ckeditor5-dev-release-tools@63.1.2(@types/node@25.9.5)(supports-color@7.2.0)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 62.5.0(supports-color@7.2.0)
+      '@ckeditor/ckeditor5-dev-utils': 63.1.2(supports-color@7.2.0)
       '@octokit/rest': 22.0.1
       cli-columns: 4.0.0
-      glob: 13.0.6
+      glob: 14.0.3
       inquirer: 12.11.1(@types/node@25.9.5)
       semver: 7.8.5
-      shell-escape: 0.2.0
       simple-git: 4.0.2(supports-color@7.2.0)
       upath: 2.0.1
     transitivePeerDependencies:
       - '@types/node'
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-utils@62.5.0(supports-color@7.2.0)':
+  '@ckeditor/ckeditor5-dev-utils@63.1.2(supports-color@7.2.0)':
     dependencies:
       '@types/pacote': 11.1.8
       '@types/shelljs': 0.10.0
       '@types/through2': 2.0.41
       cli-cursor: 5.0.0
       cli-spinners: 3.4.0
-      glob: 13.0.6
+      glob: 14.0.3
       is-interactive: 2.0.0
       pacote: 21.5.1(supports-color@7.2.0)
       shelljs: 0.10.0
@@ -10383,15 +10419,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-web-crawler@62.5.0(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0)':
+  '@ckeditor/ckeditor5-dev-web-crawler@63.1.2(supports-color@7.2.0)(yauzl@3.4.0)':
     dependencies:
-      puppeteer: 24.43.1(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0)
-      puppeteer-cluster: 0.24.0(puppeteer@24.43.1(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0))(supports-color@7.2.0)
+      puppeteer: 25.16.0(yauzl@3.4.0)
+      puppeteer-cluster: 0.24.0(puppeteer@25.16.0(yauzl@3.4.0))(supports-color@7.2.0)
     transitivePeerDependencies:
       - bufferutil
       - proxy-agent
       - supports-color
-      - typescript
       - utf-8-validate
       - yauzl
 
@@ -10414,7 +10449,7 @@ snapshots:
       ckeditor5: link:packages/ckeditor5
       react: 18.3.1
 
-  '@ckeditor/typedoc-plugins@62.5.0(typedoc@0.28.20(typescript@5.8.3))':
+  '@ckeditor/typedoc-plugins@63.1.2(typedoc@0.28.20(typescript@5.8.3))':
     dependencies:
       typedoc: 0.28.20(typescript@5.8.3)
       upath: 2.0.1
@@ -10882,6 +10917,8 @@ snapshots:
   '@isaacs/fs-minipass@4.0.1':
     dependencies:
       minipass: 7.1.3
+
+  '@isaacs/nonrecursive-glob-match@1.0.3': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -11376,9 +11413,9 @@ snapshots:
 
   '@publint/pack@0.1.4': {}
 
-  '@puppeteer/browsers@3.2.2(yauzl@3.4.0)':
+  '@puppeteer/browsers@3.2.6(yauzl@3.4.0)':
     dependencies:
-      modern-tar: 0.8.5
+      modern-tar: 0.8.6
       yargs: 18.1.0
     optionalDependencies:
       yauzl: 3.4.0
@@ -11963,7 +12000,7 @@ snapshots:
       sirv: 3.0.2
       tinyrainbow: 3.1.1
       vitest: 5.0.2(@types/node@25.9.5)(@vitest/browser-playwright@5.0.2)(@vitest/coverage-v8@5.0.2)(@vitest/ui@5.0.2)(vite@8.3.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0))
-      ws: 8.21.3
+      ws: 8.22.1
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -12281,6 +12318,12 @@ snapshots:
       devtools-protocol: 0.0.1608973
       mitt: 3.0.1
       zod: 3.25.76
+
+  chromium-bidi@157.0.8090-0(devtools-protocol@0.0.1704951):
+    dependencies:
+      devtools-protocol: 0.0.1704951
+      mitt: 3.0.1
+      zod: 4.6.7
 
   ckbox@2.13.1(@types/node@25.9.5):
     dependencies:
@@ -12728,6 +12771,8 @@ snapshots:
       dequal: 2.0.3
 
   devtools-protocol@0.0.1608973: {}
+
+  devtools-protocol@0.0.1704951: {}
 
   diff@8.0.4: {}
 
@@ -13199,6 +13244,12 @@ snapshots:
       minimatch: 10.2.5
       minipass: 7.1.3
       path-scurry: 2.0.2
+
+  glob@14.0.3:
+    dependencies:
+      minimatch: 11.0.4
+      minipass: 7.1.3
+      path-scurry: 3.0.0
 
   globals@16.5.0: {}
 
@@ -13754,7 +13805,7 @@ snapshots:
       tinyglobby: 0.2.17
       unbash: 4.0.10
       yaml: 2.9.0
-      zod: 4.4.3
+      zod: 4.6.7
 
   koa-bodyparser@4.4.1:
     dependencies:
@@ -13912,6 +13963,8 @@ snapshots:
       lightningcss-linux-x64-musl: 1.33.0
       lightningcss-win32-arm64-msvc: 1.33.0
       lightningcss-win32-x64-msvc: 1.33.0
+
+  lilconfig@3.1.4: {}
 
   lines-and-columns@1.2.4: {}
 
@@ -14548,6 +14601,11 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.12
 
+  minimatch@11.0.4:
+    dependencies:
+      '@isaacs/nonrecursive-glob-match': 1.0.3
+      brace-expansion: 5.0.12
+
   minimatch@9.0.9:
     dependencies:
       brace-expansion: 2.1.7
@@ -14590,7 +14648,7 @@ snapshots:
 
   mitt@3.0.1: {}
 
-  modern-tar@0.8.5: {}
+  modern-tar@0.8.6: {}
 
   moize@6.1.7:
     dependencies:
@@ -14910,6 +14968,11 @@ snapshots:
       lru-cache: 11.5.1
       minipass: 7.1.3
 
+  path-scurry@3.0.0:
+    dependencies:
+      lru-cache: 11.5.1
+      minipass: 7.1.3
+
   path-to-regexp@6.3.0: {}
 
   pathe@2.0.3: {}
@@ -15052,22 +15115,22 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-cluster@0.24.0(puppeteer@24.43.1(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0))(supports-color@7.2.0):
+  puppeteer-cluster@0.24.0(puppeteer@25.16.0(yauzl@3.4.0))(supports-color@7.2.0):
     dependencies:
       debug: 4.4.3(supports-color@7.2.0)
-      puppeteer: 24.43.1(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0)
+      puppeteer: 25.16.0(yauzl@3.4.0)
     transitivePeerDependencies:
       - supports-color
 
   puppeteer-core@24.43.1(supports-color@7.2.0)(yauzl@3.4.0):
     dependencies:
-      '@puppeteer/browsers': 3.2.2(yauzl@3.4.0)
+      '@puppeteer/browsers': 3.2.6(yauzl@3.4.0)
       chromium-bidi: 14.0.0(devtools-protocol@0.0.1608973)
       debug: 4.4.3(supports-color@7.2.0)
       devtools-protocol: 0.0.1608973
-      typed-query-selector: 2.12.2
+      typed-query-selector: 2.12.3
       webdriver-bidi-protocol: 0.4.1
-      ws: 8.21.3
+      ws: 8.22.1
     transitivePeerDependencies:
       - bufferutil
       - proxy-agent
@@ -15075,19 +15138,47 @@ snapshots:
       - utf-8-validate
       - yauzl
 
+  puppeteer-core@25.16.0(yauzl@3.4.0):
+    dependencies:
+      '@puppeteer/browsers': 3.2.6(yauzl@3.4.0)
+      chromium-bidi: 157.0.8090-0(devtools-protocol@0.0.1704951)
+      devtools-protocol: 0.0.1704951
+      typed-query-selector: 2.12.3
+      webdriver-bidi-protocol: 1.0.1
+      ws: 8.22.1
+    transitivePeerDependencies:
+      - bufferutil
+      - proxy-agent
+      - utf-8-validate
+      - yauzl
+
   puppeteer@24.43.1(supports-color@7.2.0)(typescript@5.8.3)(yauzl@3.4.0):
     dependencies:
-      '@puppeteer/browsers': 3.2.2(yauzl@3.4.0)
+      '@puppeteer/browsers': 3.2.6(yauzl@3.4.0)
       chromium-bidi: 14.0.0(devtools-protocol@0.0.1608973)
       cosmiconfig: 9.0.2(typescript@5.8.3)
       devtools-protocol: 0.0.1608973
       puppeteer-core: 24.43.1(supports-color@7.2.0)(yauzl@3.4.0)
-      typed-query-selector: 2.12.2
+      typed-query-selector: 2.12.3
     transitivePeerDependencies:
       - bufferutil
       - proxy-agent
       - supports-color
       - typescript
+      - utf-8-validate
+      - yauzl
+
+  puppeteer@25.16.0(yauzl@3.4.0):
+    dependencies:
+      '@puppeteer/browsers': 3.2.6(yauzl@3.4.0)
+      chromium-bidi: 157.0.8090-0(devtools-protocol@0.0.1704951)
+      devtools-protocol: 0.0.1704951
+      lilconfig: 3.1.4
+      puppeteer-core: 25.16.0(yauzl@3.4.0)
+      typed-query-selector: 2.12.3
+    transitivePeerDependencies:
+      - bufferutil
+      - proxy-agent
       - utf-8-validate
       - yauzl
 
@@ -15508,8 +15599,6 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
-  shell-escape@0.2.0: {}
-
   shelljs@0.10.0:
     dependencies:
       execa: 5.1.1
@@ -15890,7 +15979,7 @@ snapshots:
       media-typer: 0.3.0
       mime-types: 2.1.35
 
-  typed-query-selector@2.12.2: {}
+  typed-query-selector@2.12.3: {}
 
   typedoc-plugin-rename-defaults@0.7.3(typedoc@0.28.20(typescript@5.8.3)):
     dependencies:
@@ -16128,6 +16217,8 @@ snapshots:
 
   webdriver-bidi-protocol@0.4.1: {}
 
+  webdriver-bidi-protocol@1.0.1: {}
+
   which@2.0.2:
     dependencies:
       isexe: 2.0.0
@@ -16178,7 +16269,7 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.2.0
 
-  ws@8.21.3: {}
+  ws@8.22.1: {}
 
   y18n@5.0.8: {}
 
@@ -16212,6 +16303,6 @@ snapshots:
 
   zod@3.25.76: {}
 
-  zod@4.4.3: {}
+  zod@4.6.7: {}
 
   zwitch@2.0.4: {}

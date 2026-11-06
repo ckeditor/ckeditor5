@@ -5,9 +5,11 @@
 
 /**
  * @param {ReleaseOptions} cliArguments
- * @returns {'alpha'|'nightly'|'nightly-next'|'staging'|'internal'}
+ * @param {String} version The version that is released. It names the CDN directory of a stable release.
+ * @returns {'alpha'|'nightly'|'nightly-next'|'internal'|String} One of the channel names, or `staging-v<version>`
+ * for a stable release.
  */
-export default function getCdnVersion( cliArguments ) {
+export default function getCdnVersion( cliArguments, version ) {
 	if ( cliArguments.nightly ) {
 		return 'nightly';
 	}
@@ -24,5 +26,7 @@ export default function getCdnVersion( cliArguments ) {
 		return 'internal';
 	}
 
-	return 'staging';
+	// The npm dist-tag uses the same name. Each version gets its own name, so release lines released
+	// on the same day do not overwrite each other's packages and CDN files.
+	return `staging-v${ version }`;
 }
