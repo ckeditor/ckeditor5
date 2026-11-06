@@ -7,8 +7,10 @@ import { vi, describe, it, beforeEach, expect } from 'vitest';
 import fs from 'fs-extra';
 import { globSync } from 'glob';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
+import parseArguments from '../../scripts/release/utils/parsearguments.mjs';
 
 vi.mock( 'fs-extra' );
+vi.mock( '../../scripts/release/utils/parsearguments.mjs' );
 vi.mock( 'glob' );
 vi.mock( '@ckeditor/ckeditor5-dev-release-tools' );
 vi.mock( '../../scripts/constants.mjs', () => ( {
@@ -48,6 +50,7 @@ describe( 'scripts/release/switchlatestnpm', () => {
 		vi.resetModules();
 
 		vi.spyOn( console, 'log' ).mockImplementation( () => {} );
+		vi.mocked( parseArguments ).mockReturnValue( { releaseState: null } );
 		vi.mocked( globSync ).mockReturnValue( packageJsonFiles );
 		vi.mocked( fs.readJsonSync ).mockImplementation( path => {
 			return packageJsonMap[ path ];
@@ -71,6 +74,28 @@ describe( 'scripts/release/switchlatestnpm', () => {
 				cwd: '/workspace/ckeditor/ckeditor5-commercial/external/ckeditor5'
 			}
 		);
+	} );
+
+	it( 'should tag the packages listed in the release state file instead of the packages found in the working tree', async () => {
+		vi.mocked( parseArguments ).mockReturnValue( { releaseState: '/workspace/release-state.json' } );
+		vi.mocked( fs.readJsonSync ).mockImplementation( path => {
+			if ( path === '/workspace/release-state.json' ) {
+				return { packages: [ '@ckeditor/alpha', '@ckeditor/charlie' ] };
+			}
+
+			return packageJsonMap[ path ];
+		} );
+		vi.mocked( releaseTools.getVersionForTag ).mockResolvedValue( '45.0.0' );
+
+		// Act: import executes the script (top-level await).
+		await import( SWITCH_TO_LATEST_PATH_SCRIPT );
+
+		expect( globSync ).not.toHaveBeenCalled();
+		expect( releaseTools.reassignNpmTags ).toHaveBeenCalledExactlyOnceWith( expect.objectContaining( {
+			version: '46.1.0',
+			packages: [ '@ckeditor/alpha', '@ckeditor/charlie' ],
+			npmTag: 'latest'
+		} ) );
 	} );
 
 	it( 'should map found paths to package names', async () => {

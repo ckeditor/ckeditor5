@@ -5,18 +5,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { execSync } from 'node:child_process';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { npm } from '@ckeditor/ckeditor5-dev-utils';
 import semver from 'semver';
 
-// `@staging` and `@latest` share usually the same versions.
-//
-// However, while publishing a new release, the `@staging` tag will contain the new release,
-// while `@latest` still points to the previous one, because we need to verify the release before making it public.
-//
-// To avoid triggering a new job (from a release commit), we must use the `@staging` tag.
-const latestPublishedVersion = execSync( 'npm view ckeditor5@staging version', { encoding: 'utf-8' } ).trim();
 const changelogVersion = releaseTools.getLastFromChangelog();
 
 if ( getVersionTag( changelogVersion ) !== 'latest' ) {
@@ -24,11 +16,8 @@ if ( getVersionTag( changelogVersion ) !== 'latest' ) {
 	process.exit( 1 );
 }
 
-if ( changelogVersion === latestPublishedVersion ) {
-	console.log( 'Nothing to release.' );
-	process.exit( 1 );
-}
-
+// A release commit must not trigger a new release. Its changelog version is already on npm, even while
+// the release waits for verification under its `staging-v<version>` tag and `@latest` still points to the previous one.
 if ( !( await isVersionAvailable( changelogVersion ) ) ) {
 	console.log( `The proposed changelog (${ changelogVersion }) version is already published.` );
 	process.exit( 1 );
@@ -43,5 +32,11 @@ function getVersionTag( version ) {
 }
 
 async function isVersionAvailable( version ) {
-	return npm.checkVersionAvailability( version, 'ckeditor5' );
+	try {
+		return await npm.checkVersionAvailability( version, 'ckeditor5' );
+	} catch ( error ) {
+		// When npm cannot tell, a release commit could look like a new release. Do not trigger anything then.
+		console.log( `Cannot check if the proposed changelog (${ version }) version is published: ${ error.message }` );
+		process.exit( 1 );
+	}
 }

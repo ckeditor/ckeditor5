@@ -11,6 +11,7 @@ import semver from 'semver';
 import { globSync } from 'glob';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import { CKEDITOR5_COMMERCIAL_PACKAGES_PATH, CKEDITOR5_PACKAGES_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
+import parseArguments from './utils/parsearguments.mjs';
 
 const GLOB_PATTERNS = [
 	CKEDITOR5_PACKAGES_PATH + '/*/package.json',
@@ -23,8 +24,14 @@ const currentMajor = semver.major( currentVersion );
 const ltsMajors = rootPkgJson[ 'ck-lts-versions' ];
 const isCurrentVersionLTS = ltsMajors.includes( currentMajor );
 
-const packages = globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
-	.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name );
+const cliArguments = parseArguments( process.argv.slice( 2 ) );
+
+// A CI release passes the packages it published, because the working tree may have more or fewer packages
+// by now. For example, a package added after the publish has no version to tag.
+const packages = cliArguments.releaseState ?
+	fs.readJsonSync( cliArguments.releaseState ).packages :
+	globSync( GLOB_PATTERNS, { absolute: true, cwd: CKEDITOR5_ROOT_PATH } )
+		.map( packageJsonPath => fs.readJsonSync( packageJsonPath ).name );
 
 const latestPublishedVersion = await releaseTools.getVersionForTag( 'ckeditor5', 'latest' );
 
