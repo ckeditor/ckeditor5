@@ -23,6 +23,13 @@ const { version: latestVersion } = fs.readJsonSync( upath.join( CKEDITOR5_ROOT_P
 
 const tasks = new Listr( [
 	{
+		title: 'Preparing the release options.',
+		task: ctx => {
+			// A stable release waits for verification under its own `staging-v<version>` npm tag.
+			ctx.npmTag = cliArguments.npmTag || `staging-v${ latestVersion }`;
+		}
+	},
+	{
 		title: 'Validating CKEditor 5 packages.',
 		task: () => {
 			return validateDependenciesVersions( {
@@ -33,11 +40,11 @@ const tasks = new Listr( [
 	},
 	{
 		title: 'Publishing packages.',
-		task: async ( _, task ) => {
+		task: async ( ctx, task ) => {
 			return releaseTools.publishPackages( {
 				packagesDirectory: RELEASE_NPM_DIRECTORY,
 				useOidc: true,
-				npmTag: cliArguments.npmTag,
+				npmTag: ctx.npmTag,
 				listrTask: task,
 				confirmationCallback: () => {
 					if ( cliArguments.ci ) {

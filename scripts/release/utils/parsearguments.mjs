@@ -33,7 +33,8 @@ export default function parseArguments( cliArguments ) {
 			'branch',
 			'date',
 			'npm-tag',
-			'packages'
+			'packages',
+			'release-state'
 		],
 
 		default: {
@@ -53,8 +54,10 @@ export default function parseArguments( cliArguments ) {
 			),
 			'compile-only': false,
 			packages: null,
+			'release-state': null,
 			branch: 'release-v47',
-			'npm-tag': 'staging',
+			// A stable release uses `staging-v<version>`. The version is known only when publishing (see `publishpackages.mjs`).
+			'npm-tag': null,
 			verbose: false,
 			ci: false,
 			external: true,
@@ -70,6 +73,7 @@ export default function parseArguments( cliArguments ) {
 
 	replaceKebabCaseWithCamelCase( options, [
 		'npm-tag',
+		'release-state',
 		'compile-only',
 		'nightly-alpha',
 		'nightly-next',
@@ -117,9 +121,12 @@ export default function parseArguments( cliArguments ) {
  *
  * @property {String} branch='release'
  *
- * @property {String} npmTag='staging'|'nightly'|'alpha'|'internal'
+ * @property {String|null} npmTag=null|'nightly'|'alpha'|'internal' `null` means a stable release.
  *
  * @property {Array.<String>|null} packages=null
+ *
+ * @property {String|null} releaseState=null A path to a JSON file whose `packages` array lists the names of the published
+ * packages. When it is set, the npm tag scripts handle these packages instead of the packages found in the working tree.
  *
  * @property {Boolean} verbose=false
  *

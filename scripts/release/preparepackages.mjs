@@ -23,7 +23,7 @@ import compileTypeScriptCallback from './utils/compiletypescriptcallback.mjs';
 import updatePackageEntryPoint from './utils/updatepackageentrypoint.mjs';
 import prepareDllBuildsCallback from './utils/preparedllbuildscallback.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
-import getCdnVersion from './utils/getcdnversion.mjs';
+import getZipName from './utils/getzipname.mjs';
 import isNonCommittableRelease from './utils/isnoncommittablerelease.mjs';
 import getReleaseDescription from './utils/getreleasedescription.mjs';
 import {
@@ -290,8 +290,7 @@ const tasks = new Listr( [
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 
-						const cdnVersion = getCdnVersion( cliArguments );
-						const zipName = `ckeditor5-${ cdnVersion === 'staging' ? latestVersion : cdnVersion }`;
+						const zipName = getZipName( 'ckeditor5', cliArguments, latestVersion );
 
 						await tools.shExec(
 							`zip -r ../../${ RELEASE_CDN_DIRECTORY }/zip/${ zipName }.zip ./*`,
