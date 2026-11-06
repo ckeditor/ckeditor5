@@ -1527,6 +1527,13 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 }
 
+/* ============================== ckeditor5-merge-fields ============================== */
+:root,
+:host {
+	--ck-merge-fields-form-error-background-color: hsl(15 100% 97%);
+	--ck-merge-fields-form-status-font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
+}
+
 /* ============================== ckeditor5-pagination ============================== */
 :root,
 :host {
@@ -2125,6 +2132,7 @@ Some content and feature tokens were renamed to the current naming convention. T
 | `--ck-color-merge-fields-block-outline`                 | `--ck-merge-fields-block-outline-color`                               |
 | `--ck-color-merge-fields-form-error-background`         | `--ck-merge-fields-form-error-background-color`                       |
 | `--ck-color-merge-fields-affix-color`                   | `--ck-merge-fields-affix-text-color`                                  |
+| `--ck-merge-fields-paddings-vertical`                   | `--ck-merge-fields-padding-block`                                     |
 | `--ck-uploadcare-color-image-background`                | `--ck-uploadcare-form-image-background-color`                         |
 | `--ck-uploadcare-color-icon-error`                      | `--ck-uploadcare-form-error-icon-color`                               |
 | `--ck-uploadcare-color-skeleton`                        | `--ck-uploadcare-form-skeleton-background-color`                      |
