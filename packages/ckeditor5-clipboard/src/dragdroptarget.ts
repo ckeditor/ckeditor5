@@ -322,7 +322,6 @@ export class DragDropTarget extends Plugin {
 
 		const domScrollableRect = this._getScrollableRect( viewElementParent );
 
-		const { scrollX, scrollY } = global.window;
 		const rectBefore = domElementBefore ? new Rect( domElementBefore ) : null;
 		const rectAfter = domElementAfter ? new Rect( domElementAfter ) : null;
 		const rectParent = new Rect( domElementParent ).excludeScrollbarsAndBorders();
@@ -337,13 +336,19 @@ export class DragDropTarget extends Plugin {
 			const left = rectParent.left + parseFloat( parentStyle.paddingLeft );
 			const right = rectParent.right - parseFloat( parentStyle.paddingRight );
 
-			const leftClamped = Math.max( left + scrollX, domScrollableRect.left );
-			const rightClamped = Math.min( right + scrollX, domScrollableRect.right );
+			const leftClamped = Math.max( left, domScrollableRect.left );
+			const rightClamped = Math.min( right, domScrollableRect.right );
+
+			// Convert the viewport position to the line's containing block. The body collection container shares it
+			// with the line and, unlike the hidden line, is always rendered, so it is the source to resolve it from.
+			const lineRect = new Rect( this.editor.ui.view.body.bodyCollectionContainer )
+				.moveTo( leftClamped, top )
+				.toAbsoluteRect();
 
 			this._dropTargetLineView.set( {
 				isVisible: true,
-				left: leftClamped,
-				top: top + scrollY,
+				left: lineRect.left,
+				top: lineRect.top,
 				width: rightClamped - leftClamped
 			} );
 		} else {
