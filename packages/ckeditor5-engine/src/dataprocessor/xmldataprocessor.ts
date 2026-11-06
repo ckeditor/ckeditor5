@@ -156,6 +156,7 @@ export class XmlDataProcessor implements DataProcessor {
 		const parsedDocument = this.domParser.parseFromString( trustedHtml( data ), 'text/xml' );
 
 		// Parse validation.
+		// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 		const parserError = parsedDocument.querySelector( 'parsererror' );
 
 		if ( parserError ) {

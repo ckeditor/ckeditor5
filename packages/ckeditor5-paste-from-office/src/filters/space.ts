@@ -43,6 +43,7 @@ export function normalizeSpacing( htmlString: string ): string {
  * @internal
  */
 export function normalizeSpacerunSpans( htmlDocument: Document ): void {
+	// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
 		const htmlElement = el as HTMLElement;
 		const innerTextLength = htmlElement.innerText.length || 0;

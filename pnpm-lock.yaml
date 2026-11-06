@@ -297,14 +297,14 @@ importers:
         specifier: ^10.0.0
         version: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
       eslint-config-ckeditor5:
-        specifier: ^22.0.0
-        version: 22.0.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3)
+        specifier: ^23.0.0
+        version: 23.0.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3)
       eslint-formatter-stylish:
         specifier: ^8.40.0
         version: 8.40.0
       eslint-plugin-ckeditor5-rules:
-        specifier: ^22.0.0
-        version: 22.0.0
+        specifier: ^23.0.0
+        version: 23.0.0
       estree-walker:
         specifier: ^3.0.3
         version: 3.0.3
@@ -7364,8 +7364,8 @@ packages:
     resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
     engines: {node: '>=12'}
 
-  eslint-config-ckeditor5@22.0.0:
-    resolution: {integrity: sha512-430r05ZwILBHGtWjMgY25sNpNc25warNWZKjDbyPp0onXBYjBOE+icx4NaZ6x4n4vjIXsKwCwu2Dm/YPDjOw8g==}
+  eslint-config-ckeditor5@23.0.0:
+    resolution: {integrity: sha512-bMJaM5rGnYJUTBA78Cl/jqtkYcO7aYJfTvUqmfbQ61eKeHQ5WXcor5XY6j97pDMcV/Bz+3ZY9Mn4EEgdEbLj2A==}
     engines: {node: '>=26.10.0'}
     peerDependencies:
       eslint: ^10.0.0
@@ -7375,8 +7375,8 @@ packages:
     resolution: {integrity: sha512-blbD5ZSQnjNEUaG38VCO4WG9nfDQWE8/IOmt8DFRHXUIfZikaIXmsQTdWNFk0/e0j7RgIVRza86MpsJ+aHgFLg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  eslint-plugin-ckeditor5-rules@22.0.0:
-    resolution: {integrity: sha512-pDIx9H/JDu4C12/PcdIvM7ZaNB1K5yC3N7kwslZOkSknk8C3xIreXl/3w4GukEFQBPL3xGft1VaAYmgZgqf+Gg==}
+  eslint-plugin-ckeditor5-rules@23.0.0:
+    resolution: {integrity: sha512-3Sr19/E0h7CaQsFGsMWRbdRYZsjpyQ7Fj+2jWz5ma5SEqfJp3axUEeccYIZSQQ+z/ZlfUam6rjuwYyHUPso9dg==}
     engines: {node: '>=26.10.0'}
 
   eslint-scope@9.1.2:
@@ -12754,14 +12754,14 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  eslint-config-ckeditor5@22.0.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3):
+  eslint-config-ckeditor5@23.0.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3):
     dependencies:
       '@eslint/css': 1.4.0
       '@eslint/js': 10.0.1(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))
       '@eslint/markdown': 6.6.0(supports-color@7.2.0)
       '@stylistic/eslint-plugin': 4.4.1(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3)
       eslint: 10.8.0(jiti@2.7.0)(supports-color@7.2.0)
-      eslint-plugin-ckeditor5-rules: 22.0.0
+      eslint-plugin-ckeditor5-rules: 23.0.0
       typescript: 5.8.3
       typescript-eslint: 8.61.0(eslint@10.8.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.8.3)
     transitivePeerDependencies:
@@ -12773,7 +12773,7 @@ snapshots:
       strip-ansi: 6.0.1
       text-table: 0.2.0
 
-  eslint-plugin-ckeditor5-rules@22.0.0:
+  eslint-plugin-ckeditor5-rules@23.0.0:
     dependencies:
       '@es-joy/jsdoccomment': 0.50.2
       '@eslint/css-tree': 4.0.4

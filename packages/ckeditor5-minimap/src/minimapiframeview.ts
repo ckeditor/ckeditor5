@@ -165,6 +165,8 @@ export class MinimapIframeView extends IframeView {
 		// iframe. A `TrustedHTML` object is accepted across that boundary, so the iframe needs no policy of its own.
 		iframeDocument.write( trustedHtml( html ) );
 		iframeDocument.close();
+
+		// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 		iframeDocument.body.appendChild( domRootClone );
 	}
 }

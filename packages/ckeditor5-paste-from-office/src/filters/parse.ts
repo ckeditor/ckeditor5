@@ -121,6 +121,7 @@ function documentToView( htmlDocument: Document, stylesProcessor: StylesProcesso
  * @param htmlDocument Native `Document` object to be processed.
  */
 function moveInBodyStyleBlocksToHead( htmlDocument: Document ): void {
+	// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 	for ( const style of Array.from( htmlDocument.body.querySelectorAll( 'style' ) ) ) {
 		htmlDocument.head.appendChild( style );
 	}
@@ -134,6 +135,8 @@ function moveInBodyStyleBlocksToHead( htmlDocument: Document ): void {
 function extractStyles( htmlDocument: Document ): { styles: Array<CSSStyleSheet>; stylesString: string } {
 	const styles = [];
 	const stylesString = [];
+
+	// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 	const styleTags = Array.from( htmlDocument.getElementsByTagName( 'style' ) );
 
 	for ( const style of styleTags ) {

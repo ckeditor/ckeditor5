@@ -64,6 +64,7 @@ export function getSelection( nodeOrNodes: ArrayOrItem<Node> ): Selection | Shad
 			return null;
 		}
 
+		// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 		const domSelection = domWindow.getSelection() as ComposedSelection | null;
 
 		// The document selection retargets shadow nodes to the host, but `getComposedRanges()`
@@ -105,6 +106,7 @@ export function getSelection( nodeOrNodes: ArrayOrItem<Node> ): Selection | Shad
 		const domWindow = node.ownerDocument?.defaultView;
 
 		if ( domWindow ) {
+			// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 			return domWindow.getSelection();
 		}
 	}

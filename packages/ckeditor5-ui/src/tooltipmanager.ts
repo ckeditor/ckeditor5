@@ -569,6 +569,7 @@ export class TooltipManager extends TooltipManagerBase {
 			return;
 		}
 
+		// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 		const { target, relatedTarget } = domEvent;
 
 		if ( evt.name === 'mouseleave' ) {

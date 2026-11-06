@@ -80,6 +80,7 @@ export function getElementFromPoint( x: number, y: number, shadowRoots: Array<Sh
 		}
 	}
 
+	// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 	return doc.elementFromPoint( x, y );
 }
 

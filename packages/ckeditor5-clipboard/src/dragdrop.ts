@@ -705,6 +705,7 @@ export class DragDrop extends Plugin {
 		if ( isShadowRoot( editableRoot ) ) {
 			editableRoot.appendChild( this._previewContainer );
 		} else {
+			// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 			editableDocument.body.appendChild( this._previewContainer );
 		}
 
