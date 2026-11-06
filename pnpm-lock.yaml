@@ -222,32 +222,32 @@ importers:
         specifier: 2.13.1
         version: 2.13.1(@types/node@25.9.5)
       '@ckeditor/ckeditor5-dev-build-tools':
-        specifier: ^63.1.1
-        version: 63.1.1(rollup@4.61.1)
+        specifier: ^63.1.2
+        version: 63.1.2(rollup@4.61.1)
       '@ckeditor/ckeditor5-dev-bump-year':
-        specifier: ^63.1.1
-        version: 63.1.1
+        specifier: ^63.1.2
+        version: 63.1.2
       '@ckeditor/ckeditor5-dev-changelog':
-        specifier: ^63.1.1
-        version: 63.1.1(@types/node@25.9.5)(supports-color@7.2.0)
+        specifier: ^63.1.2
+        version: 63.1.2(@types/node@25.9.5)(supports-color@7.2.0)
       '@ckeditor/ckeditor5-dev-docs':
-        specifier: ^63.1.1
-        version: 63.1.1(typescript@5.8.3)
+        specifier: ^63.1.2
+        version: 63.1.2(typescript@5.8.3)
       '@ckeditor/ckeditor5-dev-license-checker':
-        specifier: ^63.1.1
-        version: 63.1.1
+        specifier: ^63.1.2
+        version: 63.1.2
       '@ckeditor/ckeditor5-dev-manual-server':
-        specifier: ^63.1.1
-        version: 63.1.1(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
+        specifier: ^63.1.2
+        version: 63.1.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
       '@ckeditor/ckeditor5-dev-release-tools':
-        specifier: ^63.1.1
-        version: 63.1.1(@types/node@25.9.5)(supports-color@7.2.0)
+        specifier: ^63.1.2
+        version: 63.1.2(@types/node@25.9.5)(supports-color@7.2.0)
       '@ckeditor/ckeditor5-dev-utils':
-        specifier: ^63.1.1
-        version: 63.1.1(supports-color@7.2.0)
+        specifier: ^63.1.2
+        version: 63.1.2(supports-color@7.2.0)
       '@ckeditor/ckeditor5-dev-web-crawler':
-        specifier: ^63.1.1
-        version: 63.1.1(supports-color@7.2.0)(yauzl@3.4.0)
+        specifier: ^63.1.2
+        version: 63.1.2(supports-color@7.2.0)(yauzl@3.4.0)
       '@ckeditor/ckeditor5-inspector':
         specifier: ^5.0.1
         version: 5.0.2
@@ -4542,42 +4542,42 @@ packages:
   '@ckbox/uploader@2.13.1':
     resolution: {integrity: sha512-fIRGmBNA6O64YIb4TuPiNj8Kdx+kDpL9b2L5/yUMGFOiRORRncITKUHmd4sazljdfCFknxkxOm+ifKfrd7tyZQ==}
 
-  '@ckeditor/ckeditor5-dev-build-tools@63.1.1':
-    resolution: {integrity: sha512-0bJZDsJ5/yI7EFGPuJS+JkQ/9H24nahihIceV0rQ1SvH7B2WZqtoIyejVYtVq3vAehtQ56SSwN4+NtueYW8RPQ==}
+  '@ckeditor/ckeditor5-dev-build-tools@63.1.2':
+    resolution: {integrity: sha512-ORg6ccpa1qz5VSCdJEM4uA1AIiwfsxK5aXc7wJK/N8rQQxnzo4B/Pevj802VJSffYSe3JOs18N05K1W7LKwL2Q==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-bump-year@63.1.1':
-    resolution: {integrity: sha512-7aEDCOvg2lViwHUm1AoTsMHe1iZfcNKdr6P4UJM1Y7lVlo91nceRnUZPqWtn0UlcXejd3tj2d8sWHpgaOGESMA==}
+  '@ckeditor/ckeditor5-dev-bump-year@63.1.2':
+    resolution: {integrity: sha512-a753k0bVnd4oROYPK5e/mcw7nJmXFD1ZkOOWdrU+H7BeH8w6QQuWt7+HE1iFN2zKSuHEPpMRYYGt1pW/DfQkTQ==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-changelog@63.1.1':
-    resolution: {integrity: sha512-esZ8+VW6S/bpN5JeIn7U5g+aeaZPM4BFSKUouKn0kgq5XEwTYZnzRAjc3qVPwizKi1mJ51QDrtXXNLae+M2qXw==}
+  '@ckeditor/ckeditor5-dev-changelog@63.1.2':
+    resolution: {integrity: sha512-SuEMOv/Yvm53nAXv8NChzlh1NLnHvqTy9VAMjE82BN8gYgh6QwK7mee9ivr1kGz2sVrEHntzJLs6n0wWsu5Epg==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
     hasBin: true
 
-  '@ckeditor/ckeditor5-dev-docs@63.1.1':
-    resolution: {integrity: sha512-ta0eM9Z1EYk7kR6tQ6meRQ/CBXXepvHcN0V/Jw8dzY23iL/fc0/rXRUD036ccSgBTnX3IgJTmn4tRoZKb9lsRg==}
+  '@ckeditor/ckeditor5-dev-docs@63.1.2':
+    resolution: {integrity: sha512-sEuHih4M9aoieQxbUnLPzaicarxxBHTiWXb8GOigQRxYFAPmkteznXIN67ImusXwd84i9vG3tZOdYqAavJubYw==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-license-checker@63.1.1':
-    resolution: {integrity: sha512-OP35DzrSCh6r9AA/2cVH1pbNATJfRlLz0IncphfnoNYF5rkY3q0Nz4enq0vCZlvy/7NIV3zgUlIea5tORlS5zQ==}
+  '@ckeditor/ckeditor5-dev-license-checker@63.1.2':
+    resolution: {integrity: sha512-EJFr/HyolS67q+48+yGHAFlrDjc5nmfRpfPtfY/JEF6N3rdQi6D9q72PBy2GQBJPzC3sC7d9bFjhkui6XQuhcg==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-manual-server@63.1.1':
-    resolution: {integrity: sha512-WymbO3Ymf+QAlNmmTVBbuB9fBjvAiugiutONAfM03s2TzNQ1ggyBg3ebbhartHnb+1g4sTUkPWyL6vp73b8CaQ==}
+  '@ckeditor/ckeditor5-dev-manual-server@63.1.2':
+    resolution: {integrity: sha512-YyN9Zq7FiJ9n46F8MSAAYokONn69jXK4K/7JAxCZIUIqBAId2CgV7uGsZx5+YQN3wxDPeMuF5VlPpS5Nv9tFmw==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-release-tools@63.1.1':
-    resolution: {integrity: sha512-Bn8Aw3scoMPQv+9c1hJqr5WecHC73iTCTkAjn0EN5ZEwq18BOEZ/wKQen2TTYDTKh2/JVbN7uasWIZ81YUG5ug==}
+  '@ckeditor/ckeditor5-dev-release-tools@63.1.2':
+    resolution: {integrity: sha512-fU152vcXzt/fZj+kt7Z22HV32hfcoC73FmAnz72OKeEo6ytUpXAMB/Z2NfN37QyGd+CAD3FTBxLUPkq0Lm65EQ==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-utils@63.1.1':
-    resolution: {integrity: sha512-zsbUgHSGyp5UJomZjX56BFKNqx8xr5BrsX66AQtnWKfC/ujmz81spNy6easfIqg+UWqVThubXeyOd8kih472RA==}
+  '@ckeditor/ckeditor5-dev-utils@63.1.2':
+    resolution: {integrity: sha512-WI/N/IchgGEGIsruE9bhcdKUH4ZEGSYhoXHNGJ3CzJCtX3KqOpjGgZ2oj1/HE2TtDd8bGSFhLky6WBdfsRoyVw==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
-  '@ckeditor/ckeditor5-dev-web-crawler@63.1.1':
-    resolution: {integrity: sha512-sokhhEoOm28gUK5MkF3as6vbJu9nS7H9vN16t+0fwDkSgl7wUY99xRXzesAMCf/NG3PyrsdwFFzOWujFNjFDCg==}
+  '@ckeditor/ckeditor5-dev-web-crawler@63.1.2':
+    resolution: {integrity: sha512-RvYxDE1YZ/JTRCnVqLx0V7nqmgY+B5ZmLGtlIdmh//xFm3oNW+rdlG2c5wOWn/jjHbDfdFQgDM5f797jDXtjYQ==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
 
   '@ckeditor/ckeditor5-inspector@5.0.2':
@@ -4612,8 +4612,8 @@ packages:
       ckeditor5: '>=49.0.0 || ^0.0.0-nightly || ^0.0.0-internal'
       react: ^16.13.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@ckeditor/typedoc-plugins@63.1.1':
-    resolution: {integrity: sha512-Ag8CX/1A8HBIDrjzgXIihXf+58OYjaI4xVPy7KSRdBhMbKwJA6nSdO2W+g9+AQb94s+8UN7L5AM4XWLCjCXYDQ==}
+  '@ckeditor/typedoc-plugins@63.1.2':
+    resolution: {integrity: sha512-FpAHC47odWgzYiFBsY/csAEI9WIDrKsjUdViSqHDt+bY0YIQkcKVwsA+L66glaFEQNn29WLdHRPLufpaRLHwAg==}
     engines: {node: '>=26.10.0', npm: '>=5.7.1'}
     peerDependencies:
       typedoc: ^0.28.20
@@ -9372,9 +9372,6 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  shell-escape@0.2.0:
-    resolution: {integrity: sha512-uRRBT2MfEOyxuECseCZd28jC1AJ8hmqqneWQ4VWUTgCAFvb3wKU1jLqj6egC4Exrr88ogg3dp+zroH4wJuaXzw==}
-
   shelljs@0.10.0:
     resolution: {integrity: sha512-Jex+xw5Mg2qMZL3qnzXIfaxEtBaC4n7xifqaqtrZDdlheR70OGkydrPJWT0V1cA1k3nanC86x9FwAmQl6w3Klw==}
     engines: {node: '>=18'}
@@ -10213,7 +10210,7 @@ snapshots:
       - '@types/hoist-non-react-statics'
       - '@types/node'
 
-  '@ckeditor/ckeditor5-dev-build-tools@63.1.1(rollup@4.61.1)':
+  '@ckeditor/ckeditor5-dev-build-tools@63.1.2(rollup@4.61.1)':
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.61.1)
       es-toolkit: 1.52.0
@@ -10225,14 +10222,14 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@ckeditor/ckeditor5-dev-bump-year@63.1.1':
+  '@ckeditor/ckeditor5-dev-bump-year@63.1.2':
     dependencies:
       glob: 14.0.3
 
-  '@ckeditor/ckeditor5-dev-changelog@63.1.1(@types/node@25.9.5)(supports-color@7.2.0)':
+  '@ckeditor/ckeditor5-dev-changelog@63.1.2(@types/node@25.9.5)(supports-color@7.2.0)':
     dependencies:
       '@11ty/gray-matter': 2.1.0
-      '@ckeditor/ckeditor5-dev-utils': 63.1.1(supports-color@7.2.0)
+      '@ckeditor/ckeditor5-dev-utils': 63.1.2(supports-color@7.2.0)
       '@types/semver': 7.8.0
       cac: 7.0.0
       date-fns: 4.4.0
@@ -10244,9 +10241,9 @@ snapshots:
       - '@types/node'
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-docs@63.1.1(typescript@5.8.3)':
+  '@ckeditor/ckeditor5-dev-docs@63.1.2(typescript@5.8.3)':
     dependencies:
-      '@ckeditor/typedoc-plugins': 63.1.1(typedoc@0.28.20(typescript@5.8.3))
+      '@ckeditor/typedoc-plugins': 63.1.2(typedoc@0.28.20(typescript@5.8.3))
       glob: 14.0.3
       typedoc: 0.28.20(typescript@5.8.3)
       typedoc-plugin-rename-defaults: 0.7.3(typedoc@0.28.20(typescript@5.8.3))
@@ -10254,12 +10251,12 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@ckeditor/ckeditor5-dev-license-checker@63.1.1':
+  '@ckeditor/ckeditor5-dev-license-checker@63.1.2':
     dependencies:
       diff: 8.0.4
       upath: 2.0.1
 
-  '@ckeditor/ckeditor5-dev-manual-server@63.1.1(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)':
+  '@ckeditor/ckeditor5-dev-manual-server@63.1.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)':
     dependencies:
       '@ckeditor/ckeditor5-inspector': 5.0.2
       vite: 8.3.5(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.101.0)(terser@5.49.0)(yaml@2.9.0)
@@ -10277,22 +10274,21 @@ snapshots:
       - tsx
       - yaml
 
-  '@ckeditor/ckeditor5-dev-release-tools@63.1.1(@types/node@25.9.5)(supports-color@7.2.0)':
+  '@ckeditor/ckeditor5-dev-release-tools@63.1.2(@types/node@25.9.5)(supports-color@7.2.0)':
     dependencies:
-      '@ckeditor/ckeditor5-dev-utils': 63.1.1(supports-color@7.2.0)
+      '@ckeditor/ckeditor5-dev-utils': 63.1.2(supports-color@7.2.0)
       '@octokit/rest': 22.0.1
       cli-columns: 4.0.0
       glob: 14.0.3
       inquirer: 12.11.1(@types/node@25.9.5)
       semver: 7.8.5
-      shell-escape: 0.2.0
       simple-git: 4.0.2(supports-color@7.2.0)
       upath: 2.0.1
     transitivePeerDependencies:
       - '@types/node'
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-utils@63.1.1(supports-color@7.2.0)':
+  '@ckeditor/ckeditor5-dev-utils@63.1.2(supports-color@7.2.0)':
     dependencies:
       '@types/pacote': 11.1.8
       '@types/shelljs': 0.10.0
@@ -10309,7 +10305,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ckeditor/ckeditor5-dev-web-crawler@63.1.1(supports-color@7.2.0)(yauzl@3.4.0)':
+  '@ckeditor/ckeditor5-dev-web-crawler@63.1.2(supports-color@7.2.0)(yauzl@3.4.0)':
     dependencies:
       puppeteer: 25.16.0(yauzl@3.4.0)
       puppeteer-cluster: 0.24.0(puppeteer@25.16.0(yauzl@3.4.0))(supports-color@7.2.0)
@@ -10339,7 +10335,7 @@ snapshots:
       ckeditor5: link:packages/ckeditor5
       react: 18.3.1
 
-  '@ckeditor/typedoc-plugins@63.1.1(typedoc@0.28.20(typescript@5.8.3))':
+  '@ckeditor/typedoc-plugins@63.1.2(typedoc@0.28.20(typescript@5.8.3))':
     dependencies:
       typedoc: 0.28.20(typescript@5.8.3)
       upath: 2.0.1
@@ -15337,8 +15333,6 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
-
-  shell-escape@0.2.0: {}
 
   shelljs@0.10.0:
     dependencies:
