@@ -503,8 +503,19 @@ export class TableColumnResizeEditing extends Plugin {
 		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 		editingView.document.on( 'mouseout', this._onMouseOutHandler.bind( this ), { priority: 'high' } );
 
-		this._domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
-		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+		// The editable could be in a different document (an iframe or another window) than the one the editor code runs in.
+		// DOM roots are attached after the plugins are initialized, so wait for the editor to be ready.
+		//
+		// Note: This is a workaround for a simple case only, not a general multi-window solution. It assumes that the `main`
+		// root is attached to its target document before the editor is ready and stays in that document for the editor's
+		// lifetime. Roots with other names, roots attached later, and roots in different documents are not handled.
+		this.listenTo( this.editor, 'ready', () => {
+			const domRoot = editingView.getDomRoot();
+			const domDocument = domRoot ? domRoot.ownerDocument : global.window.document;
+
+			this._domEmitter.listenTo( domDocument, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
+			this._domEmitter.listenTo( domDocument, 'mouseup', this._onMouseUpHandler.bind( this ) );
+		} );
 	}
 
 	/**
