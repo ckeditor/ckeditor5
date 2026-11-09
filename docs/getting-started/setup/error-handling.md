@@ -148,7 +148,9 @@ Errors attributed to a `Context` rather than to a single editor are a separate c
 
 Skip this section unless you upload an editor bundle to Cloud Services, so that it can run an editor on the server without a browser.
 
-Error handling is a browser-side mechanism, and it does not apply there. The bundle exports an editor class, and Cloud Services creates the instance itself, so there is nowhere for you to register a callback. Cloud Services reports errors from server-side scripts on its own instead.
+Error handling is a browser-side mechanism, and it does not apply there. The bundle exports an editor class, and Cloud Services creates the instance itself, so there is nowhere for you to register a callback. Cloud Services reports errors from server-side scripts on its own instead. See the [error handling section](https://ckeditor.com/docs/cs/latest/developer-resources/server-side-editor-api/editor-scripts.html#error-handling) of the Server-side Editor API documentation.
+
+To catch problems with the bundle before Cloud Services uses it, upload it with test data. Cloud Services then checks that the editor returns the same content that it loaded. See [Testing the editor bundle with test data](https://ckeditor.com/docs/cs/latest/examples/editor-bundle/testing-editor-bundle.html).
 
 ## What we deliberately do not do
 
