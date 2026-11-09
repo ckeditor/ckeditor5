@@ -9,19 +9,19 @@ const translations: Translations = {
 	'ru': {
 		dictionary: {
 			// A label of the button that allows inserting a new code block into the editor content.
-			'Insert code block': 'Вставить код',
+			'Insert code block': 'Вставить блок кода',
 			// A language of the code block in the editor content when no specific programming language is associated with it.
 			'Plain text': 'Простой текст',
 			// Assistive technologies label for leaving the code block with a specified programming language. Example: 'Leaving JavaScript code snippet'
-			'Leaving %0 code snippet': 'Оставляем фрагмент кода %0',
+			'Leaving %0 code snippet': 'Выход из фрагмента кода %0',
 			// Assistive technologies label for entering the code block with a specified programming language. Example: 'Entering JavaScript code snippet'
-			'Entering %0 code snippet': 'Ввод фрагмента кода %0',
+			'Entering %0 code snippet': 'Вход в фрагмент кода %0',
 			// Assistive technologies label for entering the code block with unspecified programming language.
-			'Entering code snippet': 'Ввод фрагмента кода',
+			'Entering code snippet': 'Вход в фрагмент кода',
 			// Assistive technologies label for leaving the code block with unspecified programming language.
-			'Leaving code snippet': 'Оставляем фрагмент кода',
+			'Leaving code snippet': 'Выход из фрагмента кода',
 			// The accessible label of the menu bar button that inserts a code block into editor content.
-			'Code block': 'Блок кодов'
+			'Code block': 'Блок кода'
 		}
 	}
 };

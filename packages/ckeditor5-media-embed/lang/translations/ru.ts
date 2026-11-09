@@ -15,7 +15,7 @@ const translations: Translations = {
 			// The help text displayed under the media URL input helping users to discover the interface.
 			'Paste the media URL in the input.': 'Вставьте URL медиа в поле ввода.',
 			// The tip displayed next to the media URL input informing about an easier way of embedding.
-			'Tip: Paste the URL into the content to embed faster.': 'Подсказка: Вставьте URL в контент для быстрого включения.',
+			'Tip: Paste the URL into the content to embed faster.': 'Совет: Вставьте URL в содержимое для быстрого встраивания.',
 			// An error message that informs about an empty value in the URL input.
 			'The URL must not be empty.': 'URL не должен быть пустым.',
 			// An error message that informs about unsupported media URL.
@@ -23,19 +23,19 @@ const translations: Translations = {
 			// Toolbar button tooltip for the Media Embed feature.
 			'Insert media': 'Вставить медиа',
 			// The label for the Media Embed balloon.
-			'Media embed': 'Внедрение мультимедиа',
+			'Media embed': 'Встроить медиа',
 			// Label describing type of the inserted content (e.g. 'insert media').
 			'Media': 'Медиа',
 			// The label used by assistive technologies describing an image toolbar attached to an image widget.
 			'Media toolbar': 'Панель инструментов медиа',
 			// A tooltip displayed when the user hovers a non-previewable media URL in the editor content.
-			'Open media in new tab': 'Откройте медиа в новой вкладке',
+			'Open media in new tab': 'Открыть медиа в новой вкладке',
 			// The label for the left aligned media option.
-			'Left aligned media': 'Медиа, выровненное по левому краю',
+			'Left aligned media': 'Медиа по левому краю',
 			// The label for the centered media option.
 			'Centered media': 'Медиа по центру',
 			// The label for the right aligned media option.
-			'Right aligned media': 'Медиа, выровненное по правому краю',
+			'Right aligned media': 'Медиа по правому краю',
 			// The label used for the dropdown in the media toolbar containing defined resize options.
 			'Resize media': 'Изменить размер медиа',
 			// The label used for the standalone resize options buttons in the media toolbar.

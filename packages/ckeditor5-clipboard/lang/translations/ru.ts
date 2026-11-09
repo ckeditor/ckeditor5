@@ -9,11 +9,11 @@ const translations: Translations = {
 	'ru': {
 		dictionary: {
 			// Keystroke description for assistive technologies: keystroke for copying selected content.
-			'Copy selected content': 'Копировать выбранное содержание',
+			'Copy selected content': 'Копировать выбранное содержимое',
 			// Keystroke description for assistive technologies: keystroke for pasting content.
-			'Paste content': 'Вставить содержание',
+			'Paste content': 'Вставить содержимое',
 			// Keystroke description for assistive technologies: keystroke for pasting content as plain text.
-			'Paste content as plain text': 'Вставить содержанрие в виде обычного текста'
+			'Paste content as plain text': 'Вставить содержимое в виде обычного текста'
 		}
 	}
 };

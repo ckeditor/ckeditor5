@@ -19,15 +19,15 @@ const translations: Translations = {
 			// Accessibility help dialog section title for widget plugin keystrokes.
 			'Keystrokes that can be used when a widget is selected (for example: image, table, etc.)': 'Нажатия клавиш, которые можно использовать при выборе виджета (например: изображение, таблица и т. д.)',
 			// Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget.
-			'Insert a new paragraph directly after a widget': 'Вставить новый абзац непосредственно после виджета.',
+			'Insert a new paragraph directly after a widget': 'Вставить новый абзац непосредственно после виджета',
 			// Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget.
-			'Insert a new paragraph directly before a widget': 'Вставить новый абзац непосредственно перед виджетом.',
+			'Insert a new paragraph directly before a widget': 'Вставить новый абзац непосредственно перед виджетом',
 			// Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget.
-			'Move the caret to allow typing directly before a widget': 'Переместите курсор, чтобы можно было вводить текст непосредственно перед виджетом.',
+			'Move the caret to allow typing directly before a widget': 'Переместить курсор, чтобы можно было вводить текст непосредственно перед виджетом',
 			// Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget.
-			'Move the caret to allow typing directly after a widget': 'Переместить курсор, чтобы можно было вводить текст сразу после виджета.',
+			'Move the caret to allow typing directly after a widget': 'Переместить курсор, чтобы можно было вводить текст непосредственно после виджета',
 			// Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget.
-			'Move focus from an editable area back to the parent widget': 'Переместите фокус с редактируемой области обратно на родительский виджет'
+			'Move focus from an editable area back to the parent widget': 'Переместить фокус с редактируемой области обратно на родительский виджет'
 		}
 	}
 };

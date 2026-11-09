@@ -9,17 +9,17 @@ const translations: Translations = {
 	'ru': {
 		dictionary: {
 			// A label of the button indicating that using this button will make a selected text or blocks non–editable.
-			'Disable editing': 'Отключить редактирование',
+			'Disable editing': 'Запретить редактирование',
 			// A label of the button indicating that using this button will make a selected text or blocks editable.
 			'Enable editing': 'Разрешить редактирование',
 			// A label of the button indicating that using this button will make a selected text non–editable.
-			'Disable inline editing': 'Отключить встроенное редактирование',
+			'Disable inline editing': 'Запретить редактирование встраивания',
 			// A label of the button indicating that using this button will make a selected text editable.
-			'Enable inline editing': 'Включить встроенное редактирование',
+			'Enable inline editing': 'Разрешить редактирование встраивания',
 			// A label of the button indicating that using this button will make a selected blocks non–editable.
-			'Disable block editing': 'Отключить блочное редактирование',
+			'Disable block editing': 'Запретить редактирование блока',
 			// A label of the button indicating that using this button will make a selected blocks editable.
-			'Enable block editing': 'Включить блочное редактирование',
+			'Enable block editing': 'Разрешить редактирование блока',
 			// A label of the button that moves selection to the previous editable region in the content.
 			'Previous editable region': 'Предыдущий редактируемый регион',
 			// A label of the button that moves selection to the next editable region in the content.

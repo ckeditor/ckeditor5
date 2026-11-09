@@ -11,7 +11,7 @@ const translations: Translations = {
 			// Toolbar button tooltip for the HTML embed feature.
 			'Insert HTML': 'Вставить HTML',
 			// The HTML snippet.
-			'HTML snippet': 'HTML сниппет',
+			'HTML snippet': 'Фрагмент HTML',
 			// A placeholder that will be displayed in the raw HTML textarea field.
 			'Paste raw HTML here...': 'Вставьте HTML код сюда...',
 			// A label of a button that switches the HTML embed to the source editing mode.
@@ -21,7 +21,7 @@ const translations: Translations = {
 			// An information displayed in the HTML embed preview if the content is not previewable.
 			'No preview available': 'Предпросмотр недоступен',
 			// An information displayed in the HTML embed preview if the HTML snippet has no content.
-			'Empty snippet content': 'Нет контента'
+			'Empty snippet content': 'Пустое содержимое фрагмента'
 		}
 	}
 };

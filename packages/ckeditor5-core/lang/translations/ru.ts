@@ -39,9 +39,9 @@ const translations: Translations = {
 			// The label for the insert image with the file manager menu bar button (inside 'Insert' menu)
 			'With file manager': 'Из менеджера файлов',
 			// The button label for the object (e.g. image, table) toolbar for hiding the attached caption.
-			'Toggle caption off': 'Выключить описание',
+			'Toggle caption off': 'Выключить подпись',
 			// The button label for the object (e.g. image, table) toolbar for showing the attached caption.
-			'Toggle caption on': 'Включить описание',
+			'Toggle caption on': 'Включить подпись',
 			// Accessibility help dialog category header text for keystrokes related to content creation.
 			'Content editing keystrokes': 'Клавиши для редактирования контента',
 			// Accessibility help dialog text further explaining the purpose of the "Content editing keystrokes" category.
