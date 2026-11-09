@@ -39,8 +39,10 @@ export function getPositionedAncestor( element?: HTMLElement ): HTMLElement | nu
 	const offsetParent = element.offsetParent;
 
 	// No `offsetParent` at all: the element is `position: fixed`, so it is laid out against the viewport, or it
-	// is not rendered. Neither has an ancestor to be relative to.
-	if ( !offsetParent ) {
+	// is not rendered. Neither has an ancestor to be relative to. The browser answers the same for content
+	// slotted into a fixed element (a modal `<dialog>`, a popover), which that element does lay out – so only
+	// the element itself is judged here, and the slotted case is left to the slot walk below.
+	if ( !offsetParent && isFixedOrNotRendered( element ) ) {
 		return null;
 	}
 
@@ -50,6 +52,12 @@ export function getPositionedAncestor( element?: HTMLElement ): HTMLElement | nu
 	const slot = findSlotCloserThan( element, offsetParent );
 
 	if ( !slot ) {
+		// No `offsetParent` and no slot to follow instead: `<body>` itself, or content slotted into a fixed element
+		// through a closed root, whose slot is not exposed. Nothing is left to ask.
+		if ( !offsetParent ) {
+			return null;
+		}
+
 		// `offsetParent` names `<body>` for two different reasons: either the body really is what lays the
 		// element out (it is positioned, transformed, and so on), or nothing lays it out and `<body>` is just
 		// the fallback the spec returns – a static body does not lay out its absolutely positioned children,
@@ -62,14 +70,13 @@ export function getPositionedAncestor( element?: HTMLElement ): HTMLElement | nu
 	}
 
 	// Past the slot the browser's answer no longer applies, so the elements rendering the content are judged
-	// here. A component can pass its own slot down into another one's, so this is a chain, and every slot on it
-	// is a candidate: one styled to have a box lays the content out itself, while the `display: contents`
-	// default leaves it unable to.
+	// here. An element without a box lays nothing out, so it is stepped over: the slot by default, as well as
+	// a wrapper or a host styled `display: contents`. A slot styled to have a box is an ordinary element.
 	let candidate: Element = slot;
 
-	// A slot renders inside a shadow root, so it always has a layout parent: the slot it is itself assigned to,
-	// or the element or shadow host above it.
-	while ( candidate.localName === 'slot' && !isContainingBlock( candidate ) ) {
+	// A `display: contents` element always has a layout parent: it is never the root element, on which that
+	// value computes to `block`. For a slot, it is the slot it is itself assigned to, or the element above it.
+	while ( isDisplayContents( candidate ) ) {
 		candidate = getLayoutParentElement( candidate )!;
 	}
 
@@ -77,20 +84,21 @@ export function getPositionedAncestor( element?: HTMLElement ): HTMLElement | nu
 		return candidate as HTMLElement;
 	}
 
-	// An ordinary element again, so start over from it and let the browser answer for what lies above. Each
-	// step out is strictly further from `element`, so this bottoms out at the document.
+	// An ordinary element again, a slot with a box included, so start over from it and let the browser answer
+	// for what lies above. Each step out is strictly further from `element`, so this bottoms out at the document.
 	return getPositionedAncestor( candidate as HTMLElement );
 }
 
 /**
  * Walks outwards from the given node looking for the slot it is assigned to, and stops once `offsetParent` is
  * reached – so the result tells which of the two is nearer. A slot means the node tree and the flattened tree
- * part ways first; `null` means they agree all the way to `offsetParent`.
+ * part ways first; `null` means they agree all the way to `offsetParent`. Without an `offsetParent`, the walk
+ * goes all the way to the root.
  */
-function findSlotCloserThan( node: Element, offsetParent: Element ): HTMLSlotElement | null {
+function findSlotCloserThan( node: Element, offsetParent: Element | null ): HTMLSlotElement | null {
 	let current: Element | null = node;
 
-	// `offsetParent` is a node-tree ancestor of the element, so the walk always reaches it.
+	// `offsetParent` is a node-tree ancestor of the element, so the walk always reaches it – or, without one, the root.
 	while ( current && current !== offsetParent ) {
 		// An assigned node renders inside its slot, and that hop is where the walk leaves the node tree.
 		if ( current.assignedSlot ) {
@@ -101,6 +109,25 @@ function findSlotCloserThan( node: Element, offsetParent: Element ): HTMLSlotEle
 	}
 
 	return null;
+}
+
+/**
+ * Whether the given element is laid out against the viewport (`position: fixed`) or is not rendered at all.
+ *
+ * An element is rendered when it has a box, which is what `getClientRects()` tells: a rect for every box fragment,
+ * zero-sized ones included (an empty inline element), and none for an element without a box – `display: none` on
+ * it or an ancestor, or `display: contents`.
+ */
+function isFixedOrNotRendered( element: HTMLElement ): boolean {
+	return !element.getClientRects().length ||
+		element.ownerDocument.defaultView!.getComputedStyle( element ).position === 'fixed';
+}
+
+/**
+ * Whether the given element has no box of its own, so its children are laid out as if they were its parent's.
+ */
+function isDisplayContents( element: Element ): boolean {
+	return element.ownerDocument.defaultView!.getComputedStyle( element ).display === 'contents';
 }
 
 /**
@@ -123,15 +150,14 @@ const CONTAINING_BLOCK_WILL_CHANGE = /\b(?:transform|perspective|filter|contain)
  * qualifies – and `<body>`, which it also names when nothing above the element establishes a containing block.
  * The property list is what Chrome establishes a containing block for, verified against `offsetParent`, which
  * agrees with the rendered result in every one of these cases.
+ *
+ * Only asked about elements with a box, which `position` and the rest need to have any effect: the slot walk
+ * steps over `display: contents` candidates before asking, `offsetParent` never names a boxless `<body>`, and
+ * a `display: none` element never gets here, as the content it would render is unrendered too and the caller
+ * answers that first.
  */
 function isContainingBlock( element: Element ): boolean {
 	const styles = element.ownerDocument.defaultView!.getComputedStyle( element );
-
-	// No box, no containing block – `position` and the rest have no effect on a `display: contents` element.
-	// A `display: none` one never gets here: the content it would render is unrendered too, and answered above.
-	if ( styles.display === 'contents' ) {
-		return false;
-	}
 
 	if ( styles.position !== 'static' ) {
 		return true;

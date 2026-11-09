@@ -171,6 +171,18 @@ describe( 'getPositionedAncestor', () => {
 		parent.remove();
 	} );
 
+	it( 'should find a position: fixed ancestor, which lays out its absolutely positioned descendants', () => {
+		const parent = document.createElement( 'div' );
+
+		parent.style.position = 'fixed';
+		parent.appendChild( element );
+		document.body.appendChild( parent );
+
+		expect( getPositionedAncestor( element ) ).toBe( parent );
+
+		parent.remove();
+	} );
+
 	describe( 'slotted content', () => {
 		let host, frame;
 
@@ -186,6 +198,7 @@ describe( 'getPositionedAncestor', () => {
 
 		afterEach( () => {
 			host.remove();
+			frame.remove();
 		} );
 
 		it( 'finds the positioned ancestor in the shadow tree the element is assigned to', () => {
@@ -210,6 +223,39 @@ describe( 'getPositionedAncestor', () => {
 			pad.appendChild( document.createElement( 'slot' ) );
 			frame.appendChild( pad );
 			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			const slotted = document.createElement( 'span' );
+
+			host.appendChild( slotted );
+
+			expect( getPositionedAncestor( slotted ) ).toBe( frame );
+		} );
+
+		for ( const position of [ 'relative', 'fixed' ] ) {
+			it( `steps over a display: contents element between the slot and the positioned ancestor (position: ${ position })`, () => {
+				// A wrapper without a box of its own, the way a component groups its slot with other content.
+				const wrapper = document.createElement( 'div' );
+
+				wrapper.style.display = 'contents';
+				wrapper.appendChild( document.createElement( 'slot' ) );
+				frame.style.position = position;
+				frame.appendChild( wrapper );
+				host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+				const slotted = document.createElement( 'span' );
+
+				host.appendChild( slotted );
+
+				expect( getPositionedAncestor( slotted ) ).toBe( frame );
+			} );
+		}
+
+		it( 'steps over a display: contents host to the positioned ancestor in the light DOM', () => {
+			// A component styled `:host { display: contents }`, so the element above it lays its content out.
+			host.style.display = 'contents';
+			host.attachShadow( { mode: 'open' } ).appendChild( document.createElement( 'slot' ) );
+			frame.appendChild( host );
+			document.body.appendChild( frame );
 
 			const slotted = document.createElement( 'span' );
 
@@ -289,6 +335,125 @@ describe( 'getPositionedAncestor', () => {
 			expect( getPositionedAncestor( slotted ) ).toBeNull();
 		} );
 
+		it( 'finds a position: fixed element in the shadow tree the element is assigned to', () => {
+			// Chrome reports no `offsetParent` for content slotted into a fixed element, which is laid out
+			// against that element all the same.
+			frame.style.position = 'fixed';
+			frame.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			const slotted = document.createElement( 'span' );
+
+			host.appendChild( slotted );
+
+			expect( getPositionedAncestor( slotted ) ).toBe( frame );
+		} );
+
+		it( 'finds a modal dialog in the shadow tree the element is assigned to', () => {
+			const dialog = document.createElement( 'dialog' );
+
+			dialog.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'open' } ).appendChild( dialog );
+
+			const slotted = document.createElement( 'span' );
+
+			host.appendChild( slotted );
+			dialog.showModal();
+
+			expect( getPositionedAncestor( slotted ) ).toBe( dialog );
+
+			dialog.close();
+		} );
+
+		it( 'finds a popover in the shadow tree the element is assigned to', () => {
+			frame.setAttribute( 'popover', 'manual' );
+			frame.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			const slotted = document.createElement( 'span' );
+
+			host.appendChild( slotted );
+			frame.showPopover();
+
+			expect( getPositionedAncestor( slotted ) ).toBe( frame );
+
+			frame.hidePopover();
+		} );
+
+		it( 'finds a position: fixed element in the shadow tree for a descendant of the slotted element', () => {
+			frame.style.position = 'fixed';
+			frame.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			const slotted = document.createElement( 'div' );
+			const descendant = document.createElement( 'span' );
+
+			slotted.appendChild( descendant );
+			host.appendChild( slotted );
+
+			expect( getPositionedAncestor( descendant ) ).toBe( frame );
+		} );
+
+		it( 'finds a position: fixed element in the shadow tree a component holding the element is assigned to', () => {
+			// An editor component slotted into a fixed frame: the walk leaves the component's own root through
+			// its host, which is the slotted element.
+			frame.style.position = 'fixed';
+			frame.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			const componentHost = document.createElement( 'div' );
+			const inner = document.createElement( 'span' );
+
+			host.appendChild( componentHost );
+			componentHost.attachShadow( { mode: 'open' } ).appendChild( inner );
+
+			expect( getPositionedAncestor( inner ) ).toBe( frame );
+		} );
+
+		it( 'follows a slot re-projected into a position: fixed element of another component', () => {
+			const inner = document.createElement( 'div' );
+			const outerSlot = document.createElement( 'slot' );
+
+			inner.appendChild( outerSlot );
+			host.attachShadow( { mode: 'open' } ).appendChild( inner );
+
+			frame.style.position = 'fixed';
+			frame.appendChild( document.createElement( 'slot' ) );
+			inner.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			const slotted = document.createElement( 'span' );
+
+			host.appendChild( slotted );
+
+			expect( getPositionedAncestor( slotted ) ).toBe( frame );
+		} );
+
+		it( 'returns null for slotted content that is not rendered', () => {
+			frame.style.position = 'fixed';
+			frame.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			const slotted = document.createElement( 'span' );
+
+			slotted.style.display = 'none';
+			host.appendChild( slotted );
+
+			expect( getPositionedAncestor( slotted ) ).toBeNull();
+		} );
+
+		it( 'returns null for content slotted into a fixed element in a closed root, which does not expose the slot', () => {
+			frame.style.position = 'fixed';
+			frame.appendChild( document.createElement( 'slot' ) );
+			host.attachShadow( { mode: 'closed' } ).appendChild( frame );
+
+			const slotted = document.createElement( 'span' );
+
+			host.appendChild( slotted );
+
+			// A known limitation, like for any other containing block in a closed root.
+			expect( getPositionedAncestor( slotted ) ).toBeNull();
+		} );
+
 		it( 'finds a containing block established without positioning in the tree the element is assigned to', () => {
 			frame.style.position = 'static';
 			frame.style.transform = 'translateX(10px)';
@@ -352,6 +517,41 @@ describe( 'getPositionedAncestor', () => {
 			host.appendChild( slotted );
 
 			expect( getPositionedAncestor( slotted ) ).toBe( slot );
+		} );
+
+		it( 'finds the positioned ancestor of a slot that has a box but does not lay the content out', () => {
+			const slot = document.createElement( 'slot' );
+
+			slot.style.display = 'block';
+
+			frame.appendChild( slot );
+			host.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			const slotted = document.createElement( 'span' );
+
+			host.appendChild( slotted );
+
+			expect( getPositionedAncestor( slotted ) ).toBe( frame );
+		} );
+
+		it( 'follows a slot that has a box re-projected into a position: fixed element of another component', () => {
+			const inner = document.createElement( 'div' );
+			const outerSlot = document.createElement( 'slot' );
+
+			outerSlot.style.display = 'block';
+
+			inner.appendChild( outerSlot );
+			host.attachShadow( { mode: 'open' } ).appendChild( inner );
+
+			frame.style.position = 'fixed';
+			frame.appendChild( document.createElement( 'slot' ) );
+			inner.attachShadow( { mode: 'open' } ).appendChild( frame );
+
+			const slotted = document.createElement( 'span' );
+
+			host.appendChild( slotted );
+
+			expect( getPositionedAncestor( slotted ) ).toBe( frame );
 		} );
 
 		it( 'ignores a position on the slot while it has no box of its own', () => {

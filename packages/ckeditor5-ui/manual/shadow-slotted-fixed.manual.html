@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Shadow DOM (editor slotted into a fixed element of a shadow tree)</title>
+	<script type="module" src="./shadow-slotted-fixed.ts"></script>
+	<style>
+		/* Makes the page scrollable, so a result that adds the page scroll shows up as an offset. */
+		.spacer { height: 1500px; }
+	</style>
+</head>
+<body>
+	<ck-manual-header>
+		<h2>Editor slotted into a fixed element of a shadow tree</h2>
+
+		<p>
+			<code>&lt;ck-manual-fixed-frame&gt;</code> renders its <code>&lt;slot&gt;</code> inside a modal
+			<code>&lt;dialog&gt;</code>, a popover, or a <code>position: fixed</code> panel of its shadow tree. The editor
+			and its overlay container (<code>config.ui.overlayContainer</code>) are its light DOM children, so the
+			balloons render inside that element too. The browser reports no <code>offsetParent</code> for content
+			slotted into a fixed element, while it is laid out against that element.
+		</p>
+
+		<h3>What to do</h3>
+
+		<ol>
+			<li>
+				Scroll the page down a bit, then open the frame with each of the buttons below the header. The
+				editor shows up once the frame is open.
+			</li>
+			<li>
+				Select a word to open the balloon toolbar, put the caret in the link to open the link balloon, hover
+				the toolbar buttons to show their tooltips, and use the block toolbar handle.
+			</li>
+		</ol>
+
+		<p><strong>Expected:</strong> the balloons, tooltips, and the block toolbar handle are placed next to what
+		they point at, not offset by the position of the frame or by the page scroll.</p>
+	</ck-manual-header>
+
+	<p>
+		<button type="button" data-mode="dialog">Open as a modal dialog</button>
+		<button type="button" data-mode="popover">Open as a popover</button>
+		<button type="button" data-mode="fixed">Open as a fixed panel</button>
+	</p>
+
+	<div class="spacer"></div>
+
+	<ck-manual-fixed-frame>
+		<div id="editor">
+			<h2>Slotted editor</h2>
+			<p>Select a word to open the <strong>balloon toolbar</strong>.</p>
+			<p>Put the caret in this <a href="https://ckeditor.com">link</a> to open the link balloon.</p>
+			<blockquote><p>A block quote to drag with the block toolbar handle.</p></blockquote>
+		</div>
+		<div id="overlay-container"></div>
+	</ck-manual-fixed-frame>
+</body>
+</html>
