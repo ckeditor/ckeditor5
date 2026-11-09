@@ -48,7 +48,7 @@ This guide explains how to write scripts that can be executed through the Server
 For information about setting up and using the endpoint itself, see the complementary [Cloud Services Server-side Editor API](https://ckeditor.com/docs/cs/latest/developer-resources/server-side-editor-api/editor-scripts.html) documentation.
 
 <info-box info>
-	Please note you need to have an [editor bundle](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) uploaded first for the service to work properly.
+	Please note you need to have an [editor bundle](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) uploaded first for the service to work properly. The official `ckeditor-bundle` skill can build and upload it for you. See the {@link getting-started/ai-coding-agents#build-the-editor-bundle-for-ckeditor-cloud-services Using CKEditor&nbsp;5 with AI coding agents} guide.
 </info-box>
 
 ### Working with content
