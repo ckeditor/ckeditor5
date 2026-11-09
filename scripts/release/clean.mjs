@@ -6,8 +6,8 @@
  */
 
 import path from 'node:path';
+import { rm } from 'node:fs/promises';
 import { glob } from 'glob';
-import { rimraf } from 'rimraf';
 import minimist from 'minimist';
 import isTypeScriptPackage from './utils/istypescriptpackage.mjs';
 import { PACKAGES_DIRECTORY } from './utils/constants.mjs';
@@ -48,9 +48,9 @@ async function cleanReleaseArtifacts( options ) {
 
 	const removePatterns = typeScriptPatterns.flatMap( item => item );
 
-	for ( const pattern of removePatterns ) {
-		await rimraf( pattern, { glob: true } );
-	}
+	const pathsToRemove = await glob( removePatterns, { absolute: true } );
+
+	await Promise.all( pathsToRemove.map( pathToRemove => rm( pathToRemove, { recursive: true, force: true } ) ) );
 }
 
 /**
