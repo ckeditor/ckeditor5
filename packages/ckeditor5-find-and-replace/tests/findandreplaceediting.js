@@ -7,10 +7,12 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
 
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _getViewData, _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
 
@@ -164,6 +166,22 @@ describe( 'FindAndReplaceEditing', () => {
 			expect( getSearchResultHTML() ).toBe( '<p> </p><p></p>' );
 		} );
 
+		it( 'should handle a replaced result whose marker is already removed from the model', () => {
+			_setModelData( model, '<paragraph>foo bar foo</paragraph>' );
+
+			findAndReplaceEditing.find( 'foo' );
+
+			const [ firstResult ] = findAndReplaceEditing.state.results;
+
+			// The marker is removed right away by `state.results`, so `_onDocumentChange` gets it
+			// among the changed markers (with `newRange === null`) when it is no longer in the model.
+			editor.execute( 'replace', 'baz', firstResult );
+
+			expect( model.markers.has( firstResult.marker.name ) ).toBe( false );
+			expect( findAndReplaceEditing.state.results.length ).toBe( 1 );
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph>baz bar foo</paragraph>' );
+		} );
+
 		it( 'basic formatting works on highlighted search results', () => {
 			editor.setData( '<p>test</p>' );
 
@@ -232,6 +250,85 @@ describe( 'FindAndReplaceEditing', () => {
 			} );
 
 			expect( findAndReplaceEditing.state.results.length ).toBe( 1 );
+		} );
+	} );
+
+	describe( 'multi-root editor roots tracking', () => {
+		let multiRootEditor, multiRootModel, findAndReplaceEditing;
+
+		class MultiRootEditor extends ModelTestEditor {
+			constructor( config ) {
+				super( config );
+
+				this.model.document.createRoot( '$root', 'second' );
+			}
+		}
+
+		beforeEach( async () => {
+			multiRootEditor = await MultiRootEditor.create( { plugins: [ FindAndReplaceEditing, Paragraph, UndoEditing ] } );
+			multiRootModel = multiRootEditor.model;
+			findAndReplaceEditing = multiRootEditor.plugins.get( 'FindAndReplaceEditing' );
+
+			_setModelData( multiRootModel, '<paragraph>Foo bar baz</paragraph>' );
+			_setModelData( multiRootModel, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+		} );
+
+		afterEach( async () => {
+			await multiRootEditor.destroy();
+		} );
+
+		it( 'should update search results list after removal of root (undoable)', () => {
+			findAndReplaceEditing.find( 'Foo' );
+
+			expect( findAndReplaceEditing.state.results ).toHaveLength( 2 );
+
+			multiRootModel.change( writer => writer.detachRoot( 'second' ) );
+
+			expect( findAndReplaceEditing.state.results ).toHaveLength( 1 );
+
+			multiRootEditor.execute( 'undo' );
+
+			expect( findAndReplaceEditing.state.results ).toHaveLength( 2 );
+		} );
+
+		it( 'should update search results list after removal of root (undoable = false)', () => {
+			findAndReplaceEditing.find( 'Foo' );
+
+			expect( findAndReplaceEditing.state.results ).toHaveLength( 2 );
+
+			multiRootModel.enqueueChange( { isUndoable: false }, writer => writer.detachRoot( 'second' ) );
+
+			expect( findAndReplaceEditing.state.results ).toHaveLength( 1 );
+
+			multiRootEditor.execute( 'undo' );
+
+			expect( findAndReplaceEditing.state.results ).toHaveLength( 1 );
+		} );
+
+		it( 'should highlight the remaining result after removal of a root with the highlighted result', () => {
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Foo' );
+			multiRootEditor.execute( 'findNext' );
+
+			expect( state.highlightedResult.marker.getStart().root.rootName ).toBe( 'second' );
+
+			multiRootModel.change( writer => writer.detachRoot( 'second' ) );
+
+			expect( state.results ).toHaveLength( 1 );
+			expect( state.highlightedResult ).toBe( state.results.get( 0 ) );
+			expect( state.highlightedOffset ).toBe( 1 );
+		} );
+
+		it( 'should update search results list after adding root', () => {
+			findAndReplaceEditing.find( 'Foo' );
+
+			expect( findAndReplaceEditing.state.results ).toHaveLength( 2 );
+
+			multiRootModel.document.createRoot( '$root', 'third' );
+			_setModelData( multiRootModel, '<paragraph>Foo Foo Foo</paragraph>', { rootName: 'third' } );
+
+			expect( findAndReplaceEditing.state.results ).toHaveLength( 5 );
 		} );
 	} );
 

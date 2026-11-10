@@ -21,7 +21,7 @@ import { ReplaceCommand } from './replacecommand.js';
 import { ReplaceAllCommand } from './replaceallcommand.js';
 import { FindNextCommand } from './findnextcommand.js';
 import { FindPreviousCommand } from './findpreviouscommand.js';
-import { FindAndReplaceState, type FindCallback } from './findandreplacestate.js';
+import { FindAndReplaceState, sortSearchResultsByMarkerPositions, type FindCallback } from './findandreplacestate.js';
 import { FindAndReplaceUtils } from './findandreplaceutils.js';
 import type { FindResultType } from './findandreplace.js';
 
@@ -251,7 +251,7 @@ export class FindAndReplaceEditing extends Plugin {
 
 		// Get markers from removed nodes also.
 		changedMarkers.forEach( ( { name, data: { newRange } } ) => {
-			if ( newRange && newRange.start.root.rootName === '$graveyard' ) {
+			if ( !newRange || newRange.start.root.rootName === '$graveyard' ) {
 				removedMarkers.add( name );
 			}
 		} );
@@ -272,10 +272,12 @@ export class FindAndReplaceEditing extends Plugin {
 				// in `state.results`. Once the replacement is done, those markers are never removed
 				// through the normal "remove from results" path above, so they would otherwise stay
 				// alive in the model forever — clean them up here before they silently accumulate.
+				//
+				// Note that a marker of a result that was just removed from `state.results` (e.g. by the `replace`
+				// command) also reaches this place, but it has already been removed from the model at this point.
 				if ( markerName.startsWith( 'findResult:' ) ) {
 					const orphanMarker = model.markers.get( markerName );
 
-					/* v8 ignore else -- @preserve */
 					if ( orphanMarker ) {
 						model.change( writer => writer.removeMarker( orphanMarker ) );
 					}
@@ -334,6 +336,10 @@ export class FindAndReplaceEditing extends Plugin {
 		if ( !this.state!.highlightedResult && changedSearchResults.length ) {
 			// If there are found phrases but none is selected, select the first one.
 			this.state!.highlightedResult = changedSearchResults[ 0 ];
+		} else if ( !this.state!.highlightedResult && results.length ) {
+			// The highlighted result was removed without a re-scan of its content (e.g. together with its root),
+			// so there is nothing new to highlight there. Highlight the first remaining result instead.
+			this.state!.highlightedResult = sortSearchResultsByMarkerPositions( model, [ ...results ] )[ 0 ];
 		} else {
 			// If there is already highlight item then refresh highlight offset after appending new items.
 			this.state!.refreshHighlightOffset( model );
