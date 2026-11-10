@@ -11,6 +11,7 @@ import { MergeCellsCommand } from '../../src/commands/mergecellscommand.js';
 import { modelTable } from '../_utils/utils.js';
 import { TableSelection } from '../../src/tableselection.js';
 import { TableEditing } from '../../src/tableediting.js';
+import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'MergeCellsCommand', () => {
@@ -877,4 +878,68 @@ describe( 'MergeCellsCommand', () => {
 			writer.setSelection( ranges );
 		} );
 	}
+} );
+
+describe( 'MergeCellsCommand with TableCellProperties', () => {
+	let editor, model, root, command, tableSelection;
+
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, TableSelection, TableCellPropertiesEditing ]
+		} );
+
+		model = editor.model;
+		root = model.document.getRoot( 'main' );
+		tableSelection = editor.plugins.get( TableSelection );
+
+		command = new MergeCellsCommand( editor );
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
+	describe( 'isEnabled', () => {
+		it( 'should be false if selected cells have different types', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			expect( command.isEnabled ).toBe( false );
+		} );
+
+		it( 'should be true if selected cells are headers of different header variants', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header-row' }, { contents: '01', tableCellType: 'header-column' } ],
+				[ '10', '11' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			expect( command.isEnabled ).toBe( true );
+		} );
+
+		it( 'should be true if all selected cells have the same type', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 0, 1 ] )
+			);
+
+			expect( command.isEnabled ).toBe( true );
+		} );
+	} );
 } );

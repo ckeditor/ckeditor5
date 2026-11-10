@@ -341,6 +341,13 @@ export class TableUI extends Plugin {
 			return areEnabled.some( isEnabled => isEnabled );
 		} );
 
+		// The main (action) part of the split button executes the merge command, so it must reflect only that command's state.
+		// Otherwise it would stay enabled whenever any of the sub-commands (e.g. splitting a cell) is enabled.
+		const { actionView } = dropdownView.buttonView as SplitButtonView;
+
+		actionView.unbind( 'isEnabled' );
+		actionView.bind( 'isEnabled' ).to( mergeCommand );
+
 		// Merge selected table cells when the main part of the split button is clicked.
 		this.listenTo( dropdownView.buttonView, 'execute', () => {
 			editor.execute( mergeCommandName );

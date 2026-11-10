@@ -646,6 +646,21 @@ describe( 'TableUI', () => {
 			expect( dropdown.isEnabled ).toBe( true );
 		} );
 
+		it( 'should bind the main part of the split button only to the "mergeTableCells" command', () => {
+			const { actionView, arrowView } = dropdown.buttonView;
+
+			command.isEnabled = false;
+			editor.commands.get( 'splitTableCellVertically' ).isEnabled = true;
+
+			expect( dropdown.isEnabled ).toBe( true );
+			expect( arrowView.isEnabled ).toBe( true );
+			expect( actionView.isEnabled ).toBe( false );
+
+			command.isEnabled = true;
+
+			expect( actionView.isEnabled ).toBe( true );
+		} );
+
 		it( 'should execute the "mergeTableCells" command when the main part of the split button is clicked', () => {
 			const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
 

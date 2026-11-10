@@ -17,6 +17,7 @@ import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { TableWalker } from '../tablewalker.js';
 import { isHeadingColumnCell } from '../utils/common.js';
 import { removeEmptyRowsColumns } from '../utils/structure.js';
+import { areTableCellsOfSameType } from '../tablecellproperties/tablecellpropertiesutils.js';
 import type { ArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils';
 
 import { type TableUtils } from '../tableutils.js';
@@ -142,6 +143,11 @@ export class MergeCellCommand extends Command {
 			getVerticalCell( tableCell, this.direction, tableUtils );
 
 		if ( !cellToMerge ) {
+			return;
+		}
+
+		// Cells of different types (e.g. header and data) cannot be merged.
+		if ( !areTableCellsOfSameType( [ tableCell, cellToMerge as ModelElement ] ) ) {
 			return;
 		}
 
