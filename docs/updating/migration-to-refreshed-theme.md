@@ -1784,12 +1784,11 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 :root,
 :host {
 	--ck-slash-command-button-width: 250px;
-	--ck-slash-command-description-width: 200px;
 	--ck-slash-command-button-radius: var(--ck-list-dropdown-button-border-radius, 0);
 }
 
-.ck.ck-mentions > .ck-list__item.ck-mentions__item_focused > .ck-button .ck-slash-command-button__description {
-	color: var(--ck-list-button-on-text-color);
+.ck.ck-mentions > .ck-list__item.ck-mentions__item_focused > .ck-button {
+	--ck-slash-command-description-text-color: var(--ck-list-button-on-text-color);
 }
 
 /* ============================== ckeditor5-source-editing-enhanced ============================== */
