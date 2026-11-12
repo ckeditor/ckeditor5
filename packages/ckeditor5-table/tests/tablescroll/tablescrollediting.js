@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, onTestFinished } from 'vitest';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -148,15 +148,233 @@ describe( 'TableScrollEditing', () => {
 			expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
 		} );
 
-		it( 'should not mark the table as overflowing for a non-pixel, non-percentage width, even when it would clearly overflow', () => {
-			_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '10in' } ) );
+		describe( 'width units other than px and %', () => {
+			beforeEach( () => {
+				editor.editing.view.getDomRoot().style.fontSize = '10px';
+			} );
 
-			const table = model.document.getRoot().getChild( 0 );
-			const { viewFigure, viewTable } = getViewElements( editor, table );
+			for ( const tableWidth of [ '10in', '40em', '40rem', '300pt', 'calc(100% + 50px)' ] ) {
+				it( `should mark the table as overflowing when "${ tableWidth }" exceeds the container width`, () => {
+					_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth } ) );
 
-			expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
-			expect( viewFigure.getStyle( 'width' ) ).toBe( '10in' );
-			expect( viewTable.getStyle( 'width' ) ).toBeUndefined();
+					const table = model.document.getRoot().getChild( 0 );
+					const { viewFigure, viewTable } = getViewElements( editor, table );
+
+					expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+					expect( viewFigure.getStyle( 'width' ) ).toBeUndefined();
+					expect( viewTable.getStyle( 'width' ) ).toBe( tableWidth );
+				} );
+			}
+
+			for ( const tableWidth of [ '2in', '20em', '25em', '150pt', 'calc(100% - 50px)' ] ) {
+				it( `should not mark the table as overflowing when "${ tableWidth }" fits the container`, () => {
+					_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth } ) );
+
+					const table = model.document.getRoot().getChild( 0 );
+					const { viewFigure, viewTable } = getViewElements( editor, table );
+
+					expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+					expect( viewFigure.getStyle( 'width' ) ).toBe( tableWidth );
+					expect( viewTable.getStyle( 'width' ) ).toBeUndefined();
+				} );
+			}
+
+			// Math functions end with `)`, so they are measured even when their last argument ends with `px` or `%`.
+			for ( const tableWidth of [ 'calc(900px)', 'max(50%, 900px)', 'clamp(400px, 50%, 900px)' ] ) {
+				it( `should mark the table as overflowing when the math function "${ tableWidth }" exceeds the container width`, () => {
+					_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth } ) );
+
+					const table = model.document.getRoot().getChild( 0 );
+					const { viewFigure, viewTable } = getViewElements( editor, table );
+
+					expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+					expect( viewTable.getStyle( 'width' ) ).toBe( tableWidth );
+				} );
+			}
+
+			for ( const tableWidth of [ 'min(100%, 900px)', 'clamp(100px, 50%, 900px)' ] ) {
+				it( `should not mark the table as overflowing when the math function "${ tableWidth }" fits the container`, () => {
+					_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth } ) );
+
+					const table = model.document.getRoot().getChild( 0 );
+					const { viewFigure } = getViewElements( editor, table );
+
+					expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+					expect( viewFigure.getStyle( 'width' ) ).toBe( tableWidth );
+				} );
+			}
+
+			it( 'should resolve "em" against the font size of the editing root', () => {
+				editor.editing.view.getDomRoot().style.fontSize = '20px';
+
+				_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '20em' } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+
+				expect( getViewElements( editor, table ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+			} );
+
+			it( 'should set the caption width in pixels, as the caption has its own font size', () => {
+				_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '40em' } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					const caption = writer.createElement( 'caption' );
+
+					writer.insert( caption, table, 'end' );
+					writer.insertText( 'Caption', caption, 0 );
+				} );
+
+				const { viewTable, viewFigcaption } = getViewElements( editor, table );
+
+				expect( viewTable.getStyle( 'width' ) ).toBe( '40em' );
+				expect( viewFigcaption.getStyle( 'width' ) ).toBe( '400px' );
+			} );
+
+			describe( 'with a figure font different from the editing root font', () => {
+				beforeEach( () => {
+					const style = document.createElement( 'style' );
+
+					// 20em is 400px with the figure's font, but only 200px with the editing root's.
+					style.textContent = 'figure.table { font-size: 20px; }';
+					document.head.appendChild( style );
+					onTestFinished( () => style.remove() );
+				} );
+
+				it( 'should resolve "em" against the font size of the figure when the width changes', () => {
+					_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '10em' } ) );
+
+					const table = model.document.getRoot().getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'tableWidth', '20em', table );
+					} );
+
+					expect( getViewElements( editor, table ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+				} );
+
+				it( 'should resolve "em" against the font size of the figure of a newly inserted table', () => {
+					_setModelData( model, '<paragraph>foo</paragraph>' );
+
+					model.change( writer => {
+						const table = writer.createElement( 'table', { tableWidth: '20em' } );
+						const row = writer.createElement( 'tableRow' );
+						const cell = writer.createElement( 'tableCell' );
+
+						writer.append( cell, row );
+						writer.append( row, table );
+						writer.insert( table, model.document.getRoot(), 0 );
+					} );
+
+					const table = model.document.getRoot().getChild( 0 );
+					const { viewFigure, viewTable } = getViewElements( editor, table );
+
+					expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+					expect( viewTable.getStyle( 'width' ) ).toBe( '20em' );
+				} );
+
+				it( 'should update every newly inserted table once it is rendered', () => {
+					_setModelData( model,
+						modelTable( [ [ '00' ] ], { tableWidth: '20em' } ) +
+						modelTable( [ [ '00' ] ], { tableWidth: '20em' } )
+					);
+
+					const [ firstTable, secondTable ] = Array.from( model.document.getRoot().getChildren() );
+
+					expect( getViewElements( editor, firstTable ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+					expect( getViewElements( editor, secondTable ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+				} );
+			} );
+
+			it( 'should not mark the table as overflowing for an invalid width', () => {
+				_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '10foo' } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+
+				expect( getViewElements( editor, table ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+			} );
+
+			it( 'should update the overflow state when the tableWidth attribute changes between units', () => {
+				_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '20em' } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'tableWidth', '40em', table );
+				} );
+
+				expect( getViewElements( editor, table ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+
+				model.change( writer => {
+					writer.setAttribute( 'tableWidth', '150px', table );
+				} );
+
+				expect( getViewElements( editor, table ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+			} );
+
+			it( 'should re-evaluate the overflow state when the container is resized', async () => {
+				_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '40em' } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+
+				expect( getViewElements( editor, table ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+
+				setContainerWidth( editor, 1000 );
+				global.window.dispatchEvent( new Event( 'resize' ) );
+
+				await wait( 150 );
+
+				expect( getViewElements( editor, table ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( false );
+			} );
+
+			it( 'should not leave the measuring element in the DOM', () => {
+				const bodyChildrenCount = document.body.childElementCount;
+
+				_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '40em' } ) );
+
+				expect( document.body.childElementCount ).toBe( bodyChildrenCount );
+			} );
+
+			it( 'should not let global styles of `div` elements affect the measurement', () => {
+				const style = document.createElement( 'style' );
+
+				// Matches the measuring element, which is an empty `div`.
+				style.textContent = 'div:empty { max-width: 100%; font-size: 30px; }';
+				document.head.appendChild( style );
+				onTestFinished( () => style.remove() );
+
+				_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '40em' } ) );
+
+				const table = model.document.getRoot().getChild( 0 );
+				const { viewFigure, viewTable } = getViewElements( editor, table );
+
+				expect( viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+				expect( viewTable.getStyle( 'width' ) ).toBe( '40em' );
+			} );
+
+			it( 'should wait for the render to update a newly inserted table', () => {
+				const updateAfterRenderSpy = vi.spyOn( tableScrollEditing, '_updateAfterRender' );
+
+				_setModelData( model, modelTable( [ [ '00' ] ], { tableWidth: '40em' } ) );
+
+				expect( updateAfterRenderSpy ).toHaveBeenCalled();
+			} );
+		} );
+
+		it( 'should not wait for the render to update a table with a px or % width', () => {
+			const updateAfterRenderSpy = vi.spyOn( tableScrollEditing, '_updateAfterRender' );
+
+			_setModelData( model,
+				modelTable( [ [ '00' ] ], { tableWidth: '900px' } ) +
+				modelTable( [ [ '00' ] ], { tableWidth: '150%' } )
+			);
+
+			const [ pxTable, percentTable ] = Array.from( model.document.getRoot().getChildren() );
+
+			expect( updateAfterRenderSpy ).not.toHaveBeenCalled();
+			expect( getViewElements( editor, pxTable ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
+			expect( getViewElements( editor, percentTable ).viewFigure.hasClass( 'ck-table-overflowing' ) ).toBe( true );
 		} );
 
 		it( 'should evaluate the overflow state of a table inserted after initialization', () => {

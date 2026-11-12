@@ -61,8 +61,7 @@ import {
 	getTableColumnElements,
 	getTableColumnsWidths,
 	isTableWidthInPixels,
-	isColumnWidthsInPixels,
-	getEditableContentWidth
+	isColumnWidthsInPixels
 } from './utils.js';
 import { getSelectionAffectedTable } from '../utils/common.js';
 
@@ -1166,10 +1165,11 @@ export class TableColumnResizeEditing extends Plugin {
 			}
 		} = this._resizingData!;
 
+		const domRoot = this.editor.editing.view.getDomRoot( modelTable.root.rootName! )!;
 		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
 		const tableScrollPlugin = plugins.has( 'TableScrollEditing' ) ? plugins.get( 'TableScrollEditing' ) : null;
 		const isTableScrollActive = !!tableScrollPlugin && isTableScrollAllowed;
-		const containerWidth = getEditableContentWidth( this.editor, modelTable.root.rootName! )!;
+		const containerWidth = getContainerContentWidth( domRoot );
 
 		let dxUpperBound: number;
 
@@ -1421,7 +1421,8 @@ export class TableColumnResizeEditing extends Plugin {
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 		const leftColumnWidth = columnWidths[ leftColumnIndex ];
 		const rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];
-		const isTableWidthWithinContainerAtDragStart = tableWidth <= getEditableContentWidth( editor, modelTable.root.rootName! )!;
+		const domRoot = editor.editing.view.getDomRoot( modelTable.root.rootName! )!;
+		const isTableWidthWithinContainerAtDragStart = tableWidth <= getContainerContentWidth( domRoot );
 
 		// Whether the `TableScrollEditing` plugin considers this specific table eligible to overflow its
 		// container (see `TableScrollEditing#_isTableScrollable`). Computed once, at the start of the drag,
