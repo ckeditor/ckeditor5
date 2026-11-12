@@ -4,7 +4,7 @@ menu-title: Layout tables
 meta-title: Layout tables | CKEditor 5 Documentation
 meta-description: Add support for different table types to distinguish between content tables and layout tables and allow to create table-based layouts.
 order: 60
-modified_at: 2025-04-07
+modified_at: 2026-11-12
 badges: [ premium ]
 ---
 
@@ -113,6 +113,8 @@ ClassicEditor
 ### Configuring the preferred type for loading external tables.
 
 By default, external tables are loaded using internal heuristics. This can be configured by setting the preferred table type for loading all external tables by setting the {@link module:table/tableconfig~TableLayoutConfig#preferredExternalTableType `config.table.tableLayout.preferredExternalTableType`} option to `content` or `layout`.
+
+This option does not apply to tables already marked with a table type in the editor output, that is, a `<table>` element with the `content-table` or `layout-table` class, or a `<figure>` element with the `content-table` class. These tables always keep their type.
 
 <code-switcher>
 ```js
@@ -286,4 +288,3 @@ Additionally, if the {@link module:table/tableproperties~TableProperties} plugin
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table).
-
