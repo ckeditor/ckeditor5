@@ -16,6 +16,11 @@
  * 2. A custom property declared in the top-level root scope (`:root` or `:host`) of both graphs
  *    must have an identical value in every copy, as the copies shadow each other once both
  *    stylesheets are loaded on a single page.
+ * 3. Every `--ck-*` custom property consumed without a fallback outside the graphs – in the source
+ *    code, in the code blocks of the guides, and in the documentation snippets and assets – must be
+ *    declared in one of the graphs (or by the documentation itself, for the documentation), or be set
+ *    from JavaScript. Such a `var()` resolves to nothing when the variable is gone, so the property
+ *    silently falls back to its initial value.
  *
  * Options:
  *   --base-packages <path>  Path to another packages directory whose declarations extend both
@@ -31,13 +36,20 @@ import { generate, parse, walk } from '@eslint/css-tree';
 import { PACKAGES_DIRECTORY } from './release/utils/constants.mjs';
 
 /**
+ * Custom properties that are set from JavaScript, so they have a value in the browser even though no
+ * stylesheet declares them. They are accepted everywhere. See also `isRuntimeVariable()`.
+ */
+const RUNTIME_VARIABLES = new Set( [
+	// Set by the AI review feature (`aireviewcorereviewcommandlistitemview.ts`).
+	'--ck-ai-review-check-list-item-index'
+] );
+
+/**
  * Custom properties that are consumed by the stylesheets but are legitimately not declared in any
- * of them. Every entry must be justified; remove entries that stop being necessary.
+ * of them. Every entry must be justified; remove entries that stop being necessary. They are accepted
+ * only in the stylesheet graphs, so new code and docs cannot start reading them.
  */
 const KNOWN_UNDECLARED_VARIABLES = new Set( [
-	// Set from JavaScript by the AI review feature (`aireviewcorereviewcommandlistitemview.ts`).
-	'--ck-ai-review-check-list-item-index',
-
 	// Pre-existing gaps: consumed by the theme without a matching declaration anywhere.
 	'--ck-block-toolbar-size',
 
@@ -45,6 +57,29 @@ const KNOWN_UNDECLARED_VARIABLES = new Set( [
 	// See https://github.com/ckeditor/ckeditor5-commercial/issues/11082.
 	'--ck-color-base-background'
 ] );
+
+/**
+ * Files outside the stylesheet graphs that consume the `--ck-*` custom properties, relative to the
+ * packages directory. The source code sets them in inline styles, template style bindings, and code
+ * examples in the API docs.
+ */
+const SOURCE_PATTERNS = [ '*/src/**/*.ts' ];
+
+/**
+ * Documentation directories, relative to the repository root, and the files in them that consume the
+ * `--ck-*` custom properties, relative to each documentation directory: the guides, the snippets, and
+ * the stylesheets in `assets` that the snippets load. Only the code blocks of the guides are checked,
+ * as their prose names variables without consuming them.
+ */
+const DOCS_DIRECTORIES = [ 'docs', `${ PACKAGES_DIRECTORY }/*/docs` ];
+const DOCS_PATTERNS = [ '**/*.md', '_snippets/**/*.{css,html,js}', 'assets/**/*.css' ];
+
+/**
+ * Documentation that names undeclared variables on purpose, relative to the repository root. The
+ * migration guide to the refreshed theme shows the removed variables next to their replacements, and
+ * the code style guide uses illustrative variable names.
+ */
+const IGNORED_DOCS_PATHS = [ 'docs/updating/migration-to-refreshed-theme.md', 'docs/framework/contributing/code-style.md' ];
 
 const { 'base-packages': basePackages } = minimist( process.argv.slice( 2 ), {
 	string: [ 'base-packages' ]
@@ -61,12 +96,21 @@ validateUsages( 'content', 'editor' );
 
 validateRootValueSync( graphs.editor.rootDeclarations, graphs.content.rootDeclarations );
 
+const declaredInGraphs = new Set( [ ...graphs.editor.declared, ...graphs.content.declared ] );
+const sources = analyzeFilesOutsideGraphs( getSourcePaths() );
+const docs = analyzeFilesOutsideGraphs( getDocsPaths() );
+
+validateUsagesOutsideGraphs( 'source code', sources.usedWithoutFallback, declaredInGraphs );
+validateUsagesOutsideGraphs( 'documentation', docs.usedWithoutFallback, new Set( [ ...declaredInGraphs, ...docs.declared ] ) );
+
 if ( errors.length ) {
 	console.log( styleText( [ 'red', 'bold' ], 'Found problems with the CSS custom properties:' ) );
 	errors.forEach( error => console.log( styleText( 'red', ` - ${ error }` ) ) );
 	process.exit( 1 );
 } else {
-	console.log( styleText( 'green', 'The editor and content stylesheet graphs consume only declared CSS custom properties.' ) );
+	console.log( styleText( 'green',
+		'The stylesheet graphs, the source code, and the documentation consume only declared CSS custom properties.'
+	) );
 }
 
 /**
@@ -104,6 +148,32 @@ function collectPackages( packagesDir, entryFile, analysis ) {
 	for ( const entryPath of entryPaths ) {
 		analyzeFile( entryPath, analysis, new Set() );
 	}
+}
+
+/**
+ * Returns the source files of the packages. The base packages are skipped, as their usages are
+ * validated by their own repository.
+ */
+function getSourcePaths() {
+	return globPaths( SOURCE_PATTERNS.map( pattern => upath.join( process.cwd(), PACKAGES_DIRECTORY, pattern ) ) );
+}
+
+/**
+ * Returns the guides and snippets of the repository and its packages, except for the ignored ones.
+ */
+function getDocsPaths() {
+	const patterns = DOCS_DIRECTORIES.flatMap( directory => {
+		return DOCS_PATTERNS.map( pattern => upath.join( process.cwd(), directory, pattern ) );
+	} );
+
+	return globPaths( patterns ).filter( filePath => !IGNORED_DOCS_PATHS.includes( upath.relative( process.cwd(), filePath ) ) );
+}
+
+function globPaths( patterns ) {
+	return patterns
+		.flatMap( pattern => globSync( pattern ) )
+		.map( filePath => upath.normalize( filePath ) )
+		.sort();
 }
 
 /**
@@ -170,6 +240,72 @@ function analyzeFile( filePath, analysis, analyzedFiles ) {
 }
 
 /**
+ * Extracts `--ck-*` custom property declarations and `var()` usages from files outside the stylesheet
+ * graphs. These files mix CSS with other languages, so they are scanned line by line instead of being
+ * parsed. A nested `var()` is matched on its own, so, as in the stylesheets, the innermost variable of
+ * a fallback chain is the one consumed without a fallback.
+ */
+function analyzeFilesOutsideGraphs( filePaths ) {
+	const analysis = {
+		declared: new Set(),
+		usedWithoutFallback: new Map()
+	};
+
+	for ( const filePath of filePaths ) {
+		for ( const { text, line } of getCheckedLines( filePath ) ) {
+			for ( const [ , name ] of text.matchAll( /(--ck-[\w-]+)\s*:/g ) ) {
+				analysis.declared.add( name );
+			}
+
+			for ( const [ , name ] of text.matchAll( /var\(\s*(--ck-[\w-]+)\s*\)/g ) ) {
+				const locations = analysis.usedWithoutFallback.get( name ) || [];
+
+				locations.push( formatLocation( filePath, line ) );
+				analysis.usedWithoutFallback.set( name, locations );
+			}
+		}
+	}
+
+	return analysis;
+}
+
+/**
+ * Returns the lines of a file to check, with their line numbers: every line of a source file or a
+ * snippet, but only the fenced code blocks of a guide. Inline `<style>` blocks of a guide, outside
+ * the code blocks, are not checked.
+ */
+function getCheckedLines( filePath ) {
+	const lines = readFileSync( filePath, 'utf-8' )
+		.split( '\n' )
+		.map( ( text, index ) => ( { text, line: index + 1 } ) );
+
+	if ( !filePath.endsWith( '.md' ) ) {
+		return lines;
+	}
+
+	let fence = null;
+
+	return lines.filter( ( { text } ) => {
+		const marker = text.match( /^\s*(`{3,}|~{3,})/ )?.[ 1 ];
+
+		if ( !fence ) {
+			fence = marker || null;
+
+			return false;
+		}
+
+		// Only a fence of the same character and at least the same length closes the block.
+		if ( marker && marker[ 0 ] === fence[ 0 ] && marker.length >= fence.length ) {
+			fence = null;
+
+			return false;
+		}
+
+		return true;
+	} );
+}
+
+/**
  * Checks whether the given selector list declares the root scope, which either `:root` or `:host`
  * does. The stylesheets pair the two (`:root,\n:host { … }`) so that one stylesheet resolves its
  * custom properties in the light DOM and inside a shadow root alike – hence the selector list
@@ -188,7 +324,11 @@ function formatLocation( filePath, line ) {
 }
 
 function isKnownUndeclaredVariable( name ) {
-	return KNOWN_UNDECLARED_VARIABLES.has( name ) ||
+	return KNOWN_UNDECLARED_VARIABLES.has( name ) || isRuntimeVariable( name );
+}
+
+function isRuntimeVariable( name ) {
+	return RUNTIME_VARIABLES.has( name ) ||
 		// Set from JavaScript by the show blocks feature (`showblockscommand.ts`).
 		name.startsWith( '--ck-show-blocks-label-' );
 }
@@ -212,6 +352,20 @@ function validateUsages( kind, otherKind ) {
 			`so it is missing when the ${ kind } stylesheet is loaded alone (${ formatLocations( locations ) }).` :
 			`"${ name }" is used in the ${ kind } styles but is never declared (${ formatLocations( locations ) }).`
 		);
+	}
+}
+
+/**
+ * Checks that every `--ck-*` custom property consumed without a fallback outside the stylesheet
+ * graphs is declared or is set from JavaScript. The known gaps of the stylesheets are not accepted here.
+ */
+function validateUsagesOutsideGraphs( kind, usedWithoutFallback, declared ) {
+	for ( const [ name, locations ] of usedWithoutFallback ) {
+		if ( declared.has( name ) || isRuntimeVariable( name ) ) {
+			continue;
+		}
+
+		errors.push( `"${ name }" is used in the ${ kind } but is never declared (${ formatLocations( locations ) }).` );
 	}
 }
 

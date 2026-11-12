@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { matchesGlob } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock( 'node:fs' );
@@ -27,32 +28,29 @@ describe( 'scripts/check-css-variables', () => {
 		process.argv = originalArgv;
 	} );
 
-	// Registers the theme stylesheets of the primary (and optionally base) packages in the
-	// mocked file system. Stylesheet paths are relative to the `theme` directory of a package.
-	function setup( { packages = {}, basePackages = {} } = {} ) {
+	// Registers the theme stylesheets of the primary (and optionally base) packages, and other files of
+	// the repository, in the mocked file system. Stylesheet paths are relative to the `theme` directory
+	// of a package, and other file paths are relative to the repository root.
+	function setup( { packages = {}, basePackages = {}, files: repositoryFiles = {} } = {} ) {
 		const files = new Map();
-		const packageDirs = { '/repo/packages': [], '/repo/external/packages': [] };
 
 		for ( const [ packagesDir, packageSet ] of [
 			[ '/repo/packages', packages ],
 			[ '/repo/external/packages', basePackages ]
 		] ) {
 			for ( const [ packageName, themeFiles ] of Object.entries( packageSet ) ) {
-				packageDirs[ packagesDir ].push( `${ packagesDir }/${ packageName }` );
-
 				for ( const [ file, contents ] of Object.entries( themeFiles ) ) {
 					files.set( `${ packagesDir }/${ packageName }/theme/${ file }`, contents );
 				}
 			}
 		}
 
-		vi.mocked( fs.globSync ).mockImplementation( pattern => {
-			const packagesDir = Object.keys( packageDirs ).find( dir => pattern.startsWith( `${ dir }/` ) );
-			const entryFile = pattern.split( '/' ).at( -1 );
+		for ( const [ file, contents ] of Object.entries( repositoryFiles ) ) {
+			files.set( `/repo/${ file }`, contents );
+		}
 
-			return packagesDir ? packageDirs[ packagesDir ]
-				.map( packageDir => `${ packageDir }/theme/${ entryFile }` )
-				.filter( entryPath => files.has( entryPath ) ) : [];
+		vi.mocked( fs.globSync ).mockImplementation( pattern => {
+			return [ ...files.keys() ].filter( filePath => matchesGlob( filePath, pattern ) );
 		} );
 
 		vi.mocked( fs.existsSync ).mockImplementation( path => files.has( path ) );
@@ -469,5 +467,408 @@ describe( 'scripts/check-css-variables', () => {
 		await import( '../scripts/check-css-variables.mjs' );
 
 		expect( process.exit ).not.toHaveBeenCalled();
+	} );
+
+	describe( 'usages outside the stylesheet graphs', () => {
+		// The theme declares `--ck-color-example`, which the files outside the graphs consume.
+		const packages = {
+			'ckeditor5-example': {
+				'index-editor.css': ':root {\n\t--ck-color-example: red;\n}\n',
+				'index-content.css': ''
+			}
+		};
+
+		describe( 'source code', () => {
+			it( 'passes when the source code consumes only declared variables', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/src/view.ts': 'element.style.color = \'var(--ck-color-example)\';\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).not.toHaveBeenCalled();
+			} );
+
+			it( 'fails when the source code consumes an undeclared variable without a fallback', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/src/view.ts': [
+							'const counterWidth = 10;',
+							'element.style.padding = \'calc( 2 * var(--ck-spacing-removed) + 10px )\';',
+							''
+						].join( '\n' )
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-spacing-removed" is used in the source code but is never declared ' +
+					'(packages/ckeditor5-example/src/view.ts:2)'
+				) );
+			} );
+
+			it( 'checks the code examples in the API docs', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/src/view.ts': [
+							'/**',
+							' * ```js',
+							' * style: { padding: \'var(--ck-spacing-removed)\' }',
+							' * ```',
+							' */',
+							''
+						].join( '\n' )
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-spacing-removed" is used in the source code but is never declared ' +
+					'(packages/ckeditor5-example/src/view.ts:3)'
+				) );
+			} );
+
+			it( 'passes when the source code consumes an undeclared variable with a fallback', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/src/view.ts':
+							'element.style.color = \'var(--ck-color-removed, var(--ck-color-example))\';\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).not.toHaveBeenCalled();
+			} );
+
+			it( 'treats the innermost variable of a nested "var()" fallback as the effective dependency', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/src/view.ts':
+							'element.style.color = \'var(--ck-color-example, var(--ck-color-removed))\';\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-color-removed" is used in the source code but is never declared'
+				) );
+				expect( console.log ).not.toHaveBeenCalledWith( expect.stringContaining( '"--ck-color-example"' ) );
+			} );
+
+			it( 'skips variables whose names are built at runtime', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/src/view.ts': 'element.style.color = \'var(--ck-color-\' + name + \')\';\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).not.toHaveBeenCalled();
+			} );
+
+			it( 'allows the variables set from JavaScript', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/src/view.ts':
+							'element.style.content = \'var(--ck-show-blocks-label-paragraph)\';\n' +
+							'element.style.order = \'var(--ck-ai-review-check-list-item-index)\';\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).not.toHaveBeenCalled();
+			} );
+
+			it( 'does not accept the known gaps of the stylesheets', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/src/view.ts': 'element.style.width = \'var(--ck-block-toolbar-size)\';\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-block-toolbar-size" is used in the source code but is never declared'
+				) );
+			} );
+
+			it( 'does not accept a variable declared only by the documentation', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/_snippets/features/example.css': ':root {\n\t--ck-color-docs: red;\n}\n',
+						'packages/ckeditor5-example/src/view.ts': 'element.style.color = \'var(--ck-color-docs)\';\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-color-docs" is used in the source code but is never declared'
+				) );
+			} );
+
+			it( 'does not validate the source code of the base packages', async () => {
+				process.argv = [ ...process.argv, '--base-packages', 'external/packages' ];
+
+				setup( {
+					packages,
+					files: {
+						'external/packages/ckeditor5-base/src/view.ts': 'element.style.color = \'var(--ck-color-removed)\';\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).not.toHaveBeenCalled();
+			} );
+		} );
+
+		describe( 'documentation', () => {
+			it( 'fails when a code block in a guide consumes an undeclared variable without a fallback', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/features/example.md': [
+							'# Example',
+							'',
+							'```css',
+							'.ck-content .example {',
+							'	color: var(--ck-color-example);',
+							'	margin: var(--ck-spacing-removed);',
+							'}',
+							'```',
+							''
+						].join( '\n' )
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-spacing-removed" is used in the documentation but is never declared (docs/features/example.md:6)'
+				) );
+				expect( console.log ).not.toHaveBeenCalledWith( expect.stringContaining( '"--ck-color-example"' ) );
+			} );
+
+			it( 'checks the guides of the packages', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/docs/features/example.md': '```css\n.ck { margin: var(--ck-spacing-removed); }\n```\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-spacing-removed" is used in the documentation but is never declared ' +
+					'(packages/ckeditor5-example/docs/features/example.md:2)'
+				) );
+			} );
+
+			it( 'checks the code blocks of a guide in any language', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/features/example.md': [
+							'```js',
+							'const options = [ { color: \'var(--ck-color-removed)\' } ];',
+							'```',
+							''
+						].join( '\n' )
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( '"--ck-color-removed"' ) );
+			} );
+
+			it( 'skips the prose of a guide', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/features/example.md': [
+							'Old names keep working as override fallbacks, as in `var(--ck-old)`.',
+							'',
+							'| Token | Default |',
+							'|-------|---------|',
+							'| `--ck-example` | `var(--ck-color-removed)` |',
+							''
+						].join( '\n' )
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).not.toHaveBeenCalled();
+			} );
+
+			it( 'closes a code block only with a fence of the same character and at least the same length', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/features/example.md': [
+							'````md',
+							'```css',
+							'.ck { color: var(--ck-color-inside-inner-fence); }',
+							'```',
+							'~~~',
+							'.ck { color: var(--ck-color-after-inner-fence); }',
+							'````',
+							'Prose after the block: `var(--ck-color-prose)`.',
+							''
+						].join( '\n' )
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( '"--ck-color-inside-inner-fence"' ) );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining( '"--ck-color-after-inner-fence"' ) );
+				expect( console.log ).not.toHaveBeenCalledWith( expect.stringContaining( '"--ck-color-prose"' ) );
+			} );
+
+			it( 'fails when a snippet consumes an undeclared variable without a fallback', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/_snippets/features/example.css': '.example {\n\tcolor: var(--ck-color-removed);\n}\n',
+						'packages/ckeditor5-example/docs/_snippets/features/example.html': [
+							'<div class="example"></div>',
+							'<style>',
+							'	.example { margin: var(--ck-spacing-removed); }',
+							'</style>',
+							''
+						].join( '\n' )
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-color-removed" is used in the documentation but is never declared (docs/_snippets/features/example.css:2)'
+				) );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-spacing-removed" is used in the documentation but is never declared ' +
+					'(packages/ckeditor5-example/docs/_snippets/features/example.html:3)'
+				) );
+			} );
+
+			it( 'fails when a stylesheet in the docs assets consumes an undeclared variable without a fallback', async () => {
+				setup( {
+					packages,
+					files: {
+						'packages/ckeditor5-example/docs/assets/example.css': '.example {\n\tcolor: var(--ck-color-removed);\n}\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-color-removed" is used in the documentation but is never declared ' +
+					'(packages/ckeditor5-example/docs/assets/example.css:2)'
+				) );
+			} );
+
+			it( 'accepts variables declared by the documentation itself', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/_snippets/_utils/css/demo.css': ':root {\n\t--ck-demo-spacing: 1em;\n}\n',
+						'packages/ckeditor5-example/docs/_snippets/features/example.css':
+							'.example {\n\tmargin: var(--ck-demo-spacing);\n}\n',
+						'docs/features/example.md': [
+							'```css',
+							'.ck-content {',
+							'	--ck-my-widget-color: var(--ck-color-example);',
+							'	color: var(--ck-my-widget-color);',
+							'}',
+							'```',
+							''
+						].join( '\n' )
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).not.toHaveBeenCalled();
+			} );
+
+			it( 'does not accept the known gaps of the stylesheets', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/features/example.md': '```css\n.ck { width: var(--ck-block-toolbar-size); }\n```\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-block-toolbar-size" is used in the documentation but is never declared'
+				) );
+			} );
+
+			it( 'skips the migration guide to the refreshed theme and the code style guide', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/updating/migration-to-refreshed-theme.md': '```css\n.ck { margin: var(--ck-spacing-removed); }\n```\n',
+						'docs/framework/contributing/code-style.md': '```css\n.ck { color: var(--ck-color-link); }\n```\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).not.toHaveBeenCalled();
+			} );
+
+			it( 'checks the other update guides', async () => {
+				setup( {
+					packages,
+					files: {
+						'docs/updating/update-to-1.md': '```css\n.ck { margin: var(--ck-spacing-removed); }\n```\n'
+					}
+				} );
+
+				await import( '../scripts/check-css-variables.mjs' );
+
+				expect( process.exit ).toHaveBeenCalledWith( 1 );
+				expect( console.log ).toHaveBeenCalledWith( expect.stringContaining(
+					'"--ck-spacing-removed" is used in the documentation but is never declared'
+				) );
+			} );
+		} );
 	} );
 } );

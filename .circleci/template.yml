@@ -135,7 +135,7 @@ jobs:
           command: pnpm run check-css-imports
       - run:
           when: always
-          name: Check if the editor and content stylesheets consume only declared CSS custom properties
+          name: Check if the stylesheets, the source code, and the documentation consume only declared CSS custom properties
           command: pnpm run check-css-variables
       - run:
           when: always
