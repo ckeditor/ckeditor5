@@ -41,10 +41,6 @@ const KNOWN_UNDECLARED_VARIABLES = new Set( [
 	// Pre-existing gaps: consumed by the theme without a matching declaration anywhere.
 	'--ck-block-toolbar-size',
 
-	// Pre-existing gap in the revision history styles.
-	// See https://github.com/ckeditor/ckeditor5-commercial/issues/11082.
-	'--ck-font-size-standard',
-
 	// The track changes content styles still depend on this editor variable.
 	// See https://github.com/ckeditor/ckeditor5-commercial/issues/11082.
 	'--ck-color-base-background'
