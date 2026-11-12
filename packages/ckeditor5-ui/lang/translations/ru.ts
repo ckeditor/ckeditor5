@@ -69,7 +69,7 @@ const translations: Translations = {
 			// Label of a button that applies a blue grey color in color pickers.
 			'Blue grey': 'Сине-серый',
 			// Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs).
-			'Editor block content toolbar': 'Панель инструментов редактора',
+			'Editor block content toolbar': 'Панель инструментов редактора блоков',
 			// Accessible label of a balloon toolbar that shows up right next to the user selection (the caret).
 			'Editor contextual toolbar': 'Контекстуальная панель инструментов редактора',
 			// Label of an input field for typing colors in the HEX color format.

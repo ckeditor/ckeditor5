@@ -9,7 +9,7 @@ const translations: Translations = {
 	'ru': {
 		dictionary: {
 			// The accessible label of the menu bar button that changes the editor mode to raw source (HTML) editing.
-			'Show source': 'Показать источник'
+			'Show source': 'Показать исходный код'
 		}
 	}
 };

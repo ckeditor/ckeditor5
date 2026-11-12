@@ -141,7 +141,7 @@ const translations: Translations = {
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Неверное значение. Попробуйте "10px" или "2em" или просто "2".',
 			// The placeholder text for the table caption displayed when the caption is empty.
-			'Enter table caption': 'Подпись таблицы',
+			'Enter table caption': 'Введите подпись к таблице',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.
 			'Keystrokes that can be used in a table cell': 'Нажатия клавиш, которые можно использовать в ячейке таблицы',
 			// Keystroke description for assistive technologies: keystroke for moving the selection to the next cell.
