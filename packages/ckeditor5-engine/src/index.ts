@@ -404,6 +404,7 @@ export {
 	isPositionStyleValue,
 	isAttachmentStyleValue,
 	isURLStyleValue,
+	normalizeLengthStyleValue,
 	getBoxSidesStyleValues,
 	getBoxSidesStyleValueReducer,
 	getBoxSidesStyleShorthandValue,

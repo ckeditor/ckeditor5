@@ -149,6 +149,42 @@ describe( 'FontSizeEditing', () => {
 					expect( editor.getData() ).toEqual( '<p>f<span style="font-size:18px;">o</span>o</p>' );
 				} );
 
+				it( 'should normalize a configured value written in a different notation', () => {
+					editor.setData(
+						'<p>f<span style="font-size: 8.0em">o</span>o</p>' +
+						'<p>b<span style="font-size: 010.00px">a</span>r</p>' +
+						'<p>b<span style="font-size: 6.250%">a</span>z</p>'
+					);
+
+					expect( _getModelData( doc ) ).toEqual(
+						'<paragraph>[]f<$text fontSize="8em">o</$text>o</paragraph>' +
+						'<paragraph>b<$text fontSize="10px">a</$text>r</paragraph>' +
+						'<paragraph>b<$text fontSize="6.25%">a</$text>z</paragraph>'
+					);
+
+					expect( editor.getData() ).toEqual(
+						'<p>f<span style="font-size:8em;">o</span>o</p>' +
+						'<p>b<span style="font-size:10px;">a</span>r</p>' +
+						'<p>b<span style="font-size:6.25%;">a</span>z</p>'
+					);
+				} );
+
+				it( 'should normalize a value that is not present in the configuration', () => {
+					editor.setData( '<p>f<span style="font-size: 13.50px">o</span>o</p>' );
+
+					expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontSize="13.5px">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).toEqual( '<p>f<span style="font-size:13.5px;">o</span>o</p>' );
+				} );
+
+				it( 'should keep a keyword value unchanged', () => {
+					editor.setData( '<p>f<span style="font-size: large">o</span>o</p>' );
+
+					expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontSize="large">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).toEqual( '<p>f<span style="font-size:large;">o</span>o</p>' );
+				} );
+
 				it( 'should convert <font size=".."> styling', () => {
 					const data = '<font size="5">foo</font><span style="font-size: 18px">bar</span>';
 
@@ -280,6 +316,50 @@ describe( 'FontSizeEditing', () => {
 							} );
 						}
 					);
+			} );
+		} );
+
+		describe( 'options with a non-normalized value', () => {
+			let editor, doc;
+
+			beforeEach( () => {
+				return VirtualTestEditor
+					.create( {
+						plugins: [ FontSizeEditing, Paragraph ],
+						fontSize: {
+							options: [
+								{
+									title: 'Two',
+									model: '2.0em'
+								}
+							]
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						doc = editor.model;
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			it( 'should convert the normalized value from data', () => {
+				editor.setData( '<p>f<span style="font-size: 2em">o</span>o</p>' );
+
+				expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontSize="2em">o</$text>o</paragraph>' );
+
+				expect( editor.getData() ).toEqual( '<p>f<span style="font-size:2em;">o</span>o</p>' );
+			} );
+
+			it( 'should convert the value written as in the configuration from data', () => {
+				editor.setData( '<p>f<span style="font-size: 2.0em">o</span>o</p>' );
+
+				expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontSize="2em">o</$text>o</paragraph>' );
+
+				expect( editor.getData() ).toEqual( '<p>f<span style="font-size:2em;">o</span>o</p>' );
 			} );
 		} );
 	} );
@@ -425,6 +505,47 @@ describe( 'FontSizeEditing', () => {
 			expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
 
 			expect( editor.getData() ).toEqual( '<p>f<span style="font-size:18px;">o</span>o</p>' );
+		} );
+
+		it( 'should convert from element with a configured style written in a different notation', () => {
+			editor.setData(
+				'<p>f<span style="font-size: 18.0px">o</span>o</p>' +
+				'<p>b<span style="font-size: 018.00PX">a</span>r</p>'
+			);
+
+			expect( _getModelData( doc ) ).toEqual(
+				'<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' +
+				'<paragraph>b<$text fontSize="18px">a</$text>r</paragraph>'
+			);
+
+			expect( editor.getData() ).toEqual(
+				'<p>f<span style="font-size:18px;">o</span>o</p>' +
+				'<p>b<span style="font-size:18px;">a</span>r</p>'
+			);
+		} );
+
+		it( 'should convert from element with a configured style written in a different notation when with other styles', () => {
+			editor.setData( '<p>f<span style="font-family: serif;font-size: 18.0px">o</span>o</p>' );
+
+			expect( _getModelData( doc ) ).toEqual( '<paragraph>[]f<$text fontSize="18px">o</$text>o</paragraph>' );
+
+			expect( editor.getData() ).toEqual( '<p>f<span style="font-size:18px;">o</span>o</p>' );
+		} );
+
+		it( 'should not convert from element with a style that is not configured', () => {
+			editor.setData( '<p>f<span style="font-size: 19.0px">o</span>o</p>' );
+
+			expect( _getModelData( doc ) ).toEqual( '<paragraph>[]foo</paragraph>' );
+
+			expect( editor.getData() ).toEqual( '<p>foo</p>' );
+		} );
+
+		it( 'should not convert from element with a style matching the name of a class-based preset', () => {
+			editor.setData( '<p>f<span style="font-size: tiny">o</span>o</p>' );
+
+			expect( _getModelData( doc ) ).toEqual( '<paragraph>[]foo</paragraph>' );
+
+			expect( editor.getData() ).toEqual( '<p>foo</p>' );
 		} );
 
 		it( 'should convert from user defined element', () => {

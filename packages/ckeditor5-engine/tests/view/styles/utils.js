@@ -13,7 +13,8 @@ import {
 	isLengthStyleValue,
 	isLineStyleValue,
 	isPercentageStyleValue,
-	isURLStyleValue
+	isURLStyleValue,
+	normalizeLengthStyleValue
 } from '../../../src/view/styles/utils.js';
 
 describe( 'Styles utils', () => {
@@ -213,6 +214,117 @@ describe( 'Styles utils', () => {
 		it( 'should handle invalid values with repeated characters', () => {
 			expect( isPercentageStyleValue( '9'.repeat( 1000000 ) ) ).toBe( false );
 		} );
+	} );
+
+	describe( 'normalizeLengthStyleValue()', () => {
+		it( 'should not change already normalized values', () => {
+			testNormalizedValues( {
+				'0': '0',
+				'2px': '2px',
+				'2.5em': '2.5em',
+				'0.5em': '0.5em',
+				'150%': '150%'
+			} );
+		} );
+
+		it( 'should normalize various units', () => {
+			testNormalizedValues( {
+				'1.0px': '1px',
+				'1.0cm': '1cm',
+				'1.0mm': '1mm',
+				'1.0in': '1in',
+				'1.0pc': '1pc',
+				'1.0pt': '1pt',
+				'1.0ch': '1ch',
+				'1.0em': '1em',
+				'1.0ex': '1ex',
+				'1.0rem': '1rem',
+				'1.0vh': '1vh',
+				'1.0vw': '1vw',
+				'1.0vmin': '1vmin',
+				'1.0vmax': '1vmax',
+				'1.0%': '1%'
+			} );
+		} );
+
+		it( 'should remove trailing zeros of the fraction', () => {
+			testNormalizedValues( {
+				'2.0px': '2px',
+				'2.00px': '2px',
+				'2.50px': '2.5px',
+				'150.0%': '150%',
+				'2.0': '2'
+			} );
+		} );
+
+		it( 'should remove leading zeros', () => {
+			testNormalizedValues( {
+				'02px': '2px',
+				'002.5px': '2.5px',
+				'.5em': '0.5em',
+				'00.5em': '0.5em'
+			} );
+		} );
+
+		it( 'should lowercase the unit', () => {
+			testNormalizedValues( {
+				'2PX': '2px',
+				'2.0Em': '2em',
+				'50.0%': '50%'
+			} );
+		} );
+
+		it( 'should handle signed values', () => {
+			testNormalizedValues( {
+				'-2.0px': '-2px',
+				'+2.0px': '2px',
+				'-0px': '0px'
+			} );
+		} );
+
+		it( 'should handle the exponential notation', () => {
+			testNormalizedValues( {
+				'1e2px': '100px',
+				'1.5E1em': '15em'
+			} );
+		} );
+
+		it( 'should ignore white spaces around the number and the unit', () => {
+			testNormalizedValues( {
+				' 2.0px': '2px',
+				'2.0px ': '2px',
+				' 2.0 em ': '2em'
+			} );
+		} );
+
+		it( 'should not change keywords', () => {
+			testUnchangedValues( [ 'small', 'x-large', 'inherit', 'auto' ] );
+		} );
+
+		it( 'should not change values that are not a number followed by a unit', () => {
+			testUnchangedValues( [
+				'calc( 2px + 1em )',
+				'calc(10px - 3px)',
+				'var( --size-2 )',
+				'2px3',
+				'2px 3px',
+				'1.2.3px',
+				'px',
+				''
+			] );
+		} );
+
+		function testNormalizedValues( values ) {
+			for ( const [ value, normalizedValue ] of Object.entries( values ) ) {
+				expect( normalizeLengthStyleValue( value ), value ).toBe( normalizedValue );
+			}
+		}
+
+		function testUnchangedValues( values ) {
+			for ( const value of values ) {
+				expect( normalizeLengthStyleValue( value ), value ).toBe( value );
+			}
+		}
 	} );
 
 	describe( 'getBoxSidesStyleShorthandValue()', () => {

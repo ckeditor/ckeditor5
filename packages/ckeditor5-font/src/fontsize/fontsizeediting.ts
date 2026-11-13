@@ -12,6 +12,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import {
 	isLengthStyleValue,
 	isPercentageStyleValue,
+	normalizeLengthStyleValue,
 	type ViewElement
 } from '@ckeditor/ckeditor5-engine';
 
@@ -102,6 +103,7 @@ export class FontSizeEditing extends Plugin {
 			this._prepareCompatibilityConverter();
 		} else {
 			editor.conversion.attributeToElement( definition );
+			this._prepareEquivalentValuesConverter( definition );
 		}
 
 		// Add FontSize command.
@@ -152,7 +154,7 @@ export class FontSizeEditing extends Plugin {
 		editor.conversion.for( 'upcast' ).elementToAttribute( {
 			model: {
 				key: FONT_SIZE,
-				value: ( viewElement: ViewElement ) => viewElement.getStyle( 'font-size' )
+				value: ( viewElement: ViewElement ) => normalizeLengthStyleValue( viewElement.getStyle( 'font-size' )! )
 			},
 			view: {
 				name: 'span',
@@ -160,6 +162,44 @@ export class FontSizeEditing extends Plugin {
 					'font-size': /.*/
 				}
 			}
+		} );
+	}
+
+	/**
+	 * Upcasts other notations of the configured values, e.g. `font-size:2.0px` when the configured option is `2px`.
+	 *
+	 * @param definition Converter definition out of input data.
+	 */
+	private _prepareEquivalentValuesConverter( definition: FontConverterDefinition ): void {
+		const configuredValues = definition.model!.values;
+
+		this.editor.conversion.for( 'upcast' ).elementToAttribute( {
+			view: {
+				name: 'span',
+				styles: {
+					'font-size': /.*/
+				}
+			},
+			model: {
+				key: FONT_SIZE,
+				value: ( viewElement: ViewElement ) => {
+					const value = viewElement.getStyle( 'font-size' )!;
+					const normalizedValue = normalizeLengthStyleValue( value );
+
+					// Exact matches are already converted by the `attributeToElement()` converter.
+					if ( normalizedValue == value ) {
+						return null;
+					}
+
+					// Values not present in the configuration are dropped, as before.
+					if ( !configuredValues.includes( normalizedValue ) ) {
+						return null;
+					}
+
+					return normalizedValue;
+				}
+			},
+			converterPriority: 'low'
 		} );
 	}
 
