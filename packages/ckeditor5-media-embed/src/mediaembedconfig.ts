@@ -121,6 +121,27 @@ export interface MediaEmbedConfig {
 	extraProviders?: Array<MediaEmbedProvider>;
 
 	/**
+	 * Optional URL of a JSON file with declarative media provider definitions.
+	 *
+	 * When this option is omitted, a URL can instead be declared in the hosting page without changing
+	 * the editor configuration:
+	 *
+	 * ```html
+	 * <link rel="ckeditor-media-providers" href="/ckeditor-media-providers.json">
+	 * ```
+	 *
+	 * No request is made if neither is present. HTTP 404 means no additional providers;
+	 * other loading or validation failures reject editor initialization.
+	 *
+	 * The configuration document must contain a `providers` array. Each entry has `name`,
+	 * `url` (a regex source string or an array of sources) and `embedUrl` (an HTTPS URL template
+	 * that references capturing groups via `$1`, `$2`, etc.).
+	 *
+	 * The JSON file cannot contain executable JavaScript or custom HTML.
+	 */
+	providerConfigUrl?: string;
+
+	/**
 	 * The list of media providers that should not be used despite being available in
 	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#providers `config.mediaEmbed.providers`} and
 	 * {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#extraProviders `config.mediaEmbed.extraProviders`}

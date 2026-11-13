@@ -9,12 +9,13 @@
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import type { UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
-import { first, type GetCallback } from '@ckeditor/ckeditor5-utils';
+import { first, global, type GetCallback } from '@ckeditor/ckeditor5-utils';
 
 import { modelToViewUrlAttributeConverter } from './converters.js';
 import type { MediaEmbedConfig } from './mediaembedconfig.js';
 import { MediaEmbedCommand } from './mediaembedcommand.js';
 import { MediaRegistry } from './mediaregistry.js';
+import { loadExternalMediaProviders } from './externalmediaproviders.js';
 import { toMediaWidget, createMediaFigureElement } from './utils.js';
 
 /**
@@ -38,7 +39,7 @@ export class MediaEmbedEditing extends Plugin {
 	/**
 	 * The media registry managing the media providers in the editor.
 	 */
-	public registry: MediaRegistry;
+	public registry!: MediaRegistry;
 
 	/**
 	 * @inheritDoc
@@ -181,14 +182,26 @@ export class MediaEmbedEditing extends Plugin {
 			]
 		} as MediaEmbedConfig );
 
-		this.registry = new MediaRegistry( editor.locale, editor.config.get( 'mediaEmbed' )! );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
+	public async init(): Promise<void> {
 		const editor = this.editor;
+		const config = editor.config.get( 'mediaEmbed' )!;
+		const configUrl = config.providerConfigUrl || global.document.querySelector<HTMLLinkElement>(
+			'link[rel="ckeditor-media-providers"]'
+		)?.href;
+
+		let extraProviders = config.extraProviders || [];
+
+		if ( configUrl ) {
+			const loadedProviders = await loadExternalMediaProviders( global.window.fetch.bind( global.window ), configUrl );
+			extraProviders = extraProviders.concat( loadedProviders );
+		}
+
+		this.registry = new MediaRegistry( editor.locale, { ...config, extraProviders } );
 		const schema = editor.model.schema;
 		const t = editor.t;
 		const conversion = editor.conversion;

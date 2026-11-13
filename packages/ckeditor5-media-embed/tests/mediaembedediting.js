@@ -64,6 +64,54 @@ describe( 'MediaEmbedEditing', () => {
 		expect( MediaEmbedEditing.isPremiumPlugin ).toBe( false );
 	} );
 
+	describe( 'external provider configuration', () => {
+		it( 'loads providers before editor readiness', async () => {
+			const originalFetch = window.fetch;
+			const fetchMock = vi.fn().mockResolvedValue( {
+				ok: true,
+				status: 200,
+				json: async () => ( {
+					providers: [ {
+						name: 'exampleVideo',
+						url: '^video\\.example\\.com/watch/([a-z0-9-]+)$',
+						embedUrl: 'https://player.example.com/embed/$1'
+					} ]
+				} )
+			} );
+
+			window.fetch = fetchMock;
+
+			try {
+				const editor = await createTestEditor( { providerConfigUrl: '/providers.json' } );
+				const registry = editor.plugins.get( MediaEmbedEditing ).registry;
+
+				expect( fetchMock ).toHaveBeenCalledWith( '/providers.json', { credentials: 'same-origin' } );
+				expect( registry.hasMedia( 'https://video.example.com/watch/demo-123' ) ).toBe( true );
+				expect( registry.hasMedia( 'https://www.youtube.com/watch?v=example' ) ).toBe( true );
+
+				await editor.destroy();
+			} finally {
+				window.fetch = originalFetch;
+			}
+		} );
+
+		it( 'does not fetch external providers unless configured', async () => {
+			const originalFetch = window.fetch;
+			const fetchMock = vi.fn();
+			window.fetch = fetchMock;
+
+			try {
+				const editor = await createTestEditor();
+
+				expect( fetchMock ).not.toHaveBeenCalled();
+
+				await editor.destroy();
+			} finally {
+				window.fetch = originalFetch;
+			}
+		} );
+	} );
+
 	describe( 'constructor()', () => {
 		describe( 'configuration', () => {
 			describe( '#providers', () => {

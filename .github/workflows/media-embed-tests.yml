@@ -1,0 +1,33 @@
+
+name: Media Embed Tests
+
+on:
+  push:
+    branches:
+      - feature/external-media-providers
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '26.10.0'
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '12.8.2'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check TypeScript
+        run: pnpm typecheck
+
+      - name: Run Media Embed tests
+        run: pnpm test -f media-embed
