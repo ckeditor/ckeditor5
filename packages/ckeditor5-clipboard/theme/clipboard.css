@@ -91,7 +91,8 @@
 	background: var(--ck-clipboard-drop-target-color);
 	margin-top: -1px;
 	position: absolute;
-	/* Backward compatibility: falls back to legacy --ck-z-default if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-z-default`, which is always declared and follows `--ck-z-base`, so
+	   overrides of either apply. The fallback is never used. */
 	z-index: var(--ck-z-default, var(--ck-z-base));
 
 	&::before {

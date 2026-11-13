@@ -7,7 +7,7 @@
 /* Let's use `.ck-balloon-panel` appearance. See: balloonpanel.css. */
 
 .ck .ck-fake-panel div {
-	/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-drop-shadow` first if overridden. */
 	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 
 	min-height: 15px;
@@ -22,7 +22,7 @@
 }
 
 .ck .ck-fake-panel div:nth-child( 1 ) {
-	/* Backward compatibility: falls back to legacy --ck-balloon-fake-panel-offset-* if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-balloon-fake-panel-offset-*` first if overridden. */
 	margin-left: var(--ck-balloon-fake-panel-offset-horizontal, 6px);
 	margin-top: var(--ck-balloon-fake-panel-offset-vertical, 6px);
 	z-index: 2;

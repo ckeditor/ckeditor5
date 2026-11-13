@@ -23,7 +23,7 @@
 		}
 
 		&.ck-disabled > .ck-button__label {
-			/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+			/* Backward compatibility: reads the legacy `--ck-disabled-opacity` first if overridden. */
 			opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 		}
 
@@ -69,7 +69,8 @@
 
 	& > .ck-menu-bar__menu__button > .ck-menu-bar__menu__button__arrow {
 		pointer-events: none;
-		/* Backward compatibility: falls back to legacy --ck-z-default if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-z-default`, which is always declared and follows
+		   `--ck-z-base`, so overrides of either apply. The fallback is never used. */
 		z-index: var(--ck-z-default, var(--ck-z-base));
 	}
 
@@ -106,7 +107,7 @@
 		}
 
 		&.ck-disabled > .ck-menu-bar__menu__button__arrow {
-			/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+			/* Backward compatibility: reads the legacy `--ck-disabled-opacity` first if overridden. */
 			opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 		}
 	}

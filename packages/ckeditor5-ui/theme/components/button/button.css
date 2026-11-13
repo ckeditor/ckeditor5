@@ -65,7 +65,7 @@
 
 	/* State / meta */
 	--ck-button-focus-border-color: var(--ck-interactive-focus-border-color);
-	/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-disabled-opacity` first if overridden. */
 	--ck-button-opacity-disabled: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 
 	/* Minimum width for standard (form/dialog/balloon) action buttons. Defaults to the icon-button
@@ -176,7 +176,7 @@
 
 	/* `<button>` does not inherit the font family, so set it explicitly. Inside the `.ck-reset_all` scope this matches
 	   the reset; elsewhere (for example in `.ck-reset_all-excluded` regions) the button would use the browser default.
-	   Backward compatibility: falls back to legacy --ck-font-face if overridden. */
+	   Backward compatibility: reads the legacy `--ck-font-face` first if overridden. */
 	font-family: var(--ck-font-face, var(--ck-font-family));
 
 	/* Avoid flickering when the foucs border shows up. */
@@ -440,7 +440,8 @@
 			}
 		}
 
-		/* Dim the whole button (border included) when disabled and keep the label and icon fully opaque. */
+		/* Dim the whole button (border included) when disabled. The label and the icon reset their own opacity,
+		   so they do not fade twice. */
 		&:disabled,
 		&.ck-disabled {
 			opacity: var(--ck-button-opacity-disabled);

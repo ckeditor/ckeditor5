@@ -19,7 +19,7 @@
 	--ck-resizer-tooltip-background-color: var(--ck-color-surface-inverse);
 	--ck-resizer-tooltip-text-color: var(--ck-color-text-inverse);
 
-	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-border-radius` first if overridden. */
 	--ck-resizer-border-radius: var(--ck-border-radius, var(--ck-radius-base));
 	--ck-resizer-tooltip-offset: 10px;
 	--ck-resizer-tooltip-height: calc(var(--ck-spacing-small, var(--ck-spacing-sm)) * 2 + 10px);
@@ -60,7 +60,7 @@
 	These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied. */
 	&.ck-editor__nested-editable_focused,
 	&:focus {
-		/* Backward compatibility: falls back to legacy --ck-inner-shadow if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-inner-shadow` first if overridden. */
 		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
 
 		@media (forced-colors: none) {

@@ -109,7 +109,7 @@ Fullscreen layout:
 		border-top: 1px solid var(--ck-editor-frame-border-color);
 		border-left: 1px solid var(--ck-editor-frame-border-color);
 		border-right: 1px solid var(--ck-editor-frame-border-color);
-		/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-border-radius` first if overridden. */
 		border-radius: var(--ck-border-radius, var(--ck-radius-base)) 0;
 	}
 }

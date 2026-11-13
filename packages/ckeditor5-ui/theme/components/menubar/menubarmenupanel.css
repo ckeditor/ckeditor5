@@ -19,7 +19,7 @@
 
 .ck.ck-menu-bar__menu > .ck.ck-menu-bar__menu__panel {
 	border-radius: var(--ck-menu-bar-panel-border-radius);
-	/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-drop-shadow` first if overridden. */
 	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 
 	background: var(--ck-color-dropdown-panel-background, var(--ck-dropdown-panel-background-color));
@@ -27,9 +27,10 @@
 	bottom: 0;
 	height: fit-content;
 
-	/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-z-panel`, which is always declared and follows `--ck-z-overlay`,
+	   so overrides of either apply. The fallback is never used. */
 	z-index: var(--ck-z-panel, var(--ck-z-overlay));
-	/* Backward compatibility: falls back to legacy --ck-menu-bar-menu-max-width if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-menu-bar-menu-max-width` first if overridden. */
 	max-width: var(--ck-menu-bar-menu-max-width, var(--ck-menu-bar-panel-max-width));
 	position: absolute;
 

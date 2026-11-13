@@ -15,7 +15,7 @@
 		var(--ck-switch-button-toggle-inner-size) -
 		2px
 	);
-	/* Backward compatibility: falls back to legacy --ck-color-switch-button-inner-shadow if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-color-switch-button-inner-shadow` first if overridden. */
 	--ck-switch-button-inner-hover-shadow: 0 0 0 5px var(--ck-color-switch-button-inner-shadow, var(--ck-color-shadow-inner));
 
 	/* Radius */
@@ -59,11 +59,12 @@
 		/* Apply some smooth transition to the box-shadow and border. */
 		/* Gently animate the background color of the toggle switch */
 		transition:
-			background var(--ck-duration-slower) var(--ck-transition-timing-function-surface),
+			background var(--ck-transition-duration-surface) var(--ck-transition-timing-function-surface),
 			box-shadow var(--ck-transition-duration-control) var(--ck-transition-timing-function-control),
 			outline var(--ck-transition-duration-control) var(--ck-transition-timing-function-control);
 		border: var(--ck-border-width-control) solid transparent;
-		/* Backward compatibility: falls back to legacy --ck-switch-button-toggle-width if overridden. */
+		/* Backward compatibility: reads `--ck-switch-button-toggle-width`, a legacy name kept as a token of this
+		   component and declared above. The fallback is never used. */
 		/* 34px at 13px font-size */
 		width: var(--ck-switch-button-toggle-width, 2.6153846154em);
 		background: var(--ck-color-switch-button-off-background, var(--ck-switch-button-off-background-color));
@@ -80,7 +81,8 @@
 
 		& .ck-button__toggle__inner {
 			border-radius: var(--ck-switch-button-toggle-inner-border-radius);
-			/* Backward compatibility: falls back to legacy --ck-switch-button-toggle-inner-size if overridden. */
+			/* Backward compatibility: reads `--ck-switch-button-toggle-inner-size`, a legacy name kept as a token of
+			   this component and declared above. The fallback is never used. */
 			/* 14px at 13px font-size + 1px */
 			width: var(--ck-switch-button-toggle-inner-size, calc(1.0769230769em + 1px));
 			height: var(--ck-switch-button-toggle-inner-size, calc(1.0769230769em + 1px));
@@ -99,7 +101,8 @@
 			background: var(--ck-color-switch-button-off-hover-background, var(--ck-switch-button-off-hover-background-color));
 
 			& .ck-button__toggle__inner {
-				/* Backward compatibility: falls back to legacy --ck-switch-button-inner-hover-shadow if overridden. */
+				/* Backward compatibility: reads `--ck-switch-button-inner-hover-shadow`, a legacy name kept as a token
+				   of this component and declared above. The fallback is never used. */
 				box-shadow: var(--ck-switch-button-inner-hover-shadow, 0 0 0 5px hsl(0 0% 0% / 0.1));
 			}
 		}
@@ -107,7 +110,7 @@
 	}
 
 	&.ck-disabled .ck-button__toggle {
-		/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-disabled-opacity` first if overridden. */
 		opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 	}
 

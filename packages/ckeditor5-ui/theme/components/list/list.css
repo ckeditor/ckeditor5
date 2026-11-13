@@ -24,7 +24,7 @@
 	   It has the same value as the selected text color in the default theme, and follows the primary color
 	   (`--ck-color-base-action`). */
 	--ck-list-button-on-background-color: var(--ck-color-button-on-color, var(--ck-color-interactive-primary-surface));
-	--ck-list-button-on-text-color: var(--ck-color-text-inverse);
+	--ck-list-button-on-text-color: var(--ck-color-interactive-primary-text);
 	--ck-list-divider-color: var(--ck-color-divider);
 	--ck-list-separator-height: var(--ck-border-width-divider);
 

@@ -24,7 +24,7 @@
 .ck.ck-autocomplete {
 	& > .ck-search__results {
 		border-radius: var(--ck-autocomplete-results-border-radius);
-		/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-drop-shadow` first if overridden. */
 		box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 		max-height: var(--ck-autocomplete-results-max-height);
 		overflow-y: auto;
@@ -49,7 +49,8 @@
 			top: 100%;
 			bottom: auto;
 		}
-		/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-z-panel`, which is always declared and follows
+		   `--ck-z-overlay`, so overrides of either apply. The fallback is never used. */
 		z-index: var(--ck-z-panel, var(--ck-z-overlay))
 	}
 	position: relative

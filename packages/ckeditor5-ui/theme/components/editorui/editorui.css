@@ -134,7 +134,7 @@
 	&.ck-focused {
 		outline: none;
 		border-color: var(--ck-editor-editable-focus-border-color);
-		/* Backward compatibility: falls back to legacy --ck-inner-shadow if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-inner-shadow` first if overridden. */
 		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
 	}
 }

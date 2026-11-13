@@ -62,7 +62,7 @@
 	}
 
 	&.ck-disabled .ck-dropdown__arrow {
-		/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-disabled-opacity` first if overridden. */
 		opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 	}
 
@@ -90,7 +90,7 @@
 
 		/* https://github.com/ckeditor/ckeditor5/issues/3362 */
 		&.ck-disabled .ck-button__label {
-			/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+			/* Backward compatibility: reads the legacy `--ck-disabled-opacity` first if overridden. */
 			opacity: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 		}
 
@@ -121,7 +121,7 @@
 	& .ck-dropdown__panel {
 		display: none;
 		z-index: var(--ck-layer-panel);
-		/* Backward compatibility: falls back to legacy --ck-dropdown-max-width if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-dropdown-max-width` first if overridden. */
 		max-width: var(--ck-dropdown-max-width, 75vw);
 
 		position: absolute;
@@ -192,7 +192,7 @@
 
 .ck.ck-dropdown__panel {
 	border-radius: var(--ck-dropdown-panel-border-radius);
-	/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-drop-shadow` first if overridden. */
 	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 	padding: var(--ck-dropdown-panel-padding);
 

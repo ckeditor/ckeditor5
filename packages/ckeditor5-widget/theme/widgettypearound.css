@@ -9,7 +9,8 @@
 	--ck-widget-type-around-button-border-radius: 100px;
 	/* Transparent by default; the button only shows a background on hover, when active or when the editor is blurred. */
 	--ck-widget-type-around-button-background-color: transparent;
-	/* Backward compatibility: falls back to legacy --ck-color-focus-border if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-color-focus-border`, which is always declared and follows
+	   `--ck-color-interactive-focus-border`, so overrides of either apply. The fallback is never used. */
 	--ck-widget-type-around-button-active-background-color: var(--ck-color-focus-border, var(--ck-color-interactive-focus-border));
 	--ck-widget-type-around-button-hover-background-color: var(--ck-color-widget-hover-border, var(--ck-widget-hover-border-color));
 	--ck-widget-type-around-button-blurred-background-color: var(--ck-color-widget-blurred-border, var(--ck-widget-blurred-border-color));

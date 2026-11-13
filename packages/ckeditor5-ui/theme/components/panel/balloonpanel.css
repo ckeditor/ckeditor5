@@ -27,7 +27,7 @@
 
 .ck.ck-balloon-panel {
 	border-radius: var(--ck-balloon-panel-border-radius);
-	/* Backward compatibility: falls back to legacy --ck-drop-shadow if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-drop-shadow` first if overridden. */
 	box-shadow: var(--ck-drop-shadow, var(--ck-shadow-surface-floating)), 0 0;
 
 	min-height: 15px;
@@ -51,7 +51,7 @@
 		}
 
 		&::before {
-			/* Backward compatibility: falls back to legacy --ck-balloon-panel-arrow-z-index if overridden. */
+			/* Backward compatibility: reads the legacy `--ck-balloon-panel-arrow-z-index` first if overridden. */
 			z-index: var(--ck-balloon-panel-arrow-z-index, var(--ck-layer-balloon-arrow-back));
 		}
 
@@ -87,7 +87,7 @@
 
 		&::before {
 			border-color: var(--ck-color-panel-border, var(--ck-balloon-panel-border-color)) transparent transparent;
-			/* Backward compatibility: falls back to legacy --ck-balloon-arrow-drop-shadow if overridden. */
+			/* Backward compatibility: reads the legacy `--ck-balloon-arrow-drop-shadow` first if overridden. */
 			filter: drop-shadow(var(--ck-balloon-arrow-drop-shadow, 0 2px 2px var(--ck-color-shadow-drop)));
 			margin-bottom: calc( -1 * var(--ck-balloon-border-width, var(--ck-border-width-surface)) );
 			z-index: var(--ck-layer-balloon-arrow-back);
