@@ -74,7 +74,7 @@
 		 */
 		&:not(td, th) {
 			outline: none;
-			border: var(--ck-focus-ring);
+			border: var(--ck-interactive-focus-ring);
 		}
 	}
 }

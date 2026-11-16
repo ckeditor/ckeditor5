@@ -85,7 +85,7 @@
 	}
 
 	&[class*="position_border"] {
-		border: var(--ck-focus-ring);
+		border: var(--ck-interactive-focus-ring);
 		border-color: var(--ck-powered-by-border-color);
 	}
 }

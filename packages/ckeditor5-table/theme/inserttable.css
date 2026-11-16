@@ -60,7 +60,7 @@
 
 	&.ck-on {
 		border-color: var(--ck-insert-table-dropdown-box-on-border-color, var(--ck-color-focus-border, var(--ck-color-interactive-focus-border)));
-		background: var(--ck-insert-table-dropdown-box-on-background, var(--ck-color-focus-outer-shadow, var(--ck-focus-shadow)));
+		background: var(--ck-insert-table-dropdown-box-on-background, var(--ck-color-focus-outer-shadow, var(--ck-color-interactive-focus-shadow)));
 
 		/* The cell under the pointer. Without this rule it takes the generic button hover background, which differs from
 		   the other selected cells; the fallbacks keep that default, so a theme can align the two. */
