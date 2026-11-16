@@ -2218,6 +2218,47 @@ describe( 'Drag and Drop', () => {
 				expect( plugin._blockMode ).toBe( false );
 				expect( model.markers.has( 'drop-target' ) ).toBe( false );
 			} );
+
+			it( 'should remove the content moved outside the editor on `dragend`', () => {
+				_setModelData( model, '<paragraph>[foo]bar</paragraph>' );
+
+				const dataTransferMock = createDataTransfer();
+
+				fireDragStart( dataTransferMock );
+
+				dataTransferMock.dropEffect = 'move';
+				fireDragEnd( dataTransferMock );
+
+				expect( _getModelData( model ) ).toBe( '<paragraph>[]bar</paragraph>' );
+			} );
+		} );
+
+		describe( 'beforeinput', () => {
+			it( 'should prevent the native removal of the content dragged outside the editor', () => {
+				const preventDefault = vi.fn();
+
+				viewDocument.fire( 'beforeinput', {
+					inputType: 'deleteByDrag',
+					targetRanges: [],
+					domEvent: {},
+					preventDefault
+				} );
+
+				expect( preventDefault ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'should not prevent other input types', () => {
+				const preventDefault = vi.fn();
+
+				viewDocument.fire( 'beforeinput', {
+					inputType: 'insertFromDrop',
+					targetRanges: [],
+					domEvent: {},
+					preventDefault
+				} );
+
+				expect( preventDefault ).not.toHaveBeenCalled();
+			} );
 		} );
 
 		describe( 'drop', () => {
