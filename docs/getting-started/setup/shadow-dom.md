@@ -146,6 +146,8 @@ The {@link features/fullscreen Fullscreen} feature follows the same chain. With 
 
 Setting the container yourself keeps the page scrollable, because the fullscreen mode then fills an element of your layout instead of covering the viewport.
 
+The same {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.ui.overlayContainer`} setting lets the editor run inside a modal `<dialog>` element. The {@link getting-started/setup/native-dialog Running CKEditor&nbsp;5 inside a native dialog} guide shows how.
+
 ## Overriding CSS variables
 
 The editor declares its CSS variables on both `:root` and `:host`, so one style sheet resolves them in the main document and inside a shadow root alike. This is necessary because `:root` matches nothing inside a shadow tree, and `:host` matches nothing outside one.

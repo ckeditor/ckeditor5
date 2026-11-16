@@ -1784,6 +1784,11 @@ export interface UiConfig {
 	 * 	} );
 	 * ```
 	 *
+	 * When the editor runs inside a modal `<dialog>` element, the default container renders behind the dialog. Pass an
+	 * empty `position: fixed` element placed inside the dialog instead. The
+	 * {@glink getting-started/setup/native-dialog Running CKEditor 5 inside a native dialog} guide explains the
+	 * required styles.
+	 *
 	 * When it is not set, the editor falls back to auto-detecting the shadow root it lives in (open or closed).
 	 * Treat this only as a fallback – that root may clip the overlay layer; the `document.body` default is meant
 	 * just for editors embedded in the light DOM.

@@ -1,0 +1,58 @@
+<template id="snippet-native-dialog-data">
+	<h2><comment-start name="thread-1"></comment-start>Team offsite<comment-end name="thread-1"></comment-end></h2>
+	<p>
+		We meet at the lake house for two days of planning and workshops.
+		<suggestion-start name="insertion:suggestion-1:user-2"></suggestion-start>Coffee is served from 8:30.
+		<suggestion-end name="insertion:suggestion-1:user-2"></suggestion-end>
+		Select any text to format it, click <a href="https://ckeditor.com/docs/ckeditor5/latest/">this link</a>
+		to edit it, or type @ to mention a colleague.
+	</p>
+	<figure class="image image-style-side">
+		<img src="%BASE_PATH%/assets/img/fields.jpg" srcset="%BASE_PATH%/assets/img/fields.jpg, %BASE_PATH%/assets/img/fields_2x.jpg 2x" alt="Wheat fields in the summer sun." />
+		<figcaption>The fields around the lake house.</figcaption>
+	</figure>
+	<h3>Day one</h3>
+	<figure class="table">
+		<table>
+			<thead>
+				<tr><th>Time</th><th>Session</th><th>Host</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>9:00</td><td>Welcome and goals</td><td>Zee Croce</td></tr>
+				<tr><td>11:00</td><td>Product roadmap</td><td>Mex Haddox</td></tr>
+				<tr><td>14:00</td><td>Team workshops</td><td>Everyone</td></tr>
+			</tbody>
+		</table>
+		<figcaption>Click a table cell to change the table or cell properties.</figcaption>
+	</figure>
+	<h3>Before you go</h3>
+	<ul>
+		<li>Bring your laptop and charger.</li>
+		<li>Lunch and dinner are provided.</li>
+	</ul>
+	<blockquote>
+		<p>Use the comment and track changes buttons in the toolbar to review this agenda.</p>
+	</blockquote>
+</template>
+
+<!--
+	`no-transform` is a documentation theme class that removes the spacing around the live snippet.
+	It is not related to the CSS `transform` property.
+-->
+<dialog class="native-dialog-demo no-transform" id="snippet-native-dialog" aria-labelledby="snippet-native-dialog-title">
+	<div class="native-dialog-demo__header">
+		<div class="native-dialog-demo__title b-font-heading" id="snippet-native-dialog-title">Team offsite agenda</div>
+		<form method="dialog">
+			<button class="c-button c-button--secondary c-button--base" type="submit">Close</button>
+		</form>
+	</div>
+	<div class="native-dialog-demo__body">
+		<div class="native-dialog-demo__row">
+			<div class="native-dialog-demo__editor">
+				<div class="native-dialog-demo__editor-source"></div>
+			</div>
+			<div class="native-dialog-demo__sidebar"></div>
+		</div>
+	</div>
+	<div class="native-dialog-demo__overlay"></div>
+</dialog>

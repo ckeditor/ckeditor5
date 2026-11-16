@@ -1,0 +1,107 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@layer snippets {
+	/* --- Dialog size and layout ------------------------------------------------------------- */
+
+	/* The width is 70% of the viewport within 700-1000px, and 90% of a viewport narrower than that.
+	   The height is 75% of the viewport on typical screens (about 720-1070px tall). It grows up to 90% on short
+	   screens, where it stays at least 540px tall when possible, and shrinks down to 50% on very tall screens,
+	   where it stays at most 800px tall when possible. Phone-sized viewports get 90% of the height. */
+	.native-dialog-demo {
+		box-sizing: border-box;
+		width: clamp( min( 90vw, 700px ), 70vw, 1000px );
+		height: clamp( min( 90vh, 540px ), 75vh, max( 50vh, 800px ) );
+		padding: 0;
+		border: 1px solid hsl( 0, 0%, 80% );
+		border-radius: 8px;
+	}
+
+	@media (max-width: 600px) {
+		.native-dialog-demo {
+			height: 90vh;
+		}
+	}
+
+	/* Only while open: a closed dialog keeps the `display: none` of the browser style sheet. */
+	.native-dialog-demo[open] {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.native-dialog-demo::backdrop {
+		background: hsla( 0, 0%, 0%, 0.5 );
+	}
+
+	.native-dialog-demo__header {
+		flex: none;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1em;
+		padding: 0.75em 1em;
+		border-bottom: 1px solid hsl( 0, 0%, 87% );
+	}
+
+	/* The heading font comes from the `b-font-heading` class of the documentation theme. */
+	.native-dialog-demo__title {
+		font-size: 1.25rem;
+		font-weight: var( --font-weight-bold, bold );
+	}
+
+	/* The editor and the sidebar scroll together, so the comments stay next to the content they belong to. */
+	.native-dialog-demo__body {
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+	}
+
+	.native-dialog-demo__row {
+		box-sizing: border-box;
+		display: flex;
+		gap: 0.5em;
+		min-height: 100%;
+		padding: 1em;
+	}
+
+	.native-dialog-demo__sidebar {
+		flex: none;
+		width: 65px;
+	}
+
+	/* --- Editor size ------------------------------------------------------------------------ */
+
+	/* The editing area fills the dialog and grows with its content. */
+	.native-dialog-demo__editor,
+	.native-dialog-demo .ck.ck-editor,
+	.native-dialog-demo .ck.ck-editor__main {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.native-dialog-demo .ck.ck-editor {
+		margin: 0;
+	}
+
+	.native-dialog-demo .ck.ck-editor__main > .ck-editor__editable {
+		flex: 1;
+	}
+
+	/* --- Overlay container ------------------------------------------------------------------ */
+
+	/* Fixed, so the `overflow: auto` of the modal dialog does not clip the balloons. As wide as the viewport, so
+	   balloons lay out as they would in `document.body`. With no height, so it does not cover the dialog content.
+	   With a z-index, because a fixed element starts a stacking context and the editor content would paint over it. */
+	.native-dialog-demo__overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 0;
+		z-index: var( --ck-layer-dialog );
+	}
+}
