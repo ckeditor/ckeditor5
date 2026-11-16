@@ -210,8 +210,8 @@ importers:
         specifier: ^7.23.3
         version: 7.29.7
       '@ckbox/uploader':
-        specifier: 2.13.0
-        version: 2.13.0(@types/node@24.10.0)
+        specifier: 2.14.0
+        version: 2.14.0(@types/node@24.10.0)
       '@ckeditor/ckeditor5-dev-build-tools':
         specifier: ^54.11.0
         version: 54.11.0(tslib@2.8.1)(typescript@5.3.3)
@@ -270,8 +270,8 @@ importers:
         specifier: ^5.0.0
         version: 5.6.2
       ckbox:
-        specifier: 2.13.0
-        version: 2.13.0(@types/node@24.10.0)
+        specifier: 2.14.0
+        version: 2.14.0(@types/node@24.10.0)
       date-fns:
         specifier: ^4.0.0
         version: 4.1.0
@@ -5037,24 +5037,24 @@ packages:
   '@chevrotain/types@11.1.2':
     resolution: {integrity: sha512-U+HFai5+zmJCkK86QsaJtoITlboZHBqrVketcO2ROv865xfCMSFpELQoz1GkX5GzME8pTa+3kbKrZHQtI0gdbw==}
 
-  '@ckbox/components@2.13.0':
-    resolution: {integrity: sha512-cpizAZmtVR+vttCRdWUVyavJN3hiQbNefj5ilRDeLhW2GeaR5b7cWscs7tQAQI8FJ+7oCOGW8uKQfGwdYhkSsg==}
+  '@ckbox/components@2.14.0':
+    resolution: {integrity: sha512-eTu1C0i6WnnflnvSgeKqMiagMZOqo8mk0INLh/Ky/hdjocXt+HQLoBLvVCUidZIelVXMLr0RO8DnOuq2iyptRg==}
     peerDependencies:
       react: ^19
       react-dom: ^19
 
-  '@ckbox/core@2.13.0':
-    resolution: {integrity: sha512-ogonCakCNz+cUdJRYkDjBI9kUcrty1NGTgM+yp3EPl1yYe9sIVqm0dx5pXoijPd3KttqeJdcINiV+vD/l+31xg==}
+  '@ckbox/core@2.14.0':
+    resolution: {integrity: sha512-+e5XLm7kG6ZIh44d3Nh20GTkdqqkEgghxPqgef0Der/wnBYnHlMX1tDkRUfQVHjK8O8m8xlkhRdwQfoS+Z3Sxw==}
     peerDependencies:
       react: ^19
 
-  '@ckbox/i18n@2.13.0':
-    resolution: {integrity: sha512-8x8qhGAwmiARUmPym/96kQEXNsx4xaCKJAVVHEufB4myMIUesqFlzuxGlrAr/wU29UwogotU+wqgeE1pzX05iA==}
+  '@ckbox/i18n@2.14.0':
+    resolution: {integrity: sha512-Ni3OgnnNYRK7TaEU7kVvpDTBJ3/dZCglUEFivm6cE7mdp+w/3Lla4TIrBhpl1vNqVyIlCdKKrhzUxWFtjbo73Q==}
     peerDependencies:
       react: ^19
 
-  '@ckbox/uploader@2.13.0':
-    resolution: {integrity: sha512-VmQ/yZtw0P7PeFJ+TWS19FOC8XhwnUkIBPGtCuBJu1WUKDED7Yc95SxxlJFn+XXr0y0PWKM/N6jIpL7Ujtg7zA==}
+  '@ckbox/uploader@2.14.0':
+    resolution: {integrity: sha512-7TDdcwkmQQtPPYK+2kOa2gyjFH9kSgIFixG4SGhdxY1NiF4nxk5fgkmwQMFASqyR7rAlrV67uBq9CinXkL0UQg==}
 
   '@ckeditor/ckeditor5-dev-build-tools@54.11.0':
     resolution: {integrity: sha512-sW3BBXtvv7FOVZQlArHgjm1c8PWVTBNPWB6qvR503UrCtMqm6siWgiXu5cKzVn1vWWxIRnwMJRpcj+lM2Ppf8Q==}
@@ -6810,6 +6810,7 @@ packages:
   '@stylistic/stylelint-plugin@3.1.3':
     resolution: {integrity: sha512-85fsmzgsIVmyG3/GFrjuYj6Cz8rAM7IZiPiXCMiSMfoDOC1lOrzrXPDk24WqviAghnPqGpx8b0caK2PuewWGFg==}
     engines: {node: ^18.12 || >=20.9}
+    deprecated: Please upgrade to v5 or later.
     peerDependencies:
       stylelint: ^16.8.0
 
@@ -6892,13 +6893,17 @@ packages:
   '@swc/types@0.1.25':
     resolution: {integrity: sha512-iAoY/qRhNH8a/hBvm3zKj9qQ4oc2+3w1unPJa2XvTK3XjeLXtzcCingVPw/9e5mn1+0yPqxcBGp9Jf0pkfMb1g==}
 
-  '@tanstack/query-core@5.100.10':
-    resolution: {integrity: sha512-8UR0yJR+GiQ40m3lPhUr0xbfAupe6GSQiksSBSa9SM2NjezFyxXCIA69/lz8cSoNKZLrw1/PktIyQBJcVeMi3w==}
+  '@tanstack/query-core@5.107.1':
+    resolution: {integrity: sha512-PSyAik11oQBEVOiVy5hjZWHmoUqOXqK1WYy4v55mcxozEfKaQgpUMsgnXhWjuESzSht8JfzqMS1m6M/9CpNgvg==}
 
-  '@tanstack/react-query@5.100.10':
-    resolution: {integrity: sha512-FLaZf2RCrA/Zgp4aiu5tG3TyasTRO7aZ99skxQpr3Hg/zXOhu6yq5FZCYQ/tRaJtM9ylnoK8tFK7PolXQadv6Q==}
+  '@tanstack/react-query@5.107.1':
+    resolution: {integrity: sha512-udCOOLp3ZAheUrIHLCe+ZZge6nr2ZUrGMSWcCuXsjY1Bf2JeeE09oxst97PILiCY6N8xo/7bIo3Hvz13zh06FA==}
     peerDependencies:
+      '@types/react': ^18 || ^19
       react: ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@tufjs/canonical-json@2.0.0':
     resolution: {integrity: sha512-yVtV8zsdo8qFHe+/3kw81dSLyF7D576A5cCFCi4X7B39tWT7SekaEFUnvnWJHz+9qO7qJTah1JbrDjWKqFtdWA==}
@@ -7090,8 +7095,8 @@ packages:
     peerDependencies:
       '@types/react': '*'
 
-  '@types/react@19.2.14':
-    resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
+  '@types/react@19.3.0':
+    resolution: {integrity: sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==}
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -7759,8 +7764,8 @@ packages:
     peerDependencies:
       devtools-protocol: '*'
 
-  ckbox@2.13.0:
-    resolution: {integrity: sha512-HzC/s7sLPjEZu8WJuoE/FVSpQXN19RjyM5DP4ERpXip41LJE9Dd0p9VvN/l49YfCpmFj5yomwsWPnJR7f/8Smg==}
+  ckbox@2.14.0:
+    resolution: {integrity: sha512-xUgNmpSt1/xfMUoVAFuq/BDp70ipz2pTL8vUT52Ctrsa58SGc9f7N1xMzQ/3xoPYhjVj7ogjW0uFovFkN5MW/A==}
 
   clean-stack@2.2.0:
     resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
@@ -11539,10 +11544,10 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
-  react-dom@19.2.7:
-    resolution: {integrity: sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ==}
+  react-dom@19.3.1:
+    resolution: {integrity: sha512-Y0bARz53lhEC1NMCASs0/j+faB/zqt3R8hpvg1e8+61ZVJ4UL0UdC4cBbXfZMcIuhrfgeILTLe+ZeBCavQPtKQ==}
     peerDependencies:
-      react: ^19.2.7
+      react: ^19.3.1
 
   react-focus-lock@2.13.7:
     resolution: {integrity: sha512-20lpZHEQrXPb+pp1tzd4ULL6DyO5D2KnR0G69tTDdydrmNhU7pdFmbQUYVyHUgp+xN29IuFR0PVuhOmvaZL9Og==}
@@ -11553,11 +11558,15 @@ packages:
       '@types/react':
         optional: true
 
-  react-hook-form@7.75.0:
-    resolution: {integrity: sha512-Ovv94H+0p3sJ7B9B5QxPuCP1u8V/cHuVGyH55cSwodYDtoJwK+fqk3vjfIgSX59I2U/bU4z0nRJ9HMLpNiWEmw==}
+  react-hook-form@7.91.0:
+    resolution: {integrity: sha512-5BEBUnCBwa28AFXYTYmOaB/+CSpJ/+CWVASHEvIGUzFdHyUiPHeRhG7r5hOZ8nZi0yP7pbHdFNXO/p31EKTJFQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
+      '@types/react': '*'
       react: ^16.8.0 || ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -11602,8 +11611,8 @@ packages:
     resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
 
-  react@19.2.7:
-    resolution: {integrity: sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ==}
+  react@19.3.1:
+    resolution: {integrity: sha512-QNhWdt7nrgVWWQG58QuGsAR3jv3Hbe4mb4vz7w2csnHavciZJgda1CPNaldF6eVxv90ud3jUXpKlHL69gO38yw==}
     engines: {node: '>=0.10.0'}
 
   read-cache@1.0.0:
@@ -11831,8 +11840,8 @@ packages:
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
 
-  scheduler@0.27.0:
-    resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
+  scheduler@0.28.0:
+    resolution: {integrity: sha512-juorfCmIkIw8tT+p5BXSm6PJjQF/ycEYmKyzURCIt/RaZIhL+PulbQ9Yu2z1HdOJDdqDTlxA1+xKBmHXJsczAw==}
 
   schema-utils@3.3.0:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
@@ -13046,38 +13055,38 @@ snapshots:
 
   '@chevrotain/types@11.1.2': {}
 
-  '@ckbox/components@2.13.0(@types/node@24.10.0)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@ckbox/components@2.14.0(@types/node@24.10.0)(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       '@popperjs/core': 2.11.8
-      '@types/react-transition-group': 4.4.12(@types/react@19.2.14)
+      '@types/react-transition-group': 4.4.12(@types/react@19.3.0)
       blurhash: 2.0.5
       cropperjs: 1.6.2
       dnd-core: 16.0.1
       lodash: 4.18.1
       pdfjs-dist: 4.10.38
-      react: 19.2.7
-      react-dnd: 16.0.1(@types/node@24.10.0)(@types/react@19.2.14)(react@19.2.7)
+      react: 19.3.1
+      react-dnd: 16.0.1(@types/node@24.10.0)(@types/react@19.3.0)(react@19.3.1)
       react-dnd-html5-backend: 16.0.1
-      react-dom: 19.2.7(react@19.2.7)
-      react-focus-lock: 2.13.7(@types/react@19.2.14)(react@19.2.7)
-      react-remove-scroll: 2.7.2(@types/react@19.2.14)(react@19.2.7)
-      react-transition-group: 4.4.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react-dom: 19.3.1(react@19.3.1)
+      react-focus-lock: 2.13.7(@types/react@19.3.0)(react@19.3.1)
+      react-remove-scroll: 2.7.2(@types/react@19.3.0)(react@19.3.1)
+      react-transition-group: 4.4.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/hoist-non-react-statics'
       - '@types/node'
       - '@types/react'
 
-  '@ckbox/core@2.13.0(@types/node@24.10.0)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@ckbox/core@2.14.0(@types/node@24.10.0)(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@ckbox/components': 2.13.0(@types/node@24.10.0)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@ckbox/i18n': 2.13.0(react@19.2.7)
-      '@tanstack/react-query': 5.100.10(react@19.2.7)
+      '@ckbox/components': 2.14.0(@types/node@24.10.0)(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@ckbox/i18n': 2.14.0(react@19.3.1)
+      '@tanstack/react-query': 5.107.1(@types/react@19.3.0)(react@19.3.1)
       crypto-js: 4.2.0
       lodash: 4.18.1
       nanoid: 5.1.16
-      react: 19.2.7
-      react-hook-form: 7.75.0(react@19.2.7)
+      react: 19.3.1
+      react-hook-form: 7.91.0(@types/react@19.3.0)(react@19.3.1)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/hoist-non-react-statics'
@@ -13085,19 +13094,19 @@ snapshots:
       - '@types/react'
       - react-dom
 
-  '@ckbox/i18n@2.13.0(react@19.2.7)':
+  '@ckbox/i18n@2.14.0(react@19.3.1)':
     dependencies:
-      react: 19.2.7
+      react: 19.3.1
       sprintf-js: 1.1.3
       tslib: 2.8.1
 
-  '@ckbox/uploader@2.13.0(@types/node@24.10.0)':
+  '@ckbox/uploader@2.14.0(@types/node@24.10.0)':
     dependencies:
-      '@ckbox/core': 2.13.0(@types/node@24.10.0)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@types/react': 19.2.14
-      '@types/react-dom': 19.2.3(@types/react@19.2.14)
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      '@ckbox/core': 2.14.0(@types/node@24.10.0)(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@types/react': 19.3.0
+      '@types/react-dom': 19.2.3(@types/react@19.3.0)
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/hoist-non-react-statics'
@@ -14730,12 +14739,14 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@tanstack/query-core@5.100.10': {}
+  '@tanstack/query-core@5.107.1': {}
 
-  '@tanstack/react-query@5.100.10(react@19.2.7)':
+  '@tanstack/react-query@5.107.1(@types/react@19.3.0)(react@19.3.1)':
     dependencies:
-      '@tanstack/query-core': 5.100.10
-      react: 19.2.7
+      '@tanstack/query-core': 5.107.1
+      react: 19.3.1
+    optionalDependencies:
+      '@types/react': 19.3.0
 
   '@tufjs/canonical-json@2.0.0': {}
 
@@ -14957,15 +14968,15 @@ snapshots:
     dependencies:
       postcss: 8.5.32
 
-  '@types/react-dom@19.2.3(@types/react@19.2.14)':
+  '@types/react-dom@19.2.3(@types/react@19.3.0)':
     dependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
 
-  '@types/react-transition-group@4.4.12(@types/react@19.2.14)':
+  '@types/react-transition-group@4.4.12(@types/react@19.3.0)':
     dependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
 
-  '@types/react@19.2.14':
+  '@types/react@19.3.0':
     dependencies:
       csstype: 3.2.3
 
@@ -15718,13 +15729,13 @@ snapshots:
       mitt: 3.0.1
       zod: 4.6.7
 
-  ckbox@2.13.0(@types/node@24.10.0):
+  ckbox@2.14.0(@types/node@24.10.0):
     dependencies:
-      '@ckbox/core': 2.13.0(@types/node@24.10.0)(@types/react@19.2.14)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@types/react': 19.2.14
-      '@types/react-dom': 19.2.3(@types/react@19.2.14)
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      '@ckbox/core': 2.14.0(@types/node@24.10.0)(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@types/react': 19.3.0
+      '@types/react-dom': 19.2.3(@types/react@19.3.0)
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/hoist-non-react-statics'
@@ -20166,26 +20177,26 @@ snapshots:
       schema-utils: 3.3.0
       webpack: 5.106.1(@swc/core@1.15.1)(esbuild@0.25.12)(uglify-js@3.19.3)(webpack-cli@6.0.1)
 
-  react-clientside-effect@1.2.8(react@19.2.7):
+  react-clientside-effect@1.2.8(react@19.3.1):
     dependencies:
       '@babel/runtime': 7.28.4
-      react: 19.2.7
+      react: 19.3.1
 
   react-dnd-html5-backend@16.0.1:
     dependencies:
       dnd-core: 16.0.1
 
-  react-dnd@16.0.1(@types/node@24.10.0)(@types/react@19.2.14)(react@19.2.7):
+  react-dnd@16.0.1(@types/node@24.10.0)(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       '@react-dnd/invariant': 4.0.2
       '@react-dnd/shallowequal': 4.0.2
       dnd-core: 16.0.1
       fast-deep-equal: 3.1.3
       hoist-non-react-statics: 3.3.2
-      react: 19.2.7
+      react: 19.3.1
     optionalDependencies:
       '@types/node': 24.10.0
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
 
   react-dom@18.3.1(react@18.3.1):
     dependencies:
@@ -20193,70 +20204,72 @@ snapshots:
       react: 18.3.1
       scheduler: 0.23.2
 
-  react-dom@19.2.7(react@19.2.7):
+  react-dom@19.3.1(react@19.3.1):
     dependencies:
-      react: 19.2.7
-      scheduler: 0.27.0
+      react: 19.3.1
+      scheduler: 0.28.0
 
-  react-focus-lock@2.13.7(@types/react@19.2.14)(react@19.2.7):
+  react-focus-lock@2.13.7(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       '@babel/runtime': 7.28.4
       focus-lock: 1.3.6
       prop-types: 15.8.1
-      react: 19.2.7
-      react-clientside-effect: 1.2.8(react@19.2.7)
-      use-callback-ref: 1.3.3(@types/react@19.2.14)(react@19.2.7)
-      use-sidecar: 1.1.3(@types/react@19.2.14)(react@19.2.7)
+      react: 19.3.1
+      react-clientside-effect: 1.2.8(react@19.3.1)
+      use-callback-ref: 1.3.3(@types/react@19.3.0)(react@19.3.1)
+      use-sidecar: 1.1.3(@types/react@19.3.0)(react@19.3.1)
     optionalDependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
 
-  react-hook-form@7.75.0(react@19.2.7):
+  react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1):
     dependencies:
-      react: 19.2.7
+      react: 19.3.1
+    optionalDependencies:
+      '@types/react': 19.3.0
 
   react-is@16.13.1: {}
 
-  react-remove-scroll-bar@2.3.8(@types/react@19.2.14)(react@19.2.7):
+  react-remove-scroll-bar@2.3.8(@types/react@19.3.0)(react@19.3.1):
     dependencies:
-      react: 19.2.7
-      react-style-singleton: 2.2.3(@types/react@19.2.14)(react@19.2.7)
+      react: 19.3.1
+      react-style-singleton: 2.2.3(@types/react@19.3.0)(react@19.3.1)
       tslib: 2.8.1
     optionalDependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
 
-  react-remove-scroll@2.7.2(@types/react@19.2.14)(react@19.2.7):
+  react-remove-scroll@2.7.2(@types/react@19.3.0)(react@19.3.1):
     dependencies:
-      react: 19.2.7
-      react-remove-scroll-bar: 2.3.8(@types/react@19.2.14)(react@19.2.7)
-      react-style-singleton: 2.2.3(@types/react@19.2.14)(react@19.2.7)
+      react: 19.3.1
+      react-remove-scroll-bar: 2.3.8(@types/react@19.3.0)(react@19.3.1)
+      react-style-singleton: 2.2.3(@types/react@19.3.0)(react@19.3.1)
       tslib: 2.8.1
-      use-callback-ref: 1.3.3(@types/react@19.2.14)(react@19.2.7)
-      use-sidecar: 1.1.3(@types/react@19.2.14)(react@19.2.7)
+      use-callback-ref: 1.3.3(@types/react@19.3.0)(react@19.3.1)
+      use-sidecar: 1.1.3(@types/react@19.3.0)(react@19.3.1)
     optionalDependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
 
-  react-style-singleton@2.2.3(@types/react@19.2.14)(react@19.2.7):
+  react-style-singleton@2.2.3(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       get-nonce: 1.0.1
-      react: 19.2.7
+      react: 19.3.1
       tslib: 2.8.1
     optionalDependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
 
-  react-transition-group@4.4.5(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-transition-group@4.4.5(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       '@babel/runtime': 7.28.4
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
+      react: 19.3.1
+      react-dom: 19.3.1(react@19.3.1)
 
   react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
 
-  react@19.2.7: {}
+  react@19.3.1: {}
 
   read-cache@1.0.0:
     dependencies:
@@ -20574,7 +20587,7 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
 
-  scheduler@0.27.0: {}
+  scheduler@0.28.0: {}
 
   schema-utils@3.3.0:
     dependencies:
@@ -21423,20 +21436,20 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  use-callback-ref@1.3.3(@types/react@19.2.14)(react@19.2.7):
+  use-callback-ref@1.3.3(@types/react@19.3.0)(react@19.3.1):
     dependencies:
-      react: 19.2.7
+      react: 19.3.1
       tslib: 2.8.1
     optionalDependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
 
-  use-sidecar@1.1.3(@types/react@19.2.14)(react@19.2.7):
+  use-sidecar@1.1.3(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       detect-node-es: 1.1.0
-      react: 19.2.7
+      react: 19.3.1
       tslib: 2.8.1
     optionalDependencies:
-      '@types/react': 19.2.14
+      '@types/react': 19.3.0
 
   util-deprecate@1.0.2: {}
 
