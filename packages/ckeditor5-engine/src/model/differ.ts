@@ -1181,8 +1181,10 @@ export class Differ {
 						if ( incEnd > oldEnd ) {
 							inc.nodesToHandle = incEnd - oldEnd;
 							inc.offset = oldEnd;
+							inc.howMany = inc.nodesToHandle;
 						} else {
 							inc.nodesToHandle = 0;
+							inc.howMany = 0;
 						}
 					}
 				}
