@@ -87,7 +87,7 @@ export class InsertTextCommand extends Command {
 
 			// Store selection attributes before deleting old content to preserve formatting and link.
 			// This unifies the behavior between ModelDocumentSelection and Selection provided as input option.
-			const selectionAttributes = Array.from( doc.selection.getAttributes() );
+			const selectionAttributes = options.textAttributes ?? Array.from( doc.selection.getAttributes() );
 
 			model.deleteContent( selection );
 
@@ -120,6 +120,13 @@ export interface InsertTextCommandOptions {
 	 * The text to be inserted.
 	 */
 	text?: string;
+
+	/**
+	 * The attributes to apply to the inserted text. Defaults to the current document selection attributes.
+	 *
+	 * @internal
+	 */
+	textAttributes?: Iterable<[ string, unknown ]>;
 
 	/**
 	 * The selection in which the text is inserted.

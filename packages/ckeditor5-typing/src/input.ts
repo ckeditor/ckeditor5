@@ -19,6 +19,7 @@ import {
 	type Model,
 	type Mapper,
 	type ModelElement,
+	type ModelPosition,
 	type ModelRange,
 	type ViewNode,
 	type ViewElement,
@@ -33,6 +34,8 @@ import {
 import { debounce } from 'es-toolkit/compat';
 
 // @if CK_DEBUG_TYPING // import { _debouncedLine, _buildLogMessage } from '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js';
+
+const HANGUL_CHARACTER = /^\p{Script=Hangul}$/u;
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -78,14 +81,56 @@ export class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
-		this.listenTo<ViewDocumentInputEvent>( view.document, 'beforeinput', () => {
+		let hangulKeyPressed = false;
+		let hangulReplacement: {
+			position: ModelPosition;
+			attributes: NonNullable<InsertTextCommandOptions[ 'textAttributes' ]>;
+		} | null = null;
+
+		if ( env.isiOS ) {
+			this.listenTo<ViewDocumentKeyDownEvent>( view.document, 'keydown', ( evt, { domEvent } ) => {
+				hangulKeyPressed = HANGUL_CHARACTER.test( domEvent.key );
+				hangulReplacement = null;
+			} );
+		}
+
+		this.listenTo<ViewDocumentInputEvent>( view.document, 'beforeinput', ( evt, data ) => {
 			// Flush queue on the next beforeinput event because it could happen
 			// that the mutation observer does not notice the DOM change in time.
 			this._typingQueue.flush( 'next beforeinput' );
+
+			const followsHangulKey = hangulKeyPressed;
+			hangulKeyPressed = false;
+
+			if ( data.inputType === 'insertText' ) {
+				return;
+			}
+
+			hangulReplacement = null;
+
+			// The iOS Korean keyboard can replace the previous jamo or syllable using a backward delete
+			// followed by an insertText event. Snapshot the deleted text's attributes before DeleteObserver runs.
+			if ( followsHangulKey && data.inputType === 'deleteContentBackward' && !data.isComposing && modelSelection.isCollapsed ) {
+				const caret = modelSelection.getFirstPosition()!;
+				const previous = caret.textNode || caret.nodeBefore;
+
+				if ( previous?.is( '$text' ) ) {
+					const offset = caret.offset - previous.startOffset! - 1;
+
+					if ( HANGUL_CHARACTER.test( previous.data.charAt( offset ) ) ) {
+						hangulReplacement = {
+							position: caret.getShiftedBy( -1 ),
+							attributes: Array.from( previous.getAttributes() )
+						};
+					}
+				}
+			}
 		}, { priority: 'high' } );
 
 		this.listenTo<ViewDocumentInsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
 			const { text, selection: viewSelection } = data;
+			const replacement = hangulReplacement;
+			hangulReplacement = null;
 
 			// In case of a synthetic event, make sure that selection is not fake.
 			if ( view.document.selection.isFake && viewSelection && view.document.selection.isSimilar( viewSelection ) ) {
@@ -188,6 +233,15 @@ export class Input extends Plugin {
 				text: insertText,
 				selection: model.createSelection( modelRanges )
 			};
+
+			if (
+				replacement && !data.isComposing && data.domEvent.type === 'beforeinput' &&
+				HANGUL_CHARACTER.test( text ) && modelRanges.length === 1 && modelRanges[ 0 ].isCollapsed &&
+				modelRanges[ 0 ].start.isEqual( replacement.position ) &&
+				modelSelection.isCollapsed && modelSelection.getFirstPosition()!.isEqual( replacement.position )
+			) {
+				commandData.textAttributes = replacement.attributes;
+			}
 
 			// This is a beforeinput event, so we need to wait until the browser updates the DOM,
 			// and we could apply changes to the model and verify if the DOM is valid.
@@ -420,6 +474,10 @@ class TypingQueue {
 			text: commandData.text
 		};
 
+		if ( commandData.textAttributes ) {
+			commandLiveData.textAttributes = commandData.textAttributes;
+		}
+
 		if ( commandData.selection ) {
 			commandLiveData.selectionRanges = [];
 
@@ -444,6 +502,10 @@ class TypingQueue {
 		const commandData: InsertTextCommandOptions = {
 			text: commandLiveData.text
 		};
+
+		if ( commandLiveData.textAttributes ) {
+			commandData.textAttributes = commandLiveData.textAttributes;
+		}
 
 		if ( commandLiveData.selectionRanges ) {
 			const ranges = commandLiveData.selectionRanges
@@ -606,7 +668,6 @@ function findMappedViewAncestor( viewNode: ViewNode, mapper: Mapper ): ViewEleme
 /**
  * The insertText command data stored as ModelLiveRange-s.
  */
-type InsertTextCommandLiveOptions = {
-	text?: string;
+type InsertTextCommandLiveOptions = Pick<InsertTextCommandOptions, 'text' | 'textAttributes'> & {
 	selectionRanges?: Array<ModelLiveRange>;
 };

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -14,11 +14,14 @@ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 
 import { _getModelData, _setModelData, _getViewData } from '@ckeditor/ckeditor5-engine';
+import { env } from '@ckeditor/ckeditor5-utils';
+
+import { fireBeforeInputDomEvent } from './_utils/utils.js';
 
 describe( 'Typing – Input integration', () => {
 	let editor, model, doc, viewDocument, boldView, italicView, editorElement;
 
-	beforeEach( () => {
+	function createEditor() {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
@@ -36,7 +39,7 @@ describe( 'Typing – Input integration', () => {
 				boldView = editor.ui.componentFactory.create( 'bold' );
 				italicView = editor.ui.componentFactory.create( 'italic' );
 			} );
-	} );
+	}
 
 	afterEach( () => {
 		editorElement.remove();
@@ -76,7 +79,83 @@ describe( 'Typing – Input integration', () => {
 		} );
 	}
 
+	describe( 'iOS Korean keyboard replacements', () => {
+		beforeEach( () => {
+			vi.spyOn( env, 'isiOS', 'get' ).mockReturnValue( true );
+			return createEditor().then( () => vi.useFakeTimers() );
+		} );
+
+		afterEach( () => {
+			vi.useRealTimers();
+		} );
+
+		it.each( [
+			[ '<paragraph>[]</paragraph>', '<p><strong>간</strong></p>' ],
+			[ '<paragraph>a[]b</paragraph>', '<p>a<strong>간</strong>b</p>' ]
+		] )( 'preserves formatting when Hangul replaces the previous character in %s', ( initial, expected ) => {
+			_setModelData( model, initial );
+			editor.execute( 'bold' );
+
+			keyDown( 'ㄱ' );
+			beforeInput( 'insertText', 'ㄱ' );
+			vi.advanceTimersByTime( 50 );
+
+			keyDown( 'ㅏ' );
+			beforeInput( 'deleteContentBackward' );
+			beforeInput( 'insertText', '가' );
+
+			keyDown( 'ㄴ' );
+			beforeInput( 'deleteContentBackward' );
+			beforeInput( 'insertText', '간' );
+			vi.advanceTimersByTime( 50 );
+
+			expect( editor.getData() ).toBe( expected );
+		} );
+
+		it.each( [
+			[ '<paragraph>[]</paragraph>', '<p>가</p>' ],
+			[ '<paragraph><$text bold="true">y</$text>x[]</paragraph>', '<p><strong>y가</strong></p>' ]
+		] )( 'keeps ordinary deletion and insertion behavior without preceding Hangul in %s', ( initial, expected ) => {
+			_setModelData( model, initial );
+
+			keyDown( 'ㅏ' );
+			beforeInput( 'deleteContentBackward' );
+			beforeInput( 'insertText', '가' );
+			vi.advanceTimersByTime( 50 );
+
+			expect( editor.getData() ).toBe( expected );
+		} );
+
+		it( 'preserves ordinary Backspace and subsequent typing', () => {
+			_setModelData( model, '<paragraph>a<$text bold="true">ㄱ[]</$text>b</paragraph>' );
+
+			keyDown( 'Backspace' );
+			beforeInput( 'deleteContentBackward' );
+			keyDown( 'ㅏ' );
+			beforeInput( 'insertText', 'ㅏ' );
+			vi.advanceTimersByTime( 50 );
+
+			expect( editor.getData() ).toBe( '<p>aㅏb</p>' );
+		} );
+
+		function keyDown( key ) {
+			viewDocument.getDomRoot().dispatchEvent( new KeyboardEvent( 'keydown', { key } ) );
+		}
+
+		function beforeInput( inputType, data ) {
+			const range = viewDocument.document.selection.getFirstRange();
+
+			fireBeforeInputDomEvent( viewDocument.getDomRoot(), {
+				inputType,
+				data,
+				ranges: [ viewDocument.domConverter.viewRangeToDom( range ) ]
+			} );
+		}
+	} );
+
 	describe( 'InputCommand integration', () => {
+		beforeEach( createEditor );
+
 		it( 'resets the buffer on typing respecting typing.undoStep', () => {
 			_setModelData( model, '<paragraph>0[]</paragraph>' );
 
