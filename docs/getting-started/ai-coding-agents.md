@@ -39,6 +39,10 @@ The `ckeditor` skill loads when you ask your agent to install, set up, configure
 * Set the license key and unlock premium features.
 * Send version-specific questions to the live documentation instead of guessing.
 
+<info-box tip>
+	Not sure which features you need? Configure the editor in the [interactive Builder](https://builder.ckeditor.com/?redirect=docs) and choose the **Copy prompt** output. You get a prompt that describes your setup and includes the code, ready to paste into your agent.
+</info-box>
+
 ### Update CKEditor&nbsp;5
 
 The `ckeditor-update` skill loads when you ask your agent to update, upgrade, or migrate CKEditor&nbsp;5, for example: _"Update CKEditor&nbsp;5 to the latest version."_ You can also name the version you want. It will:
