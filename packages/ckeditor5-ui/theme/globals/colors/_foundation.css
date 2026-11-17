@@ -3,47 +3,178 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The raw color palette of the theme. Semantic tokens give these colors a role.
+ * Read the semantic tokens in components, not these.
+ */
 :root,
 :host {
+	/**
+	 * Background color of subtle surfaces.
+	 */
 	--ck-color-base-foreground: hsl(0 0% 97%);
+
+	/**
+	 * Default background color across the UI.
+	 */
 	--ck-color-base-background: hsl(0 0% 100%);
+
+	/**
+	 * Default border color across the UI.
+	 */
 	--ck-color-base-border: hsl(214.7 21.3% 82.5%);
+
+	/**
+	 * Border color for low-emphasis borders and separators.
+	 */
 	--ck-color-base-border-light: hsl(214 39% 93%);
+
+	/**
+	 * Main color of primary actions.
+	 */
 	--ck-color-base-action: hsl(227.7 62.7% 55.9%);
+
+	/**
+	 * Primary action color on hover.
+	 */
 	--ck-color-base-action-hover: hsl(227 58% 49%);
+
+	/**
+	 * Primary action color for muted surfaces.
+	 */
 	--ck-color-base-action-muted: hsl(228 47% 93%);
+
+	/**
+	 * Primary action color in the disabled state.
+	 */
 	--ck-color-base-action-disabled: hsl(227.7 62.7% 77.9%);
+
+	/**
+	 * Color of focus indicators.
+	 */
 	--ck-color-base-focus: hsl(227.7 62.7% 55.9%);
+
+	/**
+	 * Default text color across the UI.
+	 */
 	--ck-color-base-text: hsl(216 41% 12%);
+
+	/**
+	 * Color of secondary text and icons.
+	 */
 	--ck-color-base-text-light: hsl(215 19% 40%);
+
+	/**
+	 * Accent color of active elements, such as accent text and icons.
+	 */
 	--ck-color-base-active: hsl(227.7 62.7% 55.9%);
+
+	/**
+	 * Accent color of an active element that is also hovered or focused.
+	 */
 	--ck-color-base-active-focus: hsl(227 58% 49%);
+
+	/**
+	 * Background color of hovered and pressed controls.
+	 */
 	--ck-color-base-hover: hsl(225 20% 96%);
+
+	/**
+	 * Stronger hover background, for controls on tinted surfaces where the default one does not show.
+	 */
 	--ck-color-base-hover-strong: hsl(225 24% 93%);
+
+	/**
+	 * Background color of selected and toggled-on elements.
+	 */
 	--ck-color-base-selected: hsl(220 78.9% 96.3%);
+
+	/**
+	 * Background color of selected elements on hover.
+	 */
 	--ck-color-base-selected-hover: hsl(221 81% 94%);
+
+	/**
+	 * Color of errors.
+	 */
 	--ck-color-base-error: hsl(0 74.9% 46.9%);
+
+	/**
+	 * Color of warnings.
+	 */
 	--ck-color-base-warning: hsl(37 81% 50%);
+
+	/**
+	 * Color of success states.
+	 */
 	--ck-color-base-success: hsl(157.2 77.1% 27.5%);
+
+	/**
+	 * Background color of highlighted text, such as search results.
+	 */
 	--ck-color-base-highlight: hsl(60 100% 50%);
+
+	/**
+	 * Color that draws attention to an element.
+	 */
 	--ck-color-base-attention: hsl(41.9 86.9% 55.1%);
 
+	/**
+	 * Color of the focus shadow around a focused control.
+	 */
 	--ck-color-base-focus-shadow: hsl(227.6 63.1% 56.5% / .22);
+
+	/**
+	 * Color of the focus shadow around a focused disabled control.
+	 */
 	--ck-color-base-focus-shadow-faded: hsl(227.6 63.1% 56.5% / .10);
+
+	/**
+	 * Color of the focus shadow around a control with an error.
+	 */
 	--ck-color-base-error-shadow: hsl(0 64.3% 94.5%);
 
+	/**
+	 * Color of drop shadows.
+	 */
 	--ck-color-shadow-drop: hsl(0 0% 0% / 0.125);
-	/* Not read by the theme itself. The legacy theme preset in the migration guide builds its large shadow from it, so
-	   keep it for themes that restore the old look. */
+
+	/**
+	 * Color of a stronger drop shadow.
+	 */
+	/* The default theme does not read it. The legacy theme preset in the migration guide builds its large shadow
+	   from it, so keep it for themes that restore the old look. */
 	--ck-color-shadow-drop-active: hsl(0 0% 0% / 0.2);
+
+	/**
+	 * Color of the hover ring around the switch button toggle.
+	 */
 	--ck-color-shadow-inner: hsl(0 0% 0% / 0.1);
 
-	/* Diff seeds — inline change markers derive their alpha variants from these (see `_semantic-diff.css`).
-	Stored as HSL triplets so the semantic layer can modulate opacity via `hsl(<triplet> / N%)`. */
+	/* Stored as HSL triplets so the semantic layer can set the alpha (see `_semantic-diff.css`). */
+
+	/**
+	 * Base color of inserted content in change markers.
+	 * An HSL triplet, not a color. Use it as `hsl(var(--ck-color-base-diff-insertion) / <alpha>)`.
+	 */
 	--ck-color-base-diff-insertion: 157 80% 34%;
+
+	/**
+	 * Base color of deleted content in change markers.
+	 * An HSL triplet, not a color. Use it as `hsl(var(--ck-color-base-diff-deletion) / <alpha>)`.
+	 */
 	--ck-color-base-diff-deletion: 0 75% 52%;
+
+	/**
+	 * Base color of formatting changes in change markers.
+	 * An HSL triplet, not a color. Use it as `hsl(var(--ck-color-base-diff-format) / <alpha>)`.
+	 */
 	--ck-color-base-diff-format: 191 60% 75%;
 
-	/* Comment marker accent (annotation family, not a diff). */
+	/**
+	 * Base color of comment markers.
+	 * An HSL triplet, not a color. Use it as `hsl(var(--ck-color-base-comment) / <alpha>)`.
+	 */
+	/* Part of the annotation family, not a diff. */
 	--ck-color-base-comment: 42.1 95.4% 57.3%;
 }

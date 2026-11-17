@@ -3,11 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-
+/**
+ * The radius scale of the editor UI. Set `--ck-radius-base` on `:root` to resize every step.
+ * To change the radius of one group of elements, such as controls, override its semantic radius role,
+ * such as `--ck-border-radius-control`, instead.
+ */
 :root,
 :host {
-	/* Anchor of the radius scale; every rung derives from it. `--ck-radius-unit` is an optional
-	   override hook, so overriding it also rescales the whole ladder. */
+	/* `--ck-radius-unit` is an alternative override hook that shipped in v49.0.0 together with `--ck-radius-base`,
+	   so it is not a legacy name. Backward compatibility: the theme reads the legacy `--ck-border-radius` first
+	   if overridden, and then `--ck-radius-base` has no effect. */
 	--ck-radius-base: var(--ck-radius-unit, 8px);       /* 8px */
 
 	--ck-radius-xs: calc(var(--ck-border-radius, var(--ck-radius-base)) / 8);    /* 1px  */
@@ -15,25 +20,22 @@
 	--ck-radius-md: calc(var(--ck-border-radius, var(--ck-radius-base)) / 2);    /* 4px  */
 	--ck-radius-lg: calc(var(--ck-border-radius, var(--ck-radius-base)) * 1.5);  /* 12px */
 	--ck-radius-xl: calc(var(--ck-border-radius, var(--ck-radius-base)) * 2);    /* 16px */
+
+	/**
+	 * Radius of circular elements. It makes a circle only on a square element.
+	 */
 	--ck-radius-full: 50%;
 
 	/**
-	* `.ck-rounded-corners` is an opt-in switch class used on the UI root.
-	* By default, `--ck-radius-corners` is `0` (square corners).
-	* When the switch class is present, it maps to `--ck-radius-base`.
-	*
-	* Component usage:
-	* - Use `border-radius: var(--ck-radius-corners);` on elements that
-	*   should respect the global rounded-corners setting.
-	* - If a component needs a custom radius, override `--ck-radius-base` locally
-	*   and keep using `--ck-radius-corners`.
-	* - For per-corner shapes, use the variable-based radius first and then override
-	*   specific corners with `0` (or another value).
-	*/
+	 * Corner radius of elements that follow the rounded corners switch. Such elements are square unless they are
+	 * inside an element with the `.ck-rounded-corners` class, which the editor UI adds to its root elements.
+	 * Use it only for elements that follow the switch. Other elements use the semantic radius roles.
+	 */
+	/* Backward compatibility: the theme reads the legacy `--ck-rounded-corners-radius` first if overridden. */
 	--ck-radius-corners: 0;
 }
 
 .ck-rounded-corners {
-	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-border-radius` first if overridden. */
 	--ck-radius-corners: var(--ck-border-radius, var(--ck-radius-base));
 }

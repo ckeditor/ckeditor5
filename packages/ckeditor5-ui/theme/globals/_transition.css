@@ -3,6 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The motion scale of the editor UI: durations, easing curves, and the values of the `transition` and `animation`
+ * properties. To change the motion of one group of elements, such as controls, override its semantic motion role,
+ * such as `--ck-transition-duration-control`, instead.
+ */
 :root,
 :host {
 	--ck-duration-fast: .1s;
@@ -13,25 +18,65 @@
 	--ck-animation-duration-fast: var(--ck-duration-fast);
 	--ck-animation-duration-base: var(--ck-duration-base);
 	--ck-animation-duration-slow: var(--ck-duration-slow);
+
+	/**
+	 * Duration of one cycle of a looping progress animation.
+	 */
 	--ck-animation-duration-emphasis: 1.5s;
+
+	/**
+	 * Animation duration for users who prefer reduced motion.
+	 */
+	/* It reaches only `--ck-animation-duration-progress-reduced`, which nothing reads. The spinner sets its
+	   reduced motion duration in `spinner.css` instead (`3s`). */
 	--ck-animation-duration-reduced: 0s;
 
+	/**
+	 * Value of the `transition` property that turns transitions off, for example when the user prefers reduced motion.
+	 */
 	--ck-transition-none: none;
 
+	/**
+	 * Default easing curve across the UI.
+	 */
 	--ck-ease-standard: ease;
+
+	/**
+	 * Easing curve of controls that react to the user, such as hover and focus changes.
+	 */
 	--ck-ease-interactive: ease-in-out;
+
+	/**
+	 * Easing curve of emphasized control transitions.
+	 */
 	--ck-ease-emphasized: cubic-bezier(0, 0, 0.24, 0.95);
+
 	--ck-animation-ease-standard: var(--ck-ease-standard);
 	--ck-animation-ease-interactive: var(--ck-ease-interactive);
+
+	/**
+	 * Easing curve of animations that run at a constant speed.
+	 */
 	--ck-animation-ease-linear: linear;
 
+	/**
+	 * Animation fill mode that keeps the styles of the first keyframe before the animation and of the last one after it.
+	 */
 	--ck-animation-fill-both: both;
+
+	/**
+	 * Iteration count of animations that loop until they are removed.
+	 */
 	--ck-animation-repeat-infinite: infinite;
+
+	/**
+	 * Value of the `animation` property that turns animations off, for example when the user prefers reduced motion.
+	 */
 	--ck-animation-none: var(--ck-transition-none);
 }
 
 /**
- * A class that disables all transitions of the element and its children.
+ * A class that disables all transitions of the element and its descendants.
  */
 .ck-transitions-disabled,
 .ck-transitions-disabled * {

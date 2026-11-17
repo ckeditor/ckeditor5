@@ -3,9 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The stacking scale of the editor UI: the base layer, floating panels, and modal dialogs. To change the stacking
+ * of one group of elements, such as panels, override its semantic layer role, such as `--ck-layer-panel`, instead.
+ */
 :root,
 :host {
 	--ck-z-base: 1;
-	--ck-z-overlay: calc( var(--ck-z-base) + 999 );
+	--ck-z-overlay: calc( var(--ck-z-base) + 999 ); /* 1000 */
 	--ck-z-modal: 9999;
 }
