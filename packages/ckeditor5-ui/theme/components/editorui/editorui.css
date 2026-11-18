@@ -21,6 +21,10 @@
 
 	/* Color */
 	--ck-editor-frame-border-color: var(--ck-color-border-container);
+	/* Border color of the main editing roots at rest in the inline, balloon, decoupled, and multi-root editors.
+	   Secondary editors (comment inputs, sub-editors) keep a transparent border. The classic editor draws the frame
+	   with `--ck-editor-frame-border-color` instead, which also borders its toolbar. */
+	--ck-editor-editable-border-color: transparent;
 	/* Background of the editing area (the main editing roots of every editor type). Read through the `background`
 	   shorthand, so a gradient or an image works too. Declared `initial`: the classic editor and the fullscreen page
 	   fall back to the canvas color, and the other editor types stay transparent. */
@@ -30,6 +34,11 @@
 
 	/* State / meta */
 	--ck-editor-editable-focus-border-color: var(--ck-interactive-focus-border-color);
+	/* Shadow of a focused editing area that is not a nested editable, and of the source editing textarea that replaces
+	   it. Declared `initial` and read with `--ck-inset-shadow-sm` as fallback. Backward compatibility: reads the legacy
+	   `--ck-inner-shadow` first if overridden. The comment input sets the legacy name to `none` in its scope, so it has
+	   no focus shadow. */
+	--ck-editor-editable-focus-shadow: initial;
 }
 
 /*
@@ -118,6 +127,11 @@
  */
 :where(.ck.ck-editor__editable_root:not(.ck-editor__nested-editable)) {
 	background: var(--ck-editor-editable-background);
+
+	/* An internal helper (not a token) that `.ck-editor__editable_inline` reads for its border color, so the border
+	   keeps its specificity and rules such as the revision history roots still override it. Secondary editors keep
+	   the transparent border. */
+	--_ck-editor-editable-border-color: var(--ck-editor-editable-border-color);
 }
 
 /*
@@ -135,14 +149,15 @@
 		outline: none;
 		border-color: var(--ck-editor-editable-focus-border-color);
 		/* Backward compatibility: reads the legacy `--ck-inner-shadow` first if overridden. */
-		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
+		box-shadow: var(--ck-inner-shadow, var(--ck-editor-editable-focus-shadow, var(--ck-inset-shadow-sm))), 0 0;
 	}
 }
 
 .ck.ck-editor__editable_inline {
 	overflow: auto;
 	padding: var(--ck-editor-editable-padding);
-	border: var(--ck-border-width-control) solid transparent;
+	/* The color comes from `--ck-editor-editable-border-color` on the main editing roots only (see above). */
+	border: var(--ck-border-width-control) solid var(--_ck-editor-editable-border-color, transparent);
 
 	&[dir="ltr"] {
 		text-align: left;

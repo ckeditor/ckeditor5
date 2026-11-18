@@ -126,6 +126,7 @@
 	& .ck-list-item-button {
 		&:focus,
 		&:active {
+			outline: none;
 			border-color: transparent;
 			box-shadow: none;
 		}
@@ -138,9 +139,12 @@
 			position: relative;
 			z-index: var(--ck-layer-control-raised);
 
-			outline: none;
+			/* The class marks keyboard use, so the outline follows it rather than `:focus-visible`, which misses
+			   shortcuts with modifier keys (for example opening the menu bar after a mouse click). */
+			outline: var(--ck-button-focus-outline, none);
+			outline-offset: var(--ck-button-focus-outline-offset, 0);
 			border-color: var(--ck-menu-bar-item-focus-border-color);
-			box-shadow: var(--ck-focus-outer-shadow, var(--ck-interactive-focus-shadow)), 0 0;
+			box-shadow: var(--ck-focus-outer-shadow, var(--ck-button-focus-shadow, var(--ck-interactive-focus-shadow))), 0 0;
 		}
 	}
 }

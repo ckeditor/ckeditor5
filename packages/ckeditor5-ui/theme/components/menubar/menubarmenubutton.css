@@ -44,6 +44,10 @@
 	 * Top-level menu buttons only.
 	 */
 	&.ck-menu-bar__menu_top-level > .ck-menu-bar__menu__button {
+		/* The top-level buttons are list item buttons, but they belong to the bar, not to a list, so they keep the button
+		   border instead of `--ck-list-item-button-border` (see `listitembutton.css`). */
+		--_ck-button-context-border: initial;
+
 		padding: var(--ck-spacing-control-padding-block) var(--ck-spacing-control-icon-gap);
 		min-height: unset;
 

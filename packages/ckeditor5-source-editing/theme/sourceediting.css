@@ -49,6 +49,8 @@
 	&:not([readonly]):focus {
 		outline: none;
 		border: var(--ck-interactive-focus-ring);
-		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
+		/* The textarea replaces the editing area, so it reads the focus shadow of the editing area.
+		   Backward compatibility: reads the legacy `--ck-inner-shadow` first if overridden. */
+		box-shadow: var(--ck-inner-shadow, var(--ck-editor-editable-focus-shadow, var(--ck-inset-shadow-sm))), 0 0;
 	}
 }

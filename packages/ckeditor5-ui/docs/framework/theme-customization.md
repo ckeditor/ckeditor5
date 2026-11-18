@@ -3,7 +3,7 @@ category: framework-deep-dive-ui
 meta-title: Theme customization | CKEditor 5 Framework Documentation
 meta-description: Learn how to customize CKEditor 5 themes, including styling components and applying custom CSS for a unique editor look.
 order: 10
-modified_at: 2026-10-27
+modified_at: 2026-11-18
 ---
 
 # Theme customization
@@ -103,6 +103,42 @@ A scoped override also reaches the toolbars in dropdown panels opened from that 
 Until you set them, toolbar buttons use `--ck-button-border` and `--ck-button-border-radius`. The outer corners of compact toolbars, for example in table properties, use `--ck-border-radius-control`.
 
 An open dropdown or split button in a toolbar also uses `--ck-toolbar-button-border-radius`, ahead of `--ck-dropdown-panel-uniform-button-border-radius`. If you set both, for example `--ck-dropdown-panel-uniform-button-border-radius: initial` to keep the attached-corner look, the toolbar button radius wins for open dropdowns in toolbars. The vertical toolbar keeps its own `--ck-toolbar-vertical-button-border-radius`.
+
+### Button states
+
+Buttons have their own tokens for the border and the focus look in each state. Until you set them, each state keeps the look of the default theme:
+
+* `--ck-button-on-border` is the border of a toggled-on button, as a shorthand like `--ck-button-border`. Until you set it, an on button keeps the resting border, also the toolbar button border.
+* `--ck-button-active-border-color` is the border color of a pressed button. It defaults to `--ck-button-focus-border-color`.
+* `--ck-button-focus-shadow` and `--ck-button-disabled-focus-shadow` are the shadows of a focused button, and of a disabled one. They default to `--ck-interactive-focus-shadow` and `--ck-interactive-focus-disabled-shadow`.
+* `--ck-button-focus-outline` and `--ck-button-focus-outline-offset` add an outline around a focused button. There is no outline by default.
+
+```css
+:root {
+	--ck-button-on-border: 1px solid hsl(0, 0%, 0%);
+	--ck-button-focus-shadow: none;
+	--ck-button-focus-outline: 2px solid hsl(0, 0%, 0%);
+	--ck-button-focus-outline-offset: 1px;
+}
+```
+
+The border and the shadow show whenever a button has focus. The outline shows only when the browser marks the focus as visible (`:focus-visible`), usually after keyboard use, so it does not appear after a mouse click. Some browsers, for example Chrome, do not count shortcuts with modifier keys as keyboard use. For example, after a click in the content, <kbd>Alt</kbd>+<kbd>F10</kbd> moves the focus to the toolbar without the outline, until you press another key. Menus that move the focus with the pointer, such as dropdown menus and the menu bar, hide the outline together with the rest of the focus look. The menu bar shows the outline while you use it with the keyboard.
+
+Lists and menus have their own border tokens:
+
+* `--ck-list-item-button-border` is the border of list items, as a shorthand: the items of dropdown lists (for example the heading dropdown), dropdown menus, and menu bar menus. The top-level items of the menu bar belong to the bar, so they keep the button border.
+* `--ck-list-button-on-focus-border-color` is the border color of a focused selected item in a list built from plain buttons instead of list item buttons. It defaults to the list background, so the focus shows as the shadow only.
+
+### Editing area border and focus shadow
+
+The editing area of the inline, balloon, decoupled, and multi-root editors has a transparent border at rest. Set `--ck-editor-editable-border-color` to show it. The classic editor draws a frame around the editing area and the toolbar with `--ck-editor-frame-border-color` instead. When the editing area has focus, it uses `--ck-editor-editable-focus-border-color` and `--ck-editor-editable-focus-shadow`. The source editing textarea uses the same focus shadow. The focus border color and shadow also apply to secondary editors, such as sub-editors in balloons, while the border at rest applies to the main editing roots only:
+
+```css
+:root {
+	--ck-editor-editable-border-color: hsl(0, 0%, 80%);
+	--ck-editor-editable-focus-shadow: none;
+}
+```
 
 ### Brand color: fill and accent text
 
