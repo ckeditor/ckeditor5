@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { EditingView } from '../../../src/view/view.js';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler.js';
 
 import { createViewRoot } from '../_utils/createroot.js';
-import { keyCodes, createElement } from '@ckeditor/ckeditor5-utils';
+import { keyCodes, createElement, env } from '@ckeditor/ckeditor5-utils';
 
 import { _parseView, _setViewData } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -99,6 +99,9 @@ describe( 'View', () => {
 		} );
 
 		it( 'should do nothing if caret is not directly before the filler', () => {
+			// Only on Android the filler is kept in the DOM after typing next to it.
+			vi.spyOn( env, 'isAndroid', 'get' ).mockReturnValue( true );
+
 			view.change( () => {
 				_setViewData( view, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 			} );
