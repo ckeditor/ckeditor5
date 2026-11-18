@@ -629,6 +629,18 @@ describe( 'view', () => {
 			expect( global.window.scrollTo ).toHaveBeenCalledWith( 100, -130 );
 		} );
 
+		it( 'should use the ancestor scroll padding injected through the #scrollToTheSelection event', () => {
+			view.on( 'scrollToTheSelection', ( evt, data ) => {
+				data.getAncestorScrollPadding = ancestor => ancestor === domRootAncestor ? { top: 30 } : null;
+			} );
+
+			// The selection is visible in the ancestor, but covered by its top scroll padding.
+			stubSelectionRangeGeometry( { top: 10, right: 50, bottom: 20, left: 25, width: 25, height: 10 } );
+			view.scrollToTheSelection();
+
+			assertScrollPosition( domRootAncestor, { scrollTop: 60, scrollLeft: 100 } );
+		} );
+
 		it( 'should pass the original method arguments along the #scrollToTheSelection event', () => {
 			const spy = vi.fn();
 

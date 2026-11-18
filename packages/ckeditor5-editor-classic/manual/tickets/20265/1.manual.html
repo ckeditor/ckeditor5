@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.ts"></script>
+		<style>
+			.scrollable {
+				overflow-y: auto;
+				border: 2px dashed #888;
+				padding: 10px;
+				margin: 20px 0 40px;
+			}
+
+			.scrollable.tall {
+				height: 400px;
+			}
+
+			.scrollable.outer {
+				height: 450px;
+			}
+
+			.scrollable.inner {
+				height: 1200px;
+			}
+
+			.scrollable.small {
+				height: 110px;
+			}
+
+			#editor-scrollable-editable + .ck-editor .ck-editor__editable {
+				max-height: 250px;
+				overflow-y: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				The sticky toolbar covers the selection in a scrollable container
+				<a href="https://github.com/ckeditor/ckeditor5/issues/20265">#20265</a>
+			</h3>
+			<p>For each editor below:</p>
+			<ol>
+				<li>Place the caret at the start of the first paragraph.</li>
+				<li>Scroll the dashed container (not the page) down until the caret is out of view above the toolbar.</li>
+				<li>Type a character.</li>
+				<li>Scroll the container so that the caret is just under the sticky toolbar and type a character again.</li>
+			</ol>
+			<p><strong>Expected:</strong></p>
+			<ul>
+				<li>The container scrolls so that the caret is visible below the sticky toolbar, not behind it.</li>
+				<li>In the nested containers, the caret ends up below the toolbar whichever container the toolbar sticks to.</li>
+				<li>
+					In the editor with a scrollable editable, the editable is not scrolled further than needed:
+					the toolbar does not cover the editable itself, so the editable reserves no space for it.
+				</li>
+				<li>
+					In the small container, there is no room for both the toolbar and the caret. The content
+					does not jump up and down on every key press.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<h4>1. A scrollable container (the reported case)</h4>
+		<div class="scrollable tall">
+			<div id="editor-container"></div>
+		</div>
+
+		<h4>2. Nested scrollable containers</h4>
+		<div class="scrollable outer">
+			<p>Scroll the outer container first, then the inner one, and the other way around.</p>
+			<div class="scrollable inner">
+				<div id="editor-nested"></div>
+			</div>
+		</div>
+
+		<h4>3. A scrollable editable in a scrollable container</h4>
+		<div class="scrollable tall">
+			<div id="editor-scrollable-editable"></div>
+			<div style="height: 600px"></div>
+		</div>
+
+		<h4>4. A container too small for the toolbar and the caret</h4>
+		<div class="scrollable small">
+			<div id="editor-small"></div>
+		</div>
+	</body>
+</html>

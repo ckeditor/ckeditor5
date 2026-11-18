@@ -10,11 +10,12 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { ClassicEditor } from '../src/classiceditor.js';
 import { ClassicEditorUI } from '../src/classiceditorui.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 import { ClassicEditorUIView } from '../src/classiceditoruiview.js';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 import { _setModelData } from '@ckeditor/ckeditor5-engine';
 
-import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
+import { keyCodes, env, Rect } from '@ckeditor/ckeditor5-utils';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
 import { normalizeRootsConfig, Plugin } from '@ckeditor/ckeditor5-core';
@@ -939,6 +940,7 @@ describe( 'ClassicEditorUI', () => {
 						right: 140
 					},
 					ancestorOffset: 20,
+					getAncestorScrollPadding: expect.any( Function ),
 					alignToTop: undefined,
 					forceScroll: undefined
 				} );
@@ -1054,6 +1056,129 @@ describe( 'ClassicEditorUI', () => {
 
 			editorElement.remove();
 			await editor.destroy();
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/20265
+		describe( 'in a scrollable container', () => {
+			let container, editor, view, stickyPanel;
+
+			beforeEach( async () => {
+				container = document.createElement( 'div' );
+				container.style.height = '400px';
+				container.style.overflowY = 'auto';
+				document.body.appendChild( container );
+
+				const editorElement = document.createElement( 'div' );
+				container.appendChild( editorElement );
+
+				editor = await ClassicEditor.create( editorElement, {
+					plugins: [ Paragraph, Bold ],
+					toolbar: [ 'bold' ],
+					initialData: Array.from( { length: 40 }, ( item, index ) => `<p>Line ${ index + 1 }</p>` ).join( '' )
+				} );
+
+				view = editor.editing.view;
+				stickyPanel = editor.ui.view.stickyPanel;
+
+				// The panel sticks only while the editor is focused.
+				view.focus();
+
+				editor.model.change( writer => {
+					writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 0 );
+				} );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+				container.remove();
+			} );
+
+			function getCaretRect() {
+				return view.domConverter.viewRangeToDom( view.document.selection.getFirstRange() ).getBoundingClientRect();
+			}
+
+			function scrollContainerTo( scrollTop ) {
+				container.scrollTop = scrollTop;
+				stickyPanel.checkIfShouldBeSticky();
+			}
+
+			it( 'should reveal the caret below the panel sticky to the container when the caret is above the container', () => {
+				scrollContainerTo( 600 );
+
+				expect( stickyPanel.isSticky ).toBe( true );
+
+				view.scrollToTheSelection();
+				stickyPanel.checkIfShouldBeSticky();
+
+				expect( getCaretRect().top ).toBeGreaterThanOrEqual( stickyPanel.contentPanelElement.getBoundingClientRect().bottom );
+			} );
+
+			it( 'should reveal the caret below the panel sticky to the container when the caret is covered by the panel', () => {
+				scrollContainerTo( 600 );
+
+				const panelHeight = stickyPanel.contentPanelElement.getBoundingClientRect().height;
+
+				expect( panelHeight ).toBeGreaterThan( 20 );
+
+				// Put the caret just below the top edge of the container, under the sticky panel.
+				scrollContainerTo( container.scrollTop - ( container.getBoundingClientRect().top - getCaretRect().top ) - panelHeight / 2 );
+
+				expect( stickyPanel.isSticky ).toBe( true );
+				expect( getCaretRect().top ).toBeLessThan( stickyPanel.contentPanelElement.getBoundingClientRect().bottom );
+
+				view.scrollToTheSelection();
+				stickyPanel.checkIfShouldBeSticky();
+
+				expect( getCaretRect().top ).toBeGreaterThanOrEqual( stickyPanel.contentPanelElement.getBoundingClientRect().bottom );
+			} );
+
+			it( 'should not reserve the panel height in scrollable ancestors inside the editor', () => {
+				scrollContainerTo( 600 );
+
+				let getAncestorScrollPadding;
+
+				view.on( 'scrollToTheSelection', ( evt, data ) => {
+					getAncestorScrollPadding = data.getAncestorScrollPadding;
+				}, { priority: 'lowest' } );
+
+				view.scrollToTheSelection();
+
+				expect( getAncestorScrollPadding( view.getDomRoot() ) ).toBeNull();
+				expect( getAncestorScrollPadding( container ) ).toEqual( { top: new Rect( stickyPanel.element ).height } );
+			} );
+
+			it( 'should add the panel height to the ancestor scroll padding provided by other listeners', () => {
+				scrollContainerTo( 600 );
+
+				let getAncestorScrollPadding;
+
+				view.on( 'scrollToTheSelection', ( evt, data ) => {
+					data.getAncestorScrollPadding = () => ( { top: 5, left: 3 } );
+				}, { priority: 'highest' } );
+
+				view.on( 'scrollToTheSelection', ( evt, data ) => {
+					getAncestorScrollPadding = data.getAncestorScrollPadding;
+				}, { priority: 'lowest' } );
+
+				view.scrollToTheSelection();
+
+				expect( getAncestorScrollPadding( view.getDomRoot() ) ).toEqual( { top: 5, left: 3 } );
+				expect( getAncestorScrollPadding( container ) ).toEqual( { top: 5 + new Rect( stickyPanel.element ).height, left: 3 } );
+			} );
+
+			it( 'should not set the ancestor scroll padding when the panel is not sticky', () => {
+				expect( stickyPanel.isSticky ).toBe( false );
+
+				let data;
+
+				view.on( 'scrollToTheSelection', ( evt, eventData ) => {
+					data = eventData;
+				}, { priority: 'lowest' } );
+
+				view.scrollToTheSelection();
+
+				expect( data.getAncestorScrollPadding ).toBeUndefined();
+			} );
 		} );
 	} );
 } );

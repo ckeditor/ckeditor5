@@ -50,6 +50,10 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 
 	afterEach( () => {
 		secondAncestor.remove();
+
+		// Restore the native scroll position of the <body>, stubbed by stubGeometry(), so it does not leak to other test files.
+		delete document.body.scrollTop;
+		delete document.body.scrollLeft;
 	} );
 
 	describe( 'for an HTMLElement', () => {
@@ -521,6 +525,10 @@ describe( 'scrollAncestorsToShowTarget() with slotted content', () => {
 
 	afterEach( () => {
 		host.remove();
+
+		// Restore the native scroll position of the <body>, stubbed by stubGeometry(), so it does not leak to other test files.
+		delete document.body.scrollTop;
+		delete document.body.scrollLeft;
 	} );
 
 	it( 'scrolls the element of the shadow tree the target renders in', () => {
@@ -645,6 +653,10 @@ describe( 'scrollViewportToShowTarget()', () => {
 		describe( 'with alignToTop, offsets, and forceScroll', () => {
 			testWithAlignToTopOffsetsAndForceScroll();
 		} );
+
+		describe( 'with getAncestorScrollPadding', () => {
+			testWithAncestorScrollPadding();
+		} );
 	} );
 
 	describe( 'for a DOM Range', () => {
@@ -680,6 +692,10 @@ describe( 'scrollViewportToShowTarget()', () => {
 
 		describe( 'with alignToTop, offsets, and forceScroll', () => {
 			testWithAlignToTopOffsetsAndForceScroll();
+		} );
+
+		describe( 'with getAncestorScrollPadding', () => {
+			testWithAncestorScrollPadding();
 		} );
 	} );
 
@@ -1326,6 +1342,133 @@ describe( 'scrollViewportToShowTarget()', () => {
 			scrollViewportToShowTarget( { target, alignToTop: true, forceScroll: true, viewportOffset, ancestorOffset } );
 			assertScrollPosition( firstAncestor, { scrollTop: 90, scrollLeft: 1060 } );
 			expectCalledWithExactly( window.scrollTo, 200, 70 );
+		} );
+	}
+
+	function testWithAncestorScrollPadding() {
+		it( 'should not scroll the ancestor when the target is in its top edge area and no scroll padding is given', () => {
+			stubGeometry( target, { top: 10, right: 75, bottom: 20, left: 25, width: 50, height: 10 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset } );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
+		} );
+
+		it( 'should scroll the ancestor when the target is visible but covered by the top scroll padding', () => {
+			stubGeometry( target, { top: 10, right: 75, bottom: 20, left: 25, width: 50, height: 10 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { top: 30 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 70, scrollLeft: 100 } );
+		} );
+
+		it( 'should not scroll the ancestor when the target is visible below the top scroll padding', () => {
+			stubGeometry( target, { top: 40, right: 75, bottom: 60, left: 25, width: 50, height: 20 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { top: 30 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
+		} );
+
+		it( 'should scroll the ancestor when the target is covered by the bottom scroll padding', () => {
+			stubGeometry( target, { top: 80, right: 75, bottom: 90, left: 25, width: 50, height: 10 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { bottom: 30 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 130, scrollLeft: 100 } );
+		} );
+
+		it( 'should scroll the ancestor when the target is covered by the left scroll padding', () => {
+			stubGeometry( target, { top: 40, right: 20, bottom: 60, left: 10, width: 10, height: 20 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { left: 30 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 70 } );
+		} );
+
+		it( 'should scroll the ancestor when the target is covered by the right scroll padding', () => {
+			stubGeometry( target, { top: 40, right: 90, bottom: 60, left: 80, width: 10, height: 20 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { right: 30 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 130 } );
+		} );
+
+		it( 'should align the target to the top scroll padding with alignToTop and forceScroll', () => {
+			stubGeometry( target, { top: 50, right: 75, bottom: 60, left: 25, width: 50, height: 10 } );
+
+			scrollViewportToShowTarget( {
+				target,
+				ancestorOffset,
+				alignToTop: true,
+				forceScroll: true,
+				getAncestorScrollPadding: () => ( { top: 30 } )
+			} );
+			assertScrollPosition( firstAncestor, { scrollTop: 110, scrollLeft: 100 } );
+		} );
+
+		it( 'should use the vertical scroll padding when the rest of the ancestor fits the target with ancestorOffset', () => {
+			// 100px ancestor - 70px padding = 30px = 10px target + 2 * 10px ancestorOffset.
+			stubGeometry( target, { top: 10, right: 75, bottom: 20, left: 25, width: 50, height: 10 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { top: 70 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 30, scrollLeft: 100 } );
+		} );
+
+		it( 'should ignore the vertical scroll padding when the rest of the ancestor cannot fit the target with ancestorOffset', () => {
+			// 100px ancestor - 75px padding = 25px < 10px target + 2 * 10px ancestorOffset.
+			stubGeometry( target, { top: 10, right: 75, bottom: 20, left: 25, width: 50, height: 10 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { top: 75 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
+		} );
+
+		it( 'should ignore the scroll padding larger than the ancestor', () => {
+			stubGeometry( target, { top: 10, right: 75, bottom: 20, left: 25, width: 50, height: 10 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { top: 150, bottom: 150 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 100 } );
+		} );
+
+		it( 'should use the horizontal scroll padding even if the vertical one is ignored', () => {
+			stubGeometry( target, { top: 10, right: 20, bottom: 20, left: 10, width: 10, height: 10 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { top: 75, left: 30 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 100, scrollLeft: 70 } );
+		} );
+
+		it( 'should use the vertical scroll padding even if the horizontal one is ignored', () => {
+			// 100px ancestor - 75px padding = 25px < 10px target + 2 * 10px ancestorOffset.
+			stubGeometry( target, { top: 10, right: 20, bottom: 20, left: 10, width: 10, height: 10 } );
+
+			scrollViewportToShowTarget( { target, ancestorOffset, getAncestorScrollPadding: () => ( { top: 30, left: 75 } ) } );
+			assertScrollPosition( firstAncestor, { scrollTop: 70, scrollLeft: 100 } );
+		} );
+
+		it( 'should use the scroll padding returned for each ancestor', () => {
+			const secondAncestor = document.createElement( 'div' );
+
+			document.body.appendChild( secondAncestor );
+			secondAncestor.appendChild( firstAncestor );
+
+			// Moving the ancestor collapses a range that was set inside it.
+			if ( target instanceof Range ) {
+				target.setStart( firstAncestor, 0 );
+				target.setEnd( firstAncestor, 0 );
+			}
+
+			stubGeometry( secondAncestor, {
+				top: 0, right: 200, bottom: 200, left: 0, width: 200, height: 200
+			}, {
+				scrollLeft: 100, scrollTop: 100
+			} );
+			stubGeometry( target, { top: 10, right: 75, bottom: 20, left: 25, width: 50, height: 10 } );
+
+			scrollViewportToShowTarget( {
+				target,
+				ancestorOffset,
+				getAncestorScrollPadding: ancestor => ancestor === firstAncestor ? { top: 30 } : { top: 50 }
+			} );
+
+			// Because everything is a mock, scrolling the first ancestor does not move the target in the second one.
+			assertScrollPosition( firstAncestor, { scrollTop: 70, scrollLeft: 100 } );
+			assertScrollPosition( secondAncestor, { scrollTop: 50, scrollLeft: 100 } );
+
+			secondAncestor.remove();
 		} );
 	}
 } );

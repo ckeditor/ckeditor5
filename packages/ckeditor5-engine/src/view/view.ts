@@ -46,6 +46,7 @@ import {
 	type ObservableChangeEvent,
 	type IfTrue,
 	type ObservableMixinConstructor,
+	type AncestorScrollPaddingCallback,
 	_trustedAttributeValue
 } from '@ckeditor/ckeditor5-utils';
 import { injectUiElementHandling } from './uielement.js';
@@ -488,7 +489,7 @@ export class EditingView extends EditingViewBase {
 			};
 		}
 
-		const options = {
+		const options: ViewScrollToTheSelectionEventData & { alignToTop?: T; forceScroll?: U } = {
 			target: this.domConverter.viewRangeToDom( range ),
 			viewportOffset,
 			ancestorOffset,
@@ -854,7 +855,8 @@ export type ViewRenderEvent = {
  *
  * * The first argument is the {@link module:engine/view/view~ViewScrollToTheSelectionEventData object containing data} that gets
  *   passed down to the {@link module:utils/dom/scroll~scrollViewportToShowTarget} helper. If some event listener modifies it, it can
- *   adjust the behavior of the scrolling (e.g. include additional `viewportOffset`).
+ *   adjust the behavior of the scrolling (e.g. include additional `viewportOffset`, or set `getAncestorScrollPadding`
+ *   to keep the selection clear of UI that sticks to a scrollable ancestor instead of the viewport).
  * * The second argument corresponds to the original arguments passed to {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
  *   It allows listeners to re-execute the `scrollViewportToShowTarget()` method with its original arguments if there is such a need,
  *   for instance, if the integration requires re–scrolling after certain interaction.
@@ -874,10 +876,43 @@ export type ViewScrollToTheSelectionEvent = {
  * {@link module:engine/view/view~EditingView#scrollToTheSelection}.
  */
 export type ViewScrollToTheSelectionEventData = {
+
+	/**
+	 * The DOM range of the selection that gets revealed.
+	 */
 	target: DomRange;
+
+	/**
+	 * A distance (in pixels) between the selection and each edge of the viewport to be maintained while scrolling.
+	 * Listeners can increase it, for example, to keep the selection clear of UI that sticks to the viewport.
+	 */
 	viewportOffset: { top: number; bottom: number; left: number; right: number };
+
+	/**
+	 * A distance (in pixels) between the selection and the edges of its scrollable ancestors
+	 * to be maintained when these ancestors are scrolled.
+	 */
 	ancestorOffset: number;
+
+	/**
+	 * A callback that returns the space along the edges of an ancestor of the selection that is covered by other content,
+	 * for example by a sticky toolbar. Listeners can set it to make the selection revealed next to that content
+	 * instead of behind it. Unlike `ancestorOffset`, it also decides whether the selection is visible, so a selection
+	 * hidden under that content gets scrolled too. `ancestorOffset` is applied on top of it.
+	 * See {@link module:utils/dom/scroll~AncestorScrollPaddingCallback}.
+	 */
+	getAncestorScrollPadding?: AncestorScrollPaddingCallback;
+
+	/**
+	 * When set `true`, the selection is aligned to the top of the viewport and scrollable ancestors
+	 * if it is not already visible.
+	 */
 	alignToTop?: boolean;
+
+	/**
+	 * When set `true`, the selection is aligned to the top of the viewport and scrollable ancestors
+	 * whether it is already visible or not. It only works when `alignToTop` is `true`.
+	 */
 	forceScroll?: boolean;
 };
 

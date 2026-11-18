@@ -34,6 +34,12 @@ export type IfTrue<T> = T extends true ? true : never;
  * the `target` will be moved by if the viewport is scrolled. It enhances the user experience
  * by keeping the `target` some distance from the edge of the ancestors and thus making it easier to
  * read or edit by the user.
+ * @param options.getAncestorScrollPadding A callback that returns the space along the edges of a given ancestor
+ * that is covered by other content, for example by a sticky toolbar. Like the CSS `scroll-padding` property, that space
+ * is excluded from the visible area of the ancestor. Unlike `ancestorOffset`, it also decides whether the `target`
+ * is visible, so a `target` hidden under that content gets scrolled too. `ancestorOffset` is applied on top of it.
+ * The top and bottom of `viewportOffset` play the same role for the viewport.
+ * See {@link module:utils/dom/scroll~AncestorScrollPaddingCallback}.
  * @param options.alignToTop When set `true`, the helper will make sure the `target` is scrolled up
  * to the top boundary of the viewport and/or scrollable ancestors if scrolled up. When not set
  * (default), the `target` will be revealed by scrolling as little as possible. This option will
@@ -68,6 +74,7 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
 		target,
 		viewportOffset = 0,
 		ancestorOffset = 0,
+		getAncestorScrollPadding,
 		alignToTop,
 		forceScroll
 	}:
@@ -75,6 +82,7 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
 		readonly target: HTMLElement | Range;
 		readonly viewportOffset?: number | { top: number; bottom: number; left: number; right: number };
 		readonly ancestorOffset?: number;
+		readonly getAncestorScrollPadding?: AncestorScrollPaddingCallback;
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 	}
@@ -114,6 +122,7 @@ export function scrollViewportToShowTarget<T extends boolean, U extends IfTrue<T
 			},
 			alignToTop,
 			ancestorOffset,
+			getAncestorScrollPadding,
 			forceScroll
 		} );
 
@@ -206,6 +215,35 @@ export function scrollAncestorsToShowTarget(
 		forceScroll
 	} );
 }
+
+/**
+ * The scroll padding (in pixels) of an ancestor element: the space along its edges that is covered by other content.
+ * A side that is not set has no padding.
+ */
+export type AncestorScrollPadding = {
+	top?: number;
+	bottom?: number;
+	left?: number;
+	right?: number;
+};
+
+/**
+ * A callback that returns the scroll padding (in pixels) of an ancestor of the target: the space along its edges
+ * that is covered by other content, for example by a sticky toolbar pinned to the top of the ancestor. It works
+ * like the CSS `scroll-padding` property: the scrolling helpers treat that space as hidden, so the target is
+ * revealed next to it instead of behind it.
+ *
+ * The callback is called for every ancestor element walked through while scrolling, not only for the scrollable ones.
+ * The walk ends below the `<body>` element. If the target is in an iframe, it continues with the ancestors of the iframe
+ * element in the parent window. Returning `null` means that no space is covered.
+ *
+ * If the padding on an axis leaves too little space to show the target together with `ancestorOffset` on both sides,
+ * the padding on that axis is ignored, so the target is not scrolled back and forth on every call. This also applies
+ * to a target that is larger than what is left of the ancestor.
+ *
+ * @param ancestor The ancestor that is about to be checked or scrolled.
+ */
+export type AncestorScrollPaddingCallback = ( ancestor: HTMLElement ) => AncestorScrollPadding | null;
 
 /**
  * Makes a given rect visible within its parent window.
@@ -329,6 +367,8 @@ function scrollWindowToShowRect<T extends boolean, U extends IfTrue<T>>(
  * @param options.getRect A function which returns the Rect, which is to be revealed.
  * @param options.ancestorOffset An offset from the boundary of scrollable ancestors (if any)
  * the `Rect` instance will be moved by if the viewport is scrolled.
+ * @param options.getAncestorScrollPadding A callback that returns the space along the edges of a given ancestor
+ * that is covered by other content and is excluded from the visible area of the ancestor.
  * @param options.alignToTop When set `true`, the helper will make sure the `Rect` instance is scrolled up
  * to the top boundary of the scrollable ancestors if scrolled up. When not set (default), the `rect`
  * will be revealed by scrolling as little as possible. This option will not affect rects that must be
@@ -345,6 +385,7 @@ function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 		alignToTop,
 		forceScroll,
 		ancestorOffset = 0,
+		getAncestorScrollPadding,
 		limiterElement
 	}: {
 		readonly parent: HTMLElement;
@@ -352,6 +393,7 @@ function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 		readonly alignToTop?: T;
 		readonly forceScroll?: U;
 		readonly ancestorOffset?: number;
+		readonly getAncestorScrollPadding?: AncestorScrollPaddingCallback;
 		readonly limiterElement?: HTMLElement;
 	}
 ): void {
@@ -368,7 +410,12 @@ function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 
 	while ( currentParent && currentParent != limiter ) {
 		targetRect = getRect();
-		parentRect = new Rect( currentParent ).excludeScrollbarsAndBorders();
+		parentRect = excludeScrollPadding( {
+			ancestorRect: new Rect( currentParent ).excludeScrollbarsAndBorders(),
+			padding: getAncestorScrollPadding?.( currentParent ),
+			targetRect,
+			ancestorOffset
+		} );
 		targetFitsInTarget = parentRect.contains( targetRect );
 
 		if ( forceScrollToTop ) {
@@ -395,6 +442,51 @@ function scrollAncestorsToShowRect<T extends boolean, U extends IfTrue<T>>(
 
 		currentParent = getLayoutParentElement( currentParent ) as HTMLElement | null;
 	}
+}
+
+/**
+ * Shrinks the given `Rect` of an ancestor by its scroll padding.
+ *
+ * The padding on an axis is ignored if what is left of the ancestor cannot show the target together with
+ * `ancestorOffset` on both sides. Otherwise, each call would scroll the target past the other edge and back.
+ *
+ * @param options.ancestorRect The rect of the ancestor to shrink. It is modified and returned.
+ * @param options.padding The scroll padding of the ancestor.
+ * @param options.targetRect The rect of the target to be revealed in the ancestor.
+ * @param options.ancestorOffset An offset from the boundary of the ancestor to be maintained while scrolling.
+ */
+function excludeScrollPadding(
+	{
+		ancestorRect,
+		padding,
+		targetRect,
+		ancestorOffset
+	}: {
+		readonly ancestorRect: Rect;
+		readonly padding: AncestorScrollPadding | null | undefined;
+		readonly targetRect: Rect;
+		readonly ancestorOffset: number;
+	}
+): Rect {
+	if ( !padding ) {
+		return ancestorRect;
+	}
+
+	const { top = 0, bottom = 0, left = 0, right = 0 } = padding;
+
+	if ( ancestorRect.height - top - bottom >= targetRect.height + 2 * ancestorOffset ) {
+		ancestorRect.top += top;
+		ancestorRect.bottom -= bottom;
+		ancestorRect.height -= top + bottom;
+	}
+
+	if ( ancestorRect.width - left - right >= targetRect.width + 2 * ancestorOffset ) {
+		ancestorRect.left += left;
+		ancestorRect.right -= right;
+		ancestorRect.width -= left + right;
+	}
+
+	return ancestorRect;
 }
 
 /**
