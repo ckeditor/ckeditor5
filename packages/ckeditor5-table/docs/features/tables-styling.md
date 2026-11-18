@@ -347,7 +347,7 @@ The {@link module:table/tableproperties~TableProperties} and {@link module:table
 </table>
 
 <info-box important>
-	When the {@link features/tables-resize table column resize} feature is enabled and the table has been resized, the cell **Width** field sets the width of the whole column through the `'tableColumnWidth'` command, rather than the width of a single cell.
+	When the {@link features/tables-resize table column and row resize} features are enabled, the cell **Width** and **Height** fields apply to the whole column and row, rather than to a single cell. The **Width** field sets the column width through the `'tableColumnWidth'` command once the table has been resized. The **Height** field sets the row height through the `'tableRowHeight'` command.
 </info-box>
 
 <info-box>

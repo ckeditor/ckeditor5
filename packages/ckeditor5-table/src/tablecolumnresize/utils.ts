@@ -11,8 +11,8 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ModelElement, Model, ViewElement, ViewNode, ModelWriter } from '@ckeditor/ckeditor5-engine';
 import { global } from '@ckeditor/ckeditor5-utils';
 import { type TableUtils } from '../tableutils.js';
+import { toPrecision } from '../utils/resize.js';
 import {
-	COLUMN_WIDTH_PRECISION,
 	COLUMN_MIN_WIDTH_AS_PERCENTAGE,
 	COLUMN_MIN_WIDTH_IN_PIXELS
 } from './constants.js';
@@ -207,22 +207,8 @@ export function getColumnEdgesIndexes( cell: ModelElement, tableUtils: TableUtil
 }
 
 /**
- * Rounds the provided value to a fixed-point number with defined number of digits after the decimal point.
- *
- * @internal
- * @param value A number to be rounded.
- * @returns The rounded number.
- */
-export function toPrecision( value: number | string ): number {
-	const multiplier = Math.pow( 10, COLUMN_WIDTH_PRECISION );
-	const number = typeof value === 'number' ? value : parseFloat( value );
-
-	return Math.round( number * multiplier ) / multiplier;
-}
-
-/**
  * Clamps the number within the inclusive lower (min) and upper (max) bounds. Returned number is rounded using the
- * {@link ~toPrecision `toPrecision()`} function.
+ * {@link module:table/utils/resize~toPrecision `toPrecision()`} function.
  *
  * @internal
  * @param number A number to be clamped.

@@ -18,12 +18,14 @@ export { TableCellPropertiesEditing } from './tablecellproperties/tablecellprope
 export { TableCellPropertiesUI } from './tablecellproperties/tablecellpropertiesui.js';
 export { TableCellPropertiesView, type TableCellPropertiesViewOptions } from './tablecellproperties/ui/tablecellpropertiesview.js';
 export { TableCellWidthEditing } from './tablecellwidth/tablecellwidthediting.js';
+export { TableCellHeightEditing } from './tablecellheight/tablecellheightediting.js';
 export { TableLayout } from './tablelayout.js';
 export { TableLayoutEditing } from './tablelayout/tablelayoutediting.js';
 export { TableLayoutUI } from './tablelayout/tablelayoutui.js';
 export { TableProperties } from './tableproperties.js';
 export { TablePropertiesEditing } from './tableproperties/tablepropertiesediting.js';
 export { TablePropertiesUI } from './tableproperties/tablepropertiesui.js';
+export { TableHeightEditing } from './tableheight/tableheightediting.js';
 export { TablePropertiesView, type TablePropertiesViewOptions } from './tableproperties/ui/tablepropertiesview.js';
 export { TableCaption } from './tablecaption.js';
 export { TableCaptionEditing } from './tablecaption/tablecaptionediting.js';
@@ -39,6 +41,10 @@ export { TableColumnResize } from './tablecolumnresize.js';
 export { TableColumnResizeEditing } from './tablecolumnresize/tablecolumnresizeediting.js';
 export { TableWidthsCommand, type TableWidthsCommandOptions } from './tablecolumnresize/tablewidthscommand.js';
 export { TableColumnWidthCommand } from './tablecolumnresize/commands/tablecolumnwidthcommand.js';
+export { TableRowResize } from './tablerowresize.js';
+export { TableRowResizeEditing } from './tablerowresize/tablerowresizeediting.js';
+export { TableRowHeightCommand } from './tablerowresize/commands/tablerowheightcommand.js';
+export { TableRowHeightsCommand, type TableRowHeightsCommandOptions } from './tablerowresize/commands/tablerowheightscommand.js';
 
 export { InsertColumnCommand } from './commands/insertcolumncommand.js';
 export { InsertRowCommand } from './commands/insertrowcommand.js';
@@ -133,10 +139,13 @@ export {
 } from './tablecaption/utils.js';
 export {
 	COLUMN_MIN_WIDTH_AS_PERCENTAGE as _TABLE_COLUMN_MIN_WIDTH_AS_PERCENTAGE,
-	COLUMN_MIN_WIDTH_IN_PIXELS as _TABLE_COLUMN_MIN_WIDTH_IN_PIXELS,
-	COLUMN_WIDTH_PRECISION as _TABLE_COLUMN_WIDTH_PRECISION,
-	COLUMN_RESIZE_DISTANCE_THRESHOLD as _TABLE_COLUMN_RESIZE_DISTANCE_THRESHOLD
+	COLUMN_MIN_WIDTH_IN_PIXELS as _TABLE_COLUMN_MIN_WIDTH_IN_PIXELS
 } from './tablecolumnresize/constants.js';
+export {
+	RESIZE_PRECISION as _TABLE_RESIZE_PRECISION,
+	RESIZE_DISTANCE_THRESHOLD as _TABLE_RESIZE_DISTANCE_THRESHOLD,
+	toPrecision as _toPrecision
+} from './utils/resize.js';
 export {
 	upcastColgroupElement as _upcastTableColgroupElement,
 	downcastTableResizedClass as _downcastTableResizedClass
@@ -147,7 +156,6 @@ export {
 	getTableWidthInPixels as _getTableWidthInPixels,
 	getElementWidthInPixels as _getElementWidthInPixels,
 	getColumnEdgesIndexes as _getTableColumnEdgesIndexes,
-	toPrecision as _toPrecision,
 	clamp as _clamp,
 	createFilledArray as _createFilledArray,
 	sumArray as _sumArray,
@@ -168,6 +176,7 @@ export {
 	createEmptyTableCell as _createEmptyTableCell,
 	isHeadingColumnCell as _isTableHeadingColumnCell,
 	enableProperty as _enableTableCellProperty,
+	enableTableToFigureProperty as _enableTableToFigureProperty,
 	getSelectionAffectedTable as _getSelectionAffectedTable
 } from './utils/common.js';
 export {

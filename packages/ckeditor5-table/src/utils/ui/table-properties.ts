@@ -27,6 +27,7 @@ import { type TableCellPropertiesView } from '../../tablecellproperties/ui/table
 import { type TablePropertiesView } from '../../tableproperties/ui/tablepropertiesview.js';
 
 import { ColorInputView } from '../../ui/colorinputview.js';
+import { isEmptyHeightValue, toRowHeightInPixels } from '../../tablerowresize/utils.js';
 
 const isEmpty = ( val: string ) => val === '';
 
@@ -115,6 +116,26 @@ export function lineWidthFieldValidator( value: string ): boolean {
 	value = value.trim();
 
 	return isEmpty( value ) || isNumberString( value ) || isLengthStyleValue( value );
+}
+
+/**
+ * Returns a localized error string that can be displayed next to the row height field when it has an invalid value.
+ *
+ * @internal
+ * @param t The "t" function provided by the editor that is used to localize strings.
+ */
+export function getLocalizedRowHeightErrorText( t: LocaleTranslate ): string {
+	return t( 'The value is invalid. Try "10px" or simply "10".' );
+}
+
+/**
+ * Returns `true` when the passed value is an empty string or a non-negative number without a unit or in pixels.
+ * Otherwise, `false` is returned.
+ *
+ * @internal
+ */
+export function rowHeightFieldValidator( value: string ): boolean {
+	return isEmptyHeightValue( value ) || !!toRowHeightInPixels( value );
 }
 
 /**

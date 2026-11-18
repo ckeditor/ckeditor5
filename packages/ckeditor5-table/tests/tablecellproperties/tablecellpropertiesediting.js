@@ -13,6 +13,8 @@ import { TableEditing } from '../../src/tableediting.js';
 import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
 import { TablePropertiesEditing } from '../../src/tableproperties/tablepropertiesediting.js';
 import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
+import { TableCellWidthEditing } from '../../src/tablecellwidth/tablecellwidthediting.js';
+import { TableCellHeightEditing } from '../../src/tablecellheight/tablecellheightediting.js';
 
 import { TableCellBorderColorCommand } from '../../src/tablecellproperties/commands/tablecellbordercolorcommand.js';
 import { TableCellBorderStyleCommand } from '../../src/tablecellproperties/commands/tablecellborderstylecommand.js';
@@ -45,6 +47,10 @@ describe( 'table cell properties', () => {
 
 		it( 'should have pluginName', () => {
 			expect( TableCellPropertiesEditing.pluginName ).toEqual( 'TableCellPropertiesEditing' );
+		} );
+
+		it( 'should require TableEditing, TableCellWidthEditing and TableCellHeightEditing', () => {
+			expect( TableCellPropertiesEditing.requires ).toEqual( [ TableEditing, TableCellWidthEditing, TableCellHeightEditing ] );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

@@ -13,6 +13,7 @@ import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard';
 import { TableEditing } from '../../src/tableediting.js';
 import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
 import { TablePropertiesEditing } from '../../src/tableproperties/tablepropertiesediting.js';
+import { TableHeightEditing } from '../../src/tableheight/tableheightediting.js';
 
 import { Table } from '../../src/table.js';
 import { TableProperties } from '../../src/tableproperties.js';
@@ -50,6 +51,10 @@ describe( 'table properties', () => {
 
 		it( 'should have pluginName', () => {
 			expect( TablePropertiesEditing.pluginName ).toEqual( 'TablePropertiesEditing' );
+		} );
+
+		it( 'should require TableEditing and TableHeightEditing', () => {
+			expect( TablePropertiesEditing.requires ).toEqual( [ TableEditing, TableHeightEditing ] );
 		} );
 
 		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

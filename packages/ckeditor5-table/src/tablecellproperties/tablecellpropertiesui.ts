@@ -25,9 +25,11 @@ import {
 	colorFieldValidator,
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
+	getLocalizedRowHeightErrorText,
 	defaultColors,
 	lengthFieldValidator,
-	lineWidthFieldValidator
+	lineWidthFieldValidator,
+	rowHeightFieldValidator
 } from '../utils/ui/table-properties.js';
 import { debounce } from 'es-toolkit/compat';
 import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from '../utils/ui/widget.js';
@@ -56,6 +58,8 @@ const propertyToCommandMap = {
 	verticalAlignment: 'tableCellVerticalAlignment',
 	cellType: 'tableCellType'
 } as const;
+
+type CellPropertyCommandName = typeof propertyToCommandMap[ keyof typeof propertyToCommandMap ];
 
 /**
  * The table cell properties UI plugin. It introduces the `'tableCellProperties'` button
@@ -263,6 +267,7 @@ export class TableCellPropertiesUI extends Plugin {
 
 		const colorErrorText = getLocalizedColorErrorText( t );
 		const lengthErrorText = getLocalizedLengthErrorText( t );
+		const rowHeightErrorText = getLocalizedRowHeightErrorText( t );
 
 		// Create the "UI -> editor data" binding.
 		// These listeners update the editor data (via table commands) when any observable
@@ -302,11 +307,14 @@ export class TableCellPropertiesUI extends Plugin {
 			validator: lengthFieldValidator
 		} ) );
 
+		// When the height field sets the row height, only a number or a value in pixels is accepted.
 		view.on<ObservableChangeEvent<string>>( 'change:height', this._getValidatedPropertyChangeCallback( {
 			viewField: view.heightInput,
 			commandName: 'tableCellHeight',
-			errorText: lengthErrorText,
-			validator: lengthFieldValidator
+			errorText: () => this._getHeightCommandName() === 'tableRowHeight' ? rowHeightErrorText : lengthErrorText,
+			validator: value => this._getHeightCommandName() === 'tableRowHeight' ?
+				rowHeightFieldValidator( value ) :
+				lengthFieldValidator( value )
 		} ) );
 
 		view.on<ObservableChangeEvent<string>>( 'change:backgroundColor', this._getValidatedPropertyChangeCallback( {
@@ -350,8 +358,7 @@ export class TableCellPropertiesUI extends Plugin {
 		Object
 			.entries( propertyToCommandMap )
 			.flatMap( ( [ property, commandName ] ) => {
-				const effectiveCommandName = property === 'width' ? this._getWidthCommandName() : commandName;
-				const command = commands.get( effectiveCommandName );
+				const command = commands.get( this._getEffectiveCommandName( commandName ) );
 
 				if ( !command ) {
 					return [];
@@ -508,12 +515,12 @@ export class TableCellPropertiesUI extends Plugin {
 			commandName: `tableCell${ 'BorderColor' | 'BorderWidth' | 'Padding' | 'Width' | 'Height' | 'BackgroundColor' }`;
 			viewField: View & { errorText?: string | null };
 			validator: ( arg0: string ) => boolean;
-			errorText: string;
+			errorText: string | ( () => string );
 		}
 	): GetCallback<ObservableChangeEvent<string>> {
 		const { commandName, viewField, validator, errorText } = options;
 		const setErrorTextDebounced = debounce( () => {
-			viewField.errorText = errorText;
+			viewField.errorText = typeof errorText === 'function' ? errorText() : errorText;
 		}, ERROR_TEXT_TIMEOUT );
 
 		return ( evt, propertyName, newValue ) => {
@@ -524,9 +531,7 @@ export class TableCellPropertiesUI extends Plugin {
 			}
 
 			if ( validator( newValue ) ) {
-				const executedCommandName = commandName === 'tableCellWidth' ? this._getWidthCommandName() : commandName;
-
-				this.editor.execute( executedCommandName, {
+				this.editor.execute( this._getEffectiveCommandName( commandName ), {
 					value: newValue,
 					batch: this._undoStepBatch
 				} );
@@ -548,5 +553,33 @@ export class TableCellPropertiesUI extends Plugin {
 		const columnWidthCommand = this.editor.commands.get( 'tableColumnWidth' );
 
 		return columnWidthCommand && columnWidthCommand.isEnabled ? 'tableColumnWidth' : 'tableCellWidth';
+	}
+
+	/**
+	 * Returns the command that drives the height field. When the table row resize feature is loaded, the height field
+	 * is bound to (and executes) the `'tableRowHeight'` command, so the height applies to the row (as dragging its edge
+	 * does) instead of a single cell. Otherwise it falls back to the `'tableCellHeight'` command.
+	 */
+	private _getHeightCommandName(): 'tableCellHeight' | 'tableRowHeight' {
+		const rowHeightCommand = this.editor.commands.get( 'tableRowHeight' );
+
+		return rowHeightCommand && rowHeightCommand.isEnabled ? 'tableRowHeight' : 'tableCellHeight';
+	}
+
+	/**
+	 * Returns the command that actually drives the field bound to the given cell property command.
+	 */
+	private _getEffectiveCommandName(
+		commandName: CellPropertyCommandName
+	): CellPropertyCommandName | 'tableColumnWidth' | 'tableRowHeight' {
+		if ( commandName === 'tableCellWidth' ) {
+			return this._getWidthCommandName();
+		}
+
+		if ( commandName === 'tableCellHeight' ) {
+			return this._getHeightCommandName();
+		}
+
+		return commandName;
 	}
 }

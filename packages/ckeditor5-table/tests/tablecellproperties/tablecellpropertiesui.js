@@ -17,6 +17,7 @@ import { WidgetResize } from '@ckeditor/ckeditor5-widget';
 
 import { Table } from '../../src/table.js';
 import { TableColumnResize } from '../../src/tablecolumnresize.js';
+import { TableRowResize } from '../../src/tablerowresize.js';
 import { TableLayout } from '../../src/tablelayout.js';
 import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellWidthEditing } from '../../src/tablecellwidth/tablecellwidthediting.js';
@@ -1126,6 +1127,193 @@ describe( 'table cell properties', () => {
 				ui.view.width = '120px';
 
 				expect( spy ).toHaveBeenCalledWith( 'tableColumnWidth', { value: '120px', batch } );
+			} );
+		} );
+
+		describe( 'height field routing to the row height command (row resize)', () => {
+			let localEditor, localElement, ui, balloon;
+
+			beforeEach( async () => {
+				vi.useFakeTimers();
+				localElement = document.createElement( 'div' );
+				document.body.appendChild( localElement );
+
+				localEditor = await ClassicTestEditor.create( localElement, {
+					plugins: [
+						Table, TableRowResize, TableCellPropertiesEditing,
+						TableCellPropertiesUI, TableCellWidthEditing, Paragraph, Undo, ClipboardPipeline
+					]
+				} );
+
+				ui = localEditor.plugins.get( TableCellPropertiesUI );
+				balloon = localEditor.plugins.get( ContextualBalloon );
+
+				vi.spyOn( balloon.view, 'attachTo' ).mockReturnValue( {} );
+				vi.spyOn( balloon.view, 'pin' ).mockReturnValue( {} );
+			} );
+
+			afterEach( async () => {
+				vi.useRealTimers();
+				await localEditor.destroy();
+				localElement.remove();
+			} );
+
+			function getModelRow( index ) {
+				return localEditor.model.document.getRoot().getNodeByPath( [ 0, index ] );
+			}
+
+			it( 'should fill the height field with the height of the row', () => {
+				_setModelData( localEditor.model,
+					'<table>' +
+						'<tableRow rowHeight="40px"><tableCell><paragraph>[]00</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+
+				ui._showView();
+
+				expect( ui.view.height ).toEqual( '40px' );
+			} );
+
+			it( 'should fill the height field with the height of the cell when the row has no height', () => {
+				_setModelData( localEditor.model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell tableCellHeight="100px"><paragraph>[]00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				ui._showView();
+
+				expect( ui.view.height ).toEqual( '100px' );
+			} );
+
+			it( 'should not fill the height field with the height of another cell', () => {
+				_setModelData( localEditor.model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell tableCellHeight="100px"><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>[]01</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				ui._showView();
+
+				expect( ui.view.height ).toEqual( '' );
+			} );
+
+			it( 'should execute the tableRowHeight command when the height changes', () => {
+				_setModelData( localEditor.model,
+					'<table><tableRow><tableCell><paragraph>[]00</paragraph></tableCell></tableRow></table>'
+				);
+
+				ui._showView();
+
+				const spy = vi.spyOn( localEditor, 'execute' ).mockImplementation( () => {} );
+
+				ui.view.height = '60px';
+
+				expect( spy ).toHaveBeenCalledWith( 'tableRowHeight', { value: '60px', batch: ui._undoStepBatch } );
+			} );
+
+			it( 'should set the row height and remove the cell heights of the row, and revert both on cancel', () => {
+				_setModelData( localEditor.model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell tableCellHeight="100px"><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>[]01</paragraph></tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				const dataBefore = _getModelData( localEditor.model );
+
+				ui._showView();
+				ui.view.height = '60px';
+
+				expect( getModelRow( 0 ).getAttribute( 'rowHeight' ) ).toBe( '60px' );
+				expect( getModelRow( 0 ).getChild( 0 ).hasAttribute( 'tableCellHeight' ) ).toBe( false );
+
+				ui.view.fire( 'cancel' );
+
+				expect( _getModelData( localEditor.model ) ).toBe( dataBefore );
+			} );
+
+			for ( const height of [ '21pt', '3em' ] ) {
+				it( `should display the row height error message for a height in a unit other than pixels (${ height })`, () => {
+					_setModelData( localEditor.model,
+						'<table><tableRow><tableCell><paragraph>[]00</paragraph></tableCell></tableRow></table>'
+					);
+
+					ui._showView();
+
+					const spy = vi.spyOn( localEditor, 'execute' ).mockImplementation( () => {} );
+
+					ui.view.height = height;
+					vi.advanceTimersByTime( 500 );
+
+					expect( ui.view.heightInput.errorText ).toBe( 'The value is invalid. Try "10px" or simply "10".' );
+					expect( spy ).not.toHaveBeenCalled();
+				} );
+			}
+
+			it( 'should display the length error message when the height field sets the cell height', () => {
+				_setModelData( localEditor.model,
+					'<table><tableRow><tableCell><paragraph>[]00</paragraph></tableCell></tableRow></table>'
+				);
+
+				localEditor.commands.get( 'tableRowHeight' ).forceDisabled( 'test' );
+				ui._showView();
+
+				ui.view.height = 'wrong';
+				vi.advanceTimersByTime( 500 );
+
+				expect( ui.view.heightInput.errorText ).toBe( 'The value is invalid. Try "10px" or "2em" or simply "2".' );
+			} );
+
+			it( 'should fall back to the tableCellHeight command when the tableRowHeight command is disabled', () => {
+				_setModelData( localEditor.model,
+					'<table><tableRow><tableCell><paragraph>[]00</paragraph></tableCell></tableRow></table>'
+				);
+
+				localEditor.commands.get( 'tableRowHeight' ).forceDisabled( 'test' );
+				ui._showView();
+
+				const spy = vi.spyOn( localEditor, 'execute' ).mockImplementation( () => {} );
+
+				ui.view.height = '60px';
+
+				expect( spy ).toHaveBeenCalledWith( 'tableCellHeight', { value: '60px', batch: ui._undoStepBatch } );
+			} );
+
+			it( 'should keep the width field bound to the cell width command', () => {
+				_setModelData( localEditor.model,
+					'<table><tableRow><tableCell><paragraph>[]00</paragraph></tableCell></tableRow></table>'
+				);
+
+				ui._showView();
+
+				const spy = vi.spyOn( localEditor, 'execute' ).mockImplementation( () => {} );
+
+				ui.view.width = '120px';
+
+				expect( spy ).toHaveBeenCalledWith( 'tableCellWidth', { value: '120px', batch: ui._undoStepBatch } );
+			} );
+		} );
+
+		describe( 'height field without the row resize feature', () => {
+			it( 'should execute the tableCellHeight command when the height changes', () => {
+				_setModelData( editor.model, '<table><tableRow><tableCell><paragraph>[]00</paragraph></tableCell></tableRow></table>' );
+
+				tableCellPropertiesUI._showView();
+
+				const spy = vi.spyOn( editor, 'execute' ).mockImplementation( () => {} );
+
+				tableCellPropertiesUI.view.height = '60px';
+
+				expect( spy ).toHaveBeenCalledWith( 'tableCellHeight', { value: '60px', batch: tableCellPropertiesUI._undoStepBatch } );
 			} );
 		} );
 	} );

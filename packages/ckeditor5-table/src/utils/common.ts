@@ -15,7 +15,8 @@ import type {
 	ModelPosition,
 	ModelSchema,
 	ModelWriter,
-	ModelDocumentSelection
+	ModelDocumentSelection,
+	ViewElement
 } from '@ckeditor/ckeditor5-engine';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute } from '../converters/tableproperties.js';
@@ -105,6 +106,43 @@ export function enableProperty(
 
 	upcastStyleToAttribute( conversion, { viewElement: /^(td|th)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
+}
+
+/**
+ * Enables conversion for an attribute for simple view (figure) to model (table) mappings.
+ *
+ * @internal
+ * @param options.defaultValue The default value for the specified `modelAttribute`.
+ */
+export function enableTableToFigureProperty(
+	schema: ModelSchema,
+	conversion: Conversion,
+	options: {
+		modelAttribute: string;
+		styleName: string;
+		attributeName?: string;
+		attributeType?: 'length' | 'color';
+		defaultValue: string;
+	}
+): void {
+	const { modelAttribute } = options;
+
+	schema.extend( 'table', {
+		allowAttributes: [ modelAttribute ]
+	} );
+
+	schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
+
+	upcastStyleToAttribute( conversion, {
+		viewElement: /^(table|figure)$/,
+		shouldUpcast: ( viewElement: ViewElement ) => !(
+			viewElement.name == 'table' && viewElement.parent!.name == 'figure' ||
+			viewElement.name == 'figure' && !viewElement.hasClass( 'table' )
+		),
+		...options
+	} );
+
+	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }
 
 /**

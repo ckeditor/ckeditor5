@@ -31,8 +31,8 @@ import {
 } from '../converters/tableproperties.js';
 import { TableEditing } from './../tableediting.js';
 import { TableCellWidthEditing } from '../tablecellwidth/tablecellwidthediting.js';
+import { TableCellHeightEditing } from '../tablecellheight/tablecellheightediting.js';
 import { TableCellPaddingCommand } from './commands/tablecellpaddingcommand.js';
-import { TableCellHeightCommand } from './commands/tablecellheightcommand.js';
 import { TableCellBackgroundColorCommand } from './commands/tablecellbackgroundcolorcommand.js';
 import { TableCellVerticalAlignmentCommand } from './commands/tablecellverticalalignmentcommand.js';
 import { TableCellHorizontalAlignmentCommand } from './commands/tablecellhorizontalalignmentcommand.js';
@@ -101,8 +101,8 @@ export class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependenciesOf<[ TableEditing, TableCellWidthEditing ]> {
-		return [ TableEditing, TableCellWidthEditing ];
+	public static get requires(): PluginDependenciesOf<[ TableEditing, TableCellWidthEditing, TableCellHeightEditing ]> {
+		return [ TableEditing, TableCellWidthEditing, TableCellHeightEditing ];
 	}
 
 	/**
@@ -134,15 +134,6 @@ export class TableCellPropertiesEditing extends Plugin {
 		editor.commands.add( 'tableCellBorderStyle', new TableCellBorderStyleCommand( editor, defaultTableCellProperties.borderStyle ) );
 		editor.commands.add( 'tableCellBorderColor', new TableCellBorderColorCommand( editor, defaultTableCellProperties.borderColor ) );
 		editor.commands.add( 'tableCellBorderWidth', new TableCellBorderWidthCommand( editor, defaultTableCellProperties.borderWidth ) );
-
-		enableProperty( schema, conversion, {
-			modelAttribute: 'tableCellHeight',
-			styleName: 'height',
-			attributeName: 'height',
-			attributeType: 'length',
-			defaultValue: defaultTableCellProperties.height
-		} );
-		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor, defaultTableCellProperties.height ) );
 
 		editor.data.addStyleProcessorRules( addPaddingStylesRules );
 		enableProperty( schema, conversion, {

@@ -21,7 +21,7 @@ The following features are available for the GPL-compliant projects, but their a
 * {@link features/remove-format Remove format}
 * {@link features/special-characters Special characters}
 * {@link features/layout-tables Layout tables}
-* {@link features/tables-resize Column resize}
+* {@link features/tables-resize Column and row resize}
 * {@link features/images-resizing Image Resize}
 * {@link features/simple-upload-adapter Simple Upload Adapter}
 * {@link features/base64-upload-adapter Base64 adapter}

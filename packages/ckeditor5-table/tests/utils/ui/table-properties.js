@@ -18,8 +18,10 @@ import {
 	getBorderStyleLabels,
 	getLocalizedColorErrorText,
 	getLocalizedLengthErrorText,
+	getLocalizedRowHeightErrorText,
 	lengthFieldValidator,
 	lineWidthFieldValidator,
+	rowHeightFieldValidator,
 	colorFieldValidator,
 	defaultColors,
 	fillToolbar,
@@ -81,6 +83,45 @@ describe( 'table utils', () => {
 				const t = string => string;
 
 				expect( getLocalizedLengthErrorText( t ) ).toMatch( /^The value is invalid/ );
+			} );
+		} );
+
+		describe( 'getLocalizedRowHeightErrorText()', () => {
+			it( 'should return the error text', () => {
+				const t = string => string;
+
+				expect( getLocalizedRowHeightErrorText( t ) ).toBe( 'The value is invalid. Try "10px" or simply "10".' );
+			} );
+		} );
+
+		describe( 'rowHeightFieldValidator()', () => {
+			it( 'should pass for an empty value and white spaces', () => {
+				expect( rowHeightFieldValidator( '' ) ).toBe( true );
+				expect( rowHeightFieldValidator( '  ' ) ).toBe( true );
+			} );
+
+			it( 'should pass for numbers without a unit', () => {
+				expect( rowHeightFieldValidator( '10' ) ).toBe( true );
+				expect( rowHeightFieldValidator( '12.5' ) ).toBe( true );
+				expect( rowHeightFieldValidator( '0' ) ).toBe( true );
+			} );
+
+			it( 'should pass for lengths in pixels', () => {
+				for ( const value of [ '10px', '12.5px', '.5px', ' 10px ' ] ) {
+					expect( rowHeightFieldValidator( value ), value ).toBe( true );
+				}
+			} );
+
+			it( 'should not pass for units other than pixels', () => {
+				for ( const value of [ '10pt', '1pc', '1in', '1cm', '10mm', '10em', '10rem', '50%', '10vh', '10vw', '10ch', '10ex' ] ) {
+					expect( rowHeightFieldValidator( value ), value ).toBe( false );
+				}
+			} );
+
+			it( 'should not pass for negative and invalid values', () => {
+				for ( const value of [ '-10', '-10px', 'foo', '10 px', '45.', 'auto' ] ) {
+					expect( rowHeightFieldValidator( value ), value ).toBe( false );
+				}
 			} );
 		} );
 
