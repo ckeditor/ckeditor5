@@ -9,8 +9,11 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 import { TableSelection } from '../../src/tableselection.js';
+import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableEditing } from '../../src/tableediting.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
@@ -135,7 +138,7 @@ describe( 'InsertColumnCommand', () => {
 				], { headingColumns: 3 } ) );
 			} );
 
-			it( 'should not update table heading columns attribute when inserting column after headings section', () => {
+			it( 'should update table heading columns attribute when inserting column to the right of the last heading column', () => {
 				_setModelData( model, modelTable( [
 					[ '11', '12[]', '13' ],
 					[ '21', '22', '23' ],
@@ -148,6 +151,22 @@ describe( 'InsertColumnCommand', () => {
 					[ '11', '12[]', '', '13' ],
 					[ '21', '22', '', '23' ],
 					[ '31', '32', '', '33' ]
+				], { headingColumns: 3 } ) );
+			} );
+
+			it( 'should not update table heading columns attribute when inserting column right of a body column', () => {
+				_setModelData( model, modelTable( [
+					[ '11', '12', '13[]' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				], { headingColumns: 2 } ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
+					[ '11', '12', '13[]', '' ],
+					[ '21', '22', '23', '' ],
+					[ '31', '32', '33', '' ]
 				], { headingColumns: 2 } ) );
 			} );
 
@@ -424,5 +443,86 @@ describe( 'InsertColumnCommand', () => {
 			);
 			expect( command.isEnabled ).toBe( false );
 		} );
+	} );
+} );
+
+describe( 'InsertColumnCommand - inheriting formatting', () => {
+	let editor, model;
+
+	const style = { tableCellBackgroundColor: 'red', tableCellPadding: '3px' };
+	const otherStyle = { tableCellBackgroundColor: 'green' };
+
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, TableSelection, TableCellPropertiesEditing, BoldEditing, UndoEditing ]
+		} );
+
+		model = editor.model;
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
+	it( 'should inherit the formatting of the selected column when inserting a column to the right', () => {
+		_setModelData( model, modelTable( [
+			[ { contents: '00', ...otherStyle }, { contents: '<paragraph><$text bold="true">0[]1</$text></paragraph>', ...style }, '02' ],
+			[ '10', { contents: '11', ...otherStyle }, '12' ]
+		] ) );
+
+		editor.execute( 'insertTableColumnRight' );
+
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+			[
+				{ contents: '00', ...otherStyle },
+				{ contents: '<paragraph><$text bold="true">01</$text></paragraph>', ...style },
+				{ contents: '<paragraph selection:bold="true"></paragraph>', ...style },
+				'02'
+			],
+			[ '10', { contents: '11', ...otherStyle }, { contents: '', ...otherStyle }, '12' ]
+		] ) );
+	} );
+
+	it( 'should inherit the formatting of the outermost selected column when multiple columns are selected', () => {
+		_setModelData( model, modelTable( [
+			[ { contents: '00', isSelected: true, ...style }, { contents: '01', isSelected: true, ...otherStyle } ]
+		] ) );
+
+		editor.execute( 'insertTableColumnRight' );
+		editor.execute( 'insertTableColumnLeft' );
+
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [ [
+			{ contents: '', ...style },
+			{ contents: '00', ...style },
+			{ contents: '01', ...otherStyle },
+			{ contents: '', ...otherStyle }
+		] ] ) );
+	} );
+
+	it( 'should inherit the formatting of the selected column when inserting a column to the left', () => {
+		_setModelData( model, modelTable( [
+			[ { contents: '00', ...otherStyle }, { contents: '0[]1', ...style } ],
+			[ '10', { contents: '11', ...otherStyle } ]
+		] ) );
+
+		editor.execute( 'insertTableColumnLeft' );
+
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+			[ { contents: '00', ...otherStyle }, { contents: '', ...style }, { contents: '01', ...style } ],
+			[ '10', { contents: '', ...otherStyle }, { contents: '11', ...otherStyle } ]
+		] ) );
+	} );
+
+	it( 'should undo the inserted column with the inherited formatting in a single step', () => {
+		const initialData = modelTable( [
+			[ { contents: '<paragraph><$text bold="true">0[]0</$text></paragraph>', ...style } ]
+		] );
+
+		_setModelData( model, initialData );
+
+		editor.execute( 'insertTableColumnRight' );
+		editor.execute( 'undo' );
+
+		expect( _getModelData( model ) ).toEqualMarkup( initialData );
 	} );
 } );

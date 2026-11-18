@@ -16,6 +16,7 @@ import { ImageBlockEditing, Image, ImageCaption } from '@ckeditor/ckeditor5-imag
 import { MediaEmbedEditing, MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
 
 import { getCode, global, env } from '@ckeditor/ckeditor5-utils';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine';
@@ -31,7 +32,7 @@ describe( 'TableKeyboard', () => {
 		global.document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Table, Paragraph, Image, ImageCaption, HorizontalLine, MediaEmbed ],
+			plugins: [ Table, Paragraph, Image, ImageCaption, HorizontalLine, MediaEmbed, BoldEditing ],
 			table: {
 				enableFooters: true
 			}
@@ -304,7 +305,24 @@ describe( 'TableKeyboard', () => {
 				] ) );
 			} );
 
-			it( 'should handle tab press when in table header and create a new row', () => {
+			it( 'should continue the text formatting of the last row in the row created by the tab press', () => {
+				_setModelData( model, modelTable( [
+					[ '11', '<paragraph><$text bold="true">12[]</$text></paragraph>' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				expect( selection.getFirstPosition().parent ).toBe( modelRoot.getNodeByPath( [ 0, 1, 0, 0 ] ) );
+				expect( selection.hasAttribute( 'bold' ) ).toBe( false );
+
+				model.change( writer => {
+					writer.setSelection( modelRoot.getNodeByPath( [ 0, 1, 1, 0 ] ), 0 );
+				} );
+
+				expect( selection.getAttribute( 'bold' ) ).toBe( true );
+			} );
+
+			it( 'should handle tab press when in a table made of heading rows only and create a new body row', () => {
 				_setModelData( model,
 					modelTable(
 						[

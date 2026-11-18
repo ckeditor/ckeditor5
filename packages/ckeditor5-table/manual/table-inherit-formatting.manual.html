@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Table inherit formatting</title>
+		<script type="module" src="./table-inherit-formatting.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>Inheriting formatting when inserting rows and columns</h3>
+			<ol>
+				<li>
+					Insert rows above and below, and columns left and right (also with <kbd>Tab</kbd> in the last cell).
+					New cells should take the cell styles (borders, background, padding, alignment) from the row
+					or column you acted on.
+				</li>
+				<li>
+					Type in a new empty cell. The text should continue the formatting (bold, italic, alignment)
+					found at the start of the corresponding cell of the row or column you acted on.
+				</li>
+				<li>
+					Insert a row below the last heading row: it should become a heading row. Insert a row above
+					the first footer row: it should become a footer row. Insert a column right of the last heading
+					column: it should become a heading column.
+				</li>
+				<li>Split a styled cell: the new cells should take its styles.</li>
+				<li>Undo should revert each insertion in a single step.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<p>Styled table:</p>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td style="background-color:hsl(0, 75%, 90%);border:2px solid hsl(0, 75%, 40%);padding:12px;text-align:center;vertical-align:bottom;">
+								<strong>Bold</strong> start
+							</td>
+							<td style="background-color:hsl(120, 75%, 90%);border:2px dashed hsl(120, 75%, 40%);">
+								<i>Italic</i> start
+							</td>
+							<td>
+								<p style="text-align:right;">Right aligned</p>
+							</td>
+						</tr>
+						<tr>
+							<td style="background-color:hsl(240, 75%, 90%);">Blue</td>
+							<td style="background-color:hsl(60, 75%, 90%);">Yellow</td>
+							<td>Plain</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<p>Merged cells:</p>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td rowspan="2" style="background-color:hsl(0, 75%, 90%);">Rowspan 2</td>
+							<td colspan="2" style="background-color:hsl(120, 75%, 90%);">Colspan 2</td>
+						</tr>
+						<tr>
+							<td style="background-color:hsl(240, 75%, 90%);">11</td>
+							<td>12</td>
+						</tr>
+						<tr>
+							<td>20</td>
+							<td>21</td>
+							<td style="background-color:hsl(60, 75%, 90%);">22</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<p>Heading rows, heading column, and a footer:</p>
+			<figure class="table">
+				<table>
+					<thead>
+						<tr>
+							<th style="background-color:hsl(0, 0%, 80%);"><strong>Header A</strong></th>
+							<th style="background-color:hsl(0, 0%, 80%);"><strong>Header B</strong></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th style="background-color:hsl(0, 0%, 90%);">Row head</th>
+							<td>Body</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td style="background-color:hsl(30, 75%, 90%);"><i>Footer</i></td>
+							<td style="background-color:hsl(30, 75%, 90%);"><i>Footer</i></td>
+						</tr>
+					</tfoot>
+				</table>
+			</figure>
+
+			<p>Nested table:</p>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr>
+							<td style="background-color:hsl(0, 75%, 90%);">
+								<figure class="table">
+									<table>
+										<tbody>
+											<tr>
+												<td style="background-color:hsl(120, 75%, 90%);">Nested</td>
+											</tr>
+										</tbody>
+									</table>
+								</figure>
+							</td>
+							<td>Outer</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<p>Table with per-cell inline styles (like a table pasted from an office application):</p>
+			<figure class="table">
+				<table style="border-collapse:collapse;">
+					<tbody>
+						<tr>
+							<td style="border:1pt solid windowtext;padding:0cm 5.4pt;background:#DEEAF6;vertical-align:top;">
+								<p><span style="font-size:11pt;"><strong>Name</strong></span></p>
+							</td>
+							<td style="border:1pt solid windowtext;padding:0cm 5.4pt;background:#DEEAF6;vertical-align:top;">
+								<p><span style="font-size:11pt;"><strong>Value</strong></span></p>
+							</td>
+						</tr>
+						<tr>
+							<td style="border:1pt solid windowtext;padding:0cm 5.4pt;vertical-align:top;">
+								<p>Foo</p>
+							</td>
+							<td style="border:1pt solid windowtext;padding:0cm 5.4pt;vertical-align:top;text-align:right;">
+								<p>1</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<p>Layout table:</p>
+			<table class="layout-table">
+				<tr>
+					<td style="background-color:hsl(0, 75%, 90%);padding:20px;">Layout A</td>
+					<td>Layout B</td>
+				</tr>
+			</table>
+		</div>
+	</body>
+</html>

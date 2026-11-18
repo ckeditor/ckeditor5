@@ -9,6 +9,10 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { BoldEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment';
+import { LinkEditing } from '@ckeditor/ckeditor5-link';
 
 import { TableSelection } from '../src/tableselection.js';
 import { TableEditing } from '../src/tableediting.js';
@@ -3451,5 +3455,935 @@ describe( 'TableUtils with TableCellProperties', () => {
 				} );
 			} );
 		} );
+	} );
+} );
+
+describe( 'TableUtils - inheriting formatting from the reference cells', () => {
+	let editor, model, root, tableUtils;
+
+	const style = {
+		tableCellBackgroundColor: 'red',
+		tableCellBorderColor: 'blue',
+		tableCellBorderStyle: 'solid',
+		tableCellBorderWidth: '2px',
+		tableCellHorizontalAlignment: 'center',
+		tableCellPadding: '3px',
+		tableCellVerticalAlignment: 'bottom'
+	};
+
+	const otherStyle = {
+		tableCellBackgroundColor: 'green',
+		tableCellPadding: '5px'
+	};
+
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [
+				Paragraph, TableEditing, TableUtils, TableCellPropertiesEditing, BoldEditing, ItalicEditing, AlignmentEditing, LinkEditing
+			],
+			table: {
+				enableFooters: true
+			}
+		} );
+
+		model = editor.model;
+		root = model.document.getRoot( 'main' );
+		tableUtils = editor.plugins.get( 'TableUtils' );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
+	describe( 'insertRows()', () => {
+		it( 'should not inherit formatting when the reference row is not provided', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', ...style }, '01' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', ...style }, '01' ],
+				[ '', '' ]
+			] ) );
+		} );
+
+		it( 'should inherit table cell properties from the reference row above the inserted rows', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', ...style }, { contents: '01', ...otherStyle } ],
+				[ '10', '11' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: true, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', ...style }, { contents: '01', ...otherStyle } ],
+				[ { contents: '', ...style }, { contents: '', ...otherStyle } ],
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should inherit table cell properties from the reference row below the inserted rows', () => {
+			_setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ { contents: '10', ...style }, { contents: '11', ...otherStyle } ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: false, referenceRow: 1 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ '00', '01' ],
+				[ { contents: '', ...style }, { contents: '', ...otherStyle } ],
+				[ { contents: '10', ...style }, { contents: '11', ...otherStyle } ]
+			] ) );
+		} );
+
+		it( 'should inherit table cell properties in every inserted row', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', ...style }, '01' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, rows: 2, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', ...style }, '01' ],
+				[ { contents: '', ...style }, '' ],
+				[ { contents: '', ...style }, '' ]
+			] ) );
+		} );
+
+		it( 'should inherit table cell properties when inserting at the beginning of the table without copying the structure', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', ...style }, '01' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 0, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '', ...style }, '' ],
+				[ { contents: '00', ...style }, '01' ]
+			] ) );
+		} );
+
+		it( 'should not inherit the cell type, width, height, and structural attributes', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellWidth: '100px', tableCellHeight: '50px', tableCellType: 'header', ...style }, '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: true, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', tableCellWidth: '100px', tableCellHeight: '50px', tableCellType: 'header', ...style }, '01' ],
+				[ { contents: '', ...style }, '' ],
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should not inherit attributes that are not formatting attributes', () => {
+			model.schema.extend( 'tableCell', { allowAttributes: [ 'data-id' ] } );
+
+			_setModelData( model, modelTable( [
+				[ { contents: '00', 'data-id': 'foo', ...style }, '01' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', 'data-id': 'foo', ...style }, '01' ],
+				[ { contents: '', ...style }, '' ]
+			] ) );
+		} );
+
+		it( 'should inherit formatting from a col-spanned reference cell in each inserted cell of the spanned columns', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', colspan: 2, ...style }, '02' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', colspan: 2, ...style }, '02' ],
+				[ { contents: '', ...style }, { contents: '', ...style }, '' ]
+			] ) );
+		} );
+
+		it( 'should keep the colspan of the copied structure next to the inherited formatting', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', colspan: 2, ...style }, '02' ],
+				[ '10', '11', '12' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: true, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', colspan: 2, ...style }, '02' ],
+				[ { contents: '', colspan: 2, ...style }, '' ],
+				[ '10', '11', '12' ]
+			] ) );
+		} );
+
+		it( 'should inherit formatting from a row-spanned cell anchored above that ends in the reference row', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', rowspan: 2, ...style }, '01' ],
+				[ { contents: '11', ...otherStyle } ],
+				[ '20', '21' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 2, copyStructureFromAbove: true, referenceRow: 1 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', rowspan: 2, ...style }, '01' ],
+				[ { contents: '11', ...otherStyle } ],
+				[ { contents: '', ...style }, { contents: '', ...otherStyle } ],
+				[ '20', '21' ]
+			] ) );
+		} );
+
+		it( 'should expand a row-spanned cell overlapping the inserted rows instead of creating an inheriting cell', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', rowspan: 2, ...style }, { contents: '01', ...otherStyle } ],
+				[ '11' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: true, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', rowspan: 3, ...style }, { contents: '01', ...otherStyle } ],
+				[ { contents: '', ...otherStyle } ],
+				[ '11' ]
+			] ) );
+		} );
+
+		it( 'should inherit the block formatting and the text formatting found at the start of the reference cell', () => {
+			_setModelData( model, modelTable( [
+				[
+					'<paragraph alignment="right"><$text bold="true" italic="true">foo</$text><$text bold="true">bar</$text></paragraph>',
+					'<paragraph>baz<$text bold="true">qux</$text></paragraph>'
+				]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 0 } );
+
+			const newRow = root.getNodeByPath( [ 0, 1 ] );
+
+			expect( Array.from( newRow.getChild( 0 ).getChild( 0 ).getAttributes() ) ).toEqual( [
+				[ 'alignment', 'right' ],
+				[ 'selection:bold', true ],
+				[ 'selection:italic', true ]
+			] );
+			expect( Array.from( newRow.getChild( 1 ).getChild( 0 ).getAttributes() ) ).toEqual( [] );
+		} );
+
+		it( 'should not inherit block formatting attributes that are not allowed on a paragraph', () => {
+			model.schema.register( 'customBlock', { inheritAllFrom: '$block', allowAttributes: [ 'customFormat' ] } );
+			model.schema.setAttributeProperties( 'customFormat', { isFormatting: true } );
+			editor.conversion.elementToElement( { model: 'customBlock', view: 'div' } );
+
+			_setModelData( model, modelTable( [
+				[ '<customBlock customFormat="foo">00</customBlock>' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 0 } );
+
+			expect( Array.from( root.getNodeByPath( [ 0, 1, 0, 0 ] ).getAttributes() ) ).toEqual( [] );
+		} );
+
+		it( 'should not inherit text attributes that do not continue on enter (for example, links)', () => {
+			_setModelData( model, modelTable( [
+				[ '<paragraph><$text bold="true" linkHref="https://example.com">foo</$text></paragraph>' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 0 } );
+
+			expect( Array.from( root.getNodeByPath( [ 0, 1, 0, 0 ] ).getAttributes() ) ).toEqual( [
+				[ 'selection:bold', true ]
+			] );
+		} );
+
+		it( 'should inherit the text formatting stored in an empty reference cell', () => {
+			_setModelData( model, modelTable( [
+				[ '<paragraph><$text italic="true">foo</$text></paragraph>' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.insertRows( table, { at: 1, referenceRow: 0 } );
+			tableUtils.insertRows( table, { at: 2, referenceRow: 1 } );
+
+			expect( Array.from( root.getNodeByPath( [ 0, 2, 0, 0 ] ).getAttributes() ) ).toEqual( [
+				[ 'selection:italic', true ]
+			] );
+		} );
+
+		it( 'should ignore the text formatting stored in a non-empty reference cell', () => {
+			_setModelData( model, modelTable( [
+				[ 'foo' ]
+			] ) );
+
+			model.change( writer => {
+				writer.setAttribute( 'selection:italic', true, root.getNodeByPath( [ 0, 0, 0, 0 ] ) );
+			} );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 0 } );
+
+			expect( Array.from( root.getNodeByPath( [ 0, 1, 0, 0 ] ).getAttributes() ) ).toEqual( [] );
+		} );
+
+		it( 'should not inherit the content formatting when the first block of the reference cell does not allow text', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: modelTable( [ [ '<paragraph><$text bold="true">foo</$text></paragraph>' ] ] ), ...style } ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: modelTable( [ [ '<paragraph><$text bold="true">foo</$text></paragraph>' ] ] ), ...style } ],
+				[ { contents: '', ...style } ]
+			] ) );
+		} );
+
+		it( 'should not affect the outer table when inserting a row in a nested table', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: modelTable( [ [ { contents: 'a', ...otherStyle } ] ] ), ...style } ]
+			] ) );
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0, 0, 0, 0 ] ), { at: 1, referenceRow: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: modelTable( [ [ { contents: 'a', ...otherStyle } ], [ { contents: '', ...otherStyle } ] ] ), ...style } ]
+			] ) );
+		} );
+
+		it( 'should let typing in the new cell continue the inherited text formatting', () => {
+			_setModelData( model, modelTable( [
+				[ '<paragraph><$text bold="true">foo</$text></paragraph>' ]
+			] ) );
+
+			tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 0 } );
+
+			model.change( writer => {
+				writer.setSelection( root.getNodeByPath( [ 0, 1, 0, 0 ] ), 0 );
+			} );
+
+			expect( model.document.selection.getAttribute( 'bold' ) ).toBe( true );
+
+			model.change( writer => {
+				model.insertContent( writer.createText( 'x', model.document.selection.getAttributes() ) );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ '<paragraph><$text bold="true">foo</$text></paragraph>' ],
+				[ '<paragraph><$text bold="true">x</$text></paragraph>' ]
+			] ) );
+		} );
+
+		it( 'should throw an error when the reference row does not exist', () => {
+			_setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+			expectToThrowCKEditorError( () => {
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 1 } );
+			}, 'tableutils-insertrows-reference-row-out-of-range' );
+
+			expectToThrowCKEditorError( () => {
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: -1 } );
+			}, 'tableutils-insertrows-reference-row-out-of-range' );
+		} );
+
+		describe( 'heading and footer sections', () => {
+			it( 'should add rows inserted below the last heading row to the heading section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style } ],
+					[ '10' ]
+				], { headingRows: 1 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: true, referenceRow: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style } ],
+					[ { contents: '', tableCellType: 'header-column', ...style } ],
+					[ '10' ]
+				], { headingRows: 2 } ) );
+			} );
+
+			it( 'should add all rows inserted below the last heading row to the heading section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style } ],
+					[ '10' ]
+				], { headingRows: 1 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, rows: 2, copyStructureFromAbove: true, referenceRow: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style } ],
+					[ { contents: '', tableCellType: 'header-column', ...style } ],
+					[ { contents: '', tableCellType: 'header-column', ...style } ],
+					[ '10' ]
+				], { headingRows: 3 } ) );
+			} );
+
+			it( 'should add rows inserted below a table made of heading rows only to the body section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style } ]
+				], { headingRows: 1 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: true, referenceRow: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style } ],
+					[ { contents: '', ...style } ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should add rows inserted above the first body row to the body section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style } ],
+					[ { contents: '10', ...otherStyle } ]
+				], { headingRows: 1 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: false, referenceRow: 1 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style } ],
+					[ { contents: '', ...otherStyle } ],
+					[ { contents: '10', ...otherStyle } ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should add rows inserted above the first footer row to the footer section', () => {
+				_setModelData( model, modelTable( [
+					[ '00' ],
+					[ { contents: '10', ...style } ]
+				], { footerRows: 1 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: false, referenceRow: 1 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ '00' ],
+					[ { contents: '', ...style } ],
+					[ { contents: '10', ...style } ]
+				], { footerRows: 2 } ) );
+			} );
+
+			it( 'should add rows inserted above a table made of footer rows only to the body section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', ...style } ]
+				], { footerRows: 1 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 0, copyStructureFromAbove: false, referenceRow: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '', ...style } ],
+					[ { contents: '00', ...style } ]
+				], { footerRows: 1 } ) );
+			} );
+
+			it( 'should add rows inserted below the last body row to the body section', () => {
+				_setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				], { footerRows: 1 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: true, referenceRow: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ '00' ],
+					[ '' ],
+					[ '10' ]
+				], { footerRows: 1 } ) );
+			} );
+
+			it( 'should add rows to the section of the reference row when there are no body rows', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ '10' ]
+				], { headingRows: 1, footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				tableUtils.insertRows( table, { at: 1, copyStructureFromAbove: true, referenceRow: 0 } );
+
+				expect( table.getAttribute( 'headingRows' ) ).toBe( 2 );
+				expect( table.getAttribute( 'footerRows' ) ).toBe( 1 );
+
+				tableUtils.insertRows( table, { at: 2, copyStructureFromAbove: false, referenceRow: 2 } );
+
+				expect( table.getAttribute( 'headingRows' ) ).toBe( 2 );
+				expect( table.getAttribute( 'footerRows' ) ).toBe( 2 );
+			} );
+
+			it( 'should not change sections at the boundary when the reference row is not provided', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ '10' ],
+					[ '20' ]
+				], { headingRows: 1, footerRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				tableUtils.insertRows( table, { at: 1 } );
+				tableUtils.insertRows( table, { at: 3 } );
+
+				expect( table.getAttribute( 'headingRows' ) ).toBe( 1 );
+				expect( table.getAttribute( 'footerRows' ) ).toBe( 1 );
+			} );
+
+			it( 'should set the header cell type in all rows inserted inside the heading section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ '20' ]
+				], { headingRows: 2 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, rows: 3 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '', tableCellType: 'header-column' } ],
+					[ { contents: '', tableCellType: 'header-column' } ],
+					[ { contents: '', tableCellType: 'header-column' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ '20' ]
+				], { headingRows: 5 } ) );
+			} );
+
+			it( 'should not expand the heading section over rows that are header cells only because of the heading columns', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20', tableCellType: 'header' } ]
+				], { headingRows: 1, headingColumns: 1, footerRows: 1 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 1, copyStructureFromAbove: true, referenceRow: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '', tableCellType: 'header-column' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20', tableCellType: 'header' } ]
+				], { headingRows: 2, headingColumns: 1, footerRows: 1 } ) );
+			} );
+
+			it( 'should not expand the heading section over rows that are header cells only because of the heading columns ' +
+				'when inserting inside the heading section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20', tableCellType: 'header' } ]
+				], { headingRows: 1, headingColumns: 1, footerRows: 1 } ) );
+
+				tableUtils.insertRows( root.getChild( 0 ), { at: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '', tableCellType: 'header-column' } ],
+					[ { contents: '00', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' } ],
+					[ { contents: '20', tableCellType: 'header' } ]
+				], { headingRows: 2, headingColumns: 1, footerRows: 1 } ) );
+			} );
+		} );
+	} );
+
+	describe( 'insertColumns()', () => {
+		it( 'should not inherit formatting when the reference column is not provided', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', ...style } ]
+			] ) );
+
+			tableUtils.insertColumns( root.getChild( 0 ), { at: 1 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', ...style }, '' ]
+			] ) );
+		} );
+
+		it( 'should inherit table cell properties from the reference column on the left of the inserted columns', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', ...style }, '01' ],
+				[ { contents: '10', ...otherStyle }, '11' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', ...style }, { contents: '', ...style }, '01' ],
+				[ { contents: '10', ...otherStyle }, { contents: '', ...otherStyle }, '11' ]
+			] ) );
+		} );
+
+		it( 'should inherit table cell properties from the reference column on the right of the inserted columns', () => {
+			_setModelData( model, modelTable( [
+				[ '00', { contents: '01', ...style } ],
+				[ '10', { contents: '11', ...otherStyle } ]
+			] ) );
+
+			tableUtils.insertColumns( root.getChild( 0 ), { at: 1, columns: 2, referenceColumn: 1 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ '00', { contents: '', ...style }, { contents: '', ...style }, { contents: '01', ...style } ],
+				[ '10', { contents: '', ...otherStyle }, { contents: '', ...otherStyle }, { contents: '11', ...otherStyle } ]
+			] ) );
+		} );
+
+		it( 'should inherit table cell properties when inserting at the beginning and at the end of the table', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', ...style }, { contents: '01', ...otherStyle } ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			tableUtils.insertColumns( table, { at: 0, referenceColumn: 0 } );
+			tableUtils.insertColumns( table, { at: 3, referenceColumn: 2 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[
+					{ contents: '', ...style },
+					{ contents: '00', ...style },
+					{ contents: '01', ...otherStyle },
+					{ contents: '', ...otherStyle }
+				]
+			] ) );
+		} );
+
+		it( 'should inherit formatting from the row-spanned cell covering each row of the reference column', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', rowspan: 2, ...style }, '01' ],
+				[ '11' ],
+				[ { contents: '20', ...otherStyle }, '21' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', rowspan: 2, ...style }, { contents: '', ...style }, '01' ],
+				[ { contents: '', ...style }, '11' ],
+				[ { contents: '20', ...otherStyle }, { contents: '', ...otherStyle }, '21' ]
+			] ) );
+		} );
+
+		it( 'should expand a col-spanned cell overlapping the inserted columns instead of creating an inheriting cell', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', colspan: 2, ...style } ],
+				[ { contents: '10', ...otherStyle }, '11' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 0 } );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', colspan: 3, ...style } ],
+				[ { contents: '10', ...otherStyle }, { contents: '', ...otherStyle }, '11' ]
+			] ) );
+		} );
+
+		it( 'should inherit the content formatting of the reference cell in the same row', () => {
+			_setModelData( model, modelTable( [
+				[ '<paragraph alignment="center"><$text italic="true">foo</$text></paragraph>', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 0 } );
+
+			expect( Array.from( root.getNodeByPath( [ 0, 0, 1, 0 ] ).getAttributes() ) ).toEqual( [
+				[ 'alignment', 'center' ],
+				[ 'selection:italic', true ]
+			] );
+			expect( Array.from( root.getNodeByPath( [ 0, 1, 1, 0 ] ).getAttributes() ) ).toEqual( [] );
+		} );
+
+		it( 'should throw an error when the reference column does not exist', () => {
+			_setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+			expectToThrowCKEditorError( () => {
+				tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 1 } );
+			}, 'tableutils-insertcolumns-reference-column-out-of-range' );
+		} );
+
+		describe( 'heading section', () => {
+			it( 'should add columns inserted to the right of the last heading column to the heading section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style }, '01' ]
+				], { headingColumns: 1 } ) );
+
+				tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header', ...style },
+						{ contents: '', tableCellType: 'header-row', ...style },
+						'01'
+					]
+				], { headingColumns: 2 } ) );
+			} );
+
+			it( 'should add columns inserted to the right of a table made of heading columns only to the body section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style } ]
+				], { headingColumns: 1 } ) );
+
+				tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style }, { contents: '', ...style } ]
+				], { headingColumns: 1 } ) );
+			} );
+
+			it( 'should add columns inserted left of the first body column to the body section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, '01' ]
+				], { headingColumns: 1 } ) );
+
+				tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 1 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, '', '01' ]
+				], { headingColumns: 1 } ) );
+			} );
+
+			it( 'should set the header cell type in all columns inserted inside the heading section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' }, '02' ]
+				], { headingColumns: 2 } ) );
+
+				tableUtils.insertColumns( root.getChild( 0 ), { at: 1, columns: 3 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [ [
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '', tableCellType: 'header-row' },
+					{ contents: '', tableCellType: 'header-row' },
+					{ contents: '', tableCellType: 'header-row' },
+					{ contents: '01', tableCellType: 'header' },
+					'02'
+				] ], { headingColumns: 5 } ) );
+			} );
+
+			it( 'should not expand the heading section over columns that are header cells only because of the heading rows', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
+				], { headingRows: 2, headingColumns: 1 } ) );
+
+				tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header' },
+						{ contents: '', tableCellType: 'header-column' },
+						{ contents: '01', tableCellType: 'header' }
+					],
+					[
+						{ contents: '10', tableCellType: 'header' },
+						{ contents: '', tableCellType: 'header-column' },
+						{ contents: '11', tableCellType: 'header' }
+					]
+				], { headingRows: 2, headingColumns: 2 } ) );
+			} );
+
+			it( 'should not expand the heading section over columns that are header cells only because of the heading rows ' +
+				'when inserting inside the heading section', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+					[ { contents: '10', tableCellType: 'header' }, { contents: '11', tableCellType: 'header' } ]
+				], { headingRows: 2, headingColumns: 1 } ) );
+
+				tableUtils.insertColumns( root.getChild( 0 ), { at: 0 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[
+						{ contents: '', tableCellType: 'header-column' },
+						{ contents: '00', tableCellType: 'header' },
+						{ contents: '01', tableCellType: 'header' }
+					],
+					[
+						{ contents: '', tableCellType: 'header-column' },
+						{ contents: '10', tableCellType: 'header' },
+						{ contents: '11', tableCellType: 'header' }
+					]
+				], { headingRows: 2, headingColumns: 2 } ) );
+			} );
+
+			it( 'should set the header cell type in heading rows crossed by the inserted column', () => {
+				_setModelData( model, modelTable( [
+					[ { contents: '00', tableCellType: 'header', ...style }, { contents: '01', tableCellType: 'header' } ],
+					[ '10', { contents: '11', ...otherStyle } ]
+				], { headingRows: 1 } ) );
+
+				tableUtils.insertColumns( root.getChild( 0 ), { at: 2, referenceColumn: 1 } );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+					[
+						{ contents: '00', tableCellType: 'header', ...style },
+						{ contents: '01', tableCellType: 'header' },
+						{ contents: '', tableCellType: 'header-column' }
+					],
+					[ '10', { contents: '11', ...otherStyle }, { contents: '', ...otherStyle } ]
+				], { headingRows: 1 } ) );
+			} );
+		} );
+	} );
+
+	describe( 'splitCellVertically()', () => {
+		it( 'should create cells inheriting the formatting of the split cell', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '<paragraph alignment="right"><$text bold="true">00</$text></paragraph>', ...style }, '01' ]
+			] ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 0, 0 ] ), 3 );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [ [
+				{ contents: '<paragraph alignment="right"><$text bold="true">00</$text></paragraph>', ...style },
+				{ contents: '<paragraph alignment="right" selection:bold="true"></paragraph>', ...style },
+				{ contents: '<paragraph alignment="right" selection:bold="true"></paragraph>', ...style },
+				'01'
+			] ] ) );
+		} );
+
+		it( 'should create cells inheriting the formatting of a col-spanned split cell', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', colspan: 2, ...style } ],
+				[ '10', '11' ]
+			] ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 0, 0 ] ), 2 );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', ...style }, { contents: '', ...style } ],
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should create header cells when splitting a header cell in the heading row', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 0, 0 ] ), 2 );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header' },
+					{ contents: '', tableCellType: 'header' },
+					{ contents: '01', tableCellType: 'header' }
+				],
+				[ { contents: '10', colspan: 2 }, '11' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should create cells with the scoped header cell type of the split header cell', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header-column' }, { contents: '01', tableCellType: 'header-column' } ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 0, 0 ] ), 2 );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[
+					{ contents: '00', tableCellType: 'header-column' },
+					{ contents: '', tableCellType: 'header-column' },
+					{ contents: '01', tableCellType: 'header-column' }
+				],
+				[ { contents: '10', colspan: 2 }, '11' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should extend the heading section when splitting a header cell in the heading column', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', tableCellType: 'header' }, '11' ]
+			], { headingColumns: 1 } ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 0, 0 ] ), 2 );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '', tableCellType: 'header' }, '01' ],
+				[ { contents: '10', colspan: 2, tableCellType: 'header' }, '11' ]
+			], { headingColumns: 2 } ) );
+		} );
+	} );
+
+	describe( 'splitCellHorizontally()', () => {
+		it( 'should create cells inheriting the formatting of the split cell', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', ...style }, '01' ]
+			] ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 2 );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', ...style }, { contents: '01', rowspan: 2 } ],
+				[ { contents: '', ...style } ]
+			] ) );
+		} );
+
+		it( 'should extend the heading section when splitting a header cell in the heading row', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 2 );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, { contents: '01', rowspan: 2, tableCellType: 'header' } ],
+				[ { contents: '', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should create cells inheriting the formatting of a row-spanned split cell', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', rowspan: 2, ...style }, '01' ],
+				[ '11' ]
+			] ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 2 );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[ { contents: '00', ...style }, '01' ],
+				[ { contents: '', ...style }, '11' ]
+			] ) );
+		} );
+	} );
+} );
+
+describe( 'TableUtils - inheriting formatting without the table cell properties feature', () => {
+	let editor, model, root, tableUtils;
+
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, TableUtils, BoldEditing ]
+		} );
+
+		model = editor.model;
+		root = model.document.getRoot( 'main' );
+		tableUtils = editor.plugins.get( 'TableUtils' );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
+	it( 'should inherit the text formatting of the reference cell', () => {
+		_setModelData( model, modelTable( [
+			[ '<paragraph><$text bold="true">foo</$text></paragraph>', '01' ]
+		] ) );
+
+		tableUtils.insertRows( root.getChild( 0 ), { at: 1, referenceRow: 0 } );
+		tableUtils.insertColumns( root.getChild( 0 ), { at: 1, referenceColumn: 0 } );
+
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+			[
+				'<paragraph><$text bold="true">foo</$text></paragraph>',
+				'<paragraph selection:bold="true"></paragraph>',
+				'01'
+			],
+			[
+				'<paragraph selection:bold="true"></paragraph>',
+				'<paragraph selection:bold="true"></paragraph>',
+				''
+			]
+		] ) );
 	} );
 } );

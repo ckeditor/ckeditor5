@@ -78,6 +78,6 @@ export class InsertColumnCommand extends Command {
 		const column = insertBefore ? columnIndexes.first : columnIndexes.last;
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' )!;
 
-		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1 } );
+		tableUtils.insertColumns( table, { columns: 1, at: insertBefore ? column : column + 1, referenceColumn: column } );
 	}
 }
