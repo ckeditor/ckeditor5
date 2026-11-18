@@ -3,49 +3,140 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/*
- * Semantic `diff` role layer: colors that communicate change (insertion / deletion / format) plus the
- * adjacent comment marker accent. This is the single source of truth consumed by suggestion markers,
- * the revision viewer, and the AI review feed. The inline change markers derive their opacity variants
- * from the diff seeds in `_foundation.css`; the box, widget, and format hues that diverge from the seed
- * are kept as literals here so the palette stays value-neutral.
+/**
+ * The change color roles of the editor: the colors that mark an insertion, a deletion, or a format change when
+ * changes are suggested or compared, and the accent of comment annotations. To change one kind of change across
+ * the editor, override its role. To change one component, override its component token instead. The markers are
+ * drawn over the edited content, which takes the text color of the page, so the text on them has no `@pair`.
  */
-
 :root,
 :host {
-	/* Inline change markers — insertion (green). */
+	/* The inline marker colors derive their alpha variants from the diff seeds in `_foundation.css`. The other
+	   colors differ from the seeds, so they are hardcoded. */
+
+	/**
+	 * Border of the marker of inserted content.
+	 */
 	--ck-color-diff-insertion-border: hsl(var(--ck-color-base-diff-insertion) / 50%);
+
+	/**
+	 * Border of the marker of inserted content while its change is active.
+	 */
 	--ck-color-diff-insertion-border-active: hsl(var(--ck-color-base-diff-insertion) / 60%);
+
+	/**
+	 * Background of the marker of inserted content.
+	 */
 	--ck-color-diff-insertion-background: hsl(var(--ck-color-base-diff-insertion) / 20%);
+
+	/**
+	 * Background of the marker of inserted content while its change is active.
+	 */
 	--ck-color-diff-insertion-background-active: hsl(var(--ck-color-base-diff-insertion) / 30%);
 
-	/* Inline change markers — deletion (red). */
+	/**
+	 * Border of the marker of deleted content.
+	 */
 	--ck-color-diff-deletion-border: hsl(var(--ck-color-base-diff-deletion) / 40%);
+
+	/**
+	 * Border of the marker of deleted content while its change is active.
+	 */
 	--ck-color-diff-deletion-border-active: hsl(var(--ck-color-base-diff-deletion) / 50%);
+
+	/**
+	 * Background of the marker of deleted content.
+	 * @pair --ck-color-diff-deletion-stroke
+	 */
 	--ck-color-diff-deletion-background: hsl(var(--ck-color-base-diff-deletion) / 20%);
+
+	/**
+	 * Background of the marker of deleted content while its change is active.
+	 * @pair --ck-color-diff-deletion-stroke
+	 */
 	--ck-color-diff-deletion-background-active: hsl(var(--ck-color-base-diff-deletion) / 30%);
+
+	/**
+	 * Color of the line through deleted text and of the mark of a deleted paragraph break.
+	 */
 	--ck-color-diff-deletion-stroke: hsl(0 75% 43% / 60%);
 
-	/* Inline change markers — format (cyan). */
+	/**
+	 * Border of the marker of content with a format change.
+	 */
 	--ck-color-diff-format-border: hsl(var(--ck-color-base-diff-format) / 100%);
+
+	/**
+	 * Border of the marker of content with a format change while its change is active.
+	 */
 	--ck-color-diff-format-border-active: hsl(191 60% 60%);
 
-	/* Annotation-box left-border accents (sidebar). */
+	/**
+	 * Accent border of the annotation of an insertion. The default theme draws this border with no width, so the
+	 * color shows only in a theme that gives it one.
+	 */
 	--ck-color-diff-insertion-box-border: hsl(145 33% 42.7%);
+
+	/**
+	 * Accent border of the annotation of a deletion. The default theme draws this border with no width, so the
+	 * color shows only in a theme that gives it one.
+	 */
 	--ck-color-diff-deletion-box-border: hsl(8.4 69% 46.9%);
 
-	/* Widget (image / table / media) diff backgrounds. */
+	/**
+	 * Background of an inserted widget, such as an image, a table, or a media embed.
+	 */
 	--ck-color-diff-insertion-widget-background: hsl(128 71% 65% / 5%);
+
+	/**
+	 * Background of an inserted widget while its change is active.
+	 */
 	--ck-color-diff-insertion-widget-background-active: hsl(128 71% 50% / 7%);
+
+	/**
+	 * Background of a deleted widget, such as an image, a table, or a media embed.
+	 */
 	--ck-color-diff-deletion-widget-background: hsl(345 71% 65% / 5%);
+
+	/**
+	 * Background of a deleted widget while its change is active.
+	 */
 	--ck-color-diff-deletion-widget-background-active: hsl(345 71% 45% / 7%);
+
+	/**
+	 * Background of a widget with a format change, such as an image, a table, or a media embed.
+	 */
 	--ck-color-diff-format-widget-background: hsl(191 90% 40% / 9%);
+
+	/**
+	 * Background of a widget with a format change while its change is active.
+	 */
 	--ck-color-diff-format-widget-background-active: hsl(191 90% 40% / 16%);
+
+	/**
+	 * Background of the header cells of an inserted table.
+	 */
 	--ck-color-diff-insertion-widget-th-background: hsl(128 71% 65% / 12%);
+
+	/**
+	 * Background of the header cells of an inserted table while its change is active.
+	 */
 	--ck-color-diff-insertion-widget-th-background-active: hsl(128 71% 50% / 14%);
+
+	/**
+	 * Background of the header cells of a deleted table.
+	 */
 	--ck-color-diff-deletion-widget-th-background: hsl(345 71% 65% / 14%);
+
+	/**
+	 * Background of the header cells of a deleted table while its change is active.
+	 */
 	--ck-color-diff-deletion-widget-th-background-active: hsl(345 71% 45% / 16%);
 
-	/* Comment marker box accent (annotation family, not a diff). */
+	/**
+	 * Accent border of the annotation of a comment. Comments are annotations, not changes, but they share
+	 * the annotation accents with the changes. The default theme draws this border with no width, so the
+	 * color shows only in a theme that gives it one.
+	 */
 	--ck-color-comment-box-border: hsl(var(--ck-color-base-comment) / 100%);
 }

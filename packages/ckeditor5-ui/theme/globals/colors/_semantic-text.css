@@ -3,19 +3,61 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The text color roles of the editor UI: the colors of text and icons. To change one kind of text across the UI,
+ * override its role. To change one component, override its component token instead. The backgrounds that a role
+ * is drawn on name it in their `@pair` tags.
+ */
 :root,
 :host {
+	/**
+	 * Main color of text and icons across the UI, such as labels, menu items, and the text in form fields.
+	 */
 	--ck-color-text-primary: var(--ck-color-base-text);
+
+	/**
+	 * Muted color of supporting text and icons, and the fill of the track of a switch button that is off.
+	 */
 	--ck-color-text-secondary: var(--ck-color-base-text-light);
+
+	/**
+	 * Color of text in disabled controls, such as a disabled text input or the source of a disabled HTML embed.
+	 * Disabled controls are exempt from the WCAG contrast requirements, so no background pairs it.
+	 */
 	--ck-color-text-disabled: var(--ck-color-text-secondary);
+
+	/**
+	 * Color of text and icons on reversed and filled backgrounds, such as tooltips, action buttons, a toggled-on
+	 * list item, and widget handles.
+	 */
 	--ck-color-text-inverse: var(--ck-color-base-background);
+
+	/**
+	 * Color of error messages and of the label of a field in the error state.
+	 */
 	--ck-color-text-error: var(--ck-color-feedback-error);
-	/* Accent-colored text and icons on the canvas, such as the outline button label or the active tab icon. Not a fill:
-	   filled action buttons use `--ck-color-interactive-primary-surface`. It must read well on the canvas, so a dark
-	   theme usually makes it lighter than the primary surface. */
+
+	/**
+	 * Accent color of text and icons, such as the label of an outline button or the icon of the active tab.
+	 * It is not a fill: filled action buttons use `--ck-color-interactive-primary-surface`. Keep it readable
+	 * on the canvas, so in a dark theme it is usually lighter than the primary surface.
+	 */
 	--ck-color-text-accent: var(--ck-color-base-active);
-	/* Intentionally hardcoded: no foundation equivalent yet. */
+
+	/**
+	 * Color of placeholder text in the editing area, such as the placeholder of an empty editor or of an empty
+	 * image caption.
+	 */
+	/* Hardcoded: the value of the legacy `--ck-color-engine-placeholder-text`, because no foundation color fits.
+	   Backward compatibility: the editing area reads the legacy name, which follows this token, so overrides
+	   of either change the placeholder. */
 	--ck-color-text-placeholder: hsl(0 0% 44%);
 
+	/**
+	 * An alias of `--ck-color-text-primary`.
+	 * @deprecated --ck-color-text-primary
+	 */
+	/* Backward compatibility: the theme reads this legacy name, for example in the base styles of `../_reset.css`,
+	   so it follows the role. */
 	--ck-color-text: var(--ck-color-text-primary);
 }

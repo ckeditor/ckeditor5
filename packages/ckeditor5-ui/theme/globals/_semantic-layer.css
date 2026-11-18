@@ -3,21 +3,66 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The stacking roles of the editor UI: the z-index of controls, panels, dialogs, and tooltips relative to each
+ * other. To change the stacking of one group of elements, such as dialogs, override its role, such as
+ * `--ck-layer-dialog`. To move the whole UI relative to the rest of the page, change the z-index scale
+ * (`--ck-z-base`, `--ck-z-overlay`, and `--ck-z-modal`) instead.
+ */
 :root,
 :host {
-	/* Backward compatibility: falls back to legacy --ck-z-default if overridden. */
+	/**
+	 * Base layer of controls, which keeps a focused item, such as a list item, above its neighbors, so that its
+	 * focus border and focus shadow are not covered.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-z-default`, which is always declared and follows `--ck-z-base`,
+	   so overrides of either change this layer. The fallback is never used. */
 	--ck-layer-base: var(--ck-z-default, var(--ck-z-base));
+
+	/**
+	 * Layer of a focused control that must stay above the controls next to it, such as a button in a toolbar
+	 * dropdown or a split button.
+	 */
 	--ck-layer-control-raised: calc(var(--ck-layer-base) + 1);
 
-	/* Backward compatibility: falls back to legacy --ck-z-panel if overridden. */
+	/**
+	 * Layer of floating panels, such as balloons, dropdown panels, and the sticky toolbar.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-z-panel`, which is always declared and follows `--ck-z-overlay`,
+	   so overrides of either change this layer. The fallback is never used. */
 	--ck-layer-panel: var(--ck-z-panel, var(--ck-z-overlay));
+
+	/**
+	 * Layer of a panel that must stand above other panels, such as the panel of a dropdown in a toolbar or
+	 * the panel of a dropdown menu.
+	 */
 	--ck-layer-panel-above: calc(var(--ck-layer-panel) + 1);
+
+	/**
+	 * Layer of the fake panels that show a stack of balloons under the visible one.
+	 */
 	--ck-layer-panel-below: calc(var(--ck-layer-panel) - 1);
 
-	/* Backward compatibility: falls back to legacy --ck-z-dialog if overridden. */
+	/**
+	 * Layer of dialogs. Elements that must stand above dialogs, such as the emoji picker, the mention list, and
+	 * CKBox in the fullscreen mode, use one layer above it.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-z-dialog`, which is always declared and follows `--ck-z-modal`,
+	   so overrides of either change this layer. The fallback is never used. */
 	--ck-layer-dialog: var(--ck-z-dialog, var(--ck-z-modal));
+
+	/**
+	 * Layer of tooltips, above every other part of the UI, including dialogs.
+	 */
 	--ck-layer-tooltip: calc(var(--ck-layer-dialog) + 100);
 
+	/**
+	 * Layer of the back part of a balloon arrow, its border.
+	 */
 	--ck-layer-balloon-arrow-back: calc(var(--ck-layer-base) - 3);
+
+	/**
+	 * Layer of the front part of a balloon arrow, its fill, drawn over the back part.
+	 */
 	--ck-layer-balloon-arrow-front: calc(var(--ck-layer-balloon-arrow-back) + 1);
 }

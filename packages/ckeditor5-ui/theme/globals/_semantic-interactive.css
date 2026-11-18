@@ -3,16 +3,43 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The focus roles of interactive controls: the ring, the border color, and the shadows that show which control
+ * has the focus. To change the focus look of controls across the UI, override these roles. To change one
+ * component, override its component token instead.
+ */
 :root,
 :host {
-	/* Generic focus visuals for interactive controls and actions. */
+	/**
+	 * Border or outline of a focused control, such as a switch button or the source editing textarea. Read through
+	 * the `border` or `outline` shorthand, so it also sets the width and the style.
+	 */
 	--ck-interactive-focus-ring: var(--ck-focus-ring);
-	/* Backward compatibility: falls back to legacy --ck-color-focus-border if overridden. */
+
+	/**
+	 * Border color of a focused control that keeps its own border width, such as a text input, a button, or
+	 * the editable. Use it instead of `--ck-interactive-focus-ring` when only the color changes on focus.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-color-focus-border`, which is always declared and follows
+	   `--ck-color-interactive-focus-border`, so overrides of either change the focus border. The fallback is never
+	   used. */
 	--ck-interactive-focus-border-color: var(--ck-color-focus-border, var(--ck-focus-border-color));
-	/* Backward compatibility: falls back to legacy --ck-focus-outer-shadow if overridden. */
+
+	/**
+	 * Shadow around a focused control, such as a text input, a button, or an item of a menu bar menu.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-focus-outer-shadow` first if overridden. */
 	--ck-interactive-focus-shadow: var(--ck-focus-outer-shadow, var(--ck-focus-shadow));
-	/* Backward compatibility: falls back to legacy --ck-focus-disabled-outer-shadow if overridden. */
+
+	/**
+	 * Shadow around a focused disabled control, such as a disabled text input or button.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-focus-disabled-outer-shadow` first if overridden. */
 	--ck-interactive-focus-disabled-shadow: var(--ck-focus-disabled-outer-shadow, var(--ck-focus-shadow-disabled));
-	/* Backward compatibility: falls back to legacy --ck-focus-error-outer-shadow if overridden. */
+
+	/**
+	 * Shadow around a focused field in the error state.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-focus-error-outer-shadow` first if overridden. */
 	--ck-interactive-focus-error-shadow: var(--ck-focus-error-outer-shadow, var(--ck-focus-shadow-error));
 }

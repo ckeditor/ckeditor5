@@ -3,41 +3,114 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The shape roles of the editor UI: the border widths, the border shorthands, and the corner radii of controls
+ * and surfaces. To change one kind of element across the UI, such as controls, override its role, such as
+ * `--ck-border-radius-control`. To change one component, override its component token instead.
+ */
 :root,
 :host {
+	/**
+	 * Border width of controls, such as buttons, text inputs, switch buttons, tabs, and the editable.
+	 */
 	--ck-border-width-control: var(--ck-border-width-thin);
+
+	/**
+	 * Border width of surfaces, such as balloons, dropdown panels, and the sticky toolbar.
+	 */
 	--ck-border-width-surface: var(--ck-border-width-thin);
+
+	/**
+	 * Width of separator lines, such as the separators of a toolbar or a list.
+	 */
 	--ck-border-width-divider: var(--ck-border-width-thin);
+
+	/**
+	 * Width of emphasized borders, such as the ring of a spinner.
+	 */
 	--ck-border-width-emphasis: var(--ck-border-width-thick);
 
-	/* Border shorthands (width + style + color). */
+	/**
+	 * Border of a bordered control, such as the button of a dropdown in a form. Read through the `border`
+	 * shorthand, so it sets the width, the style, and the color.
+	 */
 	--ck-border-control: var(--ck-border-width-control) solid var(--ck-color-border-control);
+
+	/**
+	 * Border of a bordered surface. Read through the `border` shorthand, so it sets the width, the style,
+	 * and the color.
+	 */
 	--ck-border-surface: var(--ck-border-width-surface) solid var(--ck-color-border-container);
+
+	/**
+	 * Separator line between the parts of a form or a panel, such as the line under a form header or above
+	 * the color picker of a color selector. The default theme draws no such lines, so set it to show them,
+	 * for example to `var(--ck-border-width-divider) solid var(--ck-color-divider)`.
+	 */
 	--ck-border-divider: 0;
 
-	/* Semantic radii for interactive controls (buttons, inputs, toggles). */
+	/**
+	 * Corner radius of controls, such as buttons, text inputs, and the buttons of list dropdowns.
+	 */
 	--ck-border-radius-control: var(--ck-radius-md);
-	/* Tighter radius for small-variant controls. */
+
+	/**
+	 * Smaller corner radius for small parts of controls, such as the indicator of the active tab.
+	 */
 	--ck-border-radius-control-small: var(--ck-radius-sm);
 
-	/* Semantic radii for elevated surfaces (dropdowns, panels, dialogs, toolbars). */
-	/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+	/**
+	 * Corner radius of surfaces, such as balloons, toolbars, dialogs, and dropdown panels.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-border-radius` first if overridden. */
 	--ck-border-radius-surface: var(--ck-border-radius, var(--ck-radius-base));
 
-	/* Uniform radius for attached surfaces (dropdown panels, dropdown menus, autocomplete results, color selector,
-	 * list dropdown items). Defaults to the surface radius, so those surfaces render fully rounded and follow
-	 * surface radius overrides. Set to `initial` to restore the attached-corner look — `initial` is
-	 * a guaranteed-invalid value, so consumers fall back to their per-corner radii. */
+	/**
+	 * Corner radius of every corner of the surfaces that open from a control, such as dropdown panels, dropdown
+	 * menus, autocomplete results, and the color selector, so that they are fully rounded. Set it to `initial`
+	 * to square the corners that touch the control, as in the legacy theme. `initial` makes the surfaces use
+	 * their per-corner radii, such as `--ck-border-radius-surface-cut-top-left`, instead.
+	 */
 	--ck-border-radius-uniform: var(--ck-border-radius-surface);
 
-	/* Radius for attached surfaces where one edge touches trigger/control. */
+	/**
+	 * Corner radius of the corners of an attached surface that do not touch its control.
+	 */
 	--ck-border-radius-surface-attached: var(--ck-border-radius-surface);
+
+	/**
+	 * Radii of a surface attached at its top edge, with the top corners square, such as the sticky toolbar.
+	 * Read through the `border-radius` shorthand.
+	 */
 	--ck-border-radius-surface-attached-top: 0 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+
+	/**
+	 * Radii of an element attached at its bottom edge, with the bottom corners square, such as a dropdown button
+	 * while its panel is open. Read through the `border-radius` shorthand.
+	 */
 	--ck-border-radius-surface-attached-bottom: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0 0;
 
-	/* Radius with one corner cut for positioned attached surfaces. */
+	/**
+	 * Radii of a panel with its top-left corner square, such as a dropdown panel that opens below its button
+	 * and to the right. Read through the `border-radius` shorthand.
+	 */
 	--ck-border-radius-surface-cut-top-left: 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+
+	/**
+	 * Radii of a panel with its top-right corner square, such as a dropdown panel that opens below its button
+	 * and to the left. Read through the `border-radius` shorthand.
+	 */
 	--ck-border-radius-surface-cut-top-right: var(--ck-border-radius-surface-attached) 0 var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached);
+
+	/**
+	 * Radii of a panel with its bottom-right corner square, such as a dropdown panel that opens above its button
+	 * and to the left. Read through the `border-radius` shorthand.
+	 */
 	--ck-border-radius-surface-cut-bottom-right: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0 var(--ck-border-radius-surface-attached);
+
+	/**
+	 * Radii of a panel with its bottom-left corner square, such as a dropdown panel that opens above its button
+	 * and to the right. Read through the `border-radius` shorthand.
+	 */
 	--ck-border-radius-surface-cut-bottom-left: var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) var(--ck-border-radius-surface-attached) 0;
 }

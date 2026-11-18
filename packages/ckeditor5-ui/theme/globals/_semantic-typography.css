@@ -3,24 +3,63 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The typography roles of the editor UI: the font weights of kinds of UI text, and the font sizes of controls
+ * and of toolbar labels. To change one kind of text across the UI, override its role, such as
+ * `--ck-font-weight-ui-heading`. To change one component, override its component token instead. These roles
+ * do not change the edited content.
+ */
 :root,
 :host {
+	/**
+	 * Font weight of regular UI text, set on the root of the UI.
+	 */
 	--ck-font-weight-ui-default: var(--ck-font-weight-normal);
+
+	/**
+	 * Font weight of strong UI text, such as the button of a collapsible section.
+	 */
 	--ck-font-weight-ui-strong: var(--ck-font-weight-semibold);
+
+	/**
+	 * Font weight of UI headings, such as the title of a form header and the headings of the accessibility help.
+	 */
 	--ck-font-weight-ui-heading: var(--ck-font-weight-semibold);
+
+	/**
+	 * Font weight of labels, such as the label of a field and the label of a group in a list.
+	 */
 	--ck-font-weight-ui-label: var(--ck-font-weight-semibold);
+
+	/**
+	 * Font weight of emphasized button labels, such as a button with the `ck-button-bold` class.
+	 */
 	--ck-font-weight-ui-emphasis: var(--ck-font-weight-semibold);
+
+	/**
+	 * Font weight of de-emphasized text, such as the floating label of a labeled field.
+	 */
 	--ck-font-weight-ui-muted: var(--ck-font-weight-normal);
+
+	/**
+	 * Keeps the font weight of the parent, for text that must not change its weight, such as the label
+	 * of a button and the label of the color grid in a color selector.
+	 */
 	--ck-font-weight-ui-inherit: inherit;
 
-	/* Shared font size for UI form controls (inputs, textareas, …). Defaults to `inherit`
-	so controls keep following the ambient font size (fluid UI scaling); set it to size
-	all controls from one place. */
+	/**
+	 * Font size of the text in form fields, such as text inputs. Buttons use their own `--ck-button-font-size`.
+	 */
 	--ck-font-size-control: var(--ck-font-size-md);
 
-	/* Font size for text inside the toolbar and menubar respectively. Applied at
-	text-bearing leaf elements so changes don't cascade into icon sizing. */
+	/**
+	 * Font size of the button labels in toolbars. It applies to the labels only, so it does not resize the icons.
+	 */
 	--ck-toolbar-text-font-size: inherit;
-	--ck-menubar-text-font-size: inherit;
 
+	/**
+	 * Font size of the button labels in the menu bar. It applies to the labels only, so it does not resize
+	 * the icons or the spacing.
+	 */
+	--ck-menubar-text-font-size: inherit;
 }

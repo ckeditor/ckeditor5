@@ -3,36 +3,153 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The interactive color roles of the editor UI: the colors of controls in their states, such as hovered,
+ * toggled on, and focused, and of action buttons. To change one state across the UI, override its role.
+ * To change one component, override its component token instead.
+ */
 :root,
 :host {
+	/**
+	 * The focus color as an HSL triplet (hue, saturation, and lightness, without `hsl()`), for effects that set
+	 * their own alpha, such as the pulse of the widget type-around buttons. It cannot be derived from
+	 * `--ck-color-interactive-focus-border`, so change both together.
+	 */
 	--ck-color-interactive-focus-border-coordinates: 227.7, 62.7%, 55.9%;
+
+	/**
+	 * Color of the focus indicator and of selected content in the editing area, such as the border of a focused
+	 * control, the outline of a selected widget, and selected table cells. It also fills the selection handle
+	 * of a widget.
+	 * @pair --ck-color-text-inverse
+	 */
 	--ck-color-interactive-focus-border: var(--ck-focus-border-color);
+
+	/**
+	 * Color of the shadow around a focused control, such as a text input or a button.
+	 */
 	--ck-color-interactive-focus-shadow: var(--ck-color-base-focus-shadow);
+
+	/**
+	 * Color of the focus shadow of a disabled control that can still take focus.
+	 */
 	--ck-color-interactive-focus-disabled-shadow: var(--ck-color-base-focus-shadow-faded);
+
+	/**
+	 * Color of the focus shadow of a field in the error state.
+	 */
 	--ck-color-interactive-focus-error-shadow: var(--ck-color-base-error-shadow);
 
+	/**
+	 * Background of hovered buttons, such as toolbar buttons and outline buttons.
+	 * @pair --ck-color-text-primary
+	 * @pair --ck-color-text-accent
+	 */
 	--ck-color-interactive-hover-surface: var(--ck-color-base-hover);
+
+	/**
+	 * Stronger hover background, for a control that is focused and hovered at once, such as a tab.
+	 * @pair --ck-color-text-primary
+	 * @pair --ck-color-text-accent
+	 */
 	--ck-color-interactive-hover-surface-strong: var(--ck-color-base-hover-strong);
+
+	/**
+	 * Background of a button while it is pressed.
+	 * @pair --ck-color-text-primary
+	 */
 	--ck-color-interactive-active-surface: var(--ck-color-base-hover);
+
+	/**
+	 * Background of toggled-on buttons, such as the bold button while the selection is bold, and of a pressed
+	 * outline button.
+	 * @pair --ck-color-interactive-selected-text
+	 * @pair --ck-color-text-accent
+	 */
 	--ck-color-interactive-selected-surface: var(--ck-color-base-selected);
+
+	/**
+	 * Background of a toggled-on button while it is hovered or pressed.
+	 * @pair --ck-color-interactive-selected-text
+	 * @pair --ck-color-text-accent
+	 */
 	--ck-color-interactive-selected-surface-hover: var(--ck-color-base-selected-hover);
-	/* The label of a selected or toggled-on control, drawn on `--ck-color-interactive-selected-surface`. Follows the accent
-	   text by default. */
+
+	/**
+	 * Color of the label and the icon of a toggled-on button. Override it to tell them apart from the accent text.
+	 */
 	--ck-color-interactive-selected-text: var(--ck-color-text-accent);
 
+	/**
+	 * The fill of primary controls.
+	 * Keep it saturated enough for the text on it to stay readable.
+	 * @pair --ck-color-interactive-primary-text
+	 * @pair --ck-color-text-inverse
+	 */
 	--ck-color-interactive-primary-surface: var(--ck-color-base-action);
+
+	/**
+	 * Fill of action buttons while they are hovered or pressed, and of a hovered switch button that is on.
+	 * @pair --ck-color-interactive-primary-text
+	 */
 	--ck-color-interactive-primary-surface-hover: var(--ck-color-base-action-hover);
+
+	/**
+	 * Light tint of the action color, for the active tab and for the hover background of some buttons, such as
+	 * the buttons of an HTML embed.
+	 * @pair --ck-color-text-primary
+	 * @pair --ck-color-text-accent
+	 */
 	--ck-color-interactive-primary-surface-muted: var(--ck-color-base-action-muted);
+
+	/**
+	 * Fill of disabled action buttons. Their label stays fully opaque, so this fill alone shows the disabled
+	 * state. Disabled controls are exempt from the WCAG contrast requirements, so it has no pair.
+	 */
 	--ck-color-interactive-primary-surface-disabled: var(--ck-color-base-action-disabled);
+
+	/**
+	 * Color of the label and the icon of action buttons.
+	 */
 	--ck-color-interactive-primary-text: var(--ck-color-text-inverse);
 
-	/* Intentionally hardcoded: no foundation equivalent yet. The background of a disabled form control. */
+	/**
+	 * Background of disabled form fields, such as text inputs. Disabled controls are exempt from the WCAG contrast
+	 * requirements, so it has no pair.
+	 */
+	/* Hardcoded, because no foundation color fits. */
 	--ck-color-interactive-disabled-surface: hsl(0 0% 95%);
 
-	/* Backward compatibility aliases. */
+	/* Backward compatibility: the theme reads these legacy names, for example in the focus shadows of
+	   `../_focus.css`, so they follow the roles above. */
+
+	/**
+	 * An alias of `--ck-color-interactive-focus-border-coordinates`.
+	 * @deprecated --ck-color-interactive-focus-border-coordinates
+	 */
 	--ck-color-focus-border-coordinates: var(--ck-color-interactive-focus-border-coordinates);
+
+	/**
+	 * An alias of `--ck-color-interactive-focus-border`.
+	 * @deprecated --ck-color-interactive-focus-border
+	 */
 	--ck-color-focus-border: var(--ck-color-interactive-focus-border);
+
+	/**
+	 * An alias of `--ck-color-interactive-focus-shadow`.
+	 * @deprecated --ck-color-interactive-focus-shadow
+	 */
 	--ck-color-focus-outer-shadow: var(--ck-color-interactive-focus-shadow);
+
+	/**
+	 * An alias of `--ck-color-interactive-focus-disabled-shadow`.
+	 * @deprecated --ck-color-interactive-focus-disabled-shadow
+	 */
 	--ck-color-focus-disabled-shadow: var(--ck-color-interactive-focus-disabled-shadow);
+
+	/**
+	 * An alias of `--ck-color-interactive-focus-error-shadow`.
+	 * @deprecated --ck-color-interactive-focus-error-shadow
+	 */
 	--ck-color-focus-error-shadow: var(--ck-color-interactive-focus-error-shadow);
 }

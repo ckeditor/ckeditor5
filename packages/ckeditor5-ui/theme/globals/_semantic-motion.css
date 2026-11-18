@@ -3,31 +3,99 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The motion roles of the editor UI: the durations and the easing of transitions and animations, by the kind
+ * of motion. To change one kind of motion across the UI, such as the transitions of controls, override its role,
+ * such as `--ck-transition-duration-control`. To change one component, override its component token instead.
+ */
 :root,
 :host {
+	/**
+	 * Duration of quick control transitions, such as the border and the shadow of a text input, and the floating
+	 * label of a labeled field.
+	 */
 	--ck-transition-duration-control-fast: var(--ck-duration-fast);
+
+	/**
+	 * Duration of control transitions, such as changes of borders and shadows.
+	 */
 	--ck-transition-duration-control: var(--ck-duration-base);
+
+	/**
+	 * Duration of larger control movements, such as the toggle of a switch button.
+	 */
 	--ck-transition-duration-control-emphasized: var(--ck-duration-slow);
+
+	/**
+	 * Duration of transitions of surfaces, which change more than controls and take longer.
+	 */
 	--ck-transition-duration-surface: var(--ck-duration-slower);
 
+	/**
+	 * Easing of control transitions, such as the border and the shadow of a button.
+	 */
 	--ck-transition-timing-function-control: var(--ck-ease-interactive);
+
+	/**
+	 * Easing of emphasized control movements, such as the floating label of a labeled field.
+	 */
 	--ck-transition-timing-function-control-emphasized: var(--ck-ease-emphasized);
+
+	/**
+	 * Easing of surface transitions, such as the background of a switch button.
+	 */
 	--ck-transition-timing-function-surface: var(--ck-ease-standard);
 
-	/* Transition shorthands for controls (box-shadow + border). */
+	/**
+	 * Transition of the shadow and the border of a control, such as a button. Use it as the whole value
+	 * of `transition`.
+	 */
 	--ck-transition-control:
 		box-shadow var(--ck-transition-duration-control) var(--ck-transition-timing-function-control),
 		border var(--ck-transition-duration-control) var(--ck-transition-timing-function-control);
+
+	/**
+	 * Quick transition of the shadow and the border of a control, such as a text input. Use it as the whole value
+	 * of `transition`.
+	 */
 	--ck-transition-control-fast:
 		box-shadow var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control),
 		border var(--ck-transition-duration-control-fast) var(--ck-transition-timing-function-control);
 
+	/**
+	 * Duration of feedback animations, such as the shake of a text input with an error.
+	 */
 	--ck-animation-duration-feedback: var(--ck-animation-duration-slow);
+
+	/**
+	 * Duration of the animation of a surface that appears, such as the fade-in of a dialog.
+	 */
 	--ck-animation-duration-surface-entrance: var(--ck-animation-duration-slow);
+
+	/**
+	 * Duration of one cycle of a progress animation, such as the rotation of a spinner.
+	 */
 	--ck-animation-duration-progress: var(--ck-animation-duration-emphasis);
+
+	/**
+	 * Duration of one cycle of a progress animation when the user prefers reduced motion.
+	 */
+	/* The default theme does not read it. The spinner sets its reduced motion duration in `spinner.css` instead. */
 	--ck-animation-duration-progress-reduced: var(--ck-animation-duration-reduced);
 
+	/**
+	 * Easing of feedback animations, such as the shake of a text input with an error.
+	 */
 	--ck-animation-timing-function-feedback: var(--ck-animation-ease-standard);
+
+	/**
+	 * Easing of progress animations, such as the rotation of a spinner. Keep it linear, so that a looping
+	 * animation keeps an even speed.
+	 */
 	--ck-animation-timing-function-progress: var(--ck-animation-ease-linear);
+
+	/**
+	 * Fill mode of feedback animations, such as the shake of a text input with an error.
+	 */
 	--ck-animation-fill-mode-feedback: var(--ck-animation-fill-both);
 }
