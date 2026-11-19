@@ -1,14 +1,14 @@
 ---
 category: framework-deep-dive-ui
 meta-title: Theme token naming | CKEditor 5 Framework Documentation
-meta-description: Learn the naming conventions for foundation, semantic, and component CSS variables in the CKEditor 5 UI theme and apply them consistently.
+meta-description: Learn how to name and describe foundation, semantic, and component CSS variables in the CKEditor 5 UI theme and apply the conventions consistently.
 order: 20
-modified_at: 2026-10-27
+modified_at: 2026-11-09
 ---
 
 # Theme token naming
 
-This guide defines the naming conventions for the CSS variables (design tokens) in the `@ckeditor/ckeditor5-ui` theme files. Following them keeps tokens easy to scan and consistent across files, straightforward to map to design tools such as Figma, and easy for integrators to override.
+This guide defines the naming conventions for the CSS variables (design tokens) in the `@ckeditor/ckeditor5-ui` theme files, and how to describe them. Following them keeps tokens easy to scan and consistent across files, straightforward to map to design tools such as Figma, and easy for integrators to override.
 
 ## Layer model
 
@@ -139,6 +139,106 @@ Start a component token with the component it belongs to and end it with the pro
 ### Internal helpers
 
 Names that start with `--_ck-` (with an underscore) are internal helpers, not tokens. The theme uses them to pass values between components without shadowing the public tokens, for example `--_ck-button-context-border`, which the toolbar sets on its own buttons. Do not set or read them in your theme. They are not part of the public API and may change or be removed in any release.
+
+## Describing tokens
+
+A token declaration can carry a description of what the token is for. Tools, such as a generated token reference, read these descriptions, so they follow a fixed format.
+
+### Doc comments and notes
+
+The description is a doc comment, `/** … */`, placed right above the declaration. A plain comment, `/* … */`, is a note for maintainers, and tools never read it.
+
+| Comment                              | Use it for                                                                                    | Read by tools |
+|--------------------------------------|-----------------------------------------------------------------------------------------------|---------------|
+| `/** … */` above the declaration     | The description: what the token is for, how to use it, and its constraints.                   | Yes           |
+| `/* … */` anywhere                   | Notes for maintainers, such as backward compatibility or why a value is hardcoded.            | No            |
+| `/* … */` after a value, on one line | The computed value, as in `/* 8px */`.                                                        | No            |
+
+```css
+:root,
+:host {
+	/**
+	 * Default focus shadow across the UI.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-focus-outer-shadow-geometry` first if overridden, and the legacy
+	   `--ck-color-focus-outer-shadow` color, so overrides of either still change the shadow. */
+	--ck-focus-shadow: var(--ck-focus-outer-shadow-geometry, var(--ck-focus-shadow-geometry)) var(--ck-color-focus-outer-shadow);
+}
+```
+
+Write every doc comment in the multi-line form used for API comments in the source code, even when the description is a single sentence. One form for all descriptions keeps the files consistent, a description can grow without being reformatted, and tags such as `@pair` (see [Contrast pairs](#contrast-pairs)) and `@deprecated` (see [Deprecated tokens](#deprecated-tokens)) fit on lines of their own. A tag takes the name of a token, not a sentence, and its line does not end with a dot.
+
+### What a description says
+
+A description holds only what the CSS cannot show:
+
+* The first sentence is the role of the token. Tools show it as the summary.
+* The next sentences are usage rules, for example "Use it for placeholders, not for disabled controls."
+* The last sentences are constraints, for example "Read through the `background` shorthand, so a gradient works."
+
+Do not repeat what tools can compute from the CSS: the default value, the `var()` chain in either direction, or the components that read the token. These facts change with the code, and a comment that repeats them goes out of date. This also rules out sentences that restate the chain without naming tokens, such as "Setting it also changes the error text." A usage rule can still name the token to set instead: `--ck-color-border-accent` tells integrators to set `--ck-color-text-accent` to change the accent text and lines together. When a token has no parent or a surprising one, explain why in a note, not what it derives from.
+
+Every description says what the token is for, not what its value looks like. Foundation tokens name their default role across the UI, for example "Default border color across the UI." Name a component only when the token exists for it, for example `--ck-color-shadow-inner`, the color of the hover ring on the switch button toggle. Semantic and component tokens are more specific: they can say where not to use them, and their examples, introduced with "such as", show the scope of the role. Give a few typical examples, not every reader, so that the description stays true when a component changes.
+
+### Scales
+
+A foundation scale, such as the spacing or font size steps, is described once, in the doc comment of its file. The steps of the scale do not need descriptions of their own, because their names and values already show what they are. A token that stands out from the scale gets its own doc comment:
+
+```css
+/**
+ * The spacing scale of the editor UI. Set `--ck-spacing-base` on `:root` to resize every step.
+ * To change the spacing of one group of elements, such as controls, override its semantic spacing role,
+ * such as `--ck-spacing-control-padding-inline`, instead.
+ */
+:root,
+:host {
+	--ck-spacing-base: var(--ck-spacing-unit, 8px); /* 8px */
+	--ck-spacing-xs: calc(0.25 * var(--ck-spacing-base)); /* 2px */
+	--ck-spacing-sm: calc(0.5 * var(--ck-spacing-base)); /* 4px */
+	--ck-spacing-md: calc(0.75 * var(--ck-spacing-base)); /* 6px */
+
+	/**
+	 * An alias of `--ck-spacing-md`.
+	 * @deprecated --ck-spacing-md
+	 */
+	--ck-spacing-ms: var(--ck-spacing-medium-small, var(--ck-spacing-md)); /* 6px */
+}
+```
+
+Semantic and component tokens each have a role of their own, so each of them gets its own doc comment.
+
+### Contrast pairs
+
+Use the `@pair` tag to name the content drawn on a background, such as text or icons. Changing one without checking the other can break the contrast, so tools can tell integrators to set both and check the contrast of each pair.
+
+```css
+/**
+ * The fill of primary controls.
+ * Keep it saturated enough for the text on it to stay readable.
+ * @pair --ck-color-interactive-primary-text
+ * @pair --ck-color-text-inverse
+ */
+--ck-color-interactive-primary-surface: var(--ck-color-base-action);
+```
+
+* Do not use `@pair` for other relations, such as a border around a surface. Describe them in a sentence.
+* Put the tag on the background token only. Tools show the pair on both tokens, so the content token does not get a tag back.
+* A background can have more than one `@pair` tag.
+* Name all content meant to be drawn on the background, even if only some packages draw it.
+* A parent is not a pair. A token that follows another token does not get `@pair` for it.
+
+### Deprecated tokens
+
+Use the `@deprecated` tag, followed by the name of the replacement, for a token kept for compatibility that new code should not use, as `--ck-spacing-ms` in the [Scales](#scales) example. The tag does not mean that the token will be removed. Tools can mark the token and point to its replacement.
+
+The first sentence of the description says what the token is, for example an alias of another token.
+
+### Where tools look for descriptions
+
+* The description of a token is the nearest doc comment before its declaration. Only plain comments and whitespace can be between them. Anything else, such as a selector or another declaration, breaks the link.
+* Tools read descriptions only from the declarations in `:root, :host`. A token redeclared in a narrower rule does not carry one. A token declared only in a narrower rule, such as one that a component sets for each of its states, is outside this convention.
+* Never put a description inside a value. Comments inside a value, for example in `calc()`, are kept in the built style sheets.
+* A doc comment right above the first `:root, :host` rule of a file describes the file. A doc comment above any other rule, including a later `:root, :host` rule, describes that rule, not a token.
 
 ## Overriding tokens
 
