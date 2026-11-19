@@ -456,47 +456,6 @@ describe( 'SelectionObserver', () => {
 		}, 70 ) );
 	} );
 
-	it( 'should not enter infinite loop', () => {
-		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		view.change( writer => {
-			writer.setSelection( viewFoo, 0 );
-		} );
-
-		let wasInfiniteLoopDetected = false;
-		vi.spyOn( selectionObserver, '_reportInfiniteLoop' ).mockImplementation( () => {
-			wasInfiniteLoopDetected = true;
-		} );
-		const selectionChangeSpy = vi.fn();
-
-		selectionObserver._clearInfiniteLoop();
-		viewDocument.on( 'selectionChange', selectionChangeSpy );
-
-		let counter = 70;
-
-		const simulateSelectionChanges = () => {
-			if ( !counter ) {
-				return;
-			}
-
-			changeDomSelection();
-			counter--;
-
-			setTimeout( simulateSelectionChanges, 10 );
-		};
-
-		return new Promise( resolve => {
-			viewDocument.on( 'selectionChangeDone', () => {
-				expect( wasInfiniteLoopDetected ).toBe( true );
-				expect( selectionChangeSpy ).toHaveBeenCalledTimes( 60 );
-
-				counter = 0;
-				resolve();
-			} );
-
-			simulateSelectionChanges();
-		} );
-	} );
-
 	it.skip( 'SelectionObserver#_reportInfiniteLoop() should throw an error', () => {
 		expect( () => {
 			selectionObserver._reportInfiniteLoop();
@@ -520,37 +479,104 @@ describe( 'SelectionObserver', () => {
 		} );
 	} );
 
-	it( 'should not be treated as an infinite loop if changes are not often', () => {
-		vi.useFakeTimers( {
-			toFake: [ 'setInterval', 'clearInterval' ]
+	describe( 'infinite loop detection in one-second periods', () => {
+		let reportInfiniteLoopSpy, selectionChangeSpy;
+
+		beforeEach( () => {
+			vi.useFakeTimers( { toFake: [ 'performance' ] } );
+
+			const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+
+			view.change( writer => {
+				writer.setSelection( viewFoo, 0 );
+			} );
+
+			reportInfiniteLoopSpy = vi.spyOn( selectionObserver, '_reportInfiniteLoop' ).mockImplementation( () => {} );
+			selectionChangeSpy = vi.fn();
+
+			viewDocument.on( 'selectionChange', selectionChangeSpy );
 		} );
-		const consoleWarnStub = vi.spyOn( console, 'warn' );
 
-		// We need to recreate SelectionObserver, so it will use mocked setInterval.
-		selectionObserver.disable();
-		selectionObserver.destroy();
-		view._observers.delete( SelectionObserver );
-		view.addObserver( SelectionObserver );
+		afterEach( () => {
+			vi.useRealTimers();
+		} );
 
-		return doChanges()
-			.then( doChanges )
-			.then( () => {
-				expect( consoleWarnStub ).not.toHaveBeenCalled();
-				vi.useRealTimers();
-			} );
+		it( 'should report an infinite loop after more than 60 selection changes in a one-second period', () => {
+			fireSelectionChanges( 61 );
 
-		function doChanges() {
-			return new Promise( resolve => {
-				viewDocument.once( 'selectionChangeDone', () => {
-					vi.advanceTimersByTime( 1100 );
-					resolve();
-				} );
+			expect( selectionChangeSpy ).toHaveBeenCalledTimes( 60 );
+			expect( reportInfiniteLoopSpy ).toHaveBeenCalledTimes( 1 );
+		} );
 
-				for ( let i = 0; i < 50; i++ ) {
-					changeDomSelection();
-				}
-			} );
+		it( 'should count selection changes spread within a one-second period together', () => {
+			fireSelectionChanges( 31 );
+
+			vi.advanceTimersByTime( 999 );
+			fireSelectionChanges( 30 );
+
+			expect( selectionChangeSpy ).toHaveBeenCalledTimes( 60 );
+			expect( reportInfiniteLoopSpy ).toHaveBeenCalledTimes( 1 );
+		} );
+
+		it( 'should start counting anew once the one-second period has passed', () => {
+			fireSelectionChanges( 61 );
+
+			vi.advanceTimersByTime( 1000 );
+			fireSelectionChanges( 60 );
+
+			expect( selectionChangeSpy ).toHaveBeenCalledTimes( 120 );
+			expect( reportInfiniteLoopSpy ).toHaveBeenCalledTimes( 1 );
+		} );
+
+		it( 'should not be treated as an infinite loop if changes are spread across one-second periods', () => {
+			fireSelectionChanges( 50 );
+
+			vi.advanceTimersByTime( 1100 );
+			fireSelectionChanges( 50 );
+
+			expect( selectionChangeSpy ).toHaveBeenCalledTimes( 100 );
+			expect( reportInfiniteLoopSpy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'should detect the infinite loop and start a new period in a blurred read-only editor', () => {
+			viewDocument.isReadOnly = true;
+			viewDocument.isFocused = false;
+
+			fireSelectionChanges( 61 );
+
+			expect( selectionChangeSpy ).toHaveBeenCalledTimes( 60 );
+			expect( reportInfiniteLoopSpy ).toHaveBeenCalledTimes( 1 );
+
+			vi.advanceTimersByTime( 1000 );
+			fireSelectionChanges( 1 );
+
+			expect( selectionChangeSpy ).toHaveBeenCalledTimes( 61 );
+		} );
+
+		// Dispatches the `selectionchange` event synchronously after each change, so that the changes are not merged by the browser.
+		function fireSelectionChanges( count ) {
+			for ( let i = 0; i < count; i++ ) {
+				changeDomSelection();
+				domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+			}
 		}
+	} );
+
+	describe( 'timers', () => {
+		afterEach( () => {
+			vi.useRealTimers();
+		} );
+
+		it( 'should not schedule any timer when created', () => {
+			vi.useFakeTimers();
+
+			selectionObserver.disable();
+			selectionObserver.destroy();
+			view._observers.delete( SelectionObserver );
+			view.addObserver( SelectionObserver );
+
+			expect( vi.getTimerCount() ).toBe( 0 );
+		} );
 	} );
 
 	it( 'should fire `selectionChangeDone` event after selection stop changing', () => {
