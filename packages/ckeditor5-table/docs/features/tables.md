@@ -4,7 +4,7 @@ meta-title: Tables overview | CKEditor 5 Documentation
 meta-description: Create and customize tables in CKEditor 5 to organize data effectively with support for merging cells, headers, and responsive layouts.
 category: tables
 order: 10
-modified_at: 2025-11-14
+modified_at: 2026-11-19
 ---
 
 # Tables in CKEditor&nbsp;5 (overview)
@@ -80,6 +80,18 @@ This attribute is available only for header cells and is enabled by default. The
 * **Row header** – forces a header cell to describe the row and sets `scope="row"`.
 
 To disable this behavior, set the {@link module:table/tableconfig~TableCellPropertiesConfig#scopedHeaders `config.table.tableCellProperties.scopedHeaders`} configuration option to `false`.
+
+## Inserting rows and columns
+
+A new row or column keeps the formatting of the row or column you insert it next to. When you start typing in a new cell, the text continues the text formatting (such as bold or font color) from the start of the corresponding cell, and the paragraph formatting of that cell, such as {@link features/text-alignment text alignment} or {@link features/indent block indentation}. If the {@link features/tables-styling cell styling tools} are enabled, the new cells also get the same cell styles: borders, background color, padding, and horizontal and vertical alignment. The new cells do not copy the cell width and height.
+
+The same happens when you press <kbd>Tab</kbd> in the last table cell, or when you split a cell (the new cells copy the cell you split). When pasted content expands the table, the new cells that stay empty copy the last row or column.
+
+A new row or column also joins the section (header, regular, or footer) of the row or column you insert it next to. For example, when you insert a row below the last header row, it becomes a header row. When you insert a row above the first regular row, it becomes a regular row. The same applies to header columns and to {@link features/tables-installation#enable-table-footers footer rows}.
+
+Tables made of header rows only, header columns only, or footer rows only are an exception, so you can still add regular content to them. In such a table, a new row or column inserted where the regular content would start becomes a regular one. For example, when you press <kbd>Tab</kbd> in the last cell of a table made of header rows only, the editor adds a regular row.
+
+This exception does not apply to a table made of header and footer rows with no regular rows between them. There, a new row joins the section of the row you insert it next to. To make it a regular row, turn off its Header row or Footer row switch in the table row menu {@icon @ckeditor/ckeditor5-icons/theme/icons/table-row.svg Table row}.
 
 ## Typing around tables
 

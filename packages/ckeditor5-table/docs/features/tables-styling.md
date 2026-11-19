@@ -28,6 +28,10 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </snippet-footer>
 
+## Styles of new rows and columns
+
+When you insert a row or column, the new cells keep the cell styles of the row or column you insert them next to: borders, background color, padding, and horizontal and vertical alignment. You do not need to style them again. The new cells do not copy the cell width and height. Learn more in the {@link features/tables#inserting-rows-and-columns Inserting rows and columns} section of the tables overview guide.
+
 ## Installation
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
