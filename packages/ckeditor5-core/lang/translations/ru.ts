@@ -39,9 +39,9 @@ const translations: Translations = {
 			// The label for the insert image with the file manager menu bar button (inside 'Insert' menu)
 			'With file manager': 'Из менеджера файлов',
 			// The button label for the object (e.g. image, table) toolbar for hiding the attached caption.
-			'Toggle caption off': 'Выключить описание',
+			'Toggle caption off': 'Выключить подпись',
 			// The button label for the object (e.g. image, table) toolbar for showing the attached caption.
-			'Toggle caption on': 'Включить описание',
+			'Toggle caption on': 'Включить подпись',
 			// Accessibility help dialog category header text for keystrokes related to content creation.
 			'Content editing keystrokes': 'Клавиши для редактирования контента',
 			// Accessibility help dialog text further explaining the purpose of the "Content editing keystrokes" category.
@@ -67,7 +67,7 @@ const translations: Translations = {
 			// Label of the button confirming the changes done in the current interface.
 			'Accept': 'Принять',
 			// The label of the source editing related features used in toolbar buttons.
-			'Source': 'Источник',
+			'Source': 'Исходный код',
 			// Dropdown option label for the paragraph format.
 			'Paragraph': 'Параграф',
 			// The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.).

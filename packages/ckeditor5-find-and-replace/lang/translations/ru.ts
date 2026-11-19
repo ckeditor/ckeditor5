@@ -11,7 +11,7 @@ const translations: Translations = {
 			// The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form.
 			'Find and replace': 'Найти и заменить',
 			// The label for the searched text in the find and replace dropdown.
-			'Find in text…': 'Найти в тексте',
+			'Find in text…': 'Найти в тексте…',
 			// The label for the find action button in the find and replace dropdown.
 			'Find': 'Найти',
 			// The label for the previous result button in the find and replace dropdown.
@@ -27,7 +27,7 @@ const translations: Translations = {
 			// The label for the whole words only checkbox in the find and replace dropdown.
 			'Whole words only': 'Только слова целиком',
 			// The label for the text replacement in the find and replace dropdown.
-			'Replace with…': 'Заменить на...',
+			'Replace with…': 'Заменить на…',
 			// An error text displayed when user attempted to find an empty text.
 			'Text to find must not be empty.': 'Искомый текст не должен быть пустым.',
 			// A message displayed next to the replace field when disabled but user tries to use it.

@@ -15,7 +15,7 @@ const translations: Translations = {
 			// Toolbar button tooltip for the Underline feature.
 			'Underline': 'Подчеркнутый',
 			// Toolbar button tooltip for the Code feature.
-			'Code': 'Исходный код',
+			'Code': 'Код',
 			// Toolbar button tooltip for the Strikethrough feature.
 			'Strikethrough': 'Зачеркнутый',
 			// Toolbar button tooltip for the Subscript feature.
@@ -25,7 +25,7 @@ const translations: Translations = {
 			// Keystroke description for assistive technologies: keystroke for making text italic.
 			'Italic text': 'Текст курсивом',
 			// Keystroke description for assistive technologies: keystroke for moving selection out of an inline code style.
-			'Move out of an inline code style': 'Выйти из встроенного стиля кода',
+			'Move out of an inline code style': 'Выйти из стиля встроенного кода',
 			// Keystroke description for assistive technologies: keystroke for making text bold.
 			'Bold text': 'Жирный текст',
 			// Keystroke description for assistive technologies: keystroke for making text underlined.

@@ -75,9 +75,9 @@ const translations: Translations = {
 			// Keystroke description for assistive technologies: keystroke for decreasing list item indentation.
 			'Decrease list item indent': 'Уменьшить отступ элемента списка',
 			// Assistive technologies label for entering the to-do list.
-			'Entering a to-do list': 'Ввод списка текущих дел',
+			'Entering a to-do list': 'Вход в список задач',
 			// Assistive technologies label for leaving the to-do list.
-			'Leaving a to-do list': 'Оставляем список текущих дел'
+			'Leaving a to-do list': 'Выход из списка задач'
 		}
 	}
 };

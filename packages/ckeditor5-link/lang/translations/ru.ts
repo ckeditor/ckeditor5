@@ -13,7 +13,7 @@ const translations: Translations = {
 			// Toolbar button tooltip for the Link feature.
 			'Link': 'Ссылка',
 			// Label for the URL input in the Link URL editing balloon.
-			'Link URL': 'Ссылка URL',
+			'Link URL': 'URL-адрес ссылки',
 			// An error text displayed when user attempted to enter an empty URL.
 			'Link URL must not be empty.': 'URL-адрес ссылки не должен быть пустым.',
 			// Label for the image link button.
