@@ -10,6 +10,8 @@ This package implements Paste from Office feature for CKEditor&nbsp;5.
 
 See the {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin documentation.
 
+See the {@link features/paste-from-office Paste from Office} guide.
+
 ## Installation
 
 This package is part of our open-source aggregate package.

@@ -6,6 +6,10 @@ category: api-reference
 
 CKEditor&nbsp;5's [Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) integration layer, which handles {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `config.cloudServices`} and tokens.
 
+## Documentation
+
+See the {@link features/cloud-services-overview Cloud Services overview} guide.
+
 ## Installation
 
 This package is part of our open-source aggregate package.
