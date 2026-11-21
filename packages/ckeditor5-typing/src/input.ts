@@ -160,7 +160,6 @@ export class Input extends Plugin {
 									insertedText = insertedText.trimEnd();
 								}
 
-								// Trigger CKEditor's insertText event with the detected text.
 								if ( insertedText ) {
 									view.document.fire( 'insertText', {
 										view: data.view,
