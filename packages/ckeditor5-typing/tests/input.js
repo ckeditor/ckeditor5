@@ -16,6 +16,7 @@ import { insertAt, env } from '@ckeditor/ckeditor5-utils';
 
 import { Input } from '../src/input.js';
 import { InsertTextCommand } from '../src/inserttextcommand.js';
+import { fireBeforeInputDomEvent } from './_utils/utils.js';
 
 describe( 'Input', () => {
 	afterEach( () => {
@@ -682,6 +683,183 @@ describe( 'Input', () => {
 					expect( commandData.text ).toBe( 'bar' );
 					expect( commandData.selection ).toBeUndefined();
 				} );
+			} );
+		} );
+
+		describe( 'WebKit dictation', () => {
+			beforeEach( () => {
+				typingQueuePushSpy.mockClear();
+			} );
+
+			function getTextNode( paragraphIndex = 0 ) {
+				return view.getDomRoot().querySelectorAll( 'p' )[ paragraphIndex ].firstChild;
+			}
+
+			function setDomSelection( textNode, offset ) {
+				window.getSelection().setBaseAndExtent( textNode, offset, textNode, offset );
+				window.document.dispatchEvent( new window.Event( 'selectionchange' ) );
+			}
+
+			function fireBeforeInputEvent( inputType = '', data = null ) {
+				fireBeforeInputDomEvent( view.getDomRoot(), {
+					inputType,
+					data
+				} );
+			}
+
+			function fireInputEvent( textNode ) {
+				textNode.parentElement.dispatchEvent( new window.Event( 'input', { bubbles: true } ) );
+			}
+
+			it( 'should convert the WebKit dictation event into an insert text queue entry', () => {
+				const textNode = getTextNode();
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent();
+
+				textNode.data = 'foobar';
+				fireInputEvent( textNode );
+
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueuePushSpy.mock.calls[ 0 ][ 0 ].text ).toEqual( 'bar' );
+			} );
+
+			it.each( [
+				[ 'hello', 'hello world', ' world' ],
+				[ 'hello world', 'hello brave world', 'brave' ],
+				[ 'hello world', 'hello there', 'there' ],
+				[ 'hello', 'hello, 世界 👋', ', 世界 👋' ]
+			] )( 'should extract only the changed text when changing "%s" to "%s"', ( beforeText, afterText, expectedText ) => {
+				_setModelData( editor.model, `<paragraph>${ beforeText }</paragraph>` );
+
+				const textNode = getTextNode();
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent();
+
+				textNode.data = afterText;
+				fireInputEvent( textNode );
+
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueuePushSpy.mock.calls[ 0 ][ 0 ].text ).toEqual( expectedText );
+			} );
+
+			it( 'should replace a pending dictation listener when another dictation beforeinput event arrives', () => {
+				const textNode = getTextNode();
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent();
+				fireBeforeInputEvent();
+
+				textNode.data = 'foobar';
+				fireInputEvent( textNode );
+
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueuePushSpy.mock.calls[ 0 ][ 0 ].text ).toEqual( 'bar' );
+			} );
+
+			it( 'should handle only the next input event', () => {
+				const textNode = getTextNode();
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent();
+
+				textNode.data = 'foobar';
+				fireInputEvent( textNode );
+
+				textNode.data = 'foobarbaz';
+				fireInputEvent( textNode );
+
+				expect( typingQueuePushSpy ).toHaveBeenCalledOnce();
+				expect( typingQueuePushSpy.mock.calls[ 0 ][ 0 ].text ).toEqual( 'bar' );
+			} );
+
+			it( 'should ignore an unchanged text node', () => {
+				const textNode = getTextNode();
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent();
+				fireInputEvent( textNode );
+
+				expect( typingQueuePushSpy ).not.toHaveBeenCalled();
+			} );
+
+			it.each( [
+				[ 'insertText', 'x', spy => {
+					expect( spy ).toHaveBeenCalledOnce();
+					expect( spy.mock.calls[ 0 ][ 0 ].text ).toEqual( 'x' );
+				} ],
+				[ '', 'not-null', spy => {
+					expect( spy ).not.toHaveBeenCalled();
+				} ]
+			] )( 'should handle beforeinput with inputType "%s" and data "%s" normally', ( inputType, data, assertQueue ) => {
+				const textNode = getTextNode();
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent( inputType, data );
+
+				textNode.data = 'foox';
+				fireInputEvent( textNode );
+
+				assertQueue( typingQueuePushSpy );
+			} );
+
+			it( 'should ignore the input event when the selection moves to another text node', () => {
+				_setModelData( editor.model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+
+				const textNode = getTextNode( 0 );
+				const otherTextNode = getTextNode( 1 );
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent();
+
+				textNode.data = 'foobar';
+				setDomSelection( otherTextNode, otherTextNode.data.length );
+				fireInputEvent( textNode );
+
+				expect( typingQueuePushSpy ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should ignore the input event when the selection is not collapsed', () => {
+				const textNode = getTextNode();
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent();
+
+				textNode.data = 'foobar';
+				window.getSelection().setBaseAndExtent( textNode, 3, textNode, 4 );
+				window.document.dispatchEvent( new window.Event( 'selectionchange' ) );
+				fireInputEvent( textNode );
+
+				expect( typingQueuePushSpy ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should ignore the input event when the original text node is detached', () => {
+				const textNode = getTextNode();
+				const parentElement = textNode.parentElement;
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent();
+
+				textNode.remove();
+				parentElement.dispatchEvent( new window.Event( 'input', { bubbles: true } ) );
+
+				expect( typingQueuePushSpy ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should abort a pending dictation listener when the editor is destroyed', async () => {
+				const textNode = getTextNode();
+				const parentElement = textNode.parentElement;
+
+				setDomSelection( textNode, textNode.data.length );
+				fireBeforeInputEvent();
+
+				await editor.destroy();
+
+				textNode.data = 'foobar';
+				parentElement.dispatchEvent( new window.Event( 'input', { bubbles: true } ) );
+
+				expect( typingQueuePushSpy ).not.toHaveBeenCalled();
 			} );
 		} );
 
