@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { env, getSelection } from '@ckeditor/ckeditor5-utils';
 
 import { InsertTextCommand, type InsertTextCommandOptions } from './inserttextcommand.js';
 import { InsertTextObserver, type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
@@ -44,6 +44,11 @@ export class Input extends Plugin {
 	private _typingQueue!: TypingQueue;
 
 	/**
+	 * Abort controller used to manage pending native input listeners for the WebKit dictation workaround.
+	 */
+	private _dictationListenerController: AbortController | null = null;
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -77,6 +82,104 @@ export class Input extends Plugin {
 		// Register `insertText` command and add `input` command as an alias for backward compatibility.
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
+
+		this.listenTo<ViewDocumentInputEvent>( view.document, 'beforeinput', ( evt, data ) => {
+			const domEvent = data.domEvent as InputEvent;
+
+			// Remove any pending listener so that only the latest beforeinput event is handled.
+			if ( this._dictationListenerController ) {
+				this._dictationListenerController.abort();
+				this._dictationListenerController = null;
+			}
+
+			// Catch WebKit's empty dictation/Scribble events
+			if ( domEvent.inputType === '' && domEvent.data === null ) {
+				const target = domEvent.target as Node | null;
+				if ( !target ) {
+					return;
+				}
+
+				// Read the native selection to identify the text node that WebKit is about to modify.
+				const nativeSelection = getSelection( target );
+
+				if ( nativeSelection && nativeSelection.anchorNode && nativeSelection.anchorNode.nodeType === Node.TEXT_NODE ) {
+					// Keep a reference to the original text node and its content before dictation modifies it.
+					const textNode = nativeSelection.anchorNode as Text;
+					const textBefore = textNode.textContent || '';
+					const controller = new AbortController();
+					this._dictationListenerController = controller;
+
+					// Listen for the next native input event, when WebKit has applied the dictated text.
+					target.addEventListener( 'input', () => {
+						if ( this._dictationListenerController === controller ) {
+							this._dictationListenerController = null;
+						}
+
+						// Ignore the event if WebKit replaced or detached the original text node.
+						if ( textNode.isConnected ) {
+							const currentText = textNode.textContent || '';
+
+							if ( currentText !== textBefore ) {
+								const postSelection = getSelection( target );
+
+								// Ensure the caret is still collapsed inside the text node that was modified.
+								if (
+									!postSelection ||
+									postSelection.anchorNode !== textNode ||
+									postSelection.focusNode !== textNode ||
+									!postSelection.isCollapsed
+								) {
+									return;
+								}
+
+								// Identify the exact inserted segment by trimming the common prefix
+								let prefixLen = 0;
+								while (
+									prefixLen < textBefore.length &&
+									prefixLen < currentText.length &&
+									textBefore[ prefixLen ] === currentText[ prefixLen ]
+								) {
+									prefixLen++;
+								}
+
+								// Identify the exact inserted segment by trimming the common suffix
+								let suffixLen = 0;
+								while (
+									suffixLen < textBefore.length - prefixLen &&
+									suffixLen < currentText.length - prefixLen &&
+									textBefore[ textBefore.length - 1 - suffixLen ] === currentText[ currentText.length - 1 - suffixLen ]
+								) {
+									suffixLen++;
+								}
+
+								// Extract the portion of the updated text that differs from the original.
+								let insertedText = currentText.substring( prefixLen, currentText.length - suffixLen );
+
+								// Avoid including a shared trailing separator when the detected insertion ends with whitespace.
+								if ( suffixLen && /\s/u.test( insertedText.at( -1 ) || '' ) ) {
+									insertedText = insertedText.trimEnd();
+								}
+
+								// Trigger CKEditor's insertText event with the detected text.
+								if ( insertedText ) {
+									view.document.fire( 'insertText', {
+										view: data.view,
+										document: data.document,
+										domTarget: data.domTarget,
+										target: data.target,
+										domEvent,
+										preventDefault: () => {},
+										stopPropagation: () => {},
+										text: insertedText,
+										selection: view.document.selection
+									} as any );
+								}
+							}
+						}
+					}, { once: true, capture: true, signal: controller.signal } );
+				}
+			}
+		}, { priority: 'high' } );
 
 		this.listenTo<ViewDocumentInputEvent>( view.document, 'beforeinput', () => {
 			// Flush queue on the next beforeinput event because it could happen
@@ -351,6 +454,9 @@ export class Input extends Plugin {
 	 * @inheritDoc
 	 */
 	public override destroy(): void {
+		this._dictationListenerController?.abort();
+		this._dictationListenerController = null;
+
 		super.destroy();
 
 		this._typingQueue.destroy();
