@@ -3246,6 +3246,207 @@ describe( 'LinkUI', () => {
 		} );
 	} );
 
+	// https://github.com/ckeditor/ckeditor5/issues/18013
+	describe( 'restoring focus to the toolbar when going back from a view opened from it', () => {
+		let editorElement, editor, linkUIFeature, balloon, toolbarView, formView, propertiesView, editButton, propertiesButton;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ LinkEditing, LinkUI, Paragraph ],
+				link: {
+					decorators: {
+						isExternal: {
+							mode: 'manual',
+							label: 'Open in a new tab',
+							attributes: {
+								target: '_blank'
+							}
+						}
+					}
+				}
+			} );
+
+			linkUIFeature = editor.plugins.get( LinkUI );
+			balloon = editor.plugins.get( ContextualBalloon );
+
+			_setModelData( editor.model, '<paragraph>fo<$text linkHref="abc">o[]b</$text>ar</paragraph>' );
+
+			editor.editing.view.focus();
+			linkUIFeature._showUI();
+
+			toolbarView = linkUIFeature.toolbarView;
+			formView = linkUIFeature.formView;
+			propertiesView = linkUIFeature.propertiesView;
+			editButton = toolbarView.items.find( item => item.label === 'Edit link' );
+			propertiesButton = toolbarView.items.find( item => item.label === 'Link properties' );
+		} );
+
+		afterEach( async () => {
+			editorElement.remove();
+
+			await editor.destroy();
+		} );
+
+		describe( 'when the toolbar had focus', () => {
+			it( 'should focus the "Edit link" button after the form is canceled', () => {
+				editButton.focus();
+				editButton.fire( 'execute' );
+
+				expect( balloon.visibleView ).toBe( formView );
+
+				formView.fire( 'cancel' );
+
+				expect( balloon.visibleView ).toBe( toolbarView );
+				expect( document.activeElement ).toBe( editButton.element );
+			} );
+
+			it( 'should focus the "Edit link" button after the form is closed with the Esc key', () => {
+				editButton.focus();
+				editButton.fire( 'execute' );
+
+				formView.keystrokes.press( {
+					keyCode: keyCodes.esc,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				} );
+
+				expect( balloon.visibleView ).toBe( toolbarView );
+				expect( document.activeElement ).toBe( editButton.element );
+			} );
+
+			it( 'should focus the "Edit link" button after the form is submitted', () => {
+				editButton.focus();
+				editButton.fire( 'execute' );
+
+				formView.urlInputView.fieldView.value = 'http://cksource.com';
+				formView.fire( 'submit' );
+
+				expect( balloon.visibleView ).toBe( toolbarView );
+				expect( document.activeElement ).toBe( editButton.element );
+			} );
+
+			it( 'should not move focus to the editing view after the form is closed', () => {
+				editButton.focus();
+				editButton.fire( 'execute' );
+
+				const editingFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+
+				formView.fire( 'cancel' );
+
+				expect( editingFocusSpy ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should focus the "Link properties" button after going back from the properties view', () => {
+				propertiesButton.focus();
+				propertiesButton.fire( 'execute' );
+
+				expect( balloon.visibleView ).toBe( propertiesView );
+
+				propertiesView.backButtonView.fire( 'execute' );
+
+				expect( balloon.visibleView ).toBe( toolbarView );
+				expect( document.activeElement ).toBe( propertiesButton.element );
+			} );
+
+			it( 'should focus the "Link properties" button after the properties view is closed with the Esc key', () => {
+				propertiesButton.focus();
+				propertiesButton.fire( 'execute' );
+
+				propertiesView.keystrokes.press( {
+					keyCode: keyCodes.esc,
+					preventDefault: vi.fn(),
+					stopPropagation: vi.fn()
+				} );
+
+				expect( balloon.visibleView ).toBe( toolbarView );
+				expect( document.activeElement ).toBe( propertiesButton.element );
+			} );
+
+			it( 'should focus the form after going back from the properties view opened from the form, ' +
+				'and then the "Edit link" button after the form is canceled', () => {
+				editButton.focus();
+				editButton.fire( 'execute' );
+				formView.fire( 'showDecorators' );
+
+				expect( balloon.visibleView ).toBe( propertiesView );
+
+				const formFocusSpy = vi.spyOn( formView, 'focus' );
+
+				propertiesView.backButtonView.fire( 'execute' );
+
+				expect( balloon.visibleView ).toBe( formView );
+				expect( formFocusSpy ).toHaveBeenCalledOnce();
+
+				formView.fire( 'cancel' );
+
+				expect( balloon.visibleView ).toBe( toolbarView );
+				expect( document.activeElement ).toBe( editButton.element );
+			} );
+
+			it( 'should focus the toolbar if the focused element is not one of its items', () => {
+				editButton.focus();
+				vi.spyOn( toolbarView.focusTracker, 'focusedElement', 'get' ).mockReturnValue( document.body );
+				editButton.fire( 'execute' );
+
+				const toolbarFocusSpy = vi.spyOn( toolbarView, 'focus' );
+
+				formView.fire( 'cancel' );
+
+				expect( toolbarFocusSpy ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'should move focus to the editing view on the next close after the UI was hidden in the meantime', async () => {
+				editButton.focus();
+				editButton.fire( 'execute' );
+
+				linkUIFeature._hideUI();
+
+				// The focus tracker of the toolbar notices the blur asynchronously.
+				await new Promise( resolve => setTimeout( resolve ) );
+
+				// Reopen the UI without moving focus to the toolbar, for example, with a mouse.
+				linkUIFeature._showUI();
+				editButton.fire( 'execute' );
+
+				const editingFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+
+				formView.fire( 'cancel' );
+
+				expect( editingFocusSpy ).toHaveBeenCalledOnce();
+				expect( document.activeElement ).not.toBe( editButton.element );
+			} );
+		} );
+
+		describe( 'when the toolbar did not have focus', () => {
+			it( 'should move focus to the editing view after the form is canceled', () => {
+				editButton.fire( 'execute' );
+
+				const editingFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+
+				formView.fire( 'cancel' );
+
+				expect( balloon.visibleView ).toBe( toolbarView );
+				expect( editingFocusSpy ).toHaveBeenCalledOnce();
+				expect( document.activeElement ).not.toBe( editButton.element );
+			} );
+
+			it( 'should move focus to the editing view after going back from the properties view', () => {
+				propertiesButton.fire( 'execute' );
+
+				const editingFocusSpy = vi.spyOn( editor.editing.view, 'focus' );
+
+				propertiesView.backButtonView.fire( 'execute' );
+
+				expect( balloon.visibleView ).toBe( toolbarView );
+				expect( editingFocusSpy ).toHaveBeenCalledOnce();
+				expect( document.activeElement ).not.toBe( propertiesButton.element );
+			} );
+		} );
+	} );
+
 	describe( 'Links Providers', () => {
 		describe( 'registerLinksListProvider()', () => {
 			it( 'should not crash the editor when called before showing the form', () => {
