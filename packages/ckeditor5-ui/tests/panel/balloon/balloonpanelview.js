@@ -49,6 +49,10 @@ describe( 'BalloonPanelView', () => {
 		it( 'should initialize _resizeObserver with null value', () => {
 			expect( view._resizeObserver ).toBeNull();
 		} );
+
+		it( 'should initialize _intersectionObserver with null value', () => {
+			expect( view._intersectionObserver ).toBeNull();
+		} );
 	} );
 
 	describe( 'destroy()', () => {
@@ -84,6 +88,32 @@ describe( 'BalloonPanelView', () => {
 			view.destroy();
 
 			expect( spy ).toHaveBeenCalledOnce();
+
+			target.remove();
+			limiter.remove();
+		} );
+
+		it( 'should disconnect the _intersectionObserver if present', () => {
+			const target = document.createElement( 'div' );
+			const limiter = document.createElement( 'div' );
+
+			document.body.appendChild( target );
+			document.body.appendChild( limiter );
+
+			view.show();
+			view.pin( {
+				target,
+				limiter
+			} );
+
+			const spy = vi.spyOn( view._intersectionObserver, 'disconnect' );
+
+			expect( spy ).not.toHaveBeenCalled();
+
+			view.destroy();
+
+			expect( spy ).toHaveBeenCalledOnce();
+			expect( view._intersectionObserver ).toBeNull();
 
 			target.remove();
 			limiter.remove();
@@ -209,6 +239,66 @@ describe( 'BalloonPanelView', () => {
 		afterEach( () => {
 			limiter.remove();
 			target.remove();
+		} );
+
+		describe( 'target visibility', () => {
+			let container;
+
+			beforeEach( () => {
+				container = document.createElement( 'div' );
+				container.appendChild( target );
+				document.body.appendChild( container );
+			} );
+
+			afterEach( () => {
+				container.remove();
+			} );
+
+			it( 'should not attach to a target skipped by content-visibility: hidden', () => {
+				container.style.contentVisibility = 'hidden';
+
+				// Skipped content keeps its client rects, so they alone do not tell it apart.
+				expect( target.getClientRects().length ).toBe( 1 );
+				expect( view.attachTo( { target, limiter } ) ).toBe( false );
+				expect( view.isVisible ).toBe( false );
+			} );
+
+			it( 'should not attach to a target inside a closed <details>', () => {
+				const details = document.createElement( 'details' );
+
+				details.appendChild( target );
+				container.appendChild( details );
+
+				expect( view.attachTo( { target, limiter } ) ).toBe( false );
+				expect( view.isVisible ).toBe( false );
+			} );
+
+			it( 'should not attach to a text range skipped by content-visibility: hidden', () => {
+				const textNode = target.appendChild( document.createTextNode( 'Hello World' ) );
+				const range = document.createRange();
+
+				range.setStart( textNode, 1 );
+				range.setEnd( textNode, 8 );
+				container.style.contentVisibility = 'hidden';
+
+				expect( view.attachTo( { target: range, limiter } ) ).toBe( false );
+				expect( view.isVisible ).toBe( false );
+			} );
+
+			it( 'should attach to a target with visibility: hidden', () => {
+				container.style.visibility = 'hidden';
+
+				expect( view.attachTo( { target, limiter } ) ).toBe( true );
+				expect( view.isVisible ).toBe( true );
+			} );
+
+			it( 'should rely on the client rects alone where Element#checkVisibility() is not supported', () => {
+				container.style.contentVisibility = 'hidden';
+				target.checkVisibility = undefined;
+
+				expect( view.attachTo( { target, limiter } ) ).toBe( true );
+				expect( view.isVisible ).toBe( true );
+			} );
 		} );
 
 		it( 'should use default options', () => {
@@ -1056,6 +1146,109 @@ describe( 'BalloonPanelView', () => {
 				expect( attachToSpy ).toHaveBeenCalledTimes( 2 );
 			} );
 
+			// Unlike the tests below, with the browser's own observers: they check that the change is actually reported.
+			describe( 'observe element visibility with real observers', () => {
+				beforeEach( () => {
+					target.textContent = 'Target';
+				} );
+
+				it( 'should hide when the target gets skipped by content-visibility: hidden', async () => {
+					view.pin( { target, limiter } );
+
+					// Let the initial reports of the observers come first, so the one awaited below is about the change.
+					await waitForAnimationFrames( 2 );
+
+					expect( view.isVisible ).toBe( true );
+
+					targetParent.style.contentVisibility = 'hidden';
+
+					await vi.waitFor( () => expect( view.isVisible ).toBe( false ) );
+				} );
+
+				it( 'should hide when the <details> holding the target gets closed', async () => {
+					const details = document.createElement( 'details' );
+
+					details.open = true;
+					details.appendChild( targetParent );
+					document.body.appendChild( details );
+
+					view.pin( { target, limiter } );
+					await waitForAnimationFrames( 2 );
+
+					expect( view.isVisible ).toBe( true );
+
+					details.open = false;
+
+					await vi.waitFor( () => expect( view.isVisible ).toBe( false ) );
+
+					details.remove();
+				} );
+
+				it( 'should hide when the target gets hidden with hidden="until-found"', async () => {
+					view.pin( { target, limiter } );
+					await waitForAnimationFrames( 2 );
+
+					expect( view.isVisible ).toBe( true );
+
+					targetParent.setAttribute( 'hidden', 'until-found' );
+
+					await vi.waitFor( () => expect( view.isVisible ).toBe( false ) );
+				} );
+
+				it( 'should not hide when the target is only scrolled out of view', async () => {
+					const scrollable = createScrollable();
+
+					view.pin( { target, limiter } );
+					scrollable.scrollTop = 200;
+					await waitForAnimationFrames( 2 );
+
+					expect( view.isVisible ).toBe( true );
+
+					scrollable.remove();
+				} );
+
+				it( 'should hide when the target gets hidden while scrolled out of view and then is scrolled back', async () => {
+					const scrollable = createScrollable();
+
+					view.pin( { target, limiter } );
+					scrollable.scrollTop = 200;
+					await waitForAnimationFrames( 2 );
+
+					// No observer reports this: the target was not intersecting already, and it keeps its size.
+					targetParent.style.contentVisibility = 'hidden';
+					await waitForAnimationFrames( 2 );
+
+					scrollable.scrollTop = 0;
+
+					await vi.waitFor( () => expect( view.isVisible ).toBe( false ) );
+
+					scrollable.remove();
+				} );
+
+				// A container scrolling the target, which sits at its top, out of view.
+				function createScrollable() {
+					const scrollable = document.createElement( 'div' );
+					const spacer = document.createElement( 'div' );
+
+					scrollable.style.height = '50px';
+					scrollable.style.overflow = 'auto';
+					spacer.style.height = '500px';
+
+					scrollable.append( targetParent, spacer );
+					document.body.appendChild( scrollable );
+
+					return scrollable;
+				}
+
+				function waitForAnimationFrames( count ) {
+					return new Promise( resolve => {
+						const next = left => left ? requestAnimationFrame( () => next( left - 1 ) ) : resolve();
+
+						next( count );
+					} );
+				}
+			} );
+
 			describe( 'observe element visibility', () => {
 				beforeEach( () => {
 					vi.useFakeTimers();
@@ -1186,6 +1379,133 @@ describe( 'BalloonPanelView', () => {
 					vi.advanceTimersByTime( 100 );
 					expect( view.isVisible ).toBe( false );
 				} );
+
+				it( 'should not show if the target is skipped by content-visibility: hidden', () => {
+					view.hide();
+
+					const showSpy = vi.spyOn( view, 'show' );
+
+					targetParent.style.contentVisibility = 'hidden';
+					view.pin( { target, limiter } );
+
+					expect( showSpy ).not.toHaveBeenCalled();
+					expect( view.isVisible ).toBe( false );
+				} );
+
+				it( 'should unpin when shown again after the target got hidden in the meantime', () => {
+					view.pin( { target, limiter } );
+					view.hide();
+
+					targetParent.style.contentVisibility = 'hidden';
+					view.show();
+
+					expect( view.isVisible ).toBe( false );
+					expect( view.element.classList.contains( 'ck-balloon-panel_visible' ) ).toBe( false );
+
+					// Unpinned, so nothing pins the panel again when it is shown once more.
+					targetParent.style.contentVisibility = '';
+					view.show();
+
+					expect( view._intersectionObserver ).toBeNull();
+				} );
+
+				it( 'should unpin when the target is found hidden on scroll', () => {
+					view.pin( { target, limiter } );
+
+					targetParent.style.contentVisibility = 'hidden';
+					targetParent.dispatchEvent( new Event( 'scroll' ) );
+
+					expect( view.isVisible ).toBe( false );
+				} );
+
+				it( 'should unpin when the target is found hidden on window resize', () => {
+					view.pin( { target, limiter } );
+
+					target.style.display = 'none';
+					global.window.dispatchEvent( new Event( 'resize' ) );
+
+					expect( view.isVisible ).toBe( false );
+				} );
+
+				it( 'should observe the target with an intersection observer', () => {
+					const intersectionObserverRef = createIntersectionObserverRef();
+
+					view.pin( { target, limiter } );
+
+					expect( intersectionObserverRef.observe ).toHaveBeenCalledOnce();
+					expect( intersectionObserverRef.observe ).toHaveBeenCalledWith( target );
+				} );
+
+				it( 'should observe the parent element with an intersection observer if target is text node', () => {
+					const intersectionObserverRef = createIntersectionObserverRef();
+					const textNode = target.appendChild( document.createTextNode( 'Hello World' ) );
+
+					const range = document.createRange();
+					range.setStart( textNode, 1 );
+					range.setEnd( textNode, 8 );
+
+					view.pin( { target: range, limiter } );
+
+					expect( intersectionObserverRef.observe ).toHaveBeenCalledWith( target );
+				} );
+
+				it( 'should hide if the target is being skipped by content-visibility: hidden', () => {
+					// Mocked, so that only the intersection observer below can report the change.
+					createResizeObserverCallbackRef();
+					const intersectionObserverRef = createIntersectionObserverRef();
+
+					view.pin( { target, limiter } );
+
+					expect( view.isVisible ).toBe( true );
+
+					// Skipped content keeps its size, so no resize gets reported – only the intersection does.
+					targetParent.style.contentVisibility = 'hidden';
+					intersectionObserverRef.callback( [ { target, isIntersecting: false } ] );
+
+					expect( view.isVisible ).toBe( false );
+				} );
+
+				it( 'should disconnect the previous intersection observer when pinned again', () => {
+					const intersectionObserverRef = createIntersectionObserverRef();
+
+					view.pin( { target, limiter } );
+					view.pin( { target, limiter } );
+
+					expect( intersectionObserverRef.disconnect ).toHaveBeenCalledOnce();
+					expect( intersectionObserverRef.observe ).toHaveBeenCalledTimes( 2 );
+				} );
+
+				it( 'should properly cleanup intersection observer when stop pinning', () => {
+					const intersectionObserverRef = createIntersectionObserverRef();
+
+					view.pin( { target, limiter } );
+
+					expect( view._intersectionObserver ).not.toBeNull();
+
+					view.unpin();
+
+					expect( intersectionObserverRef.disconnect ).toHaveBeenCalledOnce();
+					expect( view._intersectionObserver ).toBeNull();
+				} );
+
+				function createIntersectionObserverRef() {
+					const intersectionObserverRef = {
+						callback: null,
+						observe: vi.fn(),
+						disconnect: vi.fn()
+					};
+
+					vi.spyOn( global.window, 'IntersectionObserver' ).mockImplementation( function( callback ) {
+						intersectionObserverRef.callback = callback;
+
+						return {
+							observe: intersectionObserverRef.observe,
+							disconnect: intersectionObserverRef.disconnect
+						};
+					} );
+
+					return intersectionObserverRef;
+				}
 
 				function createResizeObserverCallbackRef() {
 					const resizeCallbackRef = { current: null };

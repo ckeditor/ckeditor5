@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>#20276: Balloon hides with its hidden editor</title>
+	<script type="module" src="./1.ts"></script>
+	<style>
+		.tabs { display: flex; gap: 4px; margin-top: 16px; border-bottom: 1px solid #ccc; }
+		.tab { padding: 6px 14px; border: 1px solid #ccc; border-bottom: none; border-radius: 6px 6px 0 0;
+			background: #f3f3f3; cursor: pointer; user-select: none; }
+		.tab_active { background: #fff; font-weight: 600; }
+		#status { margin: 12px 0; padding: 6px 10px; border-radius: 4px; background: #eee; font: 12px monospace; }
+		#status[data-verdict="bug"] { background: #fde2e2; }
+		#status[data-verdict="ok"] { background: #e3f6e3; }
+	</style>
+</head>
+<body>
+	<ck-manual-header>
+		<h2>#20276: The link balloon hides when the editor is hidden with <code>content-visibility</code></h2>
+
+		<ol>
+			<li>The link toolbar is open on load. To open it again, click once inside the link.</li>
+			<li>
+				Switch to <strong>Tab 2</strong>. Tab 1 is hidden with the method picked below. The tabs cancel
+				<code>pointerdown</code>, as tab strips built on drag libraries do, so the balloon is not closed as
+				"clicked outside".
+			</li>
+			<li>
+				<strong>Expected:</strong> the balloon hides, as with <code>display: none</code>, also after clicking
+				<strong>editor.ui.update()</strong>. The status turns green.
+			</li>
+			<li>Repeat for every method and every shadow DOM mode.</li>
+		</ol>
+	</ck-manual-header>
+
+	<ck-manual-shadow-mode overlay-container default="none"></ck-manual-shadow-mode>
+
+	<label>
+		Hide tab 1 with
+		<select id="hide-method">
+			<option value="display">display: none (reference)</option>
+			<option value="content-visibility" selected>content-visibility: hidden</option>
+			<option value="until-found">hidden="until-found"</option>
+			<option value="details">collapsed &lt;details&gt;</option>
+		</select>
+	</label>
+
+	<div class="tabs">
+		<div class="tab tab_active" data-tab="1">Tab 1 (editor)</div>
+		<div class="tab" data-tab="2">Tab 2</div>
+		<div class="tab" id="ui-update">editor.ui.update()</div>
+	</div>
+
+	<div id="status"></div>
+
+	<p id="tab-2-panel" hidden>Another tab. The editor in tab 1 is hidden now.</p>
+
+	<div id="mount"></div>
+
+	<template id="editor-template">
+		<!-- A closed `<details>` is one of the hiding methods. Its summary is hidden, so it adds nothing to see. -->
+		<style>
+			#editor-details > summary { display: none; }
+		</style>
+
+		<details id="editor-details" open>
+			<summary>Editor</summary>
+			<div id="editor-container">
+				<div id="editor">
+					<p>Click inside <a href="https://ckeditor.com">this CKEditor link</a>, then switch to Tab 2.</p>
+				</div>
+			</div>
+		</details>
+	</template>
+</body>
+</html>

@@ -20,6 +20,9 @@ import { getParentElement } from './getparentelement.js';
  * **Note**: This helper does not check whether the element is hidden by cropping, overflow, etc..
  * To check that, use {@link module:utils/dom/rect~Rect} instead.
  *
+ * **Note**: Content skipped by an ancestor with `content-visibility: hidden` (also a closed `<details>`
+ * or `hidden="until-found"`) keeps its client rects, so this helper reports it as visible.
+ *
  * **Note**: The ancestor lookup crosses shadow DOM boundaries, so a text node sitting directly in a shadow root
  * is resolved against that root's host rather than reported as invisible. Works for open and closed shadow roots
  * alike.

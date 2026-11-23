@@ -166,6 +166,13 @@ export class BalloonPanelView extends View {
 	private _resizeObserver: ResizeObserver | null;
 
 	/**
+	 * An instance of intersection observer used to detect if target element is still visible when its size does not
+	 * change, which is the case for content skipped by `content-visibility: hidden` (also a closed `<details>`
+	 * or `hidden="until-found"`). Created and destroyed together with {@link #_resizeObserver}.
+	 */
+	private _intersectionObserver: IntersectionObserver | null = null;
+
+	/**
 	 * Keeps the `scroll` listener of the currently pinned panel on `document` and on every event root of
 	 * the positioning target or the limiter. Stopped by {@link #_stopPinning}.
 	 *
@@ -280,7 +287,7 @@ export class BalloonPanelView extends View {
 	public attachTo( options: Partial<DomOptimalPositionOptions> ): boolean {
 		const target = getDomElement( options.target );
 
-		if ( target && !isVisible( target ) ) {
+		if ( target && !isTargetVisible( target ) ) {
 			return false;
 		}
 
@@ -368,7 +375,11 @@ export class BalloonPanelView extends View {
 
 		this._pinWhenIsVisibleCallback = () => {
 			if ( this.isVisible ) {
-				this._startPinning( options );
+				// The target may have been hidden while the panel was, so showing it again must not leave it
+				// visible with nothing watching the target.
+				if ( !this._startPinning( options ) ) {
+					this.unpin();
+				}
 			} else {
 				this._stopPinning();
 			}
@@ -413,6 +424,14 @@ export class BalloonPanelView extends View {
 		let targetElement = getDomElement( options.target );
 		const limiterElement = options.limiter ? getDomElement( options.limiter ) : global.document.body;
 
+		// Attaching fails once the target is hidden. Then the panel is unpinned, as the observers below miss some
+		// of those cases, for instance a target hidden while scrolled out of view.
+		const reattach = () => {
+			if ( !this.attachTo( options ) ) {
+				this.unpin();
+			}
+		};
+
 		// Then we need to listen on scroll event of eny element in the document.
 		this._scrollListener = new DomTargetsListener( () => [
 			global.document,
@@ -434,15 +453,13 @@ export class BalloonPanelView extends View {
 				// The positioning target and/or limiter can be a Rect, object etc..
 				// There's no way to optimize the listener then.
 				if ( isWithinScrollTarget || isLimiterWithinScrollTarget || !targetElement || !limiterElement ) {
-					this.attachTo( options );
+					reattach();
 				}
 			}
 		} );
 
 		// We need to listen on window resize event and update position.
-		this.listenTo( global.window, 'resize', () => {
-			this.attachTo( options );
-		} );
+		this.listenTo( global.window, 'resize', reattach );
 
 		// Hide the panel if the target element is no longer visible.
 		if ( !this._resizeObserver ) {
@@ -455,7 +472,7 @@ export class BalloonPanelView extends View {
 			if ( targetElement ) {
 				const checkVisibility = () => {
 					// If the target element is no longer visible, hide the panel.
-					if ( !isVisible( targetElement ) ) {
+					if ( !isTargetVisible( targetElement ) ) {
 						this.unpin();
 					}
 				};
@@ -463,6 +480,13 @@ export class BalloonPanelView extends View {
 				// Element is being resized to 0x0 after it's parent became hidden,
 				// so we need to check size in order to determine if it's visible or not.
 				this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
+
+				// Content skipped by `content-visibility: hidden` keeps its size, so the resize observer above does
+				// not notice it going hidden. It stops intersecting the viewport, though, which this one reports –
+				// unless the target is out of view already. Such a target is checked again by `reattach()` when
+				// scrolled back. A report about the target merely scrolled out of view leaves the panel pinned.
+				this._intersectionObserver = new global.window.IntersectionObserver( checkVisibility );
+				this._intersectionObserver.observe( targetElement );
 			}
 		}
 
@@ -483,6 +507,11 @@ export class BalloonPanelView extends View {
 		if ( this._resizeObserver ) {
 			this._resizeObserver.destroy();
 			this._resizeObserver = null;
+		}
+
+		if ( this._intersectionObserver ) {
+			this._intersectionObserver.disconnect();
+			this._intersectionObserver = null;
 		}
 	}
 
@@ -1271,6 +1300,25 @@ export class BalloonPanelView extends View {
 	 * controls the placement of the "arrow". See {@link #position} to learn more.
 	 */
 	public static defaultPositions: Record<string, PositioningFunction> = /* #__PURE__ */ BalloonPanelView.generatePositions();
+}
+
+/**
+ * Like {@link module:utils/dom/isvisible~isVisible}, but also treats content skipped by `content-visibility: hidden`
+ * (a closed `<details>`, `hidden="until-found"`) as hidden, as such content keeps its client rects.
+ *
+ * `Element#checkVisibility()` looks at the ancestors only, so neither `content-visibility: hidden` set on the target
+ * itself nor a hidden ancestor of the `<iframe>` the target lives in is detected.
+ *
+ * Kept out of `isVisible()`, whose other callers wait for a `ResizeObserver` report that skipped content never gets.
+ */
+function isTargetVisible( target: Text | HTMLElement | null ): boolean {
+	if ( !isVisible( target ) ) {
+		return false;
+	}
+
+	const element = ( isText( target ) ? getParentElement( target ) : target ) as HTMLElement;
+
+	return typeof element.checkVisibility != 'function' || element.checkVisibility();
 }
 
 /**
