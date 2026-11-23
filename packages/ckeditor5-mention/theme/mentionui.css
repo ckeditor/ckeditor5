@@ -29,9 +29,12 @@
 	/*
 	 * The editable keeps DOM focus while the list is navigated, so the selected item is indicated
 	 * with a focus-style ring instead of the "on" background. The hover background still applies on
-	 * :hover only, matching the toolbar dropdown lists (e.g. headings).
+	 * :hover only, matching the toolbar dropdown lists (e.g. headings). A disabled item that is the only
+	 * item in the list (for example, the emoji hint) gets no ring, because there is nothing to navigate to.
+	 * The exclusions sit in `:where()` so the rule keeps its specificity and overrides of this selector still win.
 	 */
-	& > .ck-list__item.ck-mentions__item_focused > .ck-button {
+	& > .ck-list__item.ck-mentions__item_focused:where(:not(:only-child)) > .ck-button,
+	& > .ck-list__item.ck-mentions__item_focused > .ck-button:where(:not(.ck-disabled)) {
 		border-color: var(--ck-button-focus-border-color);
 		box-shadow: var(--ck-focus-outer-shadow, var(--ck-button-focus-shadow, var(--ck-interactive-focus-shadow))), 0 0;
 	}

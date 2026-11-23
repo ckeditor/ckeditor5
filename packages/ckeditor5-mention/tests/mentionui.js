@@ -2293,6 +2293,106 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
+		describe( 'disabled custom list item (DOM Element)', () => {
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					feeds: [
+						{
+							marker: '@',
+							feed: [ '@Barney', '@Lily' ],
+							itemRenderer: item => {
+								const button = global.document.createElement( 'button' );
+
+								button.classList.add( 'ck', 'ck-button', 'ck-button_with-text' );
+								button.textContent = item.id;
+
+								if ( item.id === '@Barney' ) {
+									button.classList.add( 'ck-disabled' );
+								}
+
+								return button;
+							}
+						}
+					]
+				} );
+			} );
+
+			it( 'should not show the focus ring on a disabled item highlighted as the only item in the list', async () => {
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@B', doc.selection.getFirstPosition() );
+				} );
+
+				await waitForDebounce();
+
+				expect( mentionsView.items ).toHaveLength( 1 );
+
+				const item = mentionsView.items.get( 0 );
+
+				expect( item.isHighlighted ).toBe( true );
+
+				const highlightedStyle = getFinalBorderAndShadow( item.children.get( 0 ).element );
+
+				item.removeHighlight();
+
+				expect( highlightedStyle ).toEqual( getFinalBorderAndShadow( item.children.get( 0 ).element ) );
+			} );
+
+			it( 'should show the focus ring on a disabled item highlighted in a list with other items', async () => {
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				await waitForDebounce();
+
+				expect( mentionsView.items ).toHaveLength( 2 );
+
+				const item = mentionsView.items.get( 0 );
+
+				expect( item.isHighlighted ).toBe( true );
+
+				const highlightedStyle = getFinalBorderAndShadow( item.children.get( 0 ).element );
+
+				item.removeHighlight();
+
+				expect( highlightedStyle ).not.toEqual( getFinalBorderAndShadow( item.children.get( 0 ).element ) );
+			} );
+
+			it( 'should show the focus ring on an enabled item highlighted as the only item in the list', async () => {
+				_setModelData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@L', doc.selection.getFirstPosition() );
+				} );
+
+				await waitForDebounce();
+
+				expect( mentionsView.items ).toHaveLength( 1 );
+
+				const item = mentionsView.items.get( 0 );
+
+				expect( item.isHighlighted ).toBe( true );
+
+				const highlightedStyle = getFinalBorderAndShadow( item.children.get( 0 ).element );
+
+				item.removeHighlight();
+
+				expect( highlightedStyle ).not.toEqual( getFinalBorderAndShadow( item.children.get( 0 ).element ) );
+			} );
+
+			// The button animates its border and shadow, so the transitions are finished before reading the computed style.
+			function getFinalBorderAndShadow( element ) {
+				element.getAnimations().forEach( animation => animation.finish() );
+
+				const { borderColor, boxShadow } = window.getComputedStyle( element );
+
+				return { borderColor, boxShadow };
+			}
+		} );
+
 		describe( 'multiple feeds configuration', () => {
 			beforeEach( () => {
 				return createClassicTestEditor( {
