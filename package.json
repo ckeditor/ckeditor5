@@ -123,6 +123,7 @@
     "check-exports": "node ./scripts/check-exports.mjs --input=ckeditor5",
     "check-css-imports": "node ./scripts/check-css-imports.mjs",
     "check-css-variables": "node ./scripts/check-css-variables.mjs",
+    "check-css-token-docs": "node ./scripts/check-css-token-docs.mjs",
     "validate-module-re-exports": "node ./scripts/ci/validate-module-re-exports.mjs",
     "validate-file-names": "node ./scripts/ci/validate-file-names.mjs",
     "bump-year": "node ./scripts/bump-year.mjs",

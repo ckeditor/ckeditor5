@@ -139,6 +139,10 @@ jobs:
           command: pnpm run check-css-variables
       - run:
           when: always
+          name: Check if the theme token doc comments follow the format
+          command: pnpm run check-css-token-docs
+      - run:
+          when: always
           name: Check if all package members are exported correctly from the index.ts file
           command: pnpm run validate-module-re-exports
 

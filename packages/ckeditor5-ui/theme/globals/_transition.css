@@ -15,8 +15,19 @@
 	--ck-duration-slow: .3s;
 	--ck-duration-slower: .4s;
 
+	/**
+	 * Duration of short animations.
+	 */
 	--ck-animation-duration-fast: var(--ck-duration-fast);
+
+	/**
+	 * Default duration of animations.
+	 */
 	--ck-animation-duration-base: var(--ck-duration-base);
+
+	/**
+	 * Duration of long animations.
+	 */
 	--ck-animation-duration-slow: var(--ck-duration-slow);
 
 	/**
@@ -51,7 +62,14 @@
 	 */
 	--ck-ease-emphasized: cubic-bezier(0, 0, 0.24, 0.95);
 
+	/**
+	 * Default easing curve of animations.
+	 */
 	--ck-animation-ease-standard: var(--ck-ease-standard);
+
+	/**
+	 * Easing curve of animations that respond to user input.
+	 */
 	--ck-animation-ease-interactive: var(--ck-ease-interactive);
 
 	/**
