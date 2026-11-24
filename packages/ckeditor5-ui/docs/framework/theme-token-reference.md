@@ -1,25 +1,27 @@
 ---
 category: framework-deep-dive-ui
 meta-title: Theme token reference | CKEditor 5 Framework Documentation
-meta-description: Browse the foundation colors and semantic CSS variables of the CKEditor 5 UI theme with their roles, values, the tokens they follow, and contrast pairs.
+meta-description: Browse the foundation and semantic CSS variables of the CKEditor 5 UI theme with their roles, values, token chains, and contrast pairs.
 order: 25
-modified_at: 2026-11-20
+modified_at: 2026-11-24
 ---
 
 # Theme token reference
 
-This page lists the foundation colors and the semantic tokens of the CKEditor&nbsp;5 UI theme. These are the CSS variables that you override most often:
+This page lists the foundation tokens and the semantic tokens of the CKEditor&nbsp;5 UI theme. These are the CSS variables that you override most often:
 
-* **Foundation colors** are the palette of the theme, such as `--ck-color-base-action`. Override them for a broad change, such as a new brand color.
+* **Foundation tokens** are the raw values of the theme: the color palette, such as `--ck-color-base-action`, and the scales, such as the spacing steps `--ck-spacing-sm` and `--ck-spacing-md`. Override them for a broad change, such as a new brand color or a denser UI.
 * **Semantic tokens** name a design role shared by many components, such as the background of a panel or the focus ring of a control. Override them to change one role across the whole UI, or to fine-tune the result of a broad change.
 
 The {@link framework/theme-customization Theme customization} guide explains how to choose a layer and where to set an override.
 
-The list is generated from the theme source files at every documentation build, so it always matches the theme of this version. The foundation scales, such as the spacing and the font sizes, and the component tokens are not on this page.
+The list is generated from the theme source files at every documentation build, so it always matches the theme of this version. The component tokens are not on this page.
 
 ## How to read the list
 
 Each row shows the name of a token, the first sentence of its description, and its value in the default theme, with a preview. The details of a row hold the rest of the description, the default value as the theme declares it, the value that it resolves to, the tokens that it follows and that follow it, and the contrast pairs.
+
+The steps of a scale, such as `--ck-spacing-sm`, have no description of their own. The description of their file, above their rows, explains the whole scale and, when the scale has one, the token that resizes it, such as `--ck-spacing-base`.
 
 On the page, the filter above the list matches the names, the descriptions, and the values. A row must contain every word that you type, so `surface overlay` finds the tokens that mention both words.
 
@@ -28,11 +30,13 @@ On the page, the filter above the list matches the names, the descriptions, and 
 Most tokens read the value of another token. The details show this chain in both directions:
 
 * **Follows** names the tokens that the token reads. A legacy name or a deprecated alias in between is skipped, so the list names the token to override.
-* **Followed by** names every token on this page that changes when you override the token on `:root`, directly or through other tokens. An override on a narrower selector does not change them, because the theme resolves them on `:root`. The {@link framework/theme-customization#global-vs-scoped-overrides Theme customization} guide explains global and scoped overrides.
+* **Followed by** names the tokens on this page whose default declaration on `:root` reads the token, directly or through other tokens. They change when you override the token on `:root`. An override on a narrower selector does not change them, because the theme resolves them on `:root`. The {@link framework/theme-customization#global-vs-scoped-overrides Theme customization} guide explains global and scoped overrides.
 
 Check **Followed by** when you plan a broad change. One brand color is often spread over several foundation colors. For example, `--ck-color-base-action` colors the primary buttons, `--ck-color-base-active` colors the accent text and the text of the toggled-on buttons, and `--ck-color-base-focus` colors the focus rings. Override all of them, together with their variants, such as `--ck-color-base-action-hover`. Some semantic colors do not follow any foundation color, so a new brand color does not change them. For example, the pulsing glow of the buttons that insert a paragraph next to a widget comes from `--ck-color-interactive-focus-border-coordinates`, which holds the default focus color as fixed values. Override such tokens too.
 
-**Followed by** lists only the tokens on this page. The components and other tokens of the theme can read a token as well, so a token without **Followed by** is not necessarily unused.
+A scale can follow another scale. The widths of panels, such as `--ck-width-md`, grow with the font size, so **Followed by** of `--ck-font-size-base` lists them too, and a new font size also resizes the panels. The focus tokens of the foundation, such as `--ck-focus-shadow`, read semantic tokens, such as `--ck-color-interactive-focus-shadow`, so their **Follows** points to the semantic layer.
+
+**Followed by** lists only the tokens on this page, and it traces only their declarations on `:root`. The components and other tokens of the theme can read a token as well, so a token without **Followed by** is not necessarily unused. A token that the theme declares again under another selector can depend on more tokens there. For example, `--ck-radius-corners` reads `--ck-radius-base` inside `.ck-rounded-corners`, so a new base radius changes it too, although **Followed by** of `--ck-radius-base` does not list it. Its description explains this.
 
 ### Contrast pairs
 

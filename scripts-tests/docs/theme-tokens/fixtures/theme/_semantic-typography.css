@@ -29,6 +29,16 @@
 	--ck-font-size-toolbar: inherit;
 
 	/**
+	 * The font of the controls, with quotes that the preview must escape.
+	 */
+	--ck-font-family-control: "Segoe UI", sans-serif;
+
+	/**
+	 * A font that a rule asks a preview for, but whose value resolves to nothing, because it names no declared token.
+	 */
+	--ck-font-family-unresolved: var(--ck-font-family-missing);
+
+	/**
 	 * A width that is not a single length, so no rule gives it a preview.
 	 */
 	--ck-width-dialog: min(400px, 90vw);

@@ -2313,4 +2313,4 @@ See {@link features/track-changes#markers-styling Markers styling} in the track 
 
 * {@link framework/theme-token-naming Theme token naming guide} &ndash; the three-layer model and the token naming conventions.
 * {@link framework/theme-customization Theme customization guide} &ndash; how to override tokens and apply custom CSS.
-* {@link framework/theme-token-reference Theme token reference guide} &ndash; the foundation colors and the semantic tokens with their roles, default values, and replacements.
+* {@link framework/theme-token-reference Theme token reference guide} &ndash; the foundation and semantic tokens with their roles, default values, and replacements.

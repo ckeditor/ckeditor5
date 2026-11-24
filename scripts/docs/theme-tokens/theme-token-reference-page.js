@@ -25,6 +25,8 @@
 	const rows = Array.from( root.querySelectorAll( '.ck-token-ref__token' ) );
 	const topics = Array.from( new Set( rows.map( row => row.dataset.topic ) ) );
 	const layers = Array.from( new Set( rows.map( row => row.dataset.layer ) ) );
+	// From the blocks, not from the rows, so that a file without rows is hidden by the filter too.
+	const files = Array.from( new Set( Array.from( root.querySelectorAll( '[data-file-part]' ), part => part.dataset.filePart ) ) );
 	const textNodes = new WeakMap();
 	// The state that the filter last gave to the details it toggled, until their `toggle` event comes.
 	const filterStates = new WeakMap();
@@ -165,6 +167,12 @@
 
 		highlightMatches( words );
 		openMatchingDetails( words );
+
+		// A topic can join several files, each with its own description, which hides together with the rows of its file.
+		// An empty query shows every file, also one without rows.
+		for ( const file of files ) {
+			toggleGroup( 'file', file, !words.length || rows.some( row => row.dataset.file === file && !row.hidden ) );
+		}
 
 		for ( const topic of topics ) {
 			toggleGroup( 'topic', topic, rows.some( row => row.dataset.topic === topic && !row.hidden ) );
@@ -308,7 +316,7 @@
 	}
 
 	function toggleGroup( type, id, isVisible ) {
-		for ( const element of root.querySelectorAll( `[data-${ type }-part="${ id }"]` ) ) {
+		for ( const element of root.querySelectorAll( `[data-${ type }-part="${ CSS.escape( id ) }"]` ) ) {
 			element.hidden = !isVisible;
 
 			// The documentation theme wraps each heading together with its anchor link.

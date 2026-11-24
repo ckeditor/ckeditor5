@@ -128,6 +128,11 @@
 	border-top: 1px solid var(--color-gray-500, hsl(210 3% 85%));
 }
 
+/* The next file of the same topic follows closer than the next topic, unless the filter hides that file. */
+.ck-token-ref__list:has(+ .ck-token-ref__source:not([hidden])) {
+	margin-bottom: var(--spacing-5, 1.25rem);
+}
+
 .ck-token-ref__item {
 	margin: 0;
 	padding: 0;
@@ -335,6 +340,7 @@
 /* The parts of the page set their own display, which would override the hidden attribute. */
 .ck-token-ref__token[hidden],
 .ck-token-ref__filter[hidden],
+[data-file-part][hidden],
 [data-topic-part][hidden],
 [data-layer-part][hidden],
 .b-heading[hidden],

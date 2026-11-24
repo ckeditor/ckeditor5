@@ -36,7 +36,10 @@ const {
 const FIXTURES_PATH = fileURLToPath( new URL( './fixtures/theme/', import.meta.url ) );
 
 // The foundation files that the introduction of the page promises, next to every semantic file.
-const FOUNDATION_FILES = [ 'colors/_foundation.css' ];
+const FOUNDATION_FILES = [
+	'colors/_foundation.css', '_spacing.css', '_rounded.css', '_border.css', '_shadow.css', '_fonts.css', '_width.css',
+	'_zindex.css', '_transition.css', '_focus.css', '_disabled.css'
+];
 
 const FIXTURE_LAYERS = [
 	{
@@ -68,6 +71,7 @@ const FIXTURE_LAYERS = [
 				files: [ '_semantic-typography.css' ],
 				preview: [
 					{ prefix: '--ck-font-weight-', type: 'font-weight' },
+					{ prefix: '--ck-font-family-', type: 'font-family' },
 					{ prefix: '--ck-font-size-', type: 'font-size' },
 					{ prefix: '--ck-color-focus-coordinates', type: 'hsl-channels' }
 				]
@@ -109,7 +113,8 @@ describe( 'buildThemeTokenReference()', () => {
 	// The theme files change often, so the tests on them check mostly what holds for every theme. The output itself is
 	// checked on the fixture theme, in the tests of `createThemeTokenReference()`. Two kinds of tests are exceptions on
 	// purpose: the ones that name the legacy names and the deprecated aliases of the theme, because only the theme has them,
-	// and the one that requires a contrast for every pair, so that a color the builder cannot read does not land unnoticed.
+	// the one that requires a contrast for every pair, so that a color the builder cannot read does not land unnoticed,
+	// and the one that names the tokens whose preview depends on the order of the rules in `LAYERS`.
 	it( 'renders a row for every token of the files of the page, in their order', () => {
 		const expectedIds = LAYERS.flatMap( layer => layer.topics ).flatMap( topic => topic.files ).flatMap( file =>
 			extractThemeTokens( path.join( THEME_PATH, file ) ).tokens.map( token => token.name ) );
@@ -160,9 +165,26 @@ describe( 'buildThemeTokenReference()', () => {
 		}
 	} );
 
+	// `getPreviewType()` takes the first rule that matches, so a specific rule must come before a general one in `LAYERS`.
+	it( 'gives the tokens of the foundation scales the previews that the order of the rules asks for', () => {
+		// The value of the theme can change, so the test checks only that the line height is not previewed as a font size.
+		expect( getTokenHtml( '--ck-line-height-base' ) ).toContain( '<span class="ck-token-ref__preview ck-token-ref__preview_plain"' );
+		expect( getTokenHtml( '--ck-line-height-base' ) ).not.toContain( 'style="font-size' );
+		expect( getTokenHtml( '--ck-radius-corners' ) ).toContain( '<span class="ck-token-ref__preview ck-token-ref__preview_none"' );
+		expect( getTokenHtml( '--ck-font-family' ) ).toContain( '<span style="font-family: ' );
+		expect( getTokenHtml( '--ck-focus-shadow-spread' ) ).toContain( '<span class="ck-token-ref__bar" style="width: ' );
+	} );
+
+	it( 'names one source file in each source line', () => {
+		const sources = Array.from( html.matchAll( /<p class="ck-token-ref__source"[^>]*>Source: (.*?)<\/p>/g ), match => match[ 1 ] );
+
+		expect( sources.length ).toBeGreaterThan( LAYERS.flatMap( layer => layer.topics ).length );
+		expect( sources.filter( source => source.includes( ',' ) ) ).toEqual( [] );
+	} );
+
 	it( 'points "Follows" past the legacy names and the deprecated aliases to the tokens to override', () => {
 		expect( getListItem( '--ck-layer-panel', 'Follows:' ) ).toBe(
-			'<span class="ck-token-ref__label">Follows:</span> <code>--ck-z-overlay</code>'
+			'<span class="ck-token-ref__label">Follows:</span> <a href="#--ck-z-overlay"><code>--ck-z-overlay</code></a>'
 		);
 		expect( getListItem( '--ck-interactive-focus-border-color', 'Follows:' ) ).toBe(
 			'<span class="ck-token-ref__label">Follows:</span> ' +
@@ -313,13 +335,42 @@ describe( 'createThemeTokenReference()', () => {
 			'h2 foundation', 'h3 foundation-colors',
 			'h2 semantic', 'h3 semantic-surfaces', 'h3 semantic-shape', 'h3 semantic-typography'
 		] );
+		const part = 'data-file-part="semantic-surfaces/colors/_semantic-surface.css"';
+
+		expect( html ).toContain( `<p class="ck-token-ref__source" ${ part }>Source: <code>colors/_semantic-surface.css</code></p>` );
 		expect( html ).toContain(
-			'<p class="ck-token-ref__source" data-topic-part="semantic-surfaces">Source: <code>colors/_semantic-surface.css</code></p>'
+			`<p ${ part }>The surfaces of the fixture theme. They use ${ link( '--ck-color-white' ) } from the foundation.</p>`
 		);
-		expect( html ).toContain(
-			`<p data-topic-part="semantic-surfaces">The surfaces of the fixture theme. They use ${ link( '--ck-color-white' ) } ` +
-			'from the foundation.</p>'
+	} );
+
+	// A scale describes its steps only in the description of its file, so each file of a topic is a block of its own.
+	it( 'renders each file of a topic as a block with its source, its description, and its rows', () => {
+		const layers = [ { title: 'Layer', id: 'layer', topics: [
+			{ title: 'Topic', id: 'topic', files: [ '_semantic-shape.css', '_semantic-typography.css' ] }
+		] } ];
+		const topicHtml = getContent( createThemeTokenReference( { themePath: FIXTURES_PATH, layers } ) );
+		const blocks = Array.from( topicHtml.matchAll( /data-file-part="([^"]+)"/g ), match => match[ 1 ] );
+		const rows = Array.from( topicHtml.matchAll( /<div class="ck-token-ref__token" id="([^"]+)"[^>]* data-file="([^"]+)"/g ),
+			( [ , name, file ] ) => `${ file } ${ name }` );
+
+		// The source, the description, and the list of each file, in the order of the files.
+		expect( blocks ).toEqual( [
+			'topic/_semantic-shape.css', 'topic/_semantic-shape.css', 'topic/_semantic-shape.css',
+			'topic/_semantic-typography.css', 'topic/_semantic-typography.css', 'topic/_semantic-typography.css'
+		] );
+		expect( topicHtml ).toContain( 'data-file-part="topic/_semantic-shape.css">Source: <code>_semantic-shape.css</code></p>' );
+		expect( topicHtml ).toContain(
+			'data-file-part="topic/_semantic-typography.css">Source: <code>_semantic-typography.css</code></p>'
 		);
+		expect( rows ).toContain( 'topic/_semantic-shape.css --ck-spacing-control' );
+		expect( rows ).toContain( 'topic/_semantic-typography.css --ck-font-weight-strong' );
+
+		// Only the heading belongs to the topic, so the filter hides each block by its file alone.
+		expect( topicHtml.match( /data-topic-part=/g ) ).toHaveLength( 1 );
+
+		// The description of the second file comes after the rows of the first one.
+		expect( topicHtml.indexOf( 'id="--ck-spacing-control"' ) )
+			.toBeLessThan( topicHtml.indexOf( 'data-file-part="topic/_semantic-typography.css">Source:' ) );
 	} );
 
 	it( 'shows the first sentence of a description in the row and the rest in the details', () => {
@@ -421,6 +472,9 @@ describe( 'createThemeTokenReference()', () => {
 				'<span class="ck-token-ref__bar" style="width: 4px"></span>' ),
 			'--ck-font-size-control': preview( 'ck-token-ref__preview_plain', '', '<span style="font-size: 14px">Aa</span>' ),
 			'--ck-font-weight-strong': preview( 'ck-token-ref__preview_plain', '', '<span style="font-weight: 600">Aa</span>' ),
+			'--ck-font-family-control': preview( 'ck-token-ref__preview_plain', '',
+				'<span style="font-family: &quot;Segoe UI&quot;, sans-serif">Aa</span>' ),
+			'--ck-font-family-unresolved': preview( 'ck-token-ref__preview_none', '', '—' ),
 			'--ck-color-focus-coordinates': preview( '', 'background: hsl(220, 80%, 50%)' ),
 			'--ck-motion-easing-default': preview( 'ck-token-ref__preview_none', '', '—' ),
 			'--ck-font-size-toolbar': preview( 'ck-token-ref__preview_none', '', '—' )
@@ -723,6 +777,7 @@ describe( 'getPreviewType()', () => {
 		it( 'recognizes a shadow of one or more layers by its value', () => {
 			expect( getPreviewType( '--ck-any', '0 0 0 3px hsl(0 0% 0% / .2)' ) ).toBe( 'shadow' );
 			expect( getPreviewType( '--ck-any', 'inset 0 1px hsl(0 0% 0%), 0 16px 32px -4px hsl(0, 0%, 0%)' ) ).toBe( 'shadow' );
+			expect( getPreviewType( '--ck-any', '0 1px 4px hsl(0 0% 0% / .05), 0 2px 10px hsl(0 0% 0% / .05) inset' ) ).toBe( 'shadow' );
 		} );
 
 		it( 'recognizes a border by its value', () => {
@@ -787,6 +842,41 @@ describe( 'getPreviewType()', () => {
 
 		it( 'accepts a radius of up to four lengths', () => {
 			expect( getPreviewType( '--ck-border-radius-cut', '8px 0 8px 8px', rules ) ).toBe( 'radius' );
+		} );
+
+		it( 'previews a font family only when its value can go into a style attribute', () => {
+			const fontRules = [ { type: 'font-family' } ];
+
+			expect( getPreviewType( '--ck-font-family', 'system-ui, "Segoe UI", sans-serif', fontRules ) ).toBe( 'font-family' );
+			expect( getPreviewType( '--ck-font-family', 'var(--ck-font-family-missing)', fontRules ) ).toBe( 'none' );
+			expect( getPreviewType( '--ck-font-family', 'serif; color: red', fontRules ) ).toBe( 'none' );
+			expect( getPreviewType( '--ck-font-family', '', fontRules ) ).toBe( 'none' );
+		} );
+
+		// The rules of the Foundation topics, which need a specific rule before the general one of the topic.
+		it( 'gives a line height a number, not a font size, when its rule comes first', () => {
+			const typographyRules = [
+				{ prefix: '--ck-line-height-', type: 'number' },
+				{ prefix: '--ck-font-weight-', type: 'font-weight' },
+				{ type: 'font-size' }
+			];
+
+			expect( getPreviewType( '--ck-line-height-base', '1.5', typographyRules ) ).toBe( 'number' );
+			expect( getPreviewType( '--ck-font-weight-bold', '700', typographyRules ) ).toBe( 'font-weight' );
+			expect( getPreviewType( '--ck-font-size-sm', '12px', typographyRules ) ).toBe( 'font-size' );
+			// Without the rule of the line height, a unitless value passes the font size check.
+			expect( getPreviewType( '--ck-line-height-base', '1.5', [ { type: 'font-size' } ] ) ).toBe( 'font-size' );
+		} );
+
+		it( 'gives the corner radius no preview, and the other radius steps a radius, when its rule comes first', () => {
+			const shapeRules = [
+				{ prefix: '--ck-radius-corners', type: 'none' },
+				{ prefix: '--ck-radius-', type: 'radius' }
+			];
+
+			expect( getPreviewType( '--ck-radius-corners', '0', shapeRules ) ).toBe( 'none' );
+			expect( getPreviewType( '--ck-radius-sm', '2px', shapeRules ) ).toBe( 'radius' );
+			expect( getPreviewType( '--ck-radius-full', '50%', shapeRules ) ).toBe( 'radius' );
 		} );
 
 		it( 'turns the preview off with the `none` type', () => {
@@ -882,6 +972,13 @@ describe( 'getFollowedTokens()', () => {
 	it( 'returns the tokens that are not aliases as they are, without repeats', () => {
 		expect( getFollowedTokens( { value: 'calc(var(--ck-z-overlay) + var(--ck-z-panel))' }, declarations, aliases ) )
 			.toEqual( [ '--ck-z-overlay' ] );
+	} );
+
+	it( 'skips a legacy name that the theme does not declare at the start of a `calc()`', () => {
+		const scaleDeclarations = new Map( [ [ '--ck-radius-base', '8px' ] ] );
+		const step = { value: 'calc(var(--ck-border-radius, var(--ck-radius-base)) * 0.25)' };
+
+		expect( getFollowedTokens( step, scaleDeclarations, new Map() ) ).toEqual( [ '--ck-radius-base' ] );
 	} );
 
 	it( 'stops at a cycle of aliases', () => {

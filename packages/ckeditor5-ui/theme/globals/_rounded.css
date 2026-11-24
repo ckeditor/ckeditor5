@@ -29,7 +29,8 @@
 	/**
 	 * Corner radius of elements that follow the rounded corners switch. Such elements are square unless they are
 	 * inside an element with the `.ck-rounded-corners` class, which the editor UI adds to its root elements.
-	 * Use it only for elements that follow the switch. Other elements use the semantic radius roles.
+	 * Use it only for elements that follow the switch. Other elements use the semantic radius roles. Inside
+	 * `.ck-rounded-corners` it reads `--ck-radius-base`, so a new base radius changes it too.
 	 */
 	/* Backward compatibility: the theme reads the legacy `--ck-rounded-corners-radius` first if overridden. */
 	--ck-radius-corners: 0;

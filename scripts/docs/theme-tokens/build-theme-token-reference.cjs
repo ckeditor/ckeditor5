@@ -39,6 +39,59 @@ const LAYERS = [
 					{ prefix: '--ck-color-base-diff-', type: 'hsl-channels' },
 					{ prefix: '--ck-color-base-comment', type: 'hsl-channels' }
 				]
+			},
+			{
+				title: 'Spacing',
+				id: 'foundation-spacing',
+				files: [ '_spacing.css' ],
+				preview: 'bar'
+			},
+			{
+				title: 'Shape',
+				id: 'foundation-shape',
+				files: [ '_rounded.css', '_border.css', '_shadow.css' ],
+				// `getPreviewType()` takes the first rule that matches, so a specific rule comes before a general one.
+				preview: [
+					// The radius is `0` on `:root` and set by `.ck-rounded-corners`, so a square preview would mislead.
+					{ prefix: '--ck-radius-corners', type: 'none' },
+					{ prefix: '--ck-radius-', type: 'radius' },
+					{ prefix: '--ck-border-width-', type: 'line' }
+				]
+			},
+			{
+				title: 'Typography',
+				id: 'foundation-typography',
+				files: [ '_fonts.css' ],
+				preview: [
+					// A unitless line height would pass the font size check of the last rule.
+					{ prefix: '--ck-line-height-', type: 'number' },
+					{ prefix: '--ck-font-weight-', type: 'font-weight' },
+					{ prefix: '--ck-font-family', type: 'font-family' },
+					{ type: 'font-size' }
+				]
+			},
+			{
+				title: 'Sizes',
+				id: 'foundation-sizes',
+				files: [ '_width.css' ],
+				// The bar of the preview is too short for the widths of panels.
+				preview: [ { prefix: '--ck-width-', type: 'none' } ]
+			},
+			{
+				title: 'Layers',
+				id: 'foundation-layers',
+				files: [ '_zindex.css' ]
+			},
+			{
+				title: 'Motion',
+				id: 'foundation-motion',
+				files: [ '_transition.css' ]
+			},
+			{
+				title: 'Focus and states',
+				id: 'foundation-focus-and-states',
+				files: [ '_focus.css', '_disabled.css' ],
+				preview: [ { prefix: '--ck-focus-shadow-spread', type: 'bar' } ]
 			}
 		]
 	},
@@ -127,7 +180,8 @@ const DURATION = /^[\d.]+m?s$/;
 const COLOR_KEYWORD = /^(#[\da-f]{3,8}|transparent|currentcolor)$/i;
 const COLOR_FUNCTION = /^(hsla?|rgba?|hwb|lab|lch|oklab|oklch|color|color-mix)\(/i;
 const BORDER = /^([\d.]+[a-z]*)\s+(solid|dashed|dotted|double)\s+(.+)$/;
-const SHADOW = /^(inset\s+)?(-?[\d.]+[a-z]*\s+){2,4}(.+)$/;
+// The `inset` keyword can come first or last, as in `0 2px 10px hsl(0 0% 0% / .05) inset`.
+const SHADOW = /^(inset\s+)?(-?[\d.]+[a-z]*\s+){2,4}(.+?)(\s+inset)?$/;
 // The hue, saturation, and lightness of a color without `hsl()`, such as `157 80% 34%`, for a token read as `hsl(var(…) / 20%)`.
 // Both separators are commas or both are spaces, because `hsl()` does not accept a mix.
 const HSL_CHANNELS = /^[\d.]+(deg)?(\s*,\s*[\d.]+%\s*,\s*|\s+[\d.]+%\s+)[\d.]+%$/;
@@ -145,6 +199,9 @@ const PREVIEW_VALUE_CHECKS = {
 	bar: value => LENGTH.test( value ),
 	'font-size': value => LENGTH.test( value ),
 	'font-weight': value => /^\d+$/.test( value ),
+	// The value goes into a `style` attribute, so a value that is not resolved or that would end the declaration gets
+	// no preview.
+	'font-family': value => value !== '' && !/var\(|;/.test( value ),
 	none: () => true
 };
 
@@ -246,24 +303,31 @@ function getPageAsset( fileName, loader ) {
 	return transformSync( source, { loader, minify: true, legalComments: 'none' } ).code.trim();
 }
 
+/**
+ * Renders a topic as one block per file: the source, the description of the file, and its rows. A scale describes its
+ * steps only in the description of its file, so the description must stand right above the rows of that file.
+ */
 function renderTopic( topic, layer, context ) {
-	const files = topic.files.map( file => ( { file, ...extractThemeTokens( path.join( context.themePath, file ) ) } ) );
-	const descriptions = files.map( file => file.description ).filter( Boolean );
-	const tokens = files.flatMap( file => file.tokens.map( token => ( { ...token, file: file.file } ) ) );
+	const topicPart = `data-topic-part="${ topic.id }"`;
 
-	const part = `data-topic-part="${ topic.id }"`;
+	return `<h3 id="${ topic.id }" ${ topicPart }>${ escape( topic.title ) }</h3>` + topic.files.map( file => {
+		const { description, tokens } = extractThemeTokens( path.join( context.themePath, file ) );
+		// The id of a block holds a slash and a dot, so it is used only as the value of an attribute, never as an `id`.
+		const fileId = `${ topic.id }/${ file }`;
+		// Only the file hides the block. With the topic as well, a topic with matching rows in one file would show the
+		// blocks of its other files again.
+		const part = `data-file-part="${ escape( fileId ) }"`;
 
-	return (
-		`<h3 id="${ topic.id }" ${ part }>${ escape( topic.title ) }</h3>` +
-		`<p class="ck-token-ref__source" ${ part }>Source: ` +
-			`${ topic.files.map( file => `<code>${ escape( file ) }</code>` ).join( ', ' ) }</p>` +
-		descriptions.map( description => `<p ${ part }>${ formatText( description ) }</p>` ).join( '' ) +
-		`<ul class="ck-token-ref__list" ${ part }>` +
-			tokens.map( token => (
-				`<li class="ck-token-ref__item">${ renderToken( token, { topic, layer }, context ) }</li>`
-			) ).join( '' ) +
-		'</ul>'
-	);
+		return (
+			`<p class="ck-token-ref__source" ${ part }>Source: <code>${ escape( file ) }</code></p>` +
+			( description ? `<p ${ part }>${ formatText( description ) }</p>` : '' ) +
+			`<ul class="ck-token-ref__list" ${ part }>` +
+				tokens.map( token => (
+					`<li class="ck-token-ref__item">${ renderToken( { ...token, file }, { topic, layer, fileId }, context ) }</li>`
+				) ).join( '' ) +
+			'</ul>'
+		);
+	} ).join( '' );
 }
 
 /**
@@ -341,7 +405,7 @@ function renderPair( pair, otherToken ) {
 	);
 }
 
-function renderToken( token, { topic, layer }, { declarations, canvas, pairsByForeground, followerIndex, aliases } ) {
+function renderToken( token, { topic, layer, fileId }, { declarations, canvas, pairsByForeground, followerIndex, aliases } ) {
 	const resolved = simplifyCalc( resolve( token.value, declarations ) );
 	const followers = new Set( getAllFollowers( token.name, followerIndex ) );
 	const dependencies = {
@@ -370,7 +434,7 @@ function renderToken( token, { topic, layer }, { declarations, canvas, pairsByFo
 
 	return (
 		`<div class="ck-token-ref__token" id="${ escape( token.name ) }" data-name="${ escape( token.name ) }" ` +
-			`data-topic="${ topic.id }" data-layer="${ layer.id }" ` +
+			`data-topic="${ topic.id }" data-layer="${ layer.id }" data-file="${ escape( fileId ) }" ` +
 			`data-visible="${ escape( visibleText ) }" data-details="${ escape( detailsText ) }">` +
 			'<p class="ck-token-ref__row">' +
 				'<span class="ck-token-ref__head">' +
@@ -605,6 +669,8 @@ function renderPreview( name, resolved, rules ) {
 			return renderPreviewBox( 'ck-token-ref__preview_plain', '', `<span style="font-size: ${ value }">Aa</span>` );
 		case 'font-weight':
 			return renderPreviewBox( 'ck-token-ref__preview_plain', '', `<span style="font-weight: ${ value }">Aa</span>` );
+		case 'font-family':
+			return renderPreviewBox( 'ck-token-ref__preview_plain', '', `<span style="font-family: ${ value }">Aa</span>` );
 		default:
 			return renderPreviewBox( 'ck-token-ref__preview_none', '', '—' );
 	}
