@@ -115,9 +115,62 @@ class CollaborationDataLoader extends Plugin {
 	}
 }
 
+// The base styles of the CRM, and the changes that its releases bring to them. Each set holds global rules, like any style sheet
+// of a real application would. The `{scope}` placeholder limits them to the area around the editors and the overlay layer of
+// the light-DOM editor, so the rest of the guide keeps its styles.
+const BASE_STYLES = `
+	{scope} p, {scope} li, {scope} blockquote {
+		font-family: "Salesforce Sans", -apple-system, "Segoe UI", sans-serif; font-size: 13px; color: hsl(0, 0%, 9%);
+	}
+	{scope} h2, {scope} h3 { color: hsl(213, 94%, 19%); font-weight: 700; }
+	{scope} a { color: hsl(210, 100%, 33%); }
+`;
+
+const RELEASES = [
+	{
+		id: 'reset',
+		label: 'CSS reset',
+		styles: `
+			{scope} h2, {scope} h3 { margin: 0; font-size: 1em; font-weight: inherit; }
+			{scope} p, {scope} blockquote { margin: 0; }
+			{scope} ul, {scope} ol { margin: 0; padding: 0; list-style: none; }
+		`
+	},
+	{
+		id: 'redesign',
+		label: 'New design system',
+		styles: `
+			{scope} h2, {scope} h3 { font-weight: 300; letter-spacing: -0.01em; }
+			{scope} h2 { font-size: 1.75em; }
+			{scope} blockquote {
+				padding: 0.75em 1em; border-left: 4px solid hsl(207, 99%, 42%); border-radius: 0 8px 8px 0;
+				background: hsl(207, 100%, 96%); font-style: normal;
+			}
+		`
+	},
+	{
+		id: 'rebrand',
+		label: 'Rebrand',
+		styles: `
+			{scope} h2, {scope} h3 { color: hsl(272, 60%, 30%); }
+			{scope} a { color: hsl(272, 60%, 38%); font-weight: 600; text-decoration: none; }
+		`
+	},
+	{
+		id: 'compact',
+		label: 'Compact density',
+		styles: `
+			{scope} p, {scope} li, {scope} blockquote { line-height: 1.25; }
+			{scope} p { margin-block: 0.25em; }
+			{scope} li { margin: 0; }
+			{scope} h2, {scope} h3 { margin-block: 0.5em 0.25em; }
+		`
+	}
+];
+
 const demoElement = document.querySelector( '#snippet-shadow-dom' );
 
-setUpPageStylesButtons();
+setUpReleases();
 createLightDomEditor();
 createShadowDomEditor();
 
@@ -190,31 +243,40 @@ async function createEditor( attachTo, overlayContainer ) {
 	return editor;
 }
 
-// Adds global rules to the page, like any style sheet of the host application would. They are scoped to the demo and
-// the overlay layer of the light-DOM editor, so the rest of the guide keeps its styles. Like any page styles, they
-// stop at the shadow boundary.
-function setUpPageStylesButtons() {
-	// The buttons are in the guide, above the snippet, and the reset one starts disabled there.
-	const applyButton = document.querySelector( '#snippet-shadow-dom-apply-styles' );
-	const resetButton = document.querySelector( '#snippet-shadow-dom-reset-styles' );
+// Applies the CRM releases that the reader picks. Their rules are added to the page like any page styles, so they reach
+// the light-DOM editor and its overlay layer, and stop at the shadow boundary.
+function setUpReleases() {
+	// The checkboxes are in the guide, above the snippet.
+	const checkboxElements = document.querySelectorAll( 'input[name="snippet-shadow-dom-release"]' );
+	const releaseNotesElement = demoElement.querySelector( '.shadow-dom-demo__app-release' );
 	const pageStyleSheet = new CSSStyleSheet();
+	const scope = ':is(.shadow-dom-demo__frame-main, .shadow-dom-demo__overlay)';
 
-	pageStyleSheet.replaceSync( `
-		p { color: #9a3412; font-family: Georgia, serif; font-size: 1.125em; }
-		h2 { color: #15803d; }
-		li { font-style: italic; }
-	` );
+	document.adoptedStyleSheets = [ ...document.adoptedStyleSheets, pageStyleSheet ];
 
-	const togglePageStyles = isApplied => {
-		const otherStyleSheets = document.adoptedStyleSheets.filter( sheet => sheet !== pageStyleSheet );
+	const update = () => {
+		const checkedValues = [ ...checkboxElements ]
+			.filter( checkboxElement => checkboxElement.checked )
+			.map( checkboxElement => checkboxElement.value );
+		// The releases apply in their order, whatever order the reader picks them in.
+		const releases = RELEASES.filter( release => checkedValues.includes( release.id ) );
+		const styles = [ BASE_STYLES, ...releases.map( release => release.styles ) ].join( '' );
 
-		document.adoptedStyleSheets = isApplied ? [ ...otherStyleSheets, pageStyleSheet ] : otherStyleSheets;
+		for ( const release of RELEASES ) {
+			demoElement.classList.toggle( `shadow-dom-demo_${ release.id }`, releases.includes( release ) );
+		}
 
-		applyButton.disabled = isApplied;
-		resetButton.disabled = !isApplied;
-		( isApplied ? resetButton : applyButton ).focus();
+		releaseNotesElement.textContent = releases.length ?
+			`Installed updates: ${ releases.map( release => release.label ).join( ', ' ) }.` :
+			'No updates installed yet.';
+
+		pageStyleSheet.replaceSync( styles.replaceAll( '{scope}', scope ) );
 	};
 
-	applyButton.addEventListener( 'click', () => togglePageStyles( true ) );
-	resetButton.addEventListener( 'click', () => togglePageStyles( false ) );
+	for ( const checkboxElement of checkboxElements ) {
+		checkboxElement.addEventListener( 'change', update );
+	}
+
+	// The browser may restore the checked boxes when the page is reloaded.
+	update();
 }
