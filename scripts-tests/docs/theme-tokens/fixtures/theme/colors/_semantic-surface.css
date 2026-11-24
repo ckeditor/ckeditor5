@@ -1,0 +1,83 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/**
+ * The surfaces of the fixture theme. They use `--ck-color-white` from the foundation.
+ */
+:root,
+:host {
+	/**
+	 * The background of the page behind the editor. The other surfaces are composited over it.
+	 * @pair --ck-color-text-default
+	 */
+	--ck-color-surface-canvas: var(--ck-color-white);
+
+	/**
+	 * A translucent surface that dims the content below it, such as `--ck-color-surface-canvas`.
+	 * @pair --ck-color-text-default
+	 * @pair --ck-color-text-subtle
+	 */
+	--ck-color-surface-overlay: hsla(0, 0%, 0%, 0.5);
+
+	/* A plain comment is a note for maintainers, not a description. */
+	--ck-color-surface-raised: var(--ck-color-gray-100);
+
+	/**
+	 * A surface that falls back to a value, because `--ck-color-undeclared` is not declared.
+	 * @pair --ck-color-text-default
+	 */
+	--ck-color-surface-fallback: var(--ck-color-undeclared, var(--ck-color-blue-500));
+
+	/**
+	 * The color of the text on the surfaces.
+	 */
+	/* A plain comment between a doc comment and its declaration keeps the description. */
+	--ck-color-text-default: var(--ck-color-black);
+
+	/**
+	 * The color of secondary text, which is not readable on every surface.
+	 */
+	--ck-color-text-subtle: var(--ck-color-gray-500);
+
+	/**
+	 * A translucent surface mixed from a foundation color.
+	 * @pair --ck-color-text-default
+	 */
+	--ck-color-surface-mixed: color-mix(in srgb, var(--ck-color-blue-500) 10%, transparent);
+
+	/**
+	 * A surface in a color space that contrast checks cannot read.
+	 * @pair --ck-color-text-default
+	 */
+	--ck-color-surface-unsupported: color-mix(in oklch, var(--ck-color-blue-500) 10%, transparent);
+
+	/**
+	 * An alias of `--ck-color-surface-canvas`.
+	 * @deprecated --ck-color-surface-canvas
+	 */
+	--ck-color-surface-page: var(--ck-color-surface-canvas);
+
+	/**
+	 * A surface that still reads the deprecated name, so its details point past it.
+	 */
+	--ck-color-surface-print: var(--ck-color-surface-page);
+}
+
+.ck-ignored {
+	/**
+	 * Tokens of other selectors are not part of the theme.
+	 */
+	--ck-color-surface-scoped: hsl(0, 100%, 50%);
+}
+
+.ck-nested {
+	:root,
+	:host {
+		/**
+		 * A root rule nested in another rule is not a root rule of the file.
+		 */
+		--ck-color-surface-nested: hsl(0, 100%, 50%);
+	}
+}

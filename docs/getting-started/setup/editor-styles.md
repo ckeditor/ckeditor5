@@ -67,7 +67,7 @@ A few essential variables to get started:
 | `--ck-editor-frame-border-color` | Component  | Border color of the editor frame.                           |
 
 <info-box hint>
-	For the full layer model, the complete list of variables, scoped (per-element) overrides, and best practices, see the {@link framework/theme-customization Theme customization} and {@link framework/theme-token-naming Theme token naming} deep-dive guides. You can also build a complete custom theme &ndash; see the {@link examples/theme-customization dark theme example}.
+	For the full layer model, scoped (per-element) overrides, and best practices, see the {@link framework/theme-customization Theme customization} and {@link framework/theme-token-naming Theme token naming} deep-dive guides. The {@link framework/theme-token-reference Theme token reference} guide lists the foundation colors and the semantic tokens with their roles and default values. You can also build a complete custom theme &ndash; see the {@link examples/theme-customization dark theme example}.
 </info-box>
 
 ## Styling the editable area

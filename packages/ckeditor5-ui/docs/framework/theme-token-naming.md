@@ -142,7 +142,7 @@ Names that start with `--_ck-` (with an underscore) are internal helpers, not to
 
 ## Describing tokens
 
-A token declaration can carry a description of what the token is for. Tools, such as a generated token reference, read these descriptions, so they follow a fixed format.
+A token declaration can carry a description of what the token is for. Tools, such as the generated {@link framework/theme-token-reference Theme token reference}, read these descriptions, so they follow a fixed format.
 
 ### Doc comments and notes
 

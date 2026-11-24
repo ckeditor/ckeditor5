@@ -26,6 +26,8 @@ Pick a layer by your task:
 * **Customizing the look (integrators)** &ndash; override an existing token, choosing the layer by how far the change should reach: *foundation* for a global shift (palette, density, shape scale), *semantic* for one design role across many components (every surface, every focus ring), or *component* for a single component.
 * **Building a plugin or component (plugin authors)** &ndash; define your component's own tokens in the component layer and resolve them from **semantic** tokens rather than raw values, so the component tracks the theme and exposes clean override points.
 
+To find a foundation color or the semantic token of a role, with its default value, the tokens that follow it, and its contrast pairs, see the {@link framework/theme-token-reference Theme token reference} guide.
+
 When you add tokens for your own component, name them component-first, resolve them from semantic tokens, and declare them on `:root` and `:host`, like the theme does. Declared on the component's own selector, they would shadow every `:root` override:
 
 ```css
