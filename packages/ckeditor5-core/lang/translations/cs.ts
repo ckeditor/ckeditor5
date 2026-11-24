@@ -81,9 +81,9 @@ const translations: Translations = {
 			// The secondary text of the message shown to the user when no results are available for the search criteria.
 			'Please try a different phrase or check the spelling.': 'Zkuste jinou frázi nebo zkontrolujte, zda jste neudělali chybu.',
 			// The label for the object (e.g. image, media) style button that wraps text around the object.
-			'Wrap text': 'Text nahoře a dole',
+			'Wrap text': 'Obtékání textu',
 			// The label for the object (e.g. image, media) style button that breaks the text around the object.
-			'Break text': 'Obtékání textu',
+			'Break text': 'Text nahoře a dole',
 			// The label for the resize option that allows the user to enter a custom size.
 			'Custom': 'Vlastní',
 			// The default label for the resize option that resets the size.
