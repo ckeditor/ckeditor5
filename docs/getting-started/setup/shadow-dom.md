@@ -15,8 +15,8 @@ Two things do not happen by themselves, because a shadow root is a separate DOM 
 
 The integration guides show how to do both in each framework:
 
-* From npm: {@link getting-started/integrations/react-default-npm#using-inside-a-shadow-root React}, {@link getting-started/integrations/vue-default-npm#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations/angular#using-inside-a-shadow-root Angular}.
-* From CDN: {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular#using-inside-a-shadow-root Angular}.
+* From npm: {@link getting-started/integrations/react-default-npm#using-inside-a-shadow-root React}, {@link getting-started/integrations/vue-default-npm#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations/angular-default-npm#using-inside-a-shadow-root Angular}.
+* From CDN: {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular-default-cdn#using-inside-a-shadow-root Angular}.
 
 <info-box>
 	Writing an editor feature that has to keep working inside a shadow root is a different job. The {@link framework/deep-dive/shadow-dom Deep dive into shadow DOM support} guide covers it.
@@ -99,7 +99,7 @@ editorShadowRoot.adoptedStyleSheets = await Promise.all( [
 	Top-level `await` works only in a module script, `<script type="module">`. In a classic script, put this code and the code that creates the editor in an `async` function.
 </info-box>
 
-A `<link rel="stylesheet">` element placed inside the shadow root works as well. Each root then loads a style sheet of its own, and its content is unstyled until the style sheet loads. The CDN loader of the framework integrations uses this approach when you set its `injectedStylesheetsLocation` option, as the {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular#using-inside-a-shadow-root Angular} CDN guides show.
+A `<link rel="stylesheet">` element placed inside the shadow root works as well. Each root then loads a style sheet of its own, and its content is unstyled until the style sheet loads. The CDN loader of the framework integrations uses this approach when you set its `injectedStylesheetsLocation` option, as the {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular-default-cdn#using-inside-a-shadow-root Angular} CDN guides show.
 
 The editor renders its floating user interface outside the editing area, so that tree needs the same style sheets. Which tree? That depends on where the overlay layer mounts, described in the next section.
 

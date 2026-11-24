@@ -140,7 +140,7 @@ You already hold a better copy of the content than the editor could hand you. Th
 
 ## Framework integrations
 
-The {@link getting-started/integrations/react-default-npm React}, {@link getting-started/integrations/vue-default-npm Vue}, and {@link getting-started/integrations/angular Angular} components report errors through their own callback, so you usually do not register `onEditorError()` yourself.
+The {@link getting-started/integrations/react-default-npm React}, {@link getting-started/integrations/vue-default-npm Vue}, and {@link getting-started/integrations/angular-default-npm Angular} components report errors through their own callback, so you usually do not register `onEditorError()` yourself.
 
 Errors attributed to a `Context` rather than to a single editor are a separate case. In React the `<CKEditorContext>` component reports them through its own {@link getting-started/integrations/react-default-npm#context-feature `onError`}. Vue and Angular have no context component, so register a callback yourself off the context class.
 

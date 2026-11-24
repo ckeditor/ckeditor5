@@ -1,15 +1,15 @@
 ---
-menu-title: Angular
+menu-title: Default integration
 meta-title: Using CKEditor 5 with Angular rich text editor component from npm | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the Angular component with npm.
-category: self-hosted
-order: 30
-modified_at: 2026-09-23
+category: angular-npm
+order: 10
+modified_at: 2026-11-05
 ---
 
 # Integrating CKEditor&nbsp;5 with Angular from npm
 
-CKEditor&nbsp;5 has an official Angular component that you can use to add a rich text editor to your application, whether you use standalone or NGModule components. It works with multiple editor types, including classic, inline, and decoupled (document), and integrates with Angular forms through `ngModel`. This guide will help you install and configure it using the npm distribution of CKEditor&nbsp;5.
+CKEditor&nbsp;5 has an official Angular component that you can use to add a rich text editor to your application, whether you use standalone or NGModule components. It works with multiple editor types, including classic, inline, and decoupled (document), and integrates with Angular forms through `ngModel`. For the multi-root editor, use the dedicated {@link getting-started/integrations/angular-multiroot-npm multi-root editor component}. This guide will help you install and configure it using the npm distribution of CKEditor&nbsp;5.
 
 {@snippet getting-started/use-builder}
 
