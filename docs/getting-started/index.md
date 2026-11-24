@@ -29,7 +29,7 @@ If your dive into using our WYSIWYG editor is only starting, find out how to kic
 
 Do you want to use a framework? Native integrations with the most popular libraries will save you time and effort. There are several official integrations so far:
 
-* Integrate CKEditor&nbsp;5 with **Angular** using {@link getting-started/integrations-cdn/angular CDN} or {@link getting-started/integrations/angular npm}.
+* Integrate CKEditor&nbsp;5 with **Angular** using {@link getting-started/integrations-cdn/angular-default-cdn CDN} or {@link getting-started/integrations/angular-default-npm npm}.
 * Integrate CKEditor&nbsp;5 with **React** using  {@link getting-started/integrations-cdn/react-default-cdn CDN} or {@link getting-started/integrations/react-default-npm npm}.
 * Integrate CKEditor&nbsp;5 with **Next.js** using {@link getting-started/integrations-cdn/next-js CDN} or {@link getting-started/integrations/next-js npm}.
 * Integrate CKEditor&nbsp;5 with **Nuxt** using {@link getting-started/integrations-cdn/nuxt CDN} or {@link getting-started/integrations/nuxt npm}.
