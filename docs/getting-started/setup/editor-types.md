@@ -6,9 +6,23 @@ meta-description: Learn more about available CKEditor 5 editor types.
 order: 25
 modified_at: 2026-04-29
 ---
+
 # Editor types
 
 CKEditor&nbsp;5 offers six ready-made editor types: classic, inline, balloon, balloon block, decoupled (document), and multi-root. They differ in their user interface and editing approach, and some features are only available with certain types.
+
+<p>
+	<iframe
+		src="https://www.youtube-nocookie.com/embed/w2_u4MtA0Lc"
+		title="CKEditor 5 editor types explained"
+		width="1280"
+		height="720"
+		style="width: 100%; height: auto; aspect-ratio: 16 / 9; border: 0; display: block;"
+		allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+		referrerpolicy="strict-origin-when-cross-origin"
+		allowfullscreen
+	></iframe>
+</p>
 
 Editor types are imported from the main `ckeditor5` package, the same way features are imported, as shown in the {@link getting-started/integrations-cdn/quick-start Quick start} guide.
 
