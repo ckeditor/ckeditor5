@@ -227,8 +227,9 @@ describe( 'InlineEditorUIView', () => {
 		} );
 
 		describe( '#panel', () => {
-			it( 'is given the right CSS class', () => {
+			it( 'is given the right CSS classes', () => {
 				expect( view.panel.element.classList.contains( 'ck-toolbar-container' ) ).toBe( true );
+				expect( view.panel.element.classList.contains( 'ck-toolbar-container_editor' ) ).toBe( true );
 			} );
 
 			it( 'is put into the #body collection', () => {

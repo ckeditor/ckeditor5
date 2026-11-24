@@ -349,9 +349,13 @@ describe( 'BookmarkUI', () => {
 
 			expect( spy ).toHaveBeenCalled();
 			const matched = spy.mock.calls.some( ( [ arg ] ) => {
-				return arg && arg.view === toolbarView && arg.balloonClassName === 'ck-bookmark-balloon ck-toolbar-container';
+				return arg && arg.view === toolbarView &&
+   						 arg.balloonClassName === 'ck-bookmark-balloon ck-toolbar-container ck-toolbar-container_widget';
 			} );
 			expect( matched ).toBe( true );
+			expect( balloon.view.class ).toBe(
+				'ck-bookmark-balloon ck-toolbar-container ck-toolbar-container_widget'
+			);
 		} );
 
 		it( 'should set aria-label attribute', () => {
@@ -391,7 +395,7 @@ describe( 'BookmarkUI', () => {
 						defaultPositions.viewportStickyNorth
 					]
 				},
-				balloonClassName: 'ck-bookmark-balloon ck-toolbar-container'
+				balloonClassName: 'ck-bookmark-balloon ck-toolbar-container ck-toolbar-container_widget'
 			} );
 		} );
 

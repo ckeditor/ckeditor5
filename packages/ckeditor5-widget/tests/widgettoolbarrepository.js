@@ -82,6 +82,47 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).toBeTypeOf( 'object' );
 		} );
 
+		it( 'should add the widget toolbar CSS classes by default', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null
+			} );
+
+			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+			expect( toolbarDefinition.balloonClassName ).toBe(
+				'ck-toolbar-container ck-toolbar-container_widget'
+			);
+		} );
+
+		it( 'should preserve custom balloon classes and add the widget toolbar classes', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null,
+				balloonClassName: 'my-custom-toolbar'
+			} );
+
+			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+			expect( toolbarDefinition.balloonClassName ).toBe(
+				'my-custom-toolbar ck-toolbar-container ck-toolbar-container_widget'
+			);
+		} );
+
+		it( 'should not duplicate the toolbar container class when provided in custom classes', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null,
+				balloonClassName: 'my-custom-toolbar ck-toolbar-container'
+			} );
+
+			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+			expect( toolbarDefinition.balloonClassName ).toBe(
+				'my-custom-toolbar ck-toolbar-container ck-toolbar-container_widget'
+			);
+		} );
+
 		describe( 'Focus handling and navigation across toolbars using keyboard', () => {
 			it( 'should register the toolbar as focusable toolbar in EditorUI with proper configuration', () => {
 				widgetToolbarRepository.register( 'fake', {
@@ -628,7 +669,7 @@ describe( 'WidgetToolbarRepository', () => {
 						defaultPositions.viewportStickyNorth
 					]
 				},
-				balloonClassName: 'ck-toolbar-container'
+				balloonClassName: 'ck-toolbar-container ck-toolbar-container_widget'
 			} );
 		} );
 
@@ -662,7 +703,7 @@ describe( 'WidgetToolbarRepository', () => {
 						defaultPositions.northArrowSouth
 					]
 				},
-				balloonClassName: 'ck-toolbar-container'
+				balloonClassName: 'ck-toolbar-container ck-toolbar-container_widget'
 			} );
 
 			// Reposition check.
@@ -737,6 +778,45 @@ describe( 'WidgetToolbarRepository', () => {
 				defaultPositions.southArrowNorth,
 				defaultPositions.northArrowSouth
 			] );
+		} );
+
+		it( 'should update balloon classes when another view becomes visible', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => editor.editing.view.document.getRoot()
+			} );
+
+			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+			widgetToolbarRepository._showToolbar(
+				toolbarDefinition,
+				editor.editing.view.document.getRoot()
+			);
+
+			expect( balloon.view.class ).toBe(
+				'ck-toolbar-container ck-toolbar-container_widget'
+			);
+
+			const otherView = new View();
+			otherView.setTemplate( { tag: 'div' } );
+
+			balloon.add( {
+				view: otherView,
+				position: {
+					target: editor.editing.view.getDomRoot()
+				},
+				balloonClassName: 'ck-other-panel'
+			} );
+
+			expect( balloon.visibleView ).toBe( otherView );
+			expect( balloon.view.class ).toBe( 'ck-other-panel' );
+
+			balloon.remove( otherView );
+
+			expect( balloon.visibleView ).toBe( toolbarDefinition.view );
+			expect( balloon.view.class ).toBe(
+				'ck-toolbar-container ck-toolbar-container_widget'
+			);
 		} );
 	} );
 } );

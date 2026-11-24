@@ -184,8 +184,10 @@ describe( 'BlockToolbar', () => {
 				expect( blockToolbar.panelView ).toBeInstanceOf( BalloonPanelView );
 			} );
 
-			it( 'should have an additional class name', () => {
-				expect( blockToolbar.panelView.class ).toBe( 'ck-toolbar-container' );
+			it( 'should have the toolbar container and block toolbar classes', () => {
+				expect( blockToolbar.panelView.class ).toBe(
+					'ck-toolbar-container ck-toolbar-container_block'
+				);
 			} );
 
 			it( 'should be added to the ui.view.body collection', () => {

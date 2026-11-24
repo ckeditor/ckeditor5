@@ -164,7 +164,7 @@ export class InlineEditorUIView extends EditorUIView {
 
 		this.panel.extendTemplate( {
 			attributes: {
-				class: 'ck-toolbar-container'
+				class: [ 'ck-toolbar-container', 'ck-toolbar-container_editor' ]
 			}
 		} );
 

@@ -129,7 +129,9 @@ export class WidgetToolbarRepository extends Plugin {
 	/**
 	 * Registers toolbar in the WidgetToolbarRepository. It renders it in the `ContextualBalloon` based on the value of the invoked
 	 * `getRelatedElement` function. Toolbar items are gathered from `items` array.
-	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
+	 *
+	 * The balloon's CSS classes always include `ck-toolbar-container` and `ck-toolbar-container_widget`. Any custom classes passed via
+	 * the `balloonClassName` option are preserved and combined with them without duplicates.
 	 *
 	 * Note: This method should be called in the {@link module:core/plugin~PluginInterface#afterInit `Plugin#afterInit()`}
 	 * callback (or later) to make sure that the given toolbar items were already registered by other plugins.
@@ -139,7 +141,8 @@ export class WidgetToolbarRepository extends Plugin {
 	 * @param options.ariaLabel Label used by assistive technologies to describe this toolbar element.
 	 * @param options.items Array of toolbar items.
 	 * @param options.getRelatedElement Callback which returns an element the toolbar should be attached to.
-	 * @param options.balloonClassName CSS class for the widget balloon.
+	 * @param options.balloonClassName Additional CSS class(es) for the widget balloon. Custom classes are preserved, and
+	 * `ck-toolbar-container` and `ck-toolbar-container_widget` are added automatically.
 	 */
 	public register(
 		toolbarId: string,
@@ -194,10 +197,16 @@ export class WidgetToolbarRepository extends Plugin {
 			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
+		const balloonClasses = new Set( [
+			...balloonClassName.split( /\s+/ ).filter( Boolean ),
+			'ck-toolbar-container',
+			'ck-toolbar-container_widget'
+		] );
+
 		const toolbarDefinition: WidgetRepositoryToolbarDefinition = {
 			view: toolbarView,
 			getRelatedElement,
-			balloonClassName,
+			balloonClassName: Array.from( balloonClasses ).join( ' ' ),
 			itemsConfig: items,
 			positions,
 			initialized: false
