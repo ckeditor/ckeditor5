@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'Cor inválida. Tente "#FF0000" ou "rgb(255,0,0)" ou "red"',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Valor inválido. Tente "10px" ou "2em" ou apenas "2"',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'Valor inválido. Tente "10px" ou apenas "10".',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'Inserir legenda da tabela',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

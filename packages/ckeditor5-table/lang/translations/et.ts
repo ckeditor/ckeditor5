@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'Värvus ei sobi. Proovi "#FF0000" või "rgb(255,0,0)" või "red".',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Väärtus ei sobi. Proovi "10px", "2em" või lihtsalt "2".',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'Väärtus ei sobi. Proovi "10px" või lihtsalt "10".',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'Sisesta tabeli pealdis',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

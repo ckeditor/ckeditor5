@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'Warna tidak sah. Cuba "#FF0000" atau "rgb(255,0,0)" atau "merah".',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Nilai tidak sah. Cuba "10px" atau "2em" atau "2" sahaja.',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'Nilai tidak sah. Cuba "10px" atau "10" sahaja.',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'Benarkan kapsyen jadual',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

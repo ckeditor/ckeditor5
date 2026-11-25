@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'Ugyldig farge ',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Ugyldig verdi ',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'Ugyldig verdi. Prøv «10px» eller bare «10».',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'Legg inn tabelltekst',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'הצבע לא חוקי. נסו "#FF0000" או "rgb(255,0,0)" או "אדום".',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'הערך לא חוקי. נסו "10px" או "2em" או פשוט "2".',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'הערך לא חוקי. נסו "10px" או פשוט "10".',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'הזינו כיתוב טבלה',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

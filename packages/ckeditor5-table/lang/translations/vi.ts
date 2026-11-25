@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'Màu này không hợp lệ. Hãy thử "#FF0000" hoặc "rgb(255,0,0)" hoặc "red".',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Giá trị này không hợp lệ. Hãy thử "10px" hoặc "2em" hoặc chỉ "2".',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'Giá trị này không hợp lệ. Hãy thử "10px" hoặc chỉ "10".',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'Nhập chú thích cho bảng',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.
