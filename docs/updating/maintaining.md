@@ -13,7 +13,11 @@ Maintaining your editor means keeping CKEditor&nbsp;5 and all its plugins on the
 
 ### Upgrade regularly
 
-CKEditor&nbsp;5 should be {@link updating/updating-ckeditor-5 updated frequently}, as bug fixes and new features are not backported. While installing and using a CKEditor&nbsp;5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
+CKEditor&nbsp;5 should be {@link updating/updating-ckeditor-5 updated frequently}, as bug fixes and new features are released only for the latest version. The LTS Edition, described below, is the only release line that still receives security fixes and critical compatibility updates after a newer major version is out. While installing and using a CKEditor&nbsp;5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
+
+### Consider the LTS Edition
+
+Some projects cannot adopt every major release, for example, in regulated industries or other environments where stability is crucial. For such cases, there is the commercial CKEditor&nbsp;5 LTS (Long-term Support) Edition. It lets you stay on a single major version for up to 3 years and still receive security fixes and critical compatibility updates. Read more in the {@link getting-started/setup/using-lts-edition CKEditor&nbsp;5 LTS Edition} guide.
 
 ### Use Builder to add plugins
 

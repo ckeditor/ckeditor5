@@ -30,7 +30,7 @@ CKEditor&nbsp;5 LTS Edition is for teams that need **long-term stability without
 	<tbody>
 		<tr>
 			<td><strong>Once every 2 years</strong></td>
-			<td>Major version every 2–3 months</td>
+			<td>Major version about every 6 months</td>
 		</tr>
 		<tr>
 			<td><strong>3-year security warranty</strong></td>
@@ -229,7 +229,7 @@ The latest On-Premises CKEditor Cloud Services support CKEditor 5 versions **up 
 The CKEditor&nbsp;5&nbsp;LTS Edition follows the same compatibility guarantees as regular releases, with the added benefit of **extended maintenance**:
 
 * **Supported environments:** All browsers, operating systems, and mobile platforms officially listed in the {@link updating/technology-upgrades-policy#supported-browsers-and-environments Technology upgrades policy} article.
-* **Assurance period:** Critical/high-severity regressions caused by updates in these environments will be fixed for the full 3-year LTS lifecycle. See [Third-party API changes assurance](#3-year-security-warranty) for details.
+* **Assurance period:** Critical/high-severity regressions caused by updates in these environments will be fixed for the full 3-year LTS lifecycle. See [Third-party API changes assurance](#third-party-api-changes-assurance) for details.
 
 It ensures that CKEditor 5 remains stable and reliable in evolving ecosystems, while minimizing disruption in long-term projects.
 

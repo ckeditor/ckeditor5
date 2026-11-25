@@ -49,6 +49,8 @@ The first step is to identify changes introduced since the old version, so you n
 
 <info-box>
 	It is recommended to update regularly. Sometimes, however, it could happen that you skip a few releases and need to update to a non-adjacent version. In such a case, remember to verify the changelog and migration guides for **all** missing versions, not only the one you are updating to.
+
+	If your project cannot be updated regularly, see the {@link updating/versioning-policy#lts-releases LTS releases} section of the Versioning policy guide.
 </info-box>
 
 When you already know what has changed and which parts of your custom code need to be adjusted, it is time to make the update.
