@@ -10,10 +10,11 @@ import { dirname, join } from 'node:path';
 import snippetAdapter from '../../scripts/docs/snippetadapter.mjs';
 
 // Keep the fixtures independent of the commercial repository and its license configuration.
-vi.mock( '../../scripts/constants.mjs', () => ( {
+const paths = vi.hoisted( () => ( {
 	CKEDITOR5_ROOT_PATH: '/ckeditor5-snippet-fixture',
 	CKEDITOR5_COMMERCIAL_PATH: '/ckeditor5-snippet-fixture'
 } ) );
+vi.mock( '../../scripts/constants.mjs', () => paths );
 
 describe( 'snippetAdapter asset loading', () => {
 	let directory;
@@ -23,6 +24,7 @@ describe( 'snippetAdapter asset loading', () => {
 
 	beforeEach( async () => {
 		directory = await mkdtemp( join( tmpdir(), 'ckeditor5-snippet-adapter-' ) );
+		paths.CKEDITOR5_COMMERCIAL_PATH = directory;
 		input = join( directory, 'input', 'latest', '_snippets' );
 		output = join( directory, 'output', 'latest' );
 		snippets = new Set();
@@ -88,6 +90,30 @@ describe( 'snippetAdapter asset loading', () => {
 
 			expect( content ).toContain( 'window.CKBox = Object.assign( {}, CKBox, CKBoxUploader );' );
 			expect( content ).not.toContain( '<!--SNIPPET:' );
+		}
+	} );
+
+	it( 'loads the shared snippet configuration before global.js in snippet pages and the Bootstrap iframe', async () => {
+		await mkdir( join( directory, 'docs' ) );
+		await writeFile( join( directory, 'docs', 'constants.cjs' ), 'module.exports = { LICENSE_KEY: "fixture-only" };' );
+		await addSnippet( 'guides/core', 'core', 'import "ckeditor5";' );
+
+		await snippetAdapter( snippets, {}, {
+			getSnippetPlaceholder: name => `<!--SNIPPET: ${ name }-->`
+		} );
+
+		expect( await readFile( join( output, 'assets', 'snippet-config.js' ), 'utf8' ) ).toBe(
+			'window.CKEDITOR_GLOBAL_LICENSE_KEY = "fixture-only";\n'
+		);
+
+		for ( const [ name, base ] of [ [ 'guides/core.html', '..' ], [ 'snippets/examples/bootstrap-ui.html', '../..' ] ] ) {
+			const content = await readFile( join( output, name ), 'utf8' );
+			const config = `<script src="${ base }/assets/snippet-config.js"></script>`;
+			const global = `<script src="${ base }/assets/global.js"></script>`;
+
+			expect( content ).toContain( config );
+			expect( content.indexOf( config ) ).toBeLessThan( content.indexOf( global ) );
+			expect( content ).not.toContain( 'fixture-only' );
 		}
 	} );
 

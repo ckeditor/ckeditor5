@@ -26,10 +26,12 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
 
 	await addBootstrapSnippet( snippets, paths );
 
+	await writeSnippetConfigFile( paths, constants );
+
 	const ckboxModulePaths = await buildCKBoxAssets( paths );
 	const premiumSnippets = await buildSnippets( snippets, paths, constants, imports );
 
-	await buildDocuments( snippets, paths, constants, imports, premiumSnippets, ckboxModulePaths, getSnippetPlaceholder );
+	await buildDocuments( snippets, paths, imports, premiumSnippets, ckboxModulePaths, getSnippetPlaceholder );
 
 	console.log( 'Finished building snippets.' );
 }
@@ -67,6 +69,26 @@ async function getDependencies( packageName ) {
 	} catch {
 		return [];
 	}
+}
+
+/**
+ * Writes the license key to the snippet configuration script shared by all documents with snippets.
+ *
+ * The license key changes on every build. Keeping it out of the documents makes their content the same in every build,
+ * so only the changed files are uploaded on deploy.
+ *
+ * @param {Paths} paths
+ * @param {Record<string, string>} constants
+ * @returns {Promise<void>}
+ */
+async function writeSnippetConfigFile( paths, constants ) {
+	const outputDir = upath.join( paths.output, 'assets' );
+
+	await mkdir( outputDir, { recursive: true } );
+	await writeFile(
+		upath.join( outputDir, 'snippet-config.js' ),
+		`window.CKEDITOR_GLOBAL_LICENSE_KEY = ${ JSON.stringify( constants.LICENSE_KEY ) };\n`
+	);
 }
 
 /**
@@ -227,14 +249,13 @@ async function buildSnippets( snippets, paths, constants, imports ) {
  *
  * @param {Set<Snippet>} snippets
  * @param {Paths} paths
- * @param {Record<string, string>} constants
  * @param {Record<string, any>} imports
  * @param {Set<string>} premiumSnippets
  * @param {Array<string>} ckboxModulePaths
  * @param {function} getSnippetPlaceholder
  * @returns {Promise<void>}
  */
-async function buildDocuments( snippets, paths, constants, imports, premiumSnippets, ckboxModulePaths, getSnippetPlaceholder ) {
+async function buildDocuments( snippets, paths, imports, premiumSnippets, ckboxModulePaths, getSnippetPlaceholder ) {
 	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true">`;
 	const getScript = src => `<script type="module" src="${ src }"></script>`;
 	const getLayeredStyles = ( layer, hrefs ) =>
@@ -269,7 +290,7 @@ async function buildDocuments( snippets, paths, constants, imports, premiumSnipp
 			] : [] ),
 			...ckboxModulePaths.map( path => `<link rel="modulepreload" href="%BASE_PATH%/${ path }">` ),
 			'<link rel="preload" href="%BASE_PATH%/assets/global.js" as="script">',
-			`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
+			'<script src="%BASE_PATH%/assets/snippet-config.js"></script>',
 			'<script src="%BASE_PATH%/assets/global.js"></script>',
 			'<script type="module">' +
 				'import * as CKBox from \'ckbox\';' +

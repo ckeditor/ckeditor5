@@ -366,8 +366,8 @@ importers:
         specifier: 5.8.3
         version: 5.8.3
       umberto:
-        specifier: ^12.0.0
-        version: 12.0.0(vitest@5.0.5)
+        specifier: ^12.2.0
+        version: 12.2.0(vitest@5.0.5)
       upath:
         specifier: ^2.0.0
         version: 2.0.1
@@ -9758,8 +9758,8 @@ packages:
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
 
-  umberto@12.0.0:
-    resolution: {integrity: sha512-ZjthfaHj1ysu4Cegcd8bULPLx2i8uoNEn9Idb72h64be9Miia6/UufGe9ar2UaIWLOO1H1A7yWrGqk1p0FZBgQ==}
+  umberto@12.2.0:
+    resolution: {integrity: sha512-vyME7C+LeoPtcbZviS8Bp6gq9YwhgfCm/2z0Q7SM6ufamTDeKgd+UVihSzeUjwbsKa55S/EIYS86X06USkEAFw==}
     engines: {node: '>=26.10.0'}
 
   unbash@4.0.10:
@@ -15727,7 +15727,7 @@ snapshots:
 
   uc.micro@2.1.0: {}
 
-  umberto@12.0.0(vitest@5.0.5):
+  umberto@12.2.0(vitest@5.0.5):
     dependencies:
       '@lukeed/html': 1.0.2
       '@vscode/markdown-it-katex': 1.1.2
