@@ -616,12 +616,12 @@ this.context = await MyEditor.Context.create( {
 	// The context configuration.
 } );
 
-this.config = { context: this.context };
+this.config.set( { context: this.context } );
 ```
 
 The context is yours, so destroy it when you are done with it.
 
-Hold the editors back until the context is ready, with `*ngIf="config"` on the `<ckeditor>` element. The component reads its configuration only once, when it creates the editor. If it renders before `Context.create()` resolves, the editor gets no context, and setting the configuration later changes nothing. Errors attributed to the context rather than to one of its editors are not emitted by the component; register a callback for those with `MyEditor.Context.onEditorError()`.
+Hold the editors back until the context is ready, with `*ngIf="config()"` on the `<ckeditor>` element. Bind the configuration with `[config]="config()!"`. Keep `config` in a [signal](https://angular.dev/guide/signals), so that setting it after `Context.create()` resolves updates the view. Angular applications are zoneless by default since Angular&nbsp;21, so setting a plain property there would not. The component reads its configuration only once, when it creates the editor. If it renders before `Context.create()` resolves, the editor gets no context, and setting the configuration later changes nothing. Errors attributed to the context rather than to one of its editors are not emitted by the component; register a callback for those with `MyEditor.Context.onEditorError()`.
 
 ### Localization
 
