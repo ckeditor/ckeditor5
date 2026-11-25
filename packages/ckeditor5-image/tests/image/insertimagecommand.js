@@ -6,6 +6,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { InsertImageCommand } from '../../src/image/insertimagecommand.js';
@@ -584,6 +585,31 @@ describe( 'InsertImageCommand', () => {
 					'</inlineOnlyContainer>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'execute() in a block with soft breaks', () => {
+		const br = '<softBreak></softBreak>';
+
+		beforeEach( async () => {
+			await editor.destroy();
+
+			editor = await VirtualTestEditor.create( {
+				plugins: [ ImageBlockEditing, ImageInlineEditing, Paragraph, ShiftEnter ],
+				image: { insert: { type: 'block' } }
+			} );
+
+			model = editor.model;
+		} );
+
+		it( 'should insert a block image before the line with the selection', () => {
+			_setModelData( model, `<paragraph>Foo${ br }B[]ar</paragraph>` );
+
+			editor.execute( 'insertImage', { source: '/foo.png' } );
+
+			expect( _getModelData( model ) ).toEqualMarkup(
+				'<paragraph>Foo</paragraph>[<imageBlock src="/foo.png"></imageBlock>]<paragraph>Bar</paragraph>'
+			);
 		} );
 	} );
 } );

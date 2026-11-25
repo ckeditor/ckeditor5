@@ -7,6 +7,7 @@ import { describe, beforeEach, afterEach, it, expect, vi } from 'vitest';
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 import { ModelDocumentSelection, _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { TableEditing } from '../../src/tableediting.js';
@@ -677,6 +678,35 @@ describe( 'InsertTableLayoutCommand', () => {
 
 				expect( () => command.execute() ).not.toThrow();
 			} );
+		} );
+	} );
+
+	describe( 'execute() in a block with soft breaks', () => {
+		const br = '<softBreak></softBreak>';
+
+		beforeEach( async () => {
+			await editor.destroy();
+
+			editor = await ModelTestEditor.create( {
+				plugins: [ Paragraph, TableEditing, TableLayoutEditing, ShiftEnter ]
+			} );
+
+			model = editor.model;
+			command = editor.commands.get( 'insertTableLayout' );
+		} );
+
+		const layoutTable =
+			'<table tableType="layout" tableWidth="100%">' +
+				'<tableRow><tableCell><paragraph>[]</paragraph></tableCell></tableRow>' +
+				'<tableColumnGroup><tableColumn columnWidth="100%"></tableColumn></tableColumnGroup>' +
+			'</table>';
+
+		it( 'should insert a layout table before the line with the selection', () => {
+			_setModelData( model, `<paragraph>Foo${ br }B[]ar</paragraph>` );
+
+			command.execute( { rows: 1, columns: 1 } );
+
+			expect( _getModelData( model ) ).toEqualMarkup( `<paragraph>Foo</paragraph>${ layoutTable }<paragraph>Bar</paragraph>` );
 		} );
 	} );
 } );

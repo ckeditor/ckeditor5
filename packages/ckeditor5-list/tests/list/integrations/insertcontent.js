@@ -6,6 +6,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { ListEditing } from '../../../src/list/listediting.js';
+import { TodoListEditing } from '../../../src/todolist/todolistediting.js';
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
 
@@ -21,6 +22,7 @@ import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { Widget, WidgetTypeAround } from '@ckeditor/ckeditor5-widget';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 import {
 	_getModelData,
@@ -39,7 +41,7 @@ describe( 'Inserting widgets in document lists', () => {
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [
 				Paragraph, CodeBlockEditing, ListEditing, IndentEditing, BlockQuoteEditing, MediaEmbedEditing,
-				Table, Image, HtmlEmbed, PageBreak, HorizontalLine, Widget
+				Table, Image, HtmlEmbed, PageBreak, HorizontalLine, Widget, ShiftEnter, TodoListEditing
 			],
 			image: { insert: { type: 'auto' } }
 		} );
@@ -251,6 +253,93 @@ describe( 'Inserting widgets in document lists', () => {
 					'    Bar'
 				]
 			} );
+		} );
+	} );
+
+	describe( 'inserting block objects into a list item with soft breaks', () => {
+		const br = '<softBreak></softBreak>';
+		const table = attrs => `<table ${ attrs }><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>`;
+		const attrs = ( id, listType = 'bulleted', indent = 0 ) => `listIndent="${ indent }" listItemId="${ id }" listType="${ listType }"`;
+
+		function insertTable() {
+			editor.execute( 'insertTable', { rows: 1, columns: 1 } );
+		}
+
+		function expectModel( expected ) {
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( expected );
+		}
+
+		it( 'should insert a table before the line with the caret in a list item', () => {
+			_setModelData( model,
+				`<paragraph ${ attrs( 'a' ) }>Foo</paragraph>` +
+				`<paragraph ${ attrs( 'b' ) }>Bar${ br }Ba[]z${ br }Qux</paragraph>`
+			);
+
+			insertTable();
+
+			expectModel(
+				`<paragraph ${ attrs( 'a' ) }>Foo</paragraph>` +
+				`<paragraph ${ attrs( 'b' ) }>Bar</paragraph>` +
+				table( attrs( 'b' ) ) +
+				`<paragraph ${ attrs( 'b' ) }>Baz${ br }Qux</paragraph>`
+			);
+		} );
+
+		it( 'should keep a checked to-do list item checked', () => {
+			_setModelData( model, `<paragraph ${ attrs( 'a', 'todo' ) } todoListChecked="true">Foo${ br }B[]ar</paragraph>` );
+
+			insertTable();
+
+			const checked = `${ attrs( 'a', 'todo' ) } todoListChecked="true"`;
+
+			expectModel( `<paragraph ${ checked }>Foo</paragraph>${ table( checked ) }<paragraph ${ checked }>Bar</paragraph>` );
+		} );
+
+		it( 'should insert a table into a nested list item', () => {
+			_setModelData( model,
+				`<paragraph ${ attrs( 'a' ) }>Foo</paragraph>` +
+				`<paragraph ${ attrs( 'b', 'bulleted', 1 ) }>Bar${ br }B[]az</paragraph>` +
+				`<paragraph ${ attrs( 'c' ) }>Qux</paragraph>`
+			);
+
+			insertTable();
+
+			expectModel(
+				`<paragraph ${ attrs( 'a' ) }>Foo</paragraph>` +
+				`<paragraph ${ attrs( 'b', 'bulleted', 1 ) }>Bar</paragraph>` +
+				table( attrs( 'b', 'bulleted', 1 ) ) +
+				`<paragraph ${ attrs( 'b', 'bulleted', 1 ) }>Baz</paragraph>` +
+				`<paragraph ${ attrs( 'c' ) }>Qux</paragraph>`
+			);
+		} );
+
+		it( 'should keep the following blocks of a list item in that item', () => {
+			_setModelData( model,
+				`<paragraph ${ attrs( 'a' ) }>Foo${ br }B[]ar</paragraph>` +
+				`<paragraph ${ attrs( 'a' ) }>Second block</paragraph>` +
+				`<paragraph ${ attrs( 'b' ) }>Next item</paragraph>`
+			);
+
+			insertTable();
+
+			expectModel(
+				`<paragraph ${ attrs( 'a' ) }>Foo</paragraph>` +
+				table( attrs( 'a' ) ) +
+				`<paragraph ${ attrs( 'a' ) }>Bar</paragraph>` +
+				`<paragraph ${ attrs( 'a' ) }>Second block</paragraph>` +
+				`<paragraph ${ attrs( 'b' ) }>Next item</paragraph>`
+			);
+		} );
+
+		it( 'should not split a code block in a list item', () => {
+			_setModelData( model, `<codeBlock language="plaintext" ${ attrs( 'a' ) }>Foo${ br }B[]ar</codeBlock>` );
+
+			insertTable();
+
+			expectModel(
+				table( attrs( 'a' ) ) +
+				`<codeBlock language="plaintext" ${ attrs( 'a' ) }>Foo${ br }Bar</codeBlock>`
+			);
 		} );
 	} );
 

@@ -32,8 +32,10 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  * {@link module:engine/model/document~ModelDocument#selection document selection} will be used instead.
  * @param options Additional options.
  * @param options.findOptimalPosition An option that, when set, adjusts the insertion position (relative to
- * `selectable` and `placeOrOffset`) so that the content of `selectable` is not split upon insertion (a.k.a. non-destructive insertion).
- * * When `'auto'`, the algorithm will decide whether to insert the object before or after `selectable` to avoid content splitting.
+ * `selectable` and `placeOrOffset`) so that the text of `selectable` is not split upon insertion (a.k.a. non-destructive insertion).
+ * * When `'auto'`, the algorithm will decide whether to insert the object before or after `selectable` to avoid splitting the text.
+ * In a block with soft breaks and a collapsed `selectable`, every line is treated like a separate block, so the block may be split
+ * at a soft break.
  * * When `'before'`, the closest position before `selectable` will be used that will not result in content splitting.
  * * When `'after'`, the closest position after `selectable` will be used that will not result in content splitting.
  *
@@ -76,7 +78,7 @@ export function insertObject(
 
 	if ( options.findOptimalPosition && model.schema.isBlock( object ) ) {
 		insertionSelection = model.createSelection(
-			model.schema.findOptimalInsertionRange( originalSelection, options.findOptimalPosition )
+			model.schema.findOptimalInsertionRange( originalSelection, options.findOptimalPosition, object )
 		);
 	}
 

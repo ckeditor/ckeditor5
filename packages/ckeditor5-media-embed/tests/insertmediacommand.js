@@ -8,6 +8,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { MediaEmbedEditing } from '../src/mediaembedediting.js';
 import { MediaEmbedCommand } from '../src/mediaembedcommand.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 describe( 'MediaEmbedCommand', () => {
 	let editor, model, command;
@@ -217,6 +218,30 @@ describe( 'MediaEmbedCommand', () => {
 					'<p>foo</p>[<media pretty="true" smart="true" url="http://cksource.com"></media>]<p>bar</p>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'execute() in a block with soft breaks', () => {
+		const br = '<softBreak></softBreak>';
+		const url = 'https://www.youtube.com/watch?v=H08tGjXNHO4';
+
+		beforeEach( async () => {
+			await editor.destroy();
+
+			editor = await ModelTestEditor.create( { plugins: [ MediaEmbedEditing, Paragraph ] } );
+			model = editor.model;
+
+			model.schema.register( 'softBreak', { allowWhere: '$text', isInline: true } );
+		} );
+
+		it( 'should insert the media before the line with the selection', () => {
+			_setModelData( model, `<paragraph>Foo${ br }B[]ar</paragraph>` );
+
+			editor.execute( 'mediaEmbed', url );
+
+			expect( _getModelData( model ) ).toEqualMarkup(
+				`<paragraph>Foo</paragraph>[<media url="${ url }"></media>]<paragraph>Bar</paragraph>`
+			);
 		} );
 	} );
 } );

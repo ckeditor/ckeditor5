@@ -1228,11 +1228,15 @@ export class ModelSchema extends ModelSchemaBase {
 	 * The `auto` value will determine itself the best position for insertion.
 	 * The `before` value will try to find a position before selection.
 	 * The `after` value will try to find a position after selection.
+	 * @param object The object to be inserted. When passed along with the `auto` place and a collapsed selection, every line
+	 * of a block with soft breaks is treated like a separate block. The returned range is then either on the soft break(s)
+	 * that the object replaces, so the block gets split there, or a collapsed range before or after the block.
 	 * @returns The optimal range.
 	 */
 	public findOptimalInsertionRange(
 		selection: ModelSelection | ModelDocumentSelection,
-		place?: 'auto' | 'before' | 'after'
+		place?: 'auto' | 'before' | 'after',
+		object?: ModelElement
 	): ModelRange {
 		const selectedElement = selection.getSelectedElement();
 
@@ -1257,6 +1261,14 @@ export class ModelSchema extends ModelSchemaBase {
 			return new ModelRange( ModelPosition._createAt( firstBlock, 0 ) );
 		}
 
+		if ( place == 'auto' && object && selection.isCollapsed ) {
+			const lineRange = this._findOptimalInsertionRangeInLine( firstBlock, selection.focus!, object );
+
+			if ( lineRange ) {
+				return lineRange;
+			}
+		}
+
 		const positionAfter = ModelPosition._createAfter( firstBlock );
 
 		// If selection is at the end of the block - return position after the block.
@@ -1267,6 +1279,80 @@ export class ModelSchema extends ModelSchemaBase {
 		// Otherwise, return position before the block.
 		return new ModelRange( ModelPosition._createBefore( firstBlock ) );
 	}
+
+	/**
+	 * Returns a range for inserting a block object so that the line (a part of the block between soft breaks) with the given
+	 * position is treated like a separate block:
+	 *
+	 * * an empty line is replaced with the object,
+	 * * at the end of a line, the object goes after the line,
+	 * * otherwise, the object goes before the line.
+	 *
+	 * The returned range contains the soft breaks between the lines that the object should replace. Soft breaks at the start
+	 * or the end of the block are kept, as they end an empty first or last line. Returns `null` when the line does not need
+	 * special handling.
+	 */
+	private _findOptimalInsertionRangeInLine( block: ModelElement, position: ModelPosition, object: ModelElement ): ModelRange | null {
+		// Blocks that do not allow inline objects (for example, a code block) are skipped, as their soft breaks are content.
+		if ( position.parent != block || !this.checkChild( block, '$inlineObject' ) ) {
+			return null;
+		}
+
+		// Splitting the block only makes sense if the object can be inserted next to it.
+		if ( !this.checkChild( block.parent as ModelElement, object ) ) {
+			return null;
+		}
+
+		const { nodeBefore, nodeAfter } = position;
+		const isAtLineStart = position.isAtStart || isSoftBreak( nodeBefore );
+		const isAtLineEnd = position.isAtEnd || isSoftBreak( nodeAfter );
+
+		if ( isAtLineStart && isAtLineEnd ) {
+			const range = new ModelRange(
+				isInnerSoftBreak( nodeBefore ) ? ModelPosition._createBefore( nodeBefore ) : position,
+				isInnerSoftBreak( nodeAfter ) ? ModelPosition._createAfter( nodeAfter ) : position
+			);
+
+			return range.isCollapsed ? null : range;
+		}
+
+		const softBreak = isAtLineEnd ? nodeAfter : findLineStartSoftBreak( position );
+
+		if ( isInnerSoftBreak( softBreak ) ) {
+			return ModelRange._createOn( softBreak );
+		}
+
+		// The line ends with the soft break that starts an empty last line: insert after the block to keep that line.
+		// In other cases (the first line, the last line, the line after an empty first line), the default position is right.
+		return isAtLineEnd && softBreak ? new ModelRange( ModelPosition._createAfter( block ) ) : null;
+	}
+}
+
+/**
+ * Checks whether the given node is a soft break.
+ */
+function isSoftBreak( node: ModelNode | null ): node is ModelElement {
+	return !!node && node.is( 'element', 'softBreak' );
+}
+
+/**
+ * Returns the soft break that starts the line with the given position, or `null` for the first line.
+ */
+function findLineStartSoftBreak( position: ModelPosition ): ModelNode | null {
+	let node = position.textNode || position.nodeBefore;
+
+	while ( node && !isSoftBreak( node ) ) {
+		node = node.previousSibling;
+	}
+
+	return node;
+}
+
+/**
+ * Checks whether the given node is a soft break between two other nodes, so it does not end an empty first or last line.
+ */
+function isInnerSoftBreak( node: ModelNode | null ): node is ModelElement {
+	return isSoftBreak( node ) && !!node.previousSibling && !!node.nextSibling;
 }
 
 /**

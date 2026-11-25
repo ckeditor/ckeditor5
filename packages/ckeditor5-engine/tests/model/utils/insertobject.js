@@ -3,12 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Model } from '../../../src/model/model.js';
 import { insertObject } from '../../../src/model/utils/insertobject.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { ModelText } from '../../../src/model/text.js';
 import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
+
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -483,6 +487,324 @@ describe( 'insertObject()', () => {
 		} );
 	} );
 
+	describe( 'inserting into a block with soft breaks (findOptimalPosition: auto)', () => {
+		const br = '<softBreak></softBreak>';
+		const widget = '<blockWidget></blockWidget>';
+
+		beforeEach( () => {
+			schema.register( 'softBreak', { allowWhere: '$text', isInline: true } );
+			schema.extend( '$text', { allowAttributes: 'bold' } );
+		} );
+
+		function insert( name = 'blockWidget', options = { findOptimalPosition: 'auto' }, selectable = null ) {
+			return model.change( () => insertObject( model, new ModelElement( name ), selectable, options ) );
+		}
+
+		function expectModel( expected ) {
+			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( expected );
+		}
+
+		describe( 'line with the selection', () => {
+			it( 'should insert before the line when the selection is in the middle of a line', () => {
+				_setModelData( model, `<paragraph>Foo${ br }B[]ar${ br }Baz</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo</paragraph>${ widget }<paragraph>Bar${ br }Baz</paragraph>` );
+			} );
+
+			it( 'should insert before the line when the selection is at the start of a line', () => {
+				_setModelData( model, `<paragraph>Foo${ br }[]Bar${ br }Baz</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo</paragraph>${ widget }<paragraph>Bar${ br }Baz</paragraph>` );
+			} );
+
+			it( 'should insert after the line when the selection is at the end of a line', () => {
+				_setModelData( model, `<paragraph>Foo${ br }Bar[]${ br }Baz</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo${ br }Bar</paragraph>${ widget }<paragraph>Baz</paragraph>` );
+			} );
+
+			it( 'should insert after the first line when the selection is at its end', () => {
+				_setModelData( model, `<paragraph>Foo[]${ br }Bar</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo</paragraph>${ widget }<paragraph>Bar</paragraph>` );
+			} );
+
+			it( 'should insert before the last line when the selection is in its middle', () => {
+				_setModelData( model, `<paragraph>Foo${ br }Bar${ br }B[]az</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo${ br }Bar</paragraph>${ widget }<paragraph>Baz</paragraph>` );
+			} );
+
+			it( 'should find the soft break before formatted text and inline objects', () => {
+				_setModelData( model,
+					`<paragraph>Foo${ br }<inlineWidget></inlineWidget><$text bold="true">Ba</$text>r[]x</paragraph>`
+				);
+
+				insert();
+
+				expectModel(
+					`<paragraph>Foo</paragraph>${ widget }` +
+					'<paragraph><inlineWidget></inlineWidget><$text bold="true">Ba</$text>rx</paragraph>'
+				);
+			} );
+
+			it( 'should use the passed selectable instead of the document selection', () => {
+				_setModelData( model, `<paragraph>[]Foo${ br }Bar${ br }Baz</paragraph>` );
+
+				insert( 'blockWidget', { findOptimalPosition: 'auto' }, model.createSelection( root.getChild( 0 ), 5 ) );
+
+				expectModel( `<paragraph>Foo</paragraph>${ widget }<paragraph>Bar${ br }Baz</paragraph>` );
+			} );
+
+			it( 'should return the affected range', () => {
+				_setModelData( model, `<paragraph>Foo${ br }B[]ar</paragraph>` );
+
+				const range = insert();
+
+				// The range covers the split: from the end of the first part to the start of the second part.
+				const expectedRange = model.createRange(
+					model.createPositionAt( root.getChild( 0 ), 'end' ),
+					model.createPositionAt( root.getChild( 2 ), 0 )
+				);
+
+				expect( range.isEqual( expectedRange ) ).toBe( true );
+			} );
+		} );
+
+		describe( 'empty lines', () => {
+			it( 'should replace an empty line with the selection', () => {
+				_setModelData( model, `<paragraph>Foo${ br }[]${ br }Bar</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo</paragraph>${ widget }<paragraph>Bar</paragraph>` );
+			} );
+
+			it( 'should keep other empty lines when replacing an empty line', () => {
+				_setModelData( model, `<paragraph>Foo${ br }${ br }[]${ br }${ br }Bar</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo${ br }</paragraph>${ widget }<paragraph>${ br }Bar</paragraph>` );
+			} );
+
+			it( 'should keep an empty first line with the selection and insert before the block', () => {
+				_setModelData( model, `<paragraph>[]${ br }Foo</paragraph>` );
+
+				insert();
+
+				expectModel( `${ widget }<paragraph>${ br }Foo</paragraph>` );
+			} );
+
+			it( 'should keep an empty last line with the selection and insert after the block', () => {
+				_setModelData( model, `<paragraph>Foo${ br }[]</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo${ br }</paragraph>${ widget }` );
+			} );
+
+			it( 'should keep an empty first line next to an empty line with the selection', () => {
+				_setModelData( model, `<paragraph>${ br }[]${ br }Foo</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>${ br }</paragraph>${ widget }<paragraph>Foo</paragraph>` );
+			} );
+
+			it( 'should keep an empty last line next to an empty line with the selection', () => {
+				_setModelData( model, `<paragraph>Foo${ br }[]${ br }</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo</paragraph>${ widget }<paragraph>${ br }</paragraph>` );
+			} );
+
+			it( 'should keep all lines of a block with only empty lines', () => {
+				_setModelData( model, `<paragraph>${ br }[]${ br }</paragraph>` );
+
+				insert();
+
+				expectModel( `${ widget }<paragraph>${ br }${ br }</paragraph>` );
+			} );
+
+			it( 'should keep an empty first line and insert before the block', () => {
+				_setModelData( model, `<paragraph>${ br }F[]oo${ br }Bar</paragraph>` );
+
+				insert();
+
+				expectModel( `${ widget }<paragraph>${ br }Foo${ br }Bar</paragraph>` );
+			} );
+
+			it( 'should keep an empty last line and insert after the block', () => {
+				_setModelData( model, `<paragraph>Foo${ br }Bar[]${ br }</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo${ br }Bar${ br }</paragraph>${ widget }` );
+			} );
+
+			it( 'should keep an empty last line when splitting at an earlier soft break', () => {
+				_setModelData( model, `<paragraph>Foo${ br }B[]ar${ br }</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo</paragraph>${ widget }<paragraph>Bar${ br }</paragraph>` );
+			} );
+		} );
+
+		describe( 'block parents', () => {
+			it( 'should split a block in a block quote', () => {
+				schema.register( 'blockQuote', { allowIn: '$root', allowContentOf: '$root' } );
+
+				_setModelData( model, `<blockQuote><paragraph>Foo${ br }B[]ar</paragraph></blockQuote>` );
+
+				insert();
+
+				expectModel( `<blockQuote><paragraph>Foo</paragraph>${ widget }<paragraph>Bar</paragraph></blockQuote>` );
+			} );
+
+			it( 'should split a block in a table cell', () => {
+				schema.register( 'tableCell', { allowIn: '$root', allowContentOf: '$root', isLimit: true } );
+
+				_setModelData( model, `<tableCell><paragraph>Foo${ br }B[]ar</paragraph></tableCell>` );
+
+				insert();
+
+				expectModel( `<tableCell><paragraph>Foo</paragraph>${ widget }<paragraph>Bar</paragraph></tableCell>` );
+			} );
+		} );
+
+		describe( 'default behavior', () => {
+			it( 'should insert before the block when the selection is in the first line', () => {
+				_setModelData( model, `<paragraph>F[]oo${ br }Bar</paragraph>` );
+
+				insert();
+
+				expectModel( `${ widget }<paragraph>Foo${ br }Bar</paragraph>` );
+			} );
+
+			it( 'should insert after the block when the selection is at its end', () => {
+				_setModelData( model, `<paragraph>Foo${ br }Bar[]</paragraph>` );
+
+				insert();
+
+				expectModel( `<paragraph>Foo${ br }Bar</paragraph>${ widget }` );
+			} );
+
+			it( 'should not split blocks that do not allow inline objects (e.g. a code block)', () => {
+				schema.register( 'plainTextBlock', {
+					allowWhere: '$block',
+					allowChildren: '$text',
+					disallowChildren: '$inlineObject',
+					isBlock: true
+				} );
+
+				_setModelData( model, `<plainTextBlock>Foo${ br }B[]ar</plainTextBlock>` );
+
+				insert();
+
+				expectModel( `${ widget }<plainTextBlock>Foo${ br }Bar</plainTextBlock>` );
+			} );
+
+			it( 'should not split the block when the object is not allowed next to it', () => {
+				schema.register( 'limitBox', { allowIn: '$root', allowChildren: 'paragraph', isLimit: true } );
+
+				_setModelData( model, `<limitBox><paragraph>Foo${ br }B[]ar${ br }Baz</paragraph></limitBox>` );
+
+				vi.spyOn( console, 'warn' ).mockImplementation( () => {} );
+
+				insert();
+
+				expectModel( `<limitBox><paragraph>Foo${ br }Bar${ br }Baz</paragraph></limitBox>` );
+			} );
+
+			it( 'should not split the block when the selection is in an element inside the block', () => {
+				_setModelData( model, `<paragraph>Foo<span>Bar${ br }B[]az</span></paragraph>` );
+
+				insert();
+
+				expectModel( `${ widget }<paragraph>Foo<span>Bar${ br }Baz</span></paragraph>` );
+			} );
+
+			it( 'should not handle a non-collapsed selection', () => {
+				_setModelData( model, `<paragraph>Foo${ br }B[a]r${ br }Baz</paragraph>` );
+
+				insert();
+
+				expectModel( `${ widget }<paragraph>Foo${ br }Bar${ br }Baz</paragraph>` );
+			} );
+
+			it( 'should not handle other values of the findOptimalPosition option', () => {
+				_setModelData( model, `<paragraph>Foo${ br }B[]ar${ br }Baz</paragraph>` );
+
+				insert( 'blockWidget', { findOptimalPosition: 'before' } );
+
+				expectModel( `${ widget }<paragraph>Foo${ br }Bar${ br }Baz</paragraph>` );
+			} );
+
+			it( 'should split at the selection for objects that are not blocks (the same as without soft breaks)', () => {
+				schema.register( 'nonBlockObject', { isObject: true, allowWhere: '$block' } );
+
+				_setModelData( model, `<paragraph>Foo${ br }B[]ar${ br }Baz</paragraph>` );
+
+				insert( 'nonBlockObject' );
+
+				expectModel( `<paragraph>Foo${ br }B</paragraph><nonBlockObject></nonBlockObject><paragraph>ar${ br }Baz</paragraph>` );
+			} );
+		} );
+	} );
+
+	describe( 'undo and redo of inserting into a block with soft breaks', () => {
+		const br = '<softBreak></softBreak>';
+
+		let editor;
+
+		beforeEach( async () => {
+			editor = await ModelTestEditor.create( { plugins: [ Paragraph, UndoEditing ] } );
+
+			editor.model.schema.register( 'softBreak', { allowWhere: '$text', isInline: true } );
+			editor.model.schema.register( 'blockWidget', { inheritAllFrom: '$blockObject' } );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should undo and redo the insertion in a single step', () => {
+			const model = editor.model;
+			const getModel = () => _getModelData( model, { withoutSelection: true } );
+
+			_setModelData( model, `<paragraph>Foo${ br }B[]ar${ br }Baz</paragraph>` );
+
+			model.change( writer => {
+				model.insertObject( writer.createElement( 'blockWidget' ), null, null, { findOptimalPosition: 'auto' } );
+			} );
+
+			const inserted = getModel();
+
+			expect( inserted ).toBe( `<paragraph>Foo</paragraph><blockWidget></blockWidget><paragraph>Bar${ br }Baz</paragraph>` );
+
+			editor.execute( 'undo' );
+
+			expect( getModel() ).toBe( `<paragraph>Foo${ br }Bar${ br }Baz</paragraph>` );
+
+			editor.execute( 'redo' );
+
+			expect( getModel() ).toBe( inserted );
+		} );
+	} );
+
 	describe( 'inserting objects to model', () => {
 		beforeEach( () => {
 			schema.register( 'block', {
@@ -787,6 +1109,39 @@ describe( 'findOptimalInsertionRange()', () => {
 
 		expect( range.start.path ).toEqual( [ 2 ] );
 		expect( range.end.path ).toEqual( [ 2 ] );
+	} );
+
+	describe( 'in a block with soft breaks', () => {
+		beforeEach( () => {
+			schema.register( 'softBreak', { allowWhere: '$text', isInline: true } );
+		} );
+
+		it( 'should return the range on the soft break that starts the line when the object is passed', () => {
+			_setModelData( model, '<paragraph>Foo<softBreak></softBreak>B[]ar</paragraph>' );
+
+			const range = schema.findOptimalInsertionRange( doc.selection, 'auto', new ModelElement( 'blockWidget' ) );
+
+			expect( range.start.path ).toEqual( [ 0, 3 ] );
+			expect( range.end.path ).toEqual( [ 0, 4 ] );
+		} );
+
+		it( 'should return a collapsed range before the block when the object is not passed', () => {
+			_setModelData( model, '<paragraph>Foo<softBreak></softBreak>B[]ar</paragraph>' );
+
+			const range = schema.findOptimalInsertionRange( doc.selection, 'auto' );
+
+			expect( range.start.path ).toEqual( [ 0 ] );
+			expect( range.end.path ).toEqual( [ 0 ] );
+		} );
+
+		it( 'should not use the object for other places than auto', () => {
+			_setModelData( model, '<paragraph>Foo<softBreak></softBreak>B[]ar</paragraph>' );
+
+			const range = schema.findOptimalInsertionRange( doc.selection, 'after', new ModelElement( 'blockWidget' ) );
+			const rangeWithoutObject = schema.findOptimalInsertionRange( doc.selection, 'after' );
+
+			expect( range.isEqual( rangeWithoutObject ) ).toBe( true );
+		} );
 	} );
 
 	it( 'should return selection focus if not in a block', () => {
