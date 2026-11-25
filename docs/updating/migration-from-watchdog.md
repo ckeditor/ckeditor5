@@ -337,12 +337,12 @@ Remove the `watchdog`, `editorWatchdogConfig`, and `disableWatchdog` inputs from
 The `watchdog` input was the only way the Angular component let you share a context between editors, and it took a `ContextWatchdog` instance you had created yourself. There is no context component in Angular to take that over, so if you used it, create the `Context` yourself and pass it in the editor configuration instead:
 
 ```angular-ts
-import type { OnDestroy, OnInit } from '@angular/core';
+import { signal, type OnDestroy, type OnInit } from '@angular/core';
 import type { Context, EditorConfig } from 'ckeditor5';
 
 export class MyComponent implements OnInit, OnDestroy {
 	public Editor = MyEditor;
-	public config?: EditorConfig;
+	public readonly config = signal<EditorConfig | null>( null );
 
 	private context?: Context;
 
@@ -351,7 +351,7 @@ export class MyComponent implements OnInit, OnDestroy {
 			// The context configuration.
 		} );
 
-		this.config = { context: this.context };
+		this.config.set( { context: this.context } );
 	}
 
 	public async ngOnDestroy(): Promise<void> {
@@ -361,11 +361,11 @@ export class MyComponent implements OnInit, OnDestroy {
 ```
 
 ```angular-html
-<ckeditor *ngIf="config" [editor]="Editor" [config]="config"></ckeditor>
+<ckeditor *ngIf="config() as editorConfig" [editor]="Editor" [config]="editorConfig"></ckeditor>
 ```
 
 <info-box warning>
-	The `*ngIf` is not optional. Creating the context is asynchronous, and the component reads its configuration only once, when it creates the editor. Without the guard, Angular renders the template before `Context.create()` resolves. The editor then gets no context, and setting the configuration later changes nothing.
+	The `*ngIf` is not optional. Creating the context is asynchronous, and the component reads its configuration only once, when it creates the editor. Without the guard, Angular renders the template before `Context.create()` resolves. The editor then gets no context, and setting the configuration later changes nothing. Keep `config` in a signal, so that setting it updates the view: Angular applications are zoneless by default since Angular&nbsp;21.
 </info-box>
 
 <info-box warning>
@@ -410,7 +410,7 @@ The `error` output carries no `phase`, so it cannot tell you whether the editor 
 
 ```angular-ts
 export class MyComponent {
-	public isVisible = true;
+	public readonly isVisible = signal( true );
 
 	private isReady = false;
 
@@ -424,10 +424,10 @@ export class MyComponent {
 		}
 
 		this.isReady = false;
-		this.isVisible = false;
+		this.isVisible.set( false );
 
 		setTimeout( () => {
-			this.isVisible = true;
+			this.isVisible.set( true );
 		} );
 	}
 }
@@ -435,7 +435,7 @@ export class MyComponent {
 
 ```angular-html
 <ckeditor
-	*ngIf="isVisible"
+	*ngIf="isVisible()"
 	[editor]="Editor"
 	[(ngModel)]="data"
 	(ready)="onReady()"
@@ -445,9 +445,9 @@ export class MyComponent {
 
 Bind the content. Angular's `data` input defaults to an empty string and is merged into the configuration when the editor is created, so a component remounted without a binding comes back holding whatever it was first given. The component has no `dataChange` output, so use `[(ngModel)]`, which it supports as a form control, and import `FormsModule` where the component is declared.
 
-If the editor also shares a `Context`, combine this `*ngIf` with the one from the section above into `*ngIf="config && isVisible"`, and keep `[config]="config"` on the element. Angular allows only one structural directive per element.
+If the editor also shares a `Context`, combine this `*ngIf` with the one from the section above into `*ngIf="config() && isVisible()"`, and bind `[config]="config()!"` on the element. Angular allows only one structural directive per element.
 
-The timeout above relies on zone.js running change detection again. In a zoneless application, mark the change yourself with `ChangeDetectorRef#markForCheck()`, or hold `isVisible` in a signal.
+`isVisible` is a signal, so that setting it in the timeout updates the view. Angular applications are zoneless by default since Angular&nbsp;21. If your application still uses zone.js change detection, a plain property works too.
 
 ## What has no replacement
 

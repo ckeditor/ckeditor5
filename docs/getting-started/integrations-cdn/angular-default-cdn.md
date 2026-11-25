@@ -39,7 +39,7 @@ In the below example, the `loadCKEditorCloud` helper is used to load the editor 
 ```angular-ts
 // app.component.ts
 
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CKEditorModule, loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-angular';
 import type { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
@@ -52,9 +52,9 @@ import type { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typin
 	standalone: true
 } )
 export class AppComponent {
-	public Editor: typeof ClassicEditor | null = null;
+	public readonly Editor = signal<typeof ClassicEditor | null>( null );
 
-	public config: EditorConfig | null = null;
+	public readonly config = signal<EditorConfig | null>( null );
 
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
@@ -74,15 +74,17 @@ export class AppComponent {
 
 		const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
-		this.Editor = ClassicEditor;
-		this.config = {
+		this.Editor.set( ClassicEditor );
+		this.config.set( {
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
-		};
+		} );
 	}
 }
 ```
+
+The editor class and its configuration are kept in [signals](https://angular.dev/guide/signals) because they are loaded asynchronously. Angular applications are zoneless by default since Angular&nbsp;21, so setting a plain property in a promise callback does not update the view, and the editor would never render. If your application still uses zone.js change detection, plain properties work too.
 
 In the example above, the `EditorConfig` type is imported from the `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` package, while the editor itself loads from the CDN. Note that `https://cdn.ckeditor.com/typings/ckeditor5.d.ts` is not an actual URL to the CKEditor 5 typings file but a synthetic TypeScript module providing type definitions for the editor. The `ckeditor5` or `ckeditor5-premium-features` packages supply the actual types, which depend on the `@ckeditor/ckeditor5-angular` package.
 
@@ -92,10 +94,10 @@ Finally, use the `<ckeditor>` tag in the template to run the rich text editor. T
 <!-- app.component.html -->
 
 <ckeditor
-	*ngIf="( Editor && config )"
+	*ngIf="Editor() as editor"
 	data="<p>Hello, world!</p>"
-	[editor]="Editor"
-	[config]="config"
+	[editor]="editor"
+	[config]="config()!"
 >
 </ckeditor>
 ```
@@ -109,7 +111,7 @@ The following `@Input` properties are supported by the CKEditor&nbsp;5 rich text
 The {@link getting-started/setup/editor-lifecycle `Editor`} which provides the static {@link module:core/editor/editor~Editor.create `create()`} method to create an instance of the editor:
 
 ```angular-html
-<ckeditor [editor]="Editor"></ckeditor>
+<ckeditor [editor]="Editor()"></ckeditor>
 ```
 
 ### `config`
@@ -135,11 +137,7 @@ or a shared parent component's property
 	// ...
 } )
 export class MyComponent {
-	public editorData;
-
-	private _setupEditor( cloud ) {
-		this.editorData = '<p>Hello, world!</p>';
-	}
+	public editorData = '<p>Hello, world!</p>';
 	// ...
 }
 ```
@@ -171,11 +169,8 @@ Controls the editor's {@link module:core/editor/editor~Editor#isReadOnly read–
 	// ...
 } )
 export class MyComponent {
-	public isDisabled;
+	public isDisabled = false;
 	// ...
-	private _setupEditor( cloud ) {
-		this.isDisabled = false;
-	}
 	toggleDisabled() {
 		this.isDisabled = !this.isDisabled;
 	}
@@ -213,25 +208,25 @@ Fired when the content of the editor has changed. It corresponds with the {@link
 It is fired with an object containing the editor and the CKEditor&nbsp;5 `change:data` event object.
 
 ```angular-html
-<ckeditor [editor]="Editor" (change)="onChange($event)"></ckeditor>
+<ckeditor [editor]="Editor()" (change)="onChange($event)"></ckeditor>
 ```
 
 ```angular-ts
-import { ClassicEditor } from 'ckeditor5';
+import type { ClassicEditor } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
 
 @Component( {
 	// ...
 } )
 export class MyComponent {
-	public Editor;
+	public readonly Editor = signal<typeof ClassicEditor | null>( null );
 
 	private _setupEditor( cloud ) {
 		const {
 			ClassicEditor
 		} = cloud.CKEditor;
 
-		this.Editor = ClassicEditor;
+		this.Editor.set( ClassicEditor );
 	}
 
 	public onChange( { editor }: ChangeEvent ) {
@@ -276,13 +271,9 @@ Create some model in your component to share with the editor:
 	// ...
 } )
 export class MyComponent {
-	public model;
-
-	private _setupEditor( cloud ) {
-		this.model = {
-			editorData: '<p>Hello, world!</p>'
-		};
-	}
+	public model = {
+		editorData: '<p>Hello, world!</p>'
+	};
 	// ...
 }
 ```
@@ -290,7 +281,7 @@ export class MyComponent {
 Use the model in the template to enable a two–way data binding:
 
 ```angular-html
-<ckeditor [(ngModel)]="model.editorData" [editor]="Editor"></ckeditor>
+<ckeditor [(ngModel)]="model.editorData" [editor]="Editor()"></ckeditor>
 ```
 
 ### Styling
@@ -355,15 +346,15 @@ To display {@link features/editor-placeholder the placeholder} in the main edita
 	// ...
 } )
 export class MyComponent {
-	public config;
+	public readonly config = signal<EditorConfig | null>( null );
 
 	private _setupEditor( cloud ) {
 		// ...
-		this.config = {
+		this.config.set( {
 			root: {
 				placeholder: 'Type the content here!'
 			}
-		}
+		} );
 	}
 
 }
@@ -376,7 +367,7 @@ The CKEditor&nbsp;5 rich text editor component provides all the functionality ne
 To do this, create a template reference variable `#editor` pointing to the `<ckeditor>` component:
 
 ```angular-html
-<ckeditor #editor [editor]="Editor"></ckeditor>
+<ckeditor #editor [editor]="Editor()"></ckeditor>
 ```
 
 Then get the `<ckeditor>` component using a property decorated by `@ViewChild( 'editor' )` and access the editor instance when needed:
@@ -407,7 +398,7 @@ If you want to use the {@link framework/document-editor document (decoupled) edi
 ```angular-ts
 // app.component.ts
 
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CKEditorCloudResult, CKEditorModule, loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 import { DecoupledEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
@@ -422,9 +413,9 @@ import { DecoupledEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/
 export class AppComponent {
 	title = 'angular';
 
-	public Editor: typeof DecoupledEditor | null = null;
+	public readonly Editor = signal<typeof DecoupledEditor | null>( null );
 
-	public config: EditorConfig | null = null;
+	public readonly config = signal<EditorConfig | null>( null );
 
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
@@ -441,12 +432,12 @@ export class AppComponent {
 			Italic
 		} = cloud.CKEditor;
 
-		this.Editor = DecoupledEditor;
-		this.config = {
+		this.Editor.set( DecoupledEditor );
+		this.config.set( {
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Paragraph, Bold, Italic ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-		};
+		} );
 	}
 
 	public onReady( editor: DecoupledEditor ) {
@@ -467,10 +458,10 @@ And then, link the method in the template:
 <!-- app.component.html -->
 
 <ckeditor
-  *ngIf="(Editor && config)"
+  *ngIf="Editor() as editor"
   data="<p>Hello, world!</p>"
-  [editor]="Editor"
-  [config]="config"
+  [editor]="editor"
+  [config]="config()!"
   (ready)="onReady($event)"
 >
 </ckeditor>
@@ -485,7 +476,7 @@ Set {@link module:core/editor/editorconfig~RootConfig#modelElement `root.modelEl
 ```angular-ts
 // app.component.ts
 
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CKEditorCloudResult, CKEditorModule, loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 import { BalloonEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
@@ -497,9 +488,9 @@ import { BalloonEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ck
 	standalone: true
 } )
 export class AppComponent {
-	public Editor: typeof BalloonEditor | null = null;
+	public readonly Editor = signal<typeof BalloonEditor | null>( null );
 
-	public config: EditorConfig | null = null;
+	public readonly config = signal<EditorConfig | null>( null );
 
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
@@ -510,8 +501,8 @@ export class AppComponent {
 	private _setupEditor( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}' }> ) {
 		const { BalloonEditor, Essentials, Bold, Italic } = cloud.CKEditor;
 
-		this.Editor = BalloonEditor;
-		this.config = {
+		this.Editor.set( BalloonEditor );
+		this.config.set( {
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic ],
 			toolbar: [ 'bold', 'italic' ],
@@ -521,7 +512,7 @@ export class AppComponent {
 				initialData: 'Document title',
 				placeholder: 'Enter title...'
 			}
-		};
+		} );
 	}
 }
 ```
@@ -530,9 +521,9 @@ export class AppComponent {
 <!-- app.component.html -->
 
 <ckeditor
-  *ngIf="(Editor && config)"
-  [editor]="Editor"
-  [config]="config"
+  *ngIf="Editor() as editor"
+  [editor]="editor"
+  [config]="config()!"
 ></ckeditor>
 ```
 
@@ -556,7 +547,7 @@ The loader injects the editor style sheets as `<link>` tags, so point it at that
 ```angular-ts
 // editor.component.ts
 
-import { Component, ElementRef, ViewEncapsulation, inject, type AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewEncapsulation, inject, signal, type AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CKEditorCloudResult, CKEditorModule, loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
 import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
@@ -569,9 +560,9 @@ import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ck
 	encapsulation: ViewEncapsulation.ShadowDom
 } )
 export class EditorComponent implements AfterViewInit {
-	public Editor: typeof ClassicEditor | null = null;
+	public readonly Editor = signal<typeof ClassicEditor | null>( null );
 
-	public config: EditorConfig | null = null;
+	public readonly config = signal<EditorConfig | null>( null );
 
 	private readonly _elementRef: ElementRef<HTMLElement> = inject( ElementRef );
 
@@ -589,12 +580,12 @@ export class EditorComponent implements AfterViewInit {
 	private _setupEditor( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}' }> ) {
 		const { ClassicEditor, Essentials, Paragraph, Bold, Italic } = cloud.CKEditor;
 
-		this.Editor = ClassicEditor;
-		this.config = {
+		this.Editor.set( ClassicEditor );
+		this.config.set( {
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Paragraph, Bold, Italic ],
 			toolbar: [ 'bold', 'italic' ]
-		};
+		} );
 	}
 }
 ```
@@ -603,10 +594,10 @@ export class EditorComponent implements AfterViewInit {
 <!-- editor.component.html -->
 
 <ckeditor
-  *ngIf="(Editor && config)"
+  *ngIf="Editor() as editor"
   data="<p>Hello, world!</p>"
-  [editor]="Editor"
-  [config]="config"
+  [editor]="editor"
+  [config]="config()!"
 ></ckeditor>
 ```
 
@@ -629,19 +620,19 @@ this.context = await MyEditor.Context.create( {
 	// The context configuration.
 } );
 
-this.config = { context: this.context };
+this.config.set( { context: this.context } );
 ```
 
 The context is yours, so destroy it when you are done with it.
 
-Hold the editors back until the context is ready, with `*ngIf="config"` on the `<ckeditor>` element. The component reads its configuration only once, when it creates the editor. If it renders before `Context.create()` resolves, the editor gets no context, and setting the configuration later changes nothing. Errors attributed to the context rather than to one of its editors are not emitted by the component; register a callback for those with `MyEditor.Context.onEditorError()`.
+Hold the editors back until the context is ready, with `*ngIf="config()"` on the `<ckeditor>` element. Bind the configuration with `[config]="config()!"`. Keep `config` in a signal, so that setting it after `Context.create()` resolves updates the view. The component reads its configuration only once, when it creates the editor. If it renders before `Context.create()` resolves, the editor gets no context, and setting the configuration later changes nothing. Errors attributed to the context rather than to one of its editors are not emitted by the component; register a callback for those with `MyEditor.Context.onEditorError()`.
 
 ### Localization
 
 CKEditor 5 supports {@link getting-started/setup/ui-language multiple UI languages}, and so does the official Angular component. To translate the editor, pass the languages you need into the `translations` array inside the configuration of the `loadCKEditorCloud` function.
 
 ```angular-ts
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CKEditorModule, loadCKEditorCloud, CKEditorCloudResult } from '@ckeditor/ckeditor5-angular';
 import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
@@ -654,9 +645,9 @@ import { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ck
 	standalone: true
 } )
 export class AppComponent {
-	public Editor: typeof ClassicEditor | null = null;
+	public readonly Editor = signal<typeof ClassicEditor | null>( null );
 
-	public config: EditorConfig | null = null;
+	public readonly config = signal<EditorConfig | null>( null );
 
 	public ngOnInit(): void {
 		loadCKEditorCloud( {
@@ -674,12 +665,12 @@ export class AppComponent {
 			Italic
 		} = cloud.CKEditor;
 
-		this.Editor = ClassicEditor;
-		this.config = {
+		this.Editor.set( ClassicEditor );
+		this.config.set( {
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Bold, Italic, Paragraph ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ]
-		};
+		} );
 	}
 }
 ```

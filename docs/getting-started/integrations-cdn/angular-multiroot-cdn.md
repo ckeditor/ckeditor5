@@ -45,7 +45,7 @@ Use the `loadCKEditorCloud` helper to load the editor code and plugins from CDN,
 ```angular-ts
 // app.component.ts
 
-import { Component, type OnInit } from '@angular/core';
+import { Component, signal, type OnInit } from '@angular/core';
 import {
 	CKEditorMultiRootComponent,
 	loadCKEditorCloud,
@@ -58,19 +58,19 @@ import type { EditorConfig, MultiRootEditor } from 'https://cdn.ckeditor.com/typ
 	selector: 'app-root',
 	imports: [ CKEditorMultiRootComponent ],
 	template: `
-		@if ( Editor && config ) {
+		@if ( Editor(); as editor ) {
 			<ckeditor-multi-root
-				[editor]="Editor"
-				[config]="config"
+				[editor]="editor"
+				[config]="config()!"
 				[(data)]="data"
 			/>
 		}
 	`
 } )
 export class AppComponent implements OnInit {
-	public Editor: typeof MultiRootEditor | null = null;
+	public readonly Editor = signal<typeof MultiRootEditor | null>( null );
 
-	public config: EditorConfig | null = null;
+	public readonly config = signal<EditorConfig | null>( null );
 
 	public data: MultiRootEditorData = {
 		intro: '<h1>Angular multi-root editor</h1>',
@@ -88,12 +88,12 @@ export class AppComponent implements OnInit {
 		const { MultiRootEditor, Essentials, Paragraph, Bold, Italic } = cloud.CKEditor;
 		const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
-		this.Editor = MultiRootEditor;
-		this.config = {
+		this.Editor.set( MultiRootEditor );
+		this.config.set( {
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
-		};
+		} );
 	}
 }
 ```

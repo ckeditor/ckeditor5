@@ -73,8 +73,9 @@ export class AppComponent {
 ```angular-ts
 // app.component.ts
 
-import { Component, ViewEncapsulation } from '@angular/core';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { Component, ViewEncapsulation, signal } from '@angular/core';
+import { CKEditorModule, loadCKEditorCloud, type CKEditorCloudResult } from '@ckeditor/ckeditor5-angular';
+import type { ClassicEditor, EditorConfig } from 'https://cdn.ckeditor.com/typings/ckeditor5.d.ts';
 
 @Component( {
 	selector: 'app-root',
@@ -87,30 +88,33 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 export class AppComponent {
 	title = 'angular';
 
-	public Editor;
-	public config;
+	// ADDED
+	public readonly Editor = signal<typeof ClassicEditor | null>( null );
+	public readonly config = signal<EditorConfig | null>( null );
 
 	public ngOnInit() {
 		// ADDED
 		loadCKEditorCloud( {
-			version: '43.0.0'
+			version: '{@var ckeditor5-version}',
+			premium: true
 		} )
 		.then( this._setupEditor.bind( this ) );
 	}
 
-	private _setupEditor( cloud ) {
+	private _setupEditor( cloud: CKEditorCloudResult<{ version: '{@var ckeditor5-version}', premium: true }> ) {
 		const {
 			ClassicEditor, Bold, Essentials, Italic,
-			Mention, Paragraph, SlashCommand, Undo
+			Mention, Paragraph, Undo
 		} = cloud.CKEditor;
+		const { SlashCommand } = cloud.CKEditorPremiumFeatures;
 
-		this.Editor = ClassicEditor;
-		this.config = {
+		this.Editor.set( ClassicEditor );
+		this.config.set( {
 			licenseKey: '<YOUR_LICENSE_KEY>',
 			plugins: [ Bold, Essentials, Italic, Mention, Paragraph, SlashCommand, Undo ],
 			toolbar: [ 'undo', 'redo', '|', 'bold', 'italic' ],
 			// ... Other configuration ....
-		}
+		} );
 	}
 }
 ```
@@ -118,13 +122,14 @@ export class AppComponent {
 ```angular-html
 // app.component.html
 
-<ckeditor
-    *ngIf="Editor"
-    [editor]="Editor"
-    [config]="config"
-    <!-- ... -->
->
-</ckeditor>
+@if ( Editor(); as editor ) {
+    <ckeditor
+        [editor]="editor"
+        [config]="config()!"
+        <!-- ... -->
+    >
+    </ckeditor>
+}
 ```
 
 ### Step 3 (Optional): Migrate the CKEditor&nbsp;5 Angular integration testing suite
