@@ -190,16 +190,14 @@ export function EmitterMixin( base?: Constructor ): unknown {
 			if ( callback ) {
 				removeEventListener( this, emitter!, event!, callback );
 
-				// We must remove callbacks as well in order to prevent memory leaks.
-				// See https://github.com/ckeditor/ckeditor5/pull/8480
-				const index = eventCallbacks!.indexOf( callback );
+				// Stop tracking every copy of the callback. Otherwise the listener would keep a reference to it (a memory leak),
+				// and a later, broader `stopListening()` call could remove the same callback registered by another listener.
+				const remainingCallbacks = eventCallbacks!.filter( item => item !== callback );
 
-				if ( index !== -1 ) {
-					if ( eventCallbacks!.length === 1 ) {
-						delete emitterInfo!.callbacks[ event! ];
-					} else {
-						removeEventListener( this, emitter!, event!, callback );
-					}
+				if ( remainingCallbacks.length ) {
+					emitterInfo!.callbacks[ event! ] = remainingCallbacks;
+				} else {
+					delete emitterInfo!.callbacks[ event! ];
 				}
 			}
 			// Only `emitter` and `event` provided. off() all callbacks for that event.

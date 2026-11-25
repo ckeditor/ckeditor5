@@ -541,6 +541,24 @@ describe( 'EmitterMixin', () => {
 			expect( spyBar ).toHaveBeenCalledTimes( 2 );
 			expect( spyFoo2 ).toHaveBeenCalledTimes( 3 );
 		} );
+
+		it( 'should not remove the same callback registered later by another listener ' +
+			'when removing all callbacks of the event after removing that callback', () => {
+			const sharedSpy = vi.fn();
+			const spy = vi.fn();
+
+			emitter.on( 'event', sharedSpy );
+			emitter.on( 'event', spy );
+			emitter.off( 'event', sharedSpy );
+
+			listener.listenTo( emitter, 'event', sharedSpy );
+
+			emitter.off( 'event' );
+			emitter.fire( 'event' );
+
+			expect( sharedSpy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).not.toHaveBeenCalled();
+		} );
 	} );
 
 	describe( 'listenTo', () => {
@@ -633,6 +651,126 @@ describe( 'EmitterMixin', () => {
 
 			expect( spy1 ).toHaveBeenCalledTimes( 1 );
 			expect( spy2 ).toHaveBeenCalledTimes( 2 );
+		} );
+
+		it( 'should not remove the same callback registered later by another listener ' +
+			'when stopping the event after stopping that callback', () => {
+			const otherListener = getEmitterInstance();
+			const sharedSpy = vi.fn();
+			const spy = vi.fn();
+
+			listener.listenTo( emitter, 'event', sharedSpy );
+			listener.listenTo( emitter, 'event', spy );
+			listener.stopListening( emitter, 'event', sharedSpy );
+
+			otherListener.listenTo( emitter, 'event', sharedSpy );
+
+			listener.stopListening( emitter, 'event' );
+			emitter.fire( 'event' );
+
+			expect( sharedSpy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'should not remove the same callback registered later by another listener ' +
+			'when the stopped callback was registered twice', () => {
+			const otherListener = getEmitterInstance();
+			const sharedSpy = vi.fn();
+			const spy = vi.fn();
+
+			listener.listenTo( emitter, 'event', sharedSpy );
+			listener.listenTo( emitter, 'event', sharedSpy );
+			listener.listenTo( emitter, 'event', spy );
+			listener.stopListening( emitter, 'event', sharedSpy );
+
+			otherListener.listenTo( emitter, 'event', sharedSpy );
+
+			listener.stopListening( emitter, 'event' );
+			emitter.fire( 'event' );
+
+			expect( sharedSpy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'should not remove the same callback registered later by another listener ' +
+			'when the stopped callback was registered twice and was the only one for the event', () => {
+			const otherListener = getEmitterInstance();
+			const sharedSpy = vi.fn();
+
+			listener.listenTo( emitter, 'event', sharedSpy );
+			listener.listenTo( emitter, 'event', sharedSpy );
+			listener.stopListening( emitter, 'event', sharedSpy );
+
+			otherListener.listenTo( emitter, 'event', sharedSpy );
+
+			listener.stopListening( emitter );
+			emitter.fire( 'event' );
+
+			expect( sharedSpy ).toHaveBeenCalledTimes( 1 );
+		} );
+
+		it( 'should not remove the same callback registered later by another listener ' +
+			'when stopping the emitter after stopping that callback', () => {
+			const otherListener = getEmitterInstance();
+			const sharedSpy = vi.fn();
+			const spy = vi.fn();
+
+			listener.listenTo( emitter, 'event', sharedSpy );
+			listener.listenTo( emitter, 'event', spy );
+			listener.stopListening( emitter, 'event', sharedSpy );
+
+			otherListener.listenTo( emitter, 'event', sharedSpy );
+
+			listener.stopListening( emitter );
+			emitter.fire( 'event' );
+
+			expect( sharedSpy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'should not remove the same callback registered later by another listener ' +
+			'when stopping all emitters after stopping that callback', () => {
+			const otherListener = getEmitterInstance();
+			const sharedSpy = vi.fn();
+			const spy = vi.fn();
+
+			listener.listenTo( emitter, 'event', sharedSpy );
+			listener.listenTo( emitter, 'event', spy );
+			listener.stopListening( emitter, 'event', sharedSpy );
+
+			otherListener.listenTo( emitter, 'event', sharedSpy );
+
+			listener.stopListening();
+			emitter.fire( 'event' );
+
+			expect( sharedSpy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).not.toHaveBeenCalled();
+		} );
+
+		it( 'should not remove the same callback registered later by another listener ' +
+			'after that callback stopped listening to itself while the event was fired', () => {
+			const otherListener = getEmitterInstance();
+			const spy = vi.fn();
+			const selfRemovingSpy = vi.fn( () => {
+				listener.stopListening( emitter, 'event', selfRemovingSpy );
+			} );
+
+			listener.listenTo( emitter, 'event', selfRemovingSpy );
+			listener.listenTo( emitter, 'event', spy );
+
+			emitter.fire( 'event' );
+			emitter.fire( 'event' );
+
+			expect( selfRemovingSpy ).toHaveBeenCalledTimes( 1 );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
+
+			otherListener.listenTo( emitter, 'event', selfRemovingSpy );
+
+			listener.stopListening();
+			emitter.fire( 'event' );
+
+			expect( selfRemovingSpy ).toHaveBeenCalledTimes( 2 );
+			expect( spy ).toHaveBeenCalledTimes( 2 );
 		} );
 
 		it( 'should stop listening to given event', () => {
