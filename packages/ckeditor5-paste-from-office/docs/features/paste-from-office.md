@@ -54,12 +54,7 @@ By default, CKEditor&nbsp;5 will support pasting rich-text content from these ap
 
 You can find more information regarding compatibility with other applications in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1184#issuecomment-409828069).
 
-If you think that support for any of the applications needs improvements, please add 👍&nbsp; and comments in the following issues:
-
-* [Support pasting from Libre Office](https://github.com/ckeditor/ckeditor5/issues/2520).
-* [Support pasting from Pages](https://github.com/ckeditor/ckeditor5/issues/2527).
-
-Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
+If you need better support for other applications, such as LibreOffice or Pages, [contact us](https://ckeditor.com/contact/).
 
 ## Automatic content filtering
 
@@ -91,7 +86,7 @@ If the pasted document contains both images and styled text (like headings), ima
 
 It is advised to try and paste the image separately from the body of the text if this error occurs.
 
-If the image is represented in the Word content by the VML syntax (like this one: `<v:shape><v:imagedata src="...."/></v:shape>`), it will not be pasted either as this notation is not supported by CKEditor&nbsp;5. If you'd like to see this feature implemented, add a 👍&nbsp; reaction to [this GitHub issue](https://github.com/ckeditor/ckeditor5/issues/9245).
+If the image is represented in the Word content by the VML syntax (like this one: `<v:shape><v:imagedata src="...."/></v:shape>`), it will not be pasted either as this notation is not supported by CKEditor&nbsp;5. If you need this feature, [contact us](https://ckeditor.com/contact/).
 
 ## Related features
 

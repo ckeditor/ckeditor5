@@ -157,7 +157,7 @@ ClassicEditor
 
 ## Bookmarks on blocks
 
-At this time, if a bookmark is attached to a block, it appears before it. However, we plan to expand this solution in the future. We invite you to help us [gather feedback for linking directly to blocks and auto generating IDs](https://github.com/ckeditor/ckeditor5/issues/17264).
+At this time, if a bookmark is attached to a block, it appears before it. However, we plan to expand this solution in the future. If you are interested in linking directly to blocks and auto-generating IDs, [contact us](https://ckeditor.com/contact/).
 
 ## Related features
 
