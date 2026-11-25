@@ -199,7 +199,6 @@ export class WidgetToolbarRepository extends Plugin {
 
 		const balloonClasses = new Set( [
 			...balloonClassName.split( /\s+/ ).filter( Boolean ),
-			'ck-toolbar-container',
 			'ck-toolbar-container_widget'
 		] );
 

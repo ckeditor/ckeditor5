@@ -97,7 +97,7 @@ describe( 'TableToolbar', () => {
 
 				expect( spy ).toHaveBeenCalledWith( expect.objectContaining( {
 					view: toolbar,
-					balloonClassName: 'ck-toolbar-container'
+					balloonClassName: 'ck-toolbar-container ck-toolbar-container_widget'
 				} ) );
 			} );
 
@@ -313,7 +313,7 @@ describe( 'TableToolbar', () => {
 
 				expect( spy ).toHaveBeenCalledWith( expect.objectContaining( {
 					view: toolbar,
-					balloonClassName: 'ck-toolbar-container'
+					balloonClassName: 'ck-toolbar-container ck-toolbar-container_widget'
 				} ) );
 			} );
 		} );

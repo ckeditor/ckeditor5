@@ -108,22 +108,29 @@ An open dropdown or split button in a toolbar also uses `--ck-toolbar-button-bor
 
 #### Styling individual contextual toolbars
 
-Contextual toolbars, such as balloon, block, and widget toolbars, have toolbar-specific CSS classes on their balloon containers. You can use these classes to customize the appearance of an individual toolbar without affecting other toolbars:
+Toolbar panels have specific CSS classes that identify their purpose. You can use these classes to customize individual toolbars without applying the overrides to every toolbar panel:
+
+* `.ck-toolbar-container_editor` – the main toolbar panel of the inline editor.
+* `.ck-toolbar-container_balloon` – the balloon toolbar, including the selection toolbar in other editor types.
+* `.ck-toolbar-container_widget` – widget toolbar panels, such as image and table toolbars.
+* `.ck-toolbar-container_block` – the block toolbar panel.
+* `.ck-toolbar-container_link` – the link toolbar balloon.
+
+For example, to customize buttons in the balloon toolbar:
 
 ```css
-/* Customize buttons in the balloon toolbar only. */
 .ck-toolbar-container_balloon {
-    --ck-toolbar-button-border: 1px solid hsl(0, 0%, 0%);
-    --ck-toolbar-button-border-radius: 0;
+	--ck-toolbar-button-border: 1px solid hsl(0, 0%, 0%);
+	--ck-toolbar-button-border-radius: 0;
 }
 
 /* Customize buttons in the block toolbar only. */
 .ck-toolbar-container_block {
-    --ck-toolbar-button-border: 1px solid hsl(0, 0%, 0%);
+	--ck-toolbar-button-border: 1px solid hsl(0, 0%, 0%);
 }
 ```
 
-These classes let you scope CSS custom property overrides to a specific contextual toolbar. The overrides are inherited by the toolbar buttons inside the container, leaving other toolbars unaffected.
+These classes let you scope CSS custom property overrides to a specific toolbar panel. The overrides are inherited by the toolbar buttons inside the container. They can also affect nested toolbars inside that container, such as toolbars in dropdown panels opened from the customized toolbar.
 
 ### Button states
 

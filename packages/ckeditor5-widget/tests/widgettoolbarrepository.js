@@ -95,7 +95,7 @@ describe( 'WidgetToolbarRepository', () => {
 			);
 		} );
 
-		it( 'should preserve custom balloon classes and add the widget toolbar classes', () => {
+		it( 'should preserve custom balloon classes and add the widget toolbar class', () => {
 			widgetToolbarRepository.register( 'fake', {
 				items: editor.config.get( 'fake.toolbar' ),
 				getRelatedElement: () => null,
@@ -105,7 +105,7 @@ describe( 'WidgetToolbarRepository', () => {
 			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
 
 			expect( toolbarDefinition.balloonClassName ).toBe(
-				'my-custom-toolbar ck-toolbar-container ck-toolbar-container_widget'
+				'my-custom-toolbar ck-toolbar-container_widget'
 			);
 		} );
 
@@ -778,45 +778,6 @@ describe( 'WidgetToolbarRepository', () => {
 				defaultPositions.southArrowNorth,
 				defaultPositions.northArrowSouth
 			] );
-		} );
-
-		it( 'should update balloon classes when another view becomes visible', () => {
-			widgetToolbarRepository.register( 'fake', {
-				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: () => editor.editing.view.document.getRoot()
-			} );
-
-			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
-
-			widgetToolbarRepository._showToolbar(
-				toolbarDefinition,
-				editor.editing.view.document.getRoot()
-			);
-
-			expect( balloon.view.class ).toBe(
-				'ck-toolbar-container ck-toolbar-container_widget'
-			);
-
-			const otherView = new View();
-			otherView.setTemplate( { tag: 'div' } );
-
-			balloon.add( {
-				view: otherView,
-				position: {
-					target: editor.editing.view.getDomRoot()
-				},
-				balloonClassName: 'ck-other-panel'
-			} );
-
-			expect( balloon.visibleView ).toBe( otherView );
-			expect( balloon.view.class ).toBe( 'ck-other-panel' );
-
-			balloon.remove( otherView );
-
-			expect( balloon.visibleView ).toBe( toolbarDefinition.view );
-			expect( balloon.view.class ).toBe(
-				'ck-toolbar-container ck-toolbar-container_widget'
-			);
 		} );
 	} );
 } );

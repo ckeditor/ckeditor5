@@ -350,7 +350,7 @@ describe( 'BookmarkUI', () => {
 			expect( spy ).toHaveBeenCalled();
 			const matched = spy.mock.calls.some( ( [ arg ] ) => {
 				return arg && arg.view === toolbarView &&
-   						 arg.balloonClassName === 'ck-bookmark-balloon ck-toolbar-container ck-toolbar-container_widget';
+					arg.balloonClassName === 'ck-bookmark-balloon ck-toolbar-container ck-toolbar-container_widget';
 			} );
 			expect( matched ).toBe( true );
 			expect( balloon.view.class ).toBe(
