@@ -3,15 +3,62 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The feedback color roles of the editor UI: the colors that tell the user about a result or a state, such as
+ * an error, a success, or a match. To change one kind of feedback across the UI, override its role. To change
+ * one component, override its component token instead.
+ */
 :root,
 :host {
+	/**
+	 * Color of the error state, such as the border of an invalid field, the icon of a cancel button, and the fill
+	 * of the error message that points to a field in some forms.
+	 * @pair --ck-color-text-inverse
+	 */
 	--ck-color-feedback-error: var(--ck-color-base-error);
+
+	/**
+	 * Color of the success state, such as the icon of a save button and the fill of the icon shown when an image
+	 * upload completes.
+	 * @pair --ck-color-text-inverse
+	 */
 	--ck-color-feedback-success: var(--ck-color-base-success);
+
+	/**
+	 * Color of the warning state.
+	 */
+	/* The default theme does not read it. */
 	--ck-color-feedback-warning: var(--ck-color-base-warning);
+
+	/**
+	 * Background of highlighted text, such as the results of find and replace.
+	 * @pair --ck-color-text-primary
+	 */
+	/* Backward compatibility: the theme reads the legacy `--ck-color-highlight-background`, which follows this token,
+	   so overrides of either change the highlight. */
 	--ck-color-feedback-highlight: var(--ck-color-base-highlight);
 
-	/* Light, translucent backgrounds for messages and fields in a feedback state. */
+	/**
+	 * Light background of a message or a status label in the error state. It is translucent: a tint of
+	 * `--ck-color-feedback-error` over the background below it.
+	 * @pair --ck-color-text-primary
+	 * @pair --ck-color-text-error
+	 */
 	--ck-color-feedback-error-surface: color-mix(in srgb, var(--ck-color-feedback-error) 10%, transparent);
+
+	/**
+	 * Light background of a message or a status label in the success state. It is translucent: a tint of
+	 * `--ck-color-feedback-success` over the background below it.
+	 * @pair --ck-color-text-primary
+	 * @pair --ck-color-feedback-success
+	 */
 	--ck-color-feedback-success-surface: color-mix(in srgb, var(--ck-color-feedback-success) 10%, transparent);
+
+	/**
+	 * Light background of a message or a field in the warning state. It is translucent: a tint of
+	 * `--ck-color-feedback-warning` over the background below it.
+	 * @pair --ck-color-text-primary
+	 */
+	/* The default theme does not read it. */
 	--ck-color-feedback-warning-surface: color-mix(in srgb, var(--ck-color-feedback-warning) 10%, transparent);
 }

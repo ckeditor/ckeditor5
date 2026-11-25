@@ -3,9 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The layout roles of the editor UI: the sizes that several components share. To change the size of one
+ * component, override its component token instead.
+ */
 :root,
 :host {
-	/* Semantic sizing for shared cross-component layout constraints.
-	 * This layer will expand as more components adopt the token system. */
+	/**
+	 * Minimum height of controls, such as buttons and text inputs. Buttons also use it as their minimum width,
+	 * so an icon button is at least square. Set `--ck-font-size-base` on `:root` to resize it together with
+	 * the font sizes. It is read where controls are drawn, so it can also be set on a part of the UI, as the theme
+	 * does for small buttons.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-ui-component-min-height` and `--ck-font-size-normal` first
+	   if overridden. */
 	--ck-size-control-min-height: var(--ck-ui-component-min-height, calc(var(--ck-font-size-normal, var(--ck-font-size-base))*2));
 }

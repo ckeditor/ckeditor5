@@ -25,7 +25,8 @@ import {
 	MenuBarMenuListItemButtonView,
 	ToolbarView,
 	type ViewWithCssTransitionDisabler,
-	type ButtonExecuteEvent
+	type ButtonExecuteEvent,
+	type FocusableView
 } from '@ckeditor/ckeditor5-ui';
 
 import { Collection, type ObservableChangeEvent, type DomOptimalPositionOptions } from '@ckeditor/ckeditor5-utils';
@@ -101,6 +102,12 @@ export class LinkUI extends Plugin {
 	 * The collection of the link providers.
 	 */
 	private _linksProviders: Collection<LinksProvider> = new Collection();
+
+	/**
+	 * The {@link #toolbarView} item (or the toolbar itself) that had focus when a view was opened on top of the toolbar.
+	 * The focus goes back to it once the user returns to the toolbar.
+	 */
+	private _toolbarFocusReturnTarget: FocusableView | null = null;
 
 	/**
 	 * @inheritDoc
@@ -437,10 +444,19 @@ export class LinkUI extends Plugin {
 				this._removePropertiesView();
 				this.formView!.focus();
 			} else {
-				// Move focus back to the editing view to prevent from losing it while current view is removed.
-				editor.editing.view.focus();
+				const toolbarFocusReturnTarget = this._takeToolbarFocusReturnTarget();
+
+				// Without a toolbar item to return to, move focus to the editing view before the current view is removed,
+				// otherwise it would be lost. A toolbar item can take focus only after the removal, once the toolbar is visible again.
+				if ( !toolbarFocusReturnTarget ) {
+					editor.editing.view.focus();
+				}
 
 				this._removePropertiesView();
+
+				if ( toolbarFocusReturnTarget ) {
+					toolbarFocusReturnTarget.focus();
+				}
 			}
 		} );
 
@@ -894,6 +910,8 @@ export class LinkUI extends Plugin {
 
 		const linkCommand: LinkCommand = this.editor.commands.get( 'link' )!;
 
+		this._rememberToolbarFocusReturnTarget();
+
 		this.formView!.disableCssTransitions();
 		this.formView!.resetFormStatus();
 		this.formView!.backButtonView.isVisible = linkCommand.isEnabled && linkCommand.value !== undefined;
@@ -934,6 +952,8 @@ export class LinkUI extends Plugin {
 		if ( this._arePropertiesInPanel ) {
 			return;
 		}
+
+		this._rememberToolbarFocusReturnTarget();
 
 		this.propertiesView!.disableCssTransitions();
 
@@ -987,10 +1007,54 @@ export class LinkUI extends Plugin {
 		this.selectedLinkableText = undefined;
 
 		if ( linkCommand.value !== undefined ) {
-			this._removeFormView();
+			const toolbarFocusReturnTarget = this._takeToolbarFocusReturnTarget();
+
+			this._removeFormView( !toolbarFocusReturnTarget );
+
+			if ( toolbarFocusReturnTarget ) {
+				toolbarFocusReturnTarget.focus();
+			}
 		} else {
 			this._hideUI();
 		}
+	}
+
+	/**
+	 * Remembers which {@link #toolbarView} item has focus before a view is opened on top of the toolbar,
+	 * so {@link #_takeToolbarFocusReturnTarget} can bring the focus back to it later.
+	 *
+	 * It does nothing when the toolbar is not the visible view, for example, when the properties view
+	 * is opened from the form. It does not remember anything when the toolbar has no focus, for example,
+	 * when the form is opened with the keystroke while the focus is in the editing view.
+	 */
+	private _rememberToolbarFocusReturnTarget(): void {
+		if ( !this._isToolbarVisible ) {
+			return;
+		}
+
+		const toolbarView = this.toolbarView!;
+		const { isFocused, focusedElement } = toolbarView.focusTracker;
+
+		if ( !isFocused ) {
+			this._toolbarFocusReturnTarget = null;
+
+			return;
+		}
+
+		const focusedItem = toolbarView.items.find( item => item.element === focusedElement ) as FocusableView | undefined;
+
+		this._toolbarFocusReturnTarget = focusedItem || toolbarView;
+	}
+
+	/**
+	 * Returns the {@link #toolbarView} item remembered by {@link #_rememberToolbarFocusReturnTarget} and forgets it.
+	 */
+	private _takeToolbarFocusReturnTarget(): FocusableView | null {
+		const target = this._toolbarFocusReturnTarget;
+
+		this._toolbarFocusReturnTarget = null;
+
+		return target;
 	}
 
 	/**
@@ -1106,6 +1170,8 @@ export class LinkUI extends Plugin {
 
 		this.stopListening( editor.ui, 'update' );
 		this.stopListening( this._balloon, 'change:visibleView' );
+
+		this._toolbarFocusReturnTarget = null;
 
 		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.

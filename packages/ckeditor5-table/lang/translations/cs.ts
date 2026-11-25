@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'Barva má nesprávný formát. Zkuste "#FF0000", "rgb(255,0,0)" nebo "red".',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Hodnota je nesprávná. Zkuste "10px", "2em" nebo jednoduše "2".',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'Hodnota je nesprávná. Zkuste "10px" nebo jednoduše "10".',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'Zadejte titulek tabulky',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

@@ -15,12 +15,20 @@ import type {
 	ModelNode,
 	ModelPosition,
 	ModelRange,
+	ModelSchema,
 	ModelSelection,
 	ModelWriter
 } from '@ckeditor/ckeditor5-engine';
 
 import { TableWalker, type TableWalkerOptions } from './tablewalker.js';
-import { createEmptyTableCell, updateNumericAttribute, isEntireCellsLineHeader, isTableCellTypeEnabled } from './utils/common.js';
+import {
+	createEmptyTableCell,
+	updateNumericAttribute,
+	isEntireCellsLineHeader,
+	isTableCellTypeEnabled,
+	getInheritedTableCellAttributes,
+	type InheritedTableCellAttributes
+} from './utils/common.js';
 import { removeEmptyColumns, removeEmptyRows } from './utils/structure.js';
 import { getTableColumnElements } from './tablecolumnresize/utils.js';
 import type { TableCellType } from './tablecellproperties/tablecellpropertiesutils.js';
@@ -183,16 +191,36 @@ export class TableUtils extends Plugin {
 	 * @param table The table model element where the rows will be inserted.
 	 * @param options.at The row index at which the rows will be inserted.  Default value is 0.
 	 * @param options.rows The number of rows to insert.  Default value is 1.
-	 * @param options.copyStructureFromAbove The flag for copying row structure. Note that
-	 * the row structure will not be copied if this option is not provided.
+	 * @param options.copyStructureFromAbove The flag for copying row structure, that is, the column spans of the cells
+	 * in the row above (`true`) or below (`false`) the insertion point. Note that the row structure will not be copied
+	 * if this option is not provided. It only affects the structure of the new rows, not their formatting
+	 * or section (see `options.referenceRow`). When inserting next to a row the user acted on, both options usually
+	 * point at the same row, for example, `{ at: row + 1, copyStructureFromAbove: true, referenceRow: row }`.
+	 * @param options.referenceRow The index of the row (before the insertion) that the new rows are inserted next to,
+	 * usually the row the user acted on. If provided:
+	 *
+	 * * The new cells inherit the formatting of the cells in the reference row that cover the same columns: the table cell
+	 * properties (for example, borders, background color, padding, or alignment), the block formatting of their first block
+	 * (for example, alignment), and the text formatting found at the start of their content, which is continued when typing
+	 * in the new cells.
+	 * * When the rows are inserted at the boundary of the heading (or footer) section, they become part of the section
+	 * of the reference row. For example, rows inserted below the last heading row become heading rows. This does not apply
+	 * when the section covers the whole table, so rows appended to a table made of heading rows only become body rows.
+	 *
+	 * It does not affect the structure of the new rows (see `options.copyStructureFromAbove`). If not provided, no formatting
+	 * is inherited and the new rows become part of the heading (or footer) section only when inserted inside that section.
 	 */
-	public insertRows( table: ModelElement, options: { at?: number; rows?: number; copyStructureFromAbove?: boolean } = {} ): void {
+	public insertRows(
+		table: ModelElement,
+		options: { at?: number; rows?: number; copyStructureFromAbove?: boolean; referenceRow?: number } = {}
+	): void {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
 		const rowsToInsert = options.rows || 1;
 		const isCopyStructure = options.copyStructureFromAbove !== undefined;
 		const copyStructureFrom = options.copyStructureFromAbove ? insertAt - 1 : insertAt;
+		const referenceRow = options.referenceRow;
 		const cellTypeEnabled = isTableCellTypeEnabled( this.editor );
 		const scopedHeaders = !!this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 
@@ -212,23 +240,53 @@ export class TableUtils extends Plugin {
 			);
 		}
 
+		if ( referenceRow !== undefined && ( referenceRow < 0 || referenceRow >= rows ) ) {
+			/**
+			 * The `options.referenceRow` points at a row that does not exist.
+			 *
+			 * @error tableutils-insertrows-reference-row-out-of-range
+			 */
+			throw new CKEditorError(
+				'tableutils-insertrows-reference-row-out-of-range',
+				this,
+				{ options }
+			);
+		}
+
 		model.change( writer => {
 			let headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 			let footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+			const footerIndex = rows - footerRows;
 
 			// Inserting rows inside heading section requires to update `headingRows` attribute as the heading section will grow.
-			if ( headingRows > insertAt ) {
+			// Rows inserted at the heading section boundary belong to the section of the reference row, unless the heading section
+			// covers the whole table. Otherwise, it would be impossible to add a body row below a table made of heading rows only.
+			if (
+				headingRows > insertAt ||
+				( headingRows == insertAt && insertAt < rows && referenceRow !== undefined && referenceRow < headingRows )
+			) {
 				headingRows += rowsToInsert;
 			}
-
 			// Inserting rows inside footer section requires to update `footerRows` attribute as the footer section will grow.
-			if ( footerRows && insertAt > rows - footerRows ) {
+			// Rows inserted at the footer section boundary belong to the section of the reference row, unless the footer section
+			// covers the whole table.
+			else if (
+				footerRows && (
+					insertAt > footerIndex ||
+					( insertAt == footerIndex && footerIndex > 0 && referenceRow !== undefined && referenceRow >= footerIndex )
+				)
+			) {
 				footerRows += rowsToInsert;
 			}
 
+			const getInheritedAttributes = createInheritedAttributesGetter(
+				model.schema,
+				referenceRow === undefined ? [] : getCellsCoveringLine( table, { row: referenceRow } )
+			);
+
 			// Inserting at the end or at the beginning of a table doesn't require to calculate anything special.
 			if ( !isCopyStructure && ( insertAt === 0 || insertAt === rows ) ) {
-				const rows = createEmptyRows( writer, table, insertAt, rowsToInsert, columns );
+				const rows = createEmptyRows( writer, table, insertAt, rowsToInsert, columns, {}, getInheritedAttributes );
 
 				if ( cellTypeEnabled ) {
 					for ( let rowOffset = 0; rowOffset < rows.length; rowOffset++ ) {
@@ -241,6 +299,7 @@ export class TableUtils extends Plugin {
 								cell: row[ columnIndex ],
 								row: insertAt + rowOffset,
 								column: columnIndex,
+								headingRows,
 								scopedHeaders
 							} );
 						}
@@ -285,7 +344,14 @@ export class TableUtils extends Plugin {
 
 						// Insert the empty cell only if this slot is not row-spanned from any other cell.
 						if ( colspan > 0 ) {
-							const insertedCell = createEmptyTableCell( writer, insertPosition, colspan > 1 ? { colspan } : undefined );
+							const { cellAttributes, paragraphAttributes } = getInheritedAttributes( cellIndex );
+
+							const insertedCell = createEmptyTableCell(
+								writer,
+								insertPosition,
+								colspan > 1 ? { ...cellAttributes, colspan } : cellAttributes,
+								paragraphAttributes
+							);
 
 							if ( cellTypeEnabled ) {
 								updateTableCellType( {
@@ -294,6 +360,7 @@ export class TableUtils extends Plugin {
 									cell: insertedCell,
 									row: insertAt + rowIndex,
 									column: cellIndex,
+									headingRows,
 									scopedHeaders
 								} );
 							}
@@ -308,7 +375,10 @@ export class TableUtils extends Plugin {
 			this.setFooterRowsCount( writer, table, footerRows );
 			this.setHeadingRowsCount( writer, table, headingRows, {
 				// No need to update cell types again, as they were already set during insertion.
-				updateCellType: false
+				updateCellType: false,
+				// The heading section has already grown by the inserted rows. The following rows may consist of header cells
+				// only because of the heading columns, so they must not join the heading section.
+				autoExpand: false
 			} );
 		} );
 	}
@@ -339,24 +409,64 @@ export class TableUtils extends Plugin {
 	 * @param table The table model element where the columns will be inserted.
 	 * @param options.at The column index at which the columns will be inserted. Default value is 0.
 	 * @param options.columns The number of columns to insert. Default value is 1.
+	 * @param options.referenceColumn The index of the column (before the insertion) that the new columns are inserted next to,
+	 * usually the column the user acted on. If provided:
+	 *
+	 * * The new cells inherit the formatting of the cells in the reference column that cover the same rows: the table cell
+	 * properties (for example, borders, background color, padding, or alignment), the block formatting of their first block
+	 * (for example, alignment), and the text formatting found at the start of their content, which is continued when typing
+	 * in the new cells.
+	 * * When the columns are inserted at the boundary of the heading section, they become part of the section
+	 * of the reference column. For example, columns inserted to the right of the last heading column become heading columns.
+	 * This does not apply when the heading section covers the whole table.
+	 *
+	 * If not provided, no formatting is inherited and the new columns become part of the heading section only
+	 * when inserted inside that section.
 	 */
-	public insertColumns( table: ModelElement, options: { at?: number; columns?: number } = {} ): void {
+	public insertColumns( table: ModelElement, options: { at?: number; columns?: number; referenceColumn?: number } = {} ): void {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
 		const columnsToInsert = options.columns || 1;
+		const referenceColumn = options.referenceColumn;
 		const cellTypeEnabled = isTableCellTypeEnabled( this.editor );
 		const scopedHeaders = !!this.editor.config.get( 'table.tableCellProperties.scopedHeaders' );
 
+		const tableColumns = this.getColumns( table );
+
+		if ( referenceColumn !== undefined && ( referenceColumn < 0 || referenceColumn >= tableColumns ) ) {
+			/**
+			 * The `options.referenceColumn` points at a column that does not exist.
+			 *
+			 * @error tableutils-insertcolumns-reference-column-out-of-range
+			 */
+			throw new CKEditorError(
+				'tableutils-insertcolumns-reference-column-out-of-range',
+				this,
+				{ options }
+			);
+		}
+
 		model.change( writer => {
-			let headingColumns = table.getAttribute( 'headingColumns' ) as number;
+			let headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 			// Inserting columns inside heading section requires to update `headingColumns` attribute as the heading section will grow.
-			if ( insertAt < headingColumns ) {
+			// Columns inserted at the heading section boundary belong to the section of the reference column, unless the heading
+			// section covers the whole table.
+			if (
+				insertAt < headingColumns ||
+				(
+					insertAt == headingColumns && insertAt < tableColumns &&
+					referenceColumn !== undefined && referenceColumn < headingColumns
+				)
+			) {
 				headingColumns += columnsToInsert;
 			}
 
-			const tableColumns = this.getColumns( table );
+			const getInheritedAttributes = createInheritedAttributesGetter(
+				model.schema,
+				referenceColumn === undefined ? [] : getCellsCoveringLine( table, { column: referenceColumn } )
+			);
 
 			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
 			if ( insertAt === 0 || tableColumns === insertAt ) {
@@ -368,7 +478,13 @@ export class TableUtils extends Plugin {
 						continue;
 					}
 
-					const insertedCells = createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ) );
+					const insertedCells = createCells(
+						columnsToInsert,
+						writer,
+						writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ),
+						{},
+						getInheritedAttributes( rowIndex )
+					);
 
 					if ( cellTypeEnabled ) {
 						// If we insert column in heading section, set proper cell type.
@@ -379,6 +495,7 @@ export class TableUtils extends Plugin {
 								cell: insertedCells[ columnOffset ],
 								row: rowIndex,
 								column: insertAt + columnOffset,
+								headingColumns,
 								scopedHeaders
 							} );
 						}
@@ -412,7 +529,13 @@ export class TableUtils extends Plugin {
 					} else {
 						// It's either cell at this column index or spanned cell by a row-spanned cell from row above.
 						// In table above it's cell "e" and a spanned position from row below (empty cell between cells "g" and "h")
-						const insertedCells = createCells( columnsToInsert, writer, tableSlot.getPositionBefore() );
+						const insertedCells = createCells(
+							columnsToInsert,
+							writer,
+							tableSlot.getPositionBefore(),
+							{},
+							getInheritedAttributes( row )
+						);
 
 						// If we insert column in heading section, set proper cell type.
 						if ( cellTypeEnabled ) {
@@ -423,6 +546,7 @@ export class TableUtils extends Plugin {
 									cell: insertedCells[ columnOffset ],
 									row,
 									column: insertAt + columnOffset,
+									headingColumns,
 									scopedHeaders
 								} );
 							}
@@ -433,7 +557,10 @@ export class TableUtils extends Plugin {
 
 			this.setHeadingColumnsCount( writer, table, headingColumns, {
 				// No need to update cell types again, as they were already set during insertion.
-				updateCellType: false
+				updateCellType: false,
+				// The heading section has already grown by the inserted columns. The following columns may consist of header cells
+				// only because of the heading rows, so they must not join the heading section.
+				autoExpand: false
 			} );
 		} );
 	}
@@ -686,6 +813,7 @@ export class TableUtils extends Plugin {
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string || '1' );
+		const inheritedAttributes = getInheritedTableCellAttributes( model.schema, tableCell, { inheritCellType: true } );
 
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
@@ -709,7 +837,7 @@ export class TableUtils extends Plugin {
 				}
 
 				const cellsToInsert = colspan > numberOfCells ? numberOfCells - 1 : colspan - 1;
-				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes );
+				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes, inheritedAttributes );
 			}
 
 			// Second check - the cell has colspan of 1 or we need to create more cells then the currently one spans over.
@@ -747,7 +875,7 @@ export class TableUtils extends Plugin {
 					newCellsAttributes.rowspan = rowspan;
 				}
 
-				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes );
+				createCells( cellsToInsert, writer, writer.createPositionAfter( tableCell ), newCellsAttributes, inheritedAttributes );
 
 				const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
@@ -821,6 +949,7 @@ export class TableUtils extends Plugin {
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string || '1' );
+		const inheritedAttributes = getInheritedTableCellAttributes( model.schema, tableCell, { inheritCellType: true } );
 
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
@@ -878,7 +1007,7 @@ export class TableUtils extends Plugin {
 					if ( isAfterSplitCell && isOnSameColumn ) {
 						// Create new cells only if the distance from the last cell span is equal or greater than the new cells span.
 						if ( !distanceFromLastCellSpan ) {
-							createCells( 1, writer, tableSlot.getPositionBefore(), newCellsAttributes );
+							createCells( 1, writer, tableSlot.getPositionBefore(), newCellsAttributes, inheritedAttributes );
 						}
 
 						// Increase the distance from the last cell span.
@@ -916,7 +1045,7 @@ export class TableUtils extends Plugin {
 					newCellsAttributes.colspan = colspan;
 				}
 
-				createEmptyRows( writer, table, splitCellRow + 1, cellsToInsert, 1, newCellsAttributes );
+				createEmptyRows( writer, table, splitCellRow + 1, cellsToInsert, 1, newCellsAttributes, () => inheritedAttributes );
 
 				// Update heading section if split cell is in heading section.
 				const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
@@ -1513,9 +1642,16 @@ export type UpdateTableHeadingsOptions = {
  * @param insertAt The row index of row insertion.
  * @param rows The number of rows to create.
  * @param tableCellToInsert The number of cells to insert in each row.
+ * @param getInheritedAttributes Returns the attributes inherited by the cell created in the given column.
  */
 function createEmptyRows(
-	writer: ModelWriter, table: ModelElement, insertAt: number, rows: number, tableCellToInsert: number, attributes = {}
+	writer: ModelWriter,
+	table: ModelElement,
+	insertAt: number,
+	rows: number,
+	tableCellToInsert: number,
+	attributes = {},
+	getInheritedAttributes?: ( column: number ) => InheritedTableCellAttributes
 ) {
 	const insertedRows: Array<Array<ModelElement>> = [];
 
@@ -1524,9 +1660,20 @@ function createEmptyRows(
 
 		writer.insert( tableRow, table, insertAt );
 
-		insertedRows.push(
-			createCells( tableCellToInsert, writer, writer.createPositionAt( tableRow, 'end' ), attributes )
-		);
+		const insertedCells: Array<ModelElement> = [];
+
+		for ( let column = 0; column < tableCellToInsert; column++ ) {
+			const inheritedAttributes = getInheritedAttributes?.( column );
+
+			insertedCells.push( createEmptyTableCell(
+				writer,
+				writer.createPositionAt( tableRow, 'end' ),
+				{ ...inheritedAttributes?.cellAttributes, ...attributes },
+				inheritedAttributes?.paragraphAttributes
+			) );
+		}
+
+		insertedRows.push( insertedCells );
 	}
 
 	return insertedRows;
@@ -1536,13 +1683,21 @@ function createEmptyRows(
  * Creates cells at a given position.
  *
  * @param cells The number of cells to create
+ * @param inheritedAttributes The attributes inherited by the created cells from a reference cell.
  */
-function createCells( cells: number, writer: ModelWriter, insertPosition: ModelPosition, attributes = {} ) {
+function createCells(
+	cells: number,
+	writer: ModelWriter,
+	insertPosition: ModelPosition,
+	attributes: Record<string, unknown>,
+	inheritedAttributes: InheritedTableCellAttributes
+) {
 	const createdCells: Array<ModelElement> = [];
+	const cellAttributes = { ...inheritedAttributes.cellAttributes, ...attributes };
 	let currentPosition = insertPosition;
 
 	for ( let i = 0; i < cells; i++ ) {
-		const cell = createEmptyTableCell( writer, currentPosition, attributes );
+		const cell = createEmptyTableCell( writer, currentPosition, cellAttributes, inheritedAttributes.paragraphAttributes );
 
 		createdCells.push( cell );
 
@@ -1550,6 +1705,46 @@ function createCells( cells: number, writer: ModelWriter, insertPosition: ModelP
 	}
 
 	return createdCells;
+}
+
+/**
+ * Returns the cells covering the slots of the given table row (indexed by column) or table column (indexed by row).
+ * A cell spanning over multiple slots is returned for each of them.
+ */
+function getCellsCoveringLine( table: ModelElement, line: { row: number } | { column: number } ): Array<ModelElement> {
+	const cells: Array<ModelElement> = [];
+
+	for ( const { cell, row, column } of new TableWalker( table, { ...line, includeAllSlots: true } ) ) {
+		cells[ 'row' in line ? column : row ] = cell;
+	}
+
+	return cells;
+}
+
+/**
+ * Creates a function returning the attributes inherited from the reference cell at the given index.
+ * The attributes are computed once per reference cell.
+ */
+function createInheritedAttributesGetter(
+	schema: ModelSchema,
+	referenceCells: Array<ModelElement>
+): ( index: number ) => InheritedTableCellAttributes {
+	const cache = new Map<ModelElement, InheritedTableCellAttributes>();
+	const noAttributes = { cellAttributes: {}, paragraphAttributes: {} };
+
+	return index => {
+		const referenceCell = referenceCells[ index ];
+
+		if ( !referenceCell ) {
+			return noAttributes;
+		}
+
+		if ( !cache.has( referenceCell ) ) {
+			cache.set( referenceCell, getInheritedTableCellAttributes( schema, referenceCell ) );
+		}
+
+		return cache.get( referenceCell )!;
+	};
 }
 
 /**
@@ -1748,6 +1943,8 @@ function getBiggestRectangleArea( rows: Set<number>, columns: Set<number> ): num
 /**
  * Updates the `tableCellType` attribute of a table cell based on its position in the table
  * and the table's `headingRows` and `headingColumns` attributes.
+ *
+ * The `headingRows` and `headingColumns` values can be passed explicitly when the table attributes are not updated yet.
  */
 function updateTableCellType(
 	{
@@ -1756,6 +1953,8 @@ function updateTableCellType(
 		row,
 		column,
 		cell,
+		headingRows = table.getAttribute( 'headingRows' ) as number || 0,
+		headingColumns = table.getAttribute( 'headingColumns' ) as number || 0,
 		scopedHeaders
 	}: {
 		writer: ModelWriter;
@@ -1763,12 +1962,11 @@ function updateTableCellType(
 		row: number;
 		column: number;
 		cell: ModelElement;
+		headingRows?: number;
+		headingColumns?: number;
 		scopedHeaders?: boolean;
 	}
 ) {
-	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
-	const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
-
 	if ( row >= headingRows && column >= headingColumns ) {
 		writer.removeAttribute( 'tableCellType', cell );
 		return;

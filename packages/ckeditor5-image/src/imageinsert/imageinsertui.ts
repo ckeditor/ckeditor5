@@ -121,6 +121,10 @@ export class ImageInsertUI extends Plugin {
 
 	/**
 	 * Registers the insert image dropdown integration.
+	 *
+	 * If all enabled integrations return only {@link module:ui/button/buttonview~ButtonView buttons} from `formViewCreator()`,
+	 * the dropdown panel is navigated using the arrow keys. Otherwise, the <kbd>Tab</kbd> key is used,
+	 * so the arrow keys can move the caret in text fields.
 	 */
 	public registerIntegration( {
 		name,

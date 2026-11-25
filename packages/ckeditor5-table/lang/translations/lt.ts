@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'Spalva neteisinga. Mėginkite "#FF0000" arba "rgb(255,0,0)" arba "raudona".',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Reikšmė neteisinga. Mėginkite "10px" arba "2em", ar paprasčiausiai "2".',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'Reikšmė neteisinga. Mėginkite "10px" arba tiesiog "10".',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'Įvesti lentelės antraštę',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

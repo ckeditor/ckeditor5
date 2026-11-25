@@ -9,6 +9,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 
 import { TableEditing } from '../../src/tableediting.js';
+import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { modelTable } from '../_utils/utils.js';
 
 import { MergeCellCommand } from '../../src/commands/mergecellcommand.js';
@@ -1263,6 +1264,90 @@ describe( 'MergeCellCommand', () => {
 
 				expect( createdBatches.size ).toEqual( 1 );
 			} );
+		} );
+	} );
+} );
+
+describe( 'MergeCellCommand with TableCellProperties', () => {
+	let editor, model;
+
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, TableCellPropertiesEditing ]
+		} );
+
+		model = editor.model;
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
+	describe( 'isEnabled', () => {
+		it( 'should be false when merging a header cell with a data cell on the right', () => {
+			const command = new MergeCellCommand( editor, { direction: 'right' } );
+
+			_setModelData( model, modelTable( [
+				[ { contents: '00[]', tableCellType: 'header' }, '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( command.isEnabled ).toBe( false );
+		} );
+
+		it( 'should be false when merging a header cell with a data cell on the left', () => {
+			const command = new MergeCellCommand( editor, { direction: 'left' } );
+
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01[]' ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( command.isEnabled ).toBe( false );
+		} );
+
+		it( 'should be false when merging a header cell with a data cell below', () => {
+			const command = new MergeCellCommand( editor, { direction: 'down' } );
+
+			_setModelData( model, modelTable( [
+				[ { contents: '00[]', tableCellType: 'header' }, '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( command.isEnabled ).toBe( false );
+		} );
+
+		it( 'should be false when merging a data cell with a header cell above', () => {
+			const command = new MergeCellCommand( editor, { direction: 'up' } );
+
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellType: 'header' }, '01' ],
+				[ '10[]', '11' ]
+			] ) );
+
+			expect( command.isEnabled ).toBe( false );
+		} );
+
+		it( 'should be true when merging header cells of different header variants', () => {
+			const command = new MergeCellCommand( editor, { direction: 'right' } );
+
+			_setModelData( model, modelTable( [
+				[ { contents: '00[]', tableCellType: 'header' }, { contents: '01', tableCellType: 'header-column' } ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( command.isEnabled ).toBe( true );
+		} );
+
+		it( 'should be true when merging cells of the same type', () => {
+			const command = new MergeCellCommand( editor, { direction: 'right' } );
+
+			_setModelData( model, modelTable( [
+				[ { contents: '00[]', tableCellType: 'header' }, { contents: '01', tableCellType: 'header' } ],
+				[ '10', '11' ]
+			] ) );
+
+			expect( command.isEnabled ).toBe( true );
 		} );
 	} );
 } );

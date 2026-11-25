@@ -152,6 +152,8 @@ export class IconView extends View {
 	private _updateXMLContent() {
 		if ( this.content ) {
 			const parsed = new DOMParser().parseFromString( trustedHtml( this.content.trim() ), 'image/svg+xml' );
+
+			// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 			const svg = parsed.querySelector( 'svg' );
 
 			if ( !svg ) {

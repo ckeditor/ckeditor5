@@ -24,7 +24,11 @@
 	   It has the same value as the selected text color in the default theme, and follows the primary color
 	   (`--ck-color-base-action`). */
 	--ck-list-button-on-background-color: var(--ck-color-button-on-color, var(--ck-color-interactive-primary-surface));
-	--ck-list-button-on-text-color: var(--ck-color-text-inverse);
+	--ck-list-button-on-text-color: var(--ck-color-interactive-primary-text);
+	/* Border color of a focused selected item built from a plain button (not a list item button). Declared `initial`
+	   and read with `--ck-color-surface-control` as fallback, so by default the border blends with the list background
+	   and the focus shows as the shadow only. */
+	--ck-list-button-on-focus-border-color: initial;
 	--ck-list-divider-color: var(--ck-color-divider);
 	--ck-list-separator-height: var(--ck-border-width-divider);
 
@@ -110,7 +114,7 @@
 			}
 
 			&:focus:not(.ck-disabled) {
-				border-color: var(--ck-color-surface-control);
+				border-color: var(--ck-list-button-on-focus-border-color, var(--ck-color-surface-control));
 			}
 		}
 

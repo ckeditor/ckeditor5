@@ -8,6 +8,7 @@
  */
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { normalizeLengthStyleValue } from '@ckeditor/ckeditor5-engine';
 import { type FontSizeOption } from '../fontconfig.js';
 
 /**
@@ -84,7 +85,11 @@ function getOptionDefinition( option: string | number | FontSizeOption ): FontSi
 
 	// Check whether passed option is a full item definition provided by user in configuration.
 	if ( typeof option === 'object' && isFullItemDefinition( option ) ) {
-		return attachPriority( option );
+		// Make e.g. `2.0em` and `2em` the same option. Copy the option to avoid modifying the configuration.
+		return attachPriority( {
+			...option,
+			model: normalizeLengthStyleValue( option.model! )
+		} );
 	}
 
 	const preset = findPreset( option );
@@ -125,6 +130,9 @@ function generatePixelPreset( definition: string | FontSizeOption ): FontSizeOpt
 			model: `${ parseFloat( definition ) }px`
 		};
 	}
+
+	// Make e.g. `2.0em` and `2em` the same option.
+	definition.model = normalizeLengthStyleValue( definition.model! );
 
 	definition.view = {
 		name: 'span',

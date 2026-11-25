@@ -16,6 +16,7 @@ import type {
 	ModelElement,
 	Model,
 	ModelInsertContentEvent,
+	ModelPosition,
 	UpcastElementEvent,
 	ViewDocumentTabEvent,
 	ViewElement,
@@ -55,6 +56,7 @@ import {
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
 	isSingleListItem,
+	getListItems,
 	getSelectedBlockObject,
 	isListItemBlock,
 	removeListAttributes,
@@ -634,7 +636,7 @@ export class ListEditing extends Plugin {
 		const model = this.editor.model;
 		const clipboardPipeline: ClipboardPipeline = this.editor.plugins.get( 'ClipboardPipeline' );
 
-		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
+		this.listenTo<ModelInsertContentEvent>( model, 'insertContent', createModelIndentPasteFixer( model, this ), { priority: 'high' } );
 
 		// To enhance the UX, the editor should not copy list attributes to the clipboard if the selection
 		// started and ended in the same list item.
@@ -946,6 +948,7 @@ function modelChangePostFixer(
  * A fixer for pasted content that includes list items.
  *
  * It fixes indentation of pasted list items so the pasted items match correctly to the context they are pasted into.
+ * The first pasted item also gets the properties of the target list (such as the list style), so the target list keeps them.
  *
  * Example:
  *
@@ -966,7 +969,7 @@ function modelChangePostFixer(
  * <paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>
  * ```
  */
-function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertContentEvent> {
+function createModelIndentPasteFixer( model: Model, listEditing: ListEditing ): GetCallback<ModelInsertContentEvent> {
 	return ( evt, [ content, selectable ] ) => {
 		// Only consider block elements for list attribute fixing. Applying list attributes to text nodes
 		// or inline objects does not make sense and can cause editor crashes.
@@ -1002,6 +1005,9 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 			const refIndent = refItem.getAttribute( 'listIndent' );
 			const firstElementIndent = items[ 0 ].getAttribute( 'listIndent' ) as number || 0;
 			const indentDiff = Math.max( refIndent - firstElementIndent, 0 );
+			const refListProperties = getListPropertiesForFirstPastedItem(
+				model, listEditing, refItem, firstElementIndent, selection.getLastPosition()!
+			);
 
 			for ( const item of items ) {
 				const isListItem = isListItemBlock( item );
@@ -1017,6 +1023,7 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 				}
 
 				writer.setAttributes( {
+					...( item == items[ 0 ] ? refListProperties : {} ),
 					listIndent: ( isListItem ? item.getAttribute( 'listIndent' ) : 0 ) + indentDiff,
 					listItemId: isListItem ? item.getAttribute( 'listItemId' ) : ListItemUid.next(),
 					listType: refType
@@ -1024,6 +1031,43 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 			}
 		} );
 	};
+}
+
+/**
+ * Returns the properties of the target list (for example, the list style) that the first pasted item should get.
+ *
+ * The first item of a list sets the properties of the whole list. When the pasted content becomes the new first item,
+ * it needs them, or the list would lose its properties. See https://github.com/ckeditor/ckeditor5/issues/20264.
+ */
+function getListPropertiesForFirstPastedItem(
+	model: Model,
+	listEditing: ListEditing,
+	refItem: ListElement,
+	firstElementIndent: number,
+	lastPosition: ModelPosition
+): Record<string, unknown> {
+	// The pasted content does not join the target list.
+	if ( firstElementIndent > refItem.getAttribute( 'listIndent' ) ) {
+		return {};
+	}
+
+	const listBlocks = getListItems( refItem );
+
+	// `refItem` is not the first block of the list, so the pasted content cannot become the new first item.
+	if ( listBlocks[ 0 ] != refItem ) {
+		return {};
+	}
+
+	// The pasted content replaces the whole list.
+	if ( !model.createPositionAt( listBlocks.at( -1 )!, 'end' ).isAfter( lastPosition ) ) {
+		return {};
+	}
+
+	const listAttributeNames = listEditing.getListAttributeNames();
+	const listProperties = Object.entries( model.schema.getAttributesWithProperty( refItem, 'copyOnReplace', true ) )
+		.filter( ( [ name ] ) => listAttributeNames.includes( name ) && !LIST_BASE_ATTRIBUTES.includes( name ) );
+
+	return Object.fromEntries( listProperties );
 }
 
 /**

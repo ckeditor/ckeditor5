@@ -782,7 +782,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * 	model: 'comment',
 	 * 	view: markerName => ( {
 	 * 		group: 'comment',
-	 * 		name: markerName.substr( 8 ) // Removes 'comment:' part.
+	 * 		name: markerName.slice( 8 ) // Removes 'comment:' part.
 	 * 	} )
 	 * } );
 	 *
@@ -791,7 +791,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * 	model: 'comment',
 	 * 	view: markerName => ( {
 	 * 		group: 'comment',
-	 * 		name: markerName.substr( 8 ) // Removes 'comment:' part.
+	 * 		name: markerName.slice( 8 ) // Removes 'comment:' part.
 	 * 	} ),
 	 * 	converterPriority: 'high'
 	 * } );
@@ -2367,7 +2367,7 @@ function downcastMarkerToData( config: {
 	if ( !view ) {
 		view = markerName => ( {
 			group,
-			name: markerName.substr( config.model.length + 1 )
+			name: markerName.slice( config.model.length + 1 )
 		} );
 	}
 

@@ -119,6 +119,7 @@ export class ListPropertiesEditing extends Plugin {
 			strategy.addCommand( editor );
 
 			model.schema.extend( '$listItem', { allowAttributes: strategy.attributeName } );
+			model.schema.setAttributeProperties( strategy.attributeName, { copyOnReplace: true } );
 
 			// Register downcast strategy.
 			listEditing.registerDowncastStrategy( {

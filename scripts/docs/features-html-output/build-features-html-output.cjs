@@ -415,8 +415,8 @@ function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 			const comment = entry._comment ?
 				`<p class="b-paragraph">${
 					entry._comment
-						.replace( '<', '&lt;' )
-						.replace( '>', '&gt;' )
+						.replaceAll( '<', '&lt;' )
+						.replaceAll( '>', '&gt;' )
 						.replace( /`(.*?)`/g, '<code class="b-inline-code">$1</code>' )
 						.replace( /\[(.*?)\]\((.*?)\)/g, '<a class="b-link" href="$2" target="_blank" rel="noopener">$1</a>' )
 				}</p>` :

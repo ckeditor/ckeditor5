@@ -1527,6 +1527,13 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 	margin-top: var(--ck-spacing-standard, var(--ck-spacing-base));
 }
 
+/* ============================== ckeditor5-merge-fields ============================== */
+:root,
+:host {
+	--ck-merge-fields-form-error-background-color: hsl(15 100% 97%);
+	--ck-merge-fields-form-status-font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
+}
+
 /* ============================== ckeditor5-pagination ============================== */
 :root,
 :host {
@@ -1777,12 +1784,11 @@ If you do not have the file yet, copy it from the blocks below. The preset is sp
 :root,
 :host {
 	--ck-slash-command-button-width: 250px;
-	--ck-slash-command-description-width: 200px;
 	--ck-slash-command-button-radius: var(--ck-list-dropdown-button-border-radius, 0);
 }
 
-.ck.ck-mentions > .ck-list__item.ck-mentions__item_focused > .ck-button .ck-slash-command-button__description {
-	color: var(--ck-list-button-on-text-color);
+.ck.ck-mentions > .ck-list__item.ck-mentions__item_focused > .ck-button {
+	--ck-slash-command-description-text-color: var(--ck-list-button-on-text-color);
 }
 
 /* ============================== ckeditor5-source-editing-enhanced ============================== */
@@ -2125,6 +2131,7 @@ Some content and feature tokens were renamed to the current naming convention. T
 | `--ck-color-merge-fields-block-outline`                 | `--ck-merge-fields-block-outline-color`                               |
 | `--ck-color-merge-fields-form-error-background`         | `--ck-merge-fields-form-error-background-color`                       |
 | `--ck-color-merge-fields-affix-color`                   | `--ck-merge-fields-affix-text-color`                                  |
+| `--ck-merge-fields-paddings-vertical`                   | `--ck-merge-fields-padding-block`                                     |
 | `--ck-uploadcare-color-image-background`                | `--ck-uploadcare-form-image-background-color`                         |
 | `--ck-uploadcare-color-icon-error`                      | `--ck-uploadcare-form-error-icon-color`                               |
 | `--ck-uploadcare-color-skeleton`                        | `--ck-uploadcare-form-skeleton-background-color`                      |
@@ -2306,3 +2313,4 @@ See {@link features/track-changes#markers-styling Markers styling} in the track 
 
 * {@link framework/theme-token-naming Theme token naming guide} &ndash; the three-layer model and the token naming conventions.
 * {@link framework/theme-customization Theme customization guide} &ndash; how to override tokens and apply custom CSS.
+* {@link framework/theme-token-reference Theme token reference guide} &ndash; the foundation and semantic tokens with their roles, default values, and replacements.

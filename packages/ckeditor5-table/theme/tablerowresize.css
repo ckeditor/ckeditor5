@@ -1,0 +1,48 @@
+/*
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root,
+:host {
+	/* The semantic accent border role resolves to the same value as `--ck-color-base-active`. */
+	--ck-table-row-resizer-hover-background-color: var(--ck-color-border-accent);
+	--ck-table-row-resizer-height: 7px;
+
+	/* The offset used for absolute positioning of the resizer element, so that it is placed exactly above the cell border.
+	   The value is: minus half the height of the resizer decreased additionally by the half the width of the border (0.5px). */
+	--ck-table-row-resizer-position-offset: calc(var(--ck-table-row-resizer-height) * -0.5 - 0.5px);
+}
+
+.ck.ck-editor__editable .table td,
+.ck.ck-editor__editable .table th {
+	/* The resizer element is placed inside each cell, so it must be positioned relatively to the cell. */
+	position: relative;
+}
+
+.ck.ck-editor__editable .table .ck-table-row-resizer {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: var(--ck-table-row-resizer-position-offset);
+	height: var(--ck-table-row-resizer-height);
+	cursor: row-resize;
+	-webkit-user-select: none;
+	user-select: none;
+	z-index: var(--ck-z-base);
+}
+
+.ck.ck-editor__editable.ck-row-resize_disabled .table .ck-table-row-resizer {
+	display: none;
+}
+
+/* The row resizers are hidden while the table is dragged, as the column resizers are. */
+.ck.ck-editor__editable .table[draggable] .ck-table-row-resizer {
+	display: none;
+}
+
+.ck.ck-editor__editable .table .ck-table-row-resizer:hover,
+.ck.ck-editor__editable .table .ck-table-row-resizer__active {
+	background-color: var(--ck-table-row-resizer-hover-background-color);
+	opacity: 0.25;
+}

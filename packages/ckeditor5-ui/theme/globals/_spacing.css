@@ -3,10 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The spacing scale of the editor UI. Set `--ck-spacing-base` on `:root` to resize every step.
+ * To change the spacing of one group of elements, such as controls, override its semantic spacing role,
+ * such as `--ck-spacing-control-padding-inline`, instead.
+ */
 :root,
 :host {
-	/* Anchor of the spacing scale; every rung derives from it. `--ck-spacing-unit` stays the legacy
-	   override hook, so em/fluid overrides of it still rescale the whole ladder. */
+	/* `--ck-spacing-unit` is the legacy override hook, so em or fluid overrides of it rescale every step. */
 	--ck-spacing-base: var(--ck-spacing-unit, 8px);          /* 8px */
 
 	--ck-spacing-2xs: calc(0.125 * var(--ck-spacing-base));  /* 1px  */
@@ -17,7 +21,11 @@
 	--ck-spacing-lg:  calc(1.5 * var(--ck-spacing-base));    /* 12px */
 	--ck-spacing-xl:  calc(2 * var(--ck-spacing-base));      /* 16px */
 
-	/* Backward-compatible bridge for the retired `--ck-spacing-ms` name (= `--ck-spacing-md` = 6px).
-	   Migrated consumers use `--ck-spacing-md`; kept for external integrations. */
-	--ck-spacing-ms: var(--ck-spacing-medium-small, var(--ck-spacing-md));                   /* 6px, retired */
+	/**
+	 * An alias of `--ck-spacing-md`.
+	 * @deprecated --ck-spacing-md
+	 */
+	/* Shipped in v49.0.0 as an alias of `--ck-spacing-md`, never with a value of its own. Backward compatibility:
+	   reads the legacy `--ck-spacing-medium-small` first if overridden. */
+	--ck-spacing-ms: var(--ck-spacing-medium-small, var(--ck-spacing-md));                   /* 6px */
 }

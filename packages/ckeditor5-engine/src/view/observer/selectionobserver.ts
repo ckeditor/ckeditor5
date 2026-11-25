@@ -77,13 +77,6 @@ export class SelectionObserver extends Observer {
 	>;
 
 	/**
-	 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
-	 * changes exceeds a certain limit within the interval of time, the observer will not fire `selectionChange` but warn about
-	 * possible infinite selection loop.
-	 */
-	private readonly _clearInfiniteLoopInterval: ReturnType<typeof setInterval>;
-
-	/**
 	 * Unlocks the `isSelecting` state of the view document in case the selection observer did not record this fact
 	 * correctly (for whatever reason). It is a safeguard (paranoid check), that returns document to the normal state
 	 * after a certain period of time (debounced, postponed by each selectionchange event).
@@ -91,9 +84,16 @@ export class SelectionObserver extends Observer {
 	private readonly _documentIsSelectingInactivityTimeoutDebounced: ReturnType<typeof debounce<() => boolean>>;
 
 	/**
-	 * Private property to check if the code does not enter infinite loop.
+	 * The number of selection changes handled in the current one-second period.
+	 * Used to check if the code does not enter an infinite loop.
 	 */
 	private _loopbackCounter = 0;
+
+	/**
+	 * The time (`performance.now()`) at which the current one-second period of counting selection changes started.
+	 * It starts at minus infinity, so that the first counted selection change starts a new period.
+	 */
+	private _loopbackPeriodStart = Number.NEGATIVE_INFINITY;
 
 	/**
 	 * A set of DOM trees (editing roots' shadow roots, or documents) that have a pending selection change.
@@ -118,8 +118,6 @@ export class SelectionObserver extends Observer {
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
 			this.document.fire<ViewDocumentObserverSelectionChangeDoneEvent>( 'selectionChangeDone', data );
 		}, 200 );
-
-		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
 
 		this._documentIsSelectingInactivityTimeoutDebounced = debounce( () => ( this.document.isSelecting = false ), 5000 );
 
@@ -264,7 +262,6 @@ export class SelectionObserver extends Observer {
 	public override destroy(): void {
 		super.destroy();
 
-		clearInterval( this._clearInfiniteLoopInterval );
 		this._fireSelectionChangeDoneDebounced.cancel();
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
@@ -346,9 +343,9 @@ export class SelectionObserver extends Observer {
 		}
 
 		// Ensure we are not in the infinite loop (https://github.com/ckeditor/ckeditor5-engine/issues/400).
-		// This counter is reset each second. 60 selection changes in 1 second is enough high number
+		// Selection changes are counted in one-second periods. 60 selection changes in 1 second is enough high number
 		// to be very difficult (impossible) to achieve using just keyboard keys (during normal editor use).
-		if ( ++this._loopbackCounter > 60 ) {
+		if ( this._isInfiniteLoop() ) {
 			// Selection change observer detected an infinite rendering loop.
 			// Most probably you try to put the selection in the position which is not allowed
 			// by the browser and browser fixes it automatically what causes `selectionchange` event on
@@ -395,10 +392,19 @@ export class SelectionObserver extends Observer {
 	}
 
 	/**
-	 * Clears `SelectionObserver` internal properties connected with preventing infinite loop.
+	 * Counts the handled selection change and checks whether there were too many of them in the current
+	 * one-second period. A new period starts with the first selection change handled after the previous one ended,
+	 * so nothing needs to run while the selection does not change.
 	 */
-	private _clearInfiniteLoop(): void {
-		this._loopbackCounter = 0;
+	private _isInfiniteLoop(): boolean {
+		const now = performance.now();
+
+		if ( now - this._loopbackPeriodStart >= 1000 ) {
+			this._loopbackPeriodStart = now;
+			this._loopbackCounter = 0;
+		}
+
+		return ++this._loopbackCounter > 60;
 	}
 }
 

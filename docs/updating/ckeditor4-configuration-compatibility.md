@@ -330,7 +330,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 			<a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_fileName"><code>exportPdf_fileName</code></a> <br><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_options"><code>exportPdf_options</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_service"><code>exportPdf_service</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_stylesheets"><code>exportPdf_stylesheets</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-exportPdf_tokenUrl"><code>exportPdf_tokenUrl</code></a> <br>
 			</td>
 			<td>
-				Refer to the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/converters/export-pdf.html">Export to PDF feature</a> guide to learn more about configuring the HTML to PDF converter in CKEditor&nbsp;5.
+				Refer to the {@link features/export-pdf Export to PDF feature} guide to learn more about configuring the HTML to PDF converter in CKEditor&nbsp;5.
 			</td>
 		</tr>
 		<tr>
@@ -355,7 +355,7 @@ The following table presents CKEditor 4 configuration options and, if available,
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-find_highlight"><code>find_highlight</code></a></td>
-			<td>Refer to the <a href="https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html">Find and replace</a> feature guide.</td>
+			<td>Refer to the {@link features/find-and-replace Find and replace} feature guide.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-flashAddEmbedTag"><code>flashAddEmbedTag</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-flashConvertOnEdit"><code>flashConvertOnEdit</code></a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-flashEmbedTagOnly"><code>flashEmbedTagOnly</code></a></td>

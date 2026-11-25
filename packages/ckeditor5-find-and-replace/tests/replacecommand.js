@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
+import { sortSearchResultsByMarkerPositions } from '../src/findandreplacestate.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BoldEditing, ItalicEditing } from '@ckeditor/ckeditor5-basic-styles';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
@@ -183,6 +184,203 @@ describe( 'ReplaceCommand', () => {
 			expect( _getModelData( editor.model, { withoutSelection: true } ) ).toBe(
 				'<paragraph><$text italic="true">foo </$text>bom<$text italic="true"> foo</$text></paragraph>'
 			);
+		} );
+
+		describe( 'when the replacement text contains the searched phrase', () => {
+			let findAndReplaceEditing, state;
+
+			beforeEach( () => {
+				findAndReplaceEditing = editor.plugins.get( 'FindAndReplaceEditing' );
+				state = findAndReplaceEditing.state;
+			} );
+
+			it( 'should not add results found in the replacement text', () => {
+				_setModelData( model, '<paragraph>HelloWorld Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+
+				expect( getResultPaths() ).toEqual( [ '0,16' ] );
+			} );
+
+			it( 'should highlight the next result instead of a match in the replacement text', () => {
+				_setModelData( model, '<paragraph>HelloWorld Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+
+				expect( state.highlightedResult.marker.getStart().path ).toEqual( [ 0, 16 ] );
+				expect( state.highlightedOffset ).toBe( 1 );
+			} );
+
+			it( 'should not wrap around to the replacement text after replacing the last result', () => {
+				_setModelData( model, '<paragraph>HelloWorld Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+
+				expect( state.results.length ).toBe( 0 );
+				expect( state.highlightedResult ).toBeNull();
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
+					'<paragraph>HelloHelloWorld HelloHello</paragraph>'
+				);
+			} );
+
+			it( 'should replace each of the original results exactly once when replacing them one by one', () => {
+				_setModelData( model, '<paragraph>HelloWorld Hello Hello</paragraph><paragraph>Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+
+				let replacements = 0;
+
+				// The limit guards the test against an infinite loop.
+				while ( state.highlightedResult && replacements < 10 ) {
+					editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+					replacements++;
+				}
+
+				expect( replacements ).toBe( 4 );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe(
+					'<paragraph>HelloHelloWorld HelloHello HelloHello</paragraph><paragraph>HelloHello</paragraph>'
+				);
+			} );
+
+			it( 'should not add a match spanning the replacement text and the text after it', () => {
+				_setModelData( model, '<paragraph>Hellolo x Hellolo[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'Hel', state.highlightedResult );
+
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph>Hello x Hellolo</paragraph>' );
+				expect( getResultPaths() ).toEqual( [ '0,8' ] );
+			} );
+
+			it( 'should keep the results from the same paragraph and from other paragraphs', () => {
+				_setModelData( model, '<paragraph>Hello Hello Hello</paragraph><paragraph>Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'HelloHello', state.results.get( 1 ) );
+
+				expect( getResultPaths() ).toEqual( [ '0,0', '0,17', '1,0' ] );
+			} );
+
+			it( 'should keep the results from nested text containers of the changed paragraph', () => {
+				registerInlineEditable();
+
+				_setModelData( model,
+					'<paragraph>Hello <inlineWidget><inlineEditable>Hello</inlineEditable></inlineWidget> Hello[]</paragraph>'
+				);
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+
+				expect( getResultPaths() ).toEqual( [ '0,11,0,0', '0,13' ] );
+				expect( state.highlightedResult.marker.getStart().path ).toEqual( [ 0, 11, 0, 0 ] );
+			} );
+
+			it( 'should keep the results around the replaced text inside a nested text container', () => {
+				registerInlineEditable();
+
+				_setModelData( model,
+					'<paragraph>Hello <inlineWidget><inlineEditable>Hello Hello</inlineEditable></inlineWidget> Hello[]</paragraph>'
+				);
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'HelloHello', state.results.get( 1 ) );
+
+				expect( getResultPaths() ).toEqual( [ '0,0', '0,6,0,11', '0,8' ] );
+			} );
+
+			it( 'should keep a match typed by the user between replacements', () => {
+				_setModelData( model, '<paragraph>HelloWorld Hello</paragraph><paragraph>Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+
+				model.change( writer => {
+					writer.insertText( ' Hello', model.document.getRoot().getChild( 1 ), 'end' );
+				} );
+
+				expect( getResultPaths() ).toEqual( [ '0,16', '1,0', '1,6' ] );
+
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+
+				expect( getResultPaths() ).toEqual( [ '1,0', '1,6' ] );
+			} );
+
+			it( 'should refresh the highlighted offset after removing the matches found in the replacement text', () => {
+				_setModelData( model, '<paragraph>HelloWorld Hello</paragraph><paragraph>Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+
+				model.change( writer => {
+					writer.insertText( ' Hello', model.document.getRoot().getChild( 1 ), 'end' );
+				} );
+
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+
+				expect( state.highlightedResult.marker.getStart().path ).toEqual( [ 1, 0 ] );
+				expect( state.highlightedOffset ).toBe( 1 );
+			} );
+
+			it( 'should find the matches in the replacement text in a new search', () => {
+				_setModelData( model, '<paragraph>HelloWorld Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+				editor.execute( 'replace', 'HelloHello', state.highlightedResult );
+
+				findAndReplaceEditing.find( 'Hello' );
+
+				expect( getResultPaths() ).toEqual( [ '0,0', '0,5', '0,16' ] );
+			} );
+
+			it( 'should not throw if a result found by the search re-run was removed during the replacement', () => {
+				_setModelData( model, '<paragraph>HelloWorld Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+
+				// Simulates another feature removing a result right after the search re-run.
+				model.document.on( 'change:data', () => {
+					const resultInReplacement = [ ...state.results ].find( result => result.marker.getStart().offset === 5 );
+
+					if ( resultInReplacement ) {
+						state.results.remove( resultInReplacement );
+					}
+				} );
+
+				expect( () => editor.execute( 'replace', 'HelloHello', state.highlightedResult ) ).not.toThrow();
+				expect( getResultPaths() ).toEqual( [ '0,16' ] );
+			} );
+
+			it( 'should not throw if the search was stopped during the replacement', () => {
+				_setModelData( model, '<paragraph>HelloWorld Hello[]</paragraph>' );
+
+				findAndReplaceEditing.find( 'Hello' );
+
+				// Clearing the state removes the markers of the results before removing the results.
+				model.document.on( 'change:data', () => {
+					findAndReplaceEditing.stop();
+				} );
+
+				expect( () => editor.execute( 'replace', 'HelloHello', state.highlightedResult ) ).not.toThrow();
+				expect( state.results.length ).toBe( 0 );
+				expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph>HelloHelloWorld Hello</paragraph>' );
+			} );
+
+			function getResultPaths() {
+				return sortSearchResultsByMarkerPositions( model, [ ...state.results ] )
+					.map( result => result.marker.getStart().path.join( ',' ) );
+			}
+
+			function registerInlineEditable() {
+				model.schema.register( 'inlineWidget', { inheritAllFrom: '$inlineObject' } );
+				model.schema.register( 'inlineEditable', { isLimit: true, allowIn: 'inlineWidget', allowContentOf: '$block' } );
+
+				editor.conversion.elementToElement( { model: 'inlineWidget', view: 'span' } );
+				editor.conversion.elementToElement( { model: 'inlineEditable', view: 'span' } );
+			}
 		} );
 
 		describe( 'in inline root editor', () => {

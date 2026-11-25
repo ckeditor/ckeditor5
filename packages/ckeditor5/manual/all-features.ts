@@ -27,7 +27,7 @@ import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
-import { TableCellProperties, TableProperties, TableCaption, TableColumnResize } from '@ckeditor/ckeditor5-table';
+import { TableCellProperties, TableProperties, TableCaption, TableColumnResize, TableRowResize } from '@ckeditor/ckeditor5-table';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
 import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
 import { WordCount } from '@ckeditor/ckeditor5-word-count';
@@ -59,7 +59,7 @@ ClassicEditor
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
 			CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
-			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage,
+			TableRowResize, EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage,
 			MediaEmbedResize, MediaEmbedStyle, MediaEmbedToolbar,
 			HtmlEmbed, HtmlComment,
 			AutoLink, Mention, TextTransformation,

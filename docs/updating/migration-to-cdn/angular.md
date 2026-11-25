@@ -18,7 +18,7 @@ Remove the existing CKEditor&nbsp;5 packages from your project. If you are using
 npm uninstall ckeditor5 ckeditor5-premium-features
 ```
 
-Upgrade the CKEditor&nbsp;5 Angular integration to the latest version. You can find it in the {@link getting-started/integrations-cdn/angular Angular integration} documentation.
+Upgrade the CKEditor&nbsp;5 Angular integration to the latest version. You can find it in the {@link getting-started/integrations-cdn/angular-default-cdn Angular integration} documentation.
 
 Ensure that your testing suite uses real web browser environments for testing. If you are using `jsdom` or any other environment without a real DOM, you may need to adjust the testing suite configuration to use a real browser because CDN script injection might not be recognized properly in such environments.
 

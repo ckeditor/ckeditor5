@@ -40,10 +40,10 @@ import {
 } from './_utils/utils.js';
 import {
 	COLUMN_MIN_WIDTH_IN_PIXELS,
-	COLUMN_RESIZE_DISTANCE_THRESHOLD,
 	TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS,
 	TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS
 } from '../../src/tablecolumnresize/constants.js';
+import { RESIZE_DISTANCE_THRESHOLD } from '../../src/utils/resize.js';
 import {
 	clamp,
 	getDomCellOuterWidth,
@@ -136,7 +136,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			tableColumnResizeMouseSimulator.down( editor, getDomResizer( domTable, 0, 0 ) );
 			tableColumnResizeMouseSimulator.move(
-				editor, getDomResizer( domTable, 0, 0 ), { x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+				editor, getDomResizer( domTable, 0, 0 ), { x: RESIZE_DISTANCE_THRESHOLD, y: 0 }
 			);
 
 			const availableWidth = domRoot.offsetWidth - 17;
@@ -163,7 +163,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			tableColumnResizeMouseSimulator.down( editor, getDomResizer( domTable, 0, 0 ) );
 			tableColumnResizeMouseSimulator.move(
-				editor, getDomResizer( domTable, 0, 0 ), { x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+				editor, getDomResizer( domTable, 0, 0 ), { x: RESIZE_DISTANCE_THRESHOLD, y: 0 }
 			);
 
 			const expectedFigureWidthPercent = tableWidthBeforeDrag / domRoot.offsetWidth * 100;
@@ -188,7 +188,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 			tableColumnResizeMouseSimulator.down( editor, getDomResizer( domTable, 0, 0 ) );
 			tableColumnResizeMouseSimulator.move(
-				editor, getDomResizer( domTable, 0, 0 ), { x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+				editor, getDomResizer( domTable, 0, 0 ), { x: RESIZE_DISTANCE_THRESHOLD, y: 0 }
 			);
 
 			expect( parseFloat( viewFigure.getStyle( 'width' ) ) ).toBeCloseTo( 100, 0 );
@@ -1727,14 +1727,12 @@ describe( 'TableColumnResizeEditing', () => {
 			const matchesStub = vi.spyOn( domResizer, 'matches' ).mockImplementation(
 				selector => selector === ':hover' ? true : originalMatches( selector )
 			);
-			const resetSpy = vi.spyOn( resizePlugin, '_resetResizerStyles' );
 
 			tableColumnResizeMouseSimulator.up( editor );
 
 			expect( matchesStub ).toHaveBeenCalledWith( ':hover' );
 
 			// Because the resizer is hovered, its styles must NOT be reset.
-			expect( resetSpy ).not.toHaveBeenCalled();
 			expect( domResizer.style.top ).not.toBe( '' );
 			expect( domResizer.style.bottom ).not.toBe( '' );
 		} );
@@ -4205,7 +4203,7 @@ describe( 'TableColumnResizeEditing', () => {
 			tableColumnResizeMouseSimulator.move(
 				editor,
 				getDomResizer( getDomTable( view ), 0, 0 ),
-				{ x: COLUMN_RESIZE_DISTANCE_THRESHOLD - 1, y: 0 }
+				{ x: RESIZE_DISTANCE_THRESHOLD - 1, y: 0 }
 			);
 
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
@@ -4220,7 +4218,7 @@ describe( 'TableColumnResizeEditing', () => {
 			tableColumnResizeMouseSimulator.move(
 				editor,
 				getDomResizer( getDomTable( view ), 0, 0 ),
-				{ x: COLUMN_RESIZE_DISTANCE_THRESHOLD, y: 0 }
+				{ x: RESIZE_DISTANCE_THRESHOLD, y: 0 }
 			);
 
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );

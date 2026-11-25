@@ -5,6 +5,7 @@
 
 import {
 	TableColumnResize,
+	TableRowResize,
 	TableProperties,
 	TableCellProperties,
 	TableCaption,
@@ -21,6 +22,7 @@ TableEditor
 		attachTo: document.querySelector( '#snippet-table-column-resize' ),
 		extraPlugins: [
 			TableColumnResize,
+			TableRowResize,
 			TableProperties,
 			TableCellProperties,
 			TableCaption,

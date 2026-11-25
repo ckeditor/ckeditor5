@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'A szín érványtelen. Próbáld így "#FF0000" vagy "rgb(255,0,0)" vagy "red".',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Az érték érvénytelen. Próbáld így "10px" vagy "2em" vagy csak egyszerűen "2".',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'Az érték érvénytelen. Próbáld meg a "10px" vagy egyszerűen a "10" értéket.',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'Táblázat feliratának megadása',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

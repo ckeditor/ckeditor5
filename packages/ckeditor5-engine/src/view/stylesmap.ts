@@ -1058,7 +1058,7 @@ function parseInlineStyles( stylesString: string ): Map<string, string> {
 					if ( !propertyName ) {
 						// Treat this as end of property only if property name is not already saved.
 						// Save property name.
-						propertyName = stylesString.substr( propertyNameStart, i - propertyNameStart );
+						propertyName = stylesString.slice( propertyNameStart, i );
 						// Save this point as the start of property value.
 						propertyValueStart = i + 1;
 					}
@@ -1075,7 +1075,7 @@ function parseInlineStyles( stylesString: string ): Map<string, string> {
 				case ';': {
 					// Property value just ended.
 					// Use previously stored property value start to obtain property value.
-					const propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
+					const propertyValue = stylesString.slice( propertyValueStart, i );
 
 					if ( propertyName ) {
 						// Save parsed part.

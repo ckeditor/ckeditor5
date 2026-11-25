@@ -4,7 +4,7 @@ menu-title: Shadow DOM
 meta-title: Running CKEditor 5 inside a shadow DOM | CKEditor 5 Documentation
 meta-description: Load the editor styles into a shadow root, choose where the floating user interface mounts, and override CSS variables on the shadow host.
 order: 100
-modified_at: 2026-10-05
+modified_at: 2026-11-13
 ---
 
 # Running CKEditor&nbsp;5 inside a shadow DOM
@@ -15,8 +15,8 @@ Two things do not happen by themselves, because a shadow root is a separate DOM 
 
 The integration guides show how to do both in each framework:
 
-* From npm: {@link getting-started/integrations/react-default-npm#using-inside-a-shadow-root React}, {@link getting-started/integrations/vue-default-npm#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations/angular#using-inside-a-shadow-root Angular}.
-* From CDN: {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular#using-inside-a-shadow-root Angular}.
+* From npm: {@link getting-started/integrations/react-default-npm#using-inside-a-shadow-root React}, {@link getting-started/integrations/vue-default-npm#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations/angular-default-npm#using-inside-a-shadow-root Angular}.
+* From CDN: {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular-default-cdn#using-inside-a-shadow-root Angular}.
 
 <info-box>
 	Writing an editor feature that has to keep working inside a shadow root is a different job. The {@link framework/deep-dive/shadow-dom Deep dive into shadow DOM support} guide covers it.
@@ -24,17 +24,27 @@ The integration guides show how to do both in each framework:
 
 ## Demo
 
-The two editors below have the same configuration. The one on the left runs in the regular page DOM, and the one on the right runs inside a shadow root. Use the button to add global rules that restyle every paragraph, heading, and list item on this page, and see how each editor reacts.
+The two editors below have the same configuration. The one on the left runs in the regular page DOM, and the one on the right runs inside a shadow root.
 
-<br />
-<ck:button id="snippet-shadow-dom-apply-styles">Apply page styles</ck:button>
-<ck:button id="snippet-shadow-dom-reset-styles" variant="secondary" disabled>Reset</ck:button>
+Both editors are embedded in the same host application: a CRM where sales teams write notes on account records. Like most host applications, the CRM has global styles for paragraphs, headings, list items, and links. These styles change over time, as the CRM gets a CSS reset, a new design system, a rebrand, or a denser layout. Install the updates of the CRM below, in any combination, and compare the text of the CRM with the content of each editor.
+
+<div class="shadow-dom-demo-picker" role="group" aria-labelledby="snippet-shadow-dom-release-label">
+	<span class="shadow-dom-demo-picker__label" id="snippet-shadow-dom-release-label">CRM updates:</span>
+	<ck:checkbox name="snippet-shadow-dom-release" value="reset" label="CSS reset" />
+	<ck:checkbox name="snippet-shadow-dom-release" value="redesign" label="New design system" />
+	<ck:checkbox name="snippet-shadow-dom-release" value="rebrand" label="Rebrand" />
+	<ck:checkbox name="snippet-shadow-dom-release" value="compact" label="Compact density" />
+</div>
 
 {@snippet installation/setup/shadow-dom}
 
-A shadow root isolates the editor from the styles of the page that hosts it. Changes to the global styles of your application do not alter the edited content or the editor user interface, so both keep a consistent look wherever you embed the editor.
+The content of the light-DOM editor follows the styles of the CRM and changes with every update. The editor is part of the page, like every other paragraph, heading, and list in the CRM. This is expected behavior, but it means that each change to the global styles of your application can alter the edited content, and you have to review and adjust your editor styles after it. For example, a CSS reset removes the list bullets and the heading sizes from the content of the light-DOM editor.
 
-In the demo, the rules reach the content of the light-DOM editor because it is part of the page, like every other paragraph, heading, and list around it. This is expected behavior, and you can handle it with additional CSS in your application. The editor on the right needs no such adjustments. Its floating user interface is isolated as well, because it renders in a separate shadow root at the end of the page. Open the developer tools of your browser and inspect the right editor to find it inside a `#shadow-root`.
+The editor on the right stays the same through all updates. Style rules of the page do not reach into its shadow root, so changes to the global styles of your application do not alter the edited content or the editor user interface. Its floating user interface is isolated as well, because it renders in a separate shadow root at the end of the page. Open the developer tools of your browser and inspect the right editor to find it inside a `#shadow-root`.
+
+<info-box>
+	A shadow root stops the style rules of the page, but not inheritance. Inherited properties set on an ancestor of the shadow host, like `font-family`, `color`, or `line-height`, and CSS custom properties still cross the shadow boundary. Elements inside the shadow root use them unless their own styles set a different value.
+</info-box>
 
 The demo uses the setup described in the sections below.
 
@@ -99,7 +109,7 @@ editorShadowRoot.adoptedStyleSheets = await Promise.all( [
 	Top-level `await` works only in a module script, `<script type="module">`. In a classic script, put this code and the code that creates the editor in an `async` function.
 </info-box>
 
-A `<link rel="stylesheet">` element placed inside the shadow root works as well. Each root then loads a style sheet of its own, and its content is unstyled until the style sheet loads. The CDN loader of the framework integrations uses this approach when you set its `injectedStylesheetsLocation` option, as the {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular#using-inside-a-shadow-root Angular} CDN guides show.
+A `<link rel="stylesheet">` element placed inside the shadow root works as well. Each root then loads a style sheet of its own, and its content is unstyled until the style sheet loads. The CDN loader of the framework integrations uses this approach when you set its `injectedStylesheetsLocation` option, as the {@link getting-started/integrations-cdn/react-default-cdn#using-inside-a-shadow-root React}, {@link getting-started/integrations-cdn/vue-default-cdn#using-inside-a-shadow-root Vue}, and {@link getting-started/integrations-cdn/angular-default-cdn#using-inside-a-shadow-root Angular} CDN guides show.
 
 The editor renders its floating user interface outside the editing area, so that tree needs the same style sheets. Which tree? That depends on where the overlay layer mounts, described in the next section.
 
@@ -145,6 +155,8 @@ The {@link features/fullscreen Fullscreen} feature follows the same chain. With 
 3. The `<body>` element.
 
 Setting the container yourself keeps the page scrollable, because the fullscreen mode then fills an element of your layout instead of covering the viewport.
+
+The same {@link module:core/editor/editorconfig~UiConfig#overlayContainer `config.ui.overlayContainer`} setting lets the editor run inside a modal `<dialog>` element. The {@link getting-started/setup/native-dialog Running CKEditor&nbsp;5 inside a native dialog} guide shows how.
 
 ## Overriding CSS variables
 

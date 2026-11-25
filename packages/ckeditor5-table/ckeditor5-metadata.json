@@ -234,6 +234,22 @@
 			]
 		},
 		{
+			"name": "Table row resize",
+			"className": "TableRowResize",
+			"description": "Adds support for table row resize, which allows setting the height of each row in a table using a resize handle or by entering an exact value in the cell height field. Row heights are stored in pixels, and heights in points are converted to pixels when loaded.",
+			"docs": "features/tables/tables-resize.html",
+			"path": "src/tablerowresize.ts",
+			"requires": [
+				"Table"
+			],
+			"htmlOutput": [
+				{
+					"elements": "tr",
+					"styles": "height"
+				}
+			]
+		},
+		{
 			"name": "Table scroll",
 			"className": "TableScroll",
 			"description": "Adds horizontal scrolling to tables that are wider than the space available to them, so their content stays readable instead of squeezing the columns or breaking the page layout.",

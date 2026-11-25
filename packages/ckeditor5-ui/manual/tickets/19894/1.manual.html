@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.ts"></script>
+		<style>
+			#editor-dialog {
+				width: min(800px, 90vw);
+				padding: 0;
+				border: 1px solid #999;
+				border-radius: 6px;
+			}
+
+			#editor-dialog::backdrop {
+				background: rgb(0 0 0 / 40%);
+			}
+
+			.dialog-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 12px;
+				padding: 8px 16px;
+				border-bottom: 1px solid #ddd;
+			}
+
+			.dialog-header h3 {
+				margin: 0;
+				font: 14px monospace;
+			}
+
+			#editor-mount {
+				padding: 16px;
+			}
+
+			/* The overlay container used in the "fixed layer" mode. Being `position: fixed`, it is laid out
+			   against the viewport, so it escapes the `overflow: auto` clipping of the modal dialog while still
+			   rendering in the dialog's top layer.
+			   * It spans the viewport width, so balloons get as much room to lay out as in `document.body`. With
+			     no width, a balloon shrinks to its min-content width (a toolbar wraps into a single column).
+			   * It has no height, so it does not intercept clicks meant for the dialog content.
+			   * It creates a stacking context, so it needs a `z-index` of its own. Without it, the editor content
+			     (for example widgets) would paint over the balloons. */
+			.dialog-overlay-layer {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 0;
+				z-index: var(--ck-layer-dialog);
+			}
+		</style>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h2>
+				UI balloons are hidden behind a native <code>&lt;dialog&gt;</code>
+				<a href="https://github.com/ckeditor/ckeditor5/issues/19894">#19894</a>
+			</h2>
+
+			<p>
+				A modal <code>&lt;dialog&gt;</code> opened with <code>showModal()</code> is rendered in the browser's
+				top layer, and everything outside of it becomes inert. The editor's overlay layer (balloons,
+				tooltips, dialogs) is mounted in <code>document.body</code> by default, so it renders behind the
+				dialog and cannot be clicked. The <code>ui.overlayContainer</code> configuration lets the integrator
+				mount the overlay layer inside the dialog instead.
+			</p>
+
+			<p>Each button below opens the same modal dialog with a new editor, configured as follows:</p>
+
+			<ol>
+				<li>
+					<strong>Default</strong> – no <code>ui.overlayContainer</code>. Reproduces the issue: select
+					text, click the link, hover the toolbar buttons, or open Find &amp; Replace – none of the floating
+					UI is visible.
+				</li>
+				<li>
+					<strong>The <code>&lt;dialog&gt;</code> element</strong> –
+					<code>ui.overlayContainer: dialogElement</code>. The floating UI is visible and usable, but a
+					modal dialog has <code>overflow: auto</code> by default, so floating UI close to the dialog's
+					edges is clipped and the dialog becomes scrollable. Check the link in the last paragraph or the
+					table cell properties of the last table row.
+				</li>
+				<li>
+					<strong>A fixed layer inside the <code>&lt;dialog&gt;</code></strong> –
+					<code>ui.overlayContainer</code> set to a <code>position: fixed</code> element placed inside the
+					dialog. The floating UI is visible, usable, and may extend beyond the dialog's edges.
+				</li>
+			</ol>
+
+			<p>In modes 2 and 3, check that all of the following show up above the dialog content and work:</p>
+
+			<ul>
+				<li>the balloon toolbar (select text) and the block toolbar (the handle on the left),</li>
+				<li>the link balloon (click the link) and the link form,</li>
+				<li>the image toolbar and the table toolbar, including the table cell properties color pickers,</li>
+				<li>the mention list (type <code>@</code>),</li>
+				<li>the toolbar button tooltips,</li>
+				<li>the Find &amp; Replace dialog, which must be draggable,</li>
+				<li>
+					the drop target line while dragging the image between blocks, also with the page and the dialog
+					content scrolled.
+				</li>
+			</ul>
+
+			<p>Also check that:</p>
+
+			<ul>
+				<li>
+					Pressing <kbd>Esc</kbd> while a balloon is focused closes only the balloon. The dialog stays
+					open.
+				</li>
+				<li>
+					Pressing <kbd>Esc</kbd> in the editing area while the link balloon is shown (the caret in the
+					link) closes only the balloon. The next press closes the dialog.
+				</li>
+				<li>A balloon follows its target when the dialog content is scrolled.</li>
+				<li>
+					Closing the dialog destroys the editor and leaves no <code>.ck-body-wrapper</code> behind, and the
+					dialog can be opened again in another mode.
+				</li>
+			</ul>
+		</ck-manual-header>
+
+		<p>
+			<button type="button" data-overlay-mode="default">1. Default</button>
+			<button type="button" data-overlay-mode="dialog">2. The &lt;dialog&gt; element</button>
+			<button type="button" data-overlay-mode="layer">3. A fixed layer inside the &lt;dialog&gt;</button>
+		</p>
+
+		<dialog id="editor-dialog">
+			<div class="dialog-header">
+				<h3 id="dialog-title"></h3>
+				<form method="dialog">
+					<button type="submit">Close</button>
+				</form>
+			</div>
+			<div id="editor-mount"></div>
+			<div class="dialog-overlay-layer"></div>
+		</dialog>
+
+		<template id="editor-data">
+			<h2>Editor in a native dialog</h2>
+			<p>
+				Select text to show the <strong>balloon toolbar</strong>. Click
+				<a href="https://ckeditor.com">this link</a> to show the <strong>link balloon</strong>. Type
+				<code>@</code> to show the <strong>mention</strong> list.
+			</p>
+			<figure class="image">
+				<img src="/images/sample.jpg" alt="Autumn fields" width="300" />
+			</figure>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr><td>A1</td><td>B1</td><td>C1</td></tr>
+						<tr><td>A2</td><td>B2</td><td>C2</td></tr>
+						<tr><td>A3</td><td>B3</td><td>C3</td></tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>
+				Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia itaque eum necessitatibus possimus
+				adipisci mollitia dolor quia molestias voluptate dignissimos.
+			</p>
+			<p>
+				Optio architecto dicta dolorum laborum nam nulla minus aspernatur iste. Lorem ipsum dolor sit amet
+				consectetur, adipisicing elit. Officia itaque eum necessitatibus possimus adipisci mollitia dolor.
+			</p>
+			<p>
+				Quia molestias voluptate dignissimos. Optio architecto dicta dolorum laborum nam nulla minus
+				aspernatur iste. Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+			</p>
+			<p>
+				Officia itaque eum necessitatibus possimus adipisci mollitia dolor quia molestias voluptate
+				dignissimos. Optio architecto dicta dolorum laborum nam nulla minus aspernatur iste.
+			</p>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr><td>The last table – open the cell properties of a cell in this row.</td><td>B1</td></tr>
+					</tbody>
+				</table>
+			</figure>
+			<p>The last paragraph with <a href="https://ckeditor.com">a link</a> next to the dialog's bottom edge.</p>
+		</template>
+	</body>
+</html>

@@ -1479,6 +1479,43 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'over multiple adjacent inserted nodes', () => {
+			const position = new ModelPosition( root, [ 0, 3 ] );
+
+			const p1 = root.getChild( 0 );
+			const range = new ModelRange( ModelPosition._createAt( p1, 3 ), ModelPosition._createAt( p1, 7 ) );
+
+			model.change( () => {
+				insert( new ModelText( 'xx' ), position );
+				insert( new ModelText( 'yy' ), new ModelPosition( root, [ 0, 5 ] ) );
+				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
+
+				expectChanges( [
+					{ type: 'insert', name: '$text', length: 4, position, action: 'insert' }
+				] );
+			} );
+		} );
+
+		it( 'over multiple adjacent inserted nodes and some old nodes', () => {
+			const position = new ModelPosition( root, [ 0, 1 ] );
+
+			const p1 = root.getChild( 0 );
+			const range = new ModelRange( ModelPosition._createAt( p1, 1 ), ModelPosition._createAt( p1, 6 ) );
+
+			model.change( () => {
+				insert( new ModelText( 'xx' ), position );
+				insert( new ModelText( 'yy' ), new ModelPosition( root, [ 0, 3 ] ) );
+				attribute( range, attributeKey, attributeOldValue, attributeNewValue );
+
+				const rangeAfter = new ModelRange( ModelPosition._createAt( p1, 5 ), ModelPosition._createAt( p1, 6 ) );
+
+				expectChanges( [
+					{ type: 'insert', name: '$text', length: 4, position, action: 'insert' },
+					{ type: 'attribute', range: rangeAfter, attributeKey, attributeOldValue, attributeNewValue }
+				] );
+			} );
+		} );
+
 		it( 'on some not changed and some changed nodes', () => {
 			const p = root.getChild( 0 );
 

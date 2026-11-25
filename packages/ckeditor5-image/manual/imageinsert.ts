@@ -4,6 +4,13 @@
  */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import {
+	ButtonView,
+	LabeledFieldView,
+	MenuBarMenuListItemButtonView,
+	createLabeledInputText
+} from '@ckeditor/ckeditor5-ui';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder';
 import { LinkImage } from '@ckeditor/ckeditor5-link';
@@ -12,10 +19,50 @@ import { ImageInsert } from '../src/imageinsert.js';
 import { AutoImage } from '../src/autoimage.js';
 declare const CKEditorInspector: any;
 
+/**
+ * A custom integration that renders a text field in the image insert dropdown.
+ */
+class CustomUrlIntegration extends Plugin {
+	public static get requires() {
+		return [ ImageInsert ] as const;
+	}
+
+	public init(): void {
+		const editor = this.editor;
+
+		editor.plugins.get( 'ImageInsertUI' ).registerIntegration( {
+			name: 'customUrl',
+			observable: () => editor.commands.get( 'insertImage' )!,
+			buttonViewCreator: () => createButton( new ButtonView( editor.locale ) ),
+			formViewCreator: () => {
+				const fieldView = new LabeledFieldView( editor.locale, createLabeledInputText );
+				const insertButtonView = createButton( new ButtonView( editor.locale ) );
+
+				fieldView.label = 'Custom image URL';
+
+				insertButtonView.on( 'execute', () => {
+					editor.execute( 'insertImage', { source: fieldView.fieldView.element!.value } );
+					editor.editing.view.focus();
+				} );
+
+				return [ fieldView, insertButtonView ];
+			},
+			menuBarButtonViewCreator: () => createButton( new MenuBarMenuListItemButtonView( editor.locale ) )
+		} );
+	}
+}
+
+function createButton<T extends ButtonView>( buttonView: T ): T {
+	buttonView.label = 'Insert from custom field';
+	buttonView.withText = true;
+
+	return buttonView;
+}
+
 async function createEditor( elementId: string, imageType: any ) {
 	const editor = await ClassicEditor.create( {
 		attachTo: document.querySelector( '#' + elementId ) as HTMLElement,
-		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder ],
+		plugins: [ ArticlePluginSet, ImageInsert, AutoImage, LinkImage, CKFinderUploadAdapter, CKFinder, CustomUrlIntegration ],
 		toolbar: [
 			'heading',
 			'|',

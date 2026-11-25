@@ -19,6 +19,7 @@ import {
 	type ModelPosition,
 	type ViewElement,
 	type ViewDocumentDomEventData,
+	type ViewDocumentInputEvent,
 	type ViewDocumentPointerDownEvent,
 	type ViewDocumentPointerUpEvent
 } from '@ckeditor/ckeditor5-engine';
@@ -324,6 +325,17 @@ export class DragDrop extends Plugin {
 		this.listenTo<ViewDocumentDragEndEvent>( viewDocument, 'dragend', ( evt, data ) => {
 			this._finalizeDragging( !data.dataTransfer.isCanceled && data.dataTransfer.dropEffect == 'move' );
 		}, { priority: 'low' } );
+
+		// When the content is dropped outside the editor (for example, in a plain text input), the browser removes it
+		// from the editable DOM on its own. That DOM change never reaches the model (the dragged range is removed
+		// on `dragend` instead), and handling it while the focus moves to the drop target makes the editor take the focus
+		// back, so the dropped content gets lost (Chrome) or the DOM gets out of sync with the view (Firefox).
+		// See https://github.com/ckeditor/ckeditor5/issues/20274.
+		this.listenTo<ViewDocumentInputEvent>( viewDocument, 'beforeinput', ( evt, data ) => {
+			if ( data.inputType == 'deleteByDrag' ) {
+				data.preventDefault();
+			}
+		} );
 
 		// Reset block dragging mode even if dropped outside the editable.
 		this._domEmitter.listenTo( global.document, 'dragend', () => {
@@ -705,6 +717,7 @@ export class DragDrop extends Plugin {
 		if ( isShadowRoot( editableRoot ) ) {
 			editableRoot.appendChild( this._previewContainer );
 		} else {
+			// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 			editableDocument.body.appendChild( this._previewContainer );
 		}
 

@@ -28,7 +28,10 @@
 	 * Hovered items automatically get focused. Default focus styles look odd
 	 * while moving across a huge list of items so let's get rid of them
 	 */
+	/* The same specificity as the outline rule of `.ck.ck-button:focus-visible`; this one wins because
+	   `theme/index-editor.css` imports this file after `button.css`. */
 	&:focus {
+		outline: none;
 		border-color: transparent;
 		box-shadow: none;
 

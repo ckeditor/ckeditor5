@@ -22,7 +22,8 @@ import { TableEditing } from '../tableediting.js';
 import type { TableType } from '../tableconfig.js';
 
 import { watchTableModelElements, watchRootsWidthResize, watchRootsScroll } from './watchers.js';
-import { getEditableContentWidth } from '../tablecolumnresize/utils.js';
+import { getWidthInPixels, isWidthProbeNeeded } from './measure.js';
+import { getContainerContentWidth } from '../tablecolumnresize/utils.js';
 
 /**
  * The table scrolling editing plugin.
@@ -43,6 +44,11 @@ export class TableScrollEditing extends Plugin {
 	 * can cancel any call still pending. `undefined` until {@link #init} has run.
 	 */
 	private _throttledRecalculateAll?: ReturnType<typeof throttle<() => void>>;
+
+	/**
+	 * Tables queued by {@link #_updateAfterRender}.
+	 */
+	private _tablesToUpdateAfterRender = new Set<ModelElement>();
 
 	/**
 	 * @inheritDoc
@@ -125,9 +131,9 @@ export class TableScrollEditing extends Plugin {
 	 */
 	public _updateTableScrollOverflowState( table: ModelElement, tableWidthOverride?: string | null ): void {
 		const { editor } = this;
-		const containerWidth = getEditableContentWidth( editor, table.root.rootName! );
+		const domRoot = editor.editing.view.getDomRoot( table.root.rootName! );
 
-		if ( containerWidth === null ) {
+		if ( !domRoot ) {
 			return;
 		}
 
@@ -164,10 +170,21 @@ export class TableScrollEditing extends Plugin {
 			return;
 		}
 
-		const isOverflowing =
-			!!tableWidth &&
-			this._isTableScrollable( table ) &&
-			isTableWidthOverflowing( tableWidth, containerWidth );
+		const domFigure = editor.editing.view.domConverter.mapViewToDom( viewFigure );
+
+		// A table that is just being downcast is not rendered yet, and a probed width may depend on the figure's font.
+		if ( !domFigure && tableWidth && isWidthProbeNeeded( tableWidth ) ) {
+			this._updateAfterRender( table );
+
+			return;
+		}
+
+		const containerWidth = getContainerContentWidth( domRoot );
+		const tableWidthInPixels = tableWidth ?
+			getWidthInPixels( { width: tableWidth, containerWidth, domFontSource: domFigure || domRoot } ) :
+			0;
+
+		const isOverflowing = this._isTableScrollable( table ) && tableWidthInPixels > containerWidth;
 
 		if ( isOverflowing ) {
 			this._scheduleScrollOffsetSync( viewFigure );
@@ -180,7 +197,8 @@ export class TableScrollEditing extends Plugin {
 				writer.setStyle( 'width', tableWidth!, viewTable );
 
 				if ( viewFigcaption ) {
-					writer.setStyle( 'width', tableWidth!, viewFigcaption );
+					// In pixels, as the caption has its own font size, so e.g. `em` would resolve differently on it.
+					writer.setStyle( 'width', `${ tableWidthInPixels }px`, viewFigcaption );
 				}
 			} else {
 				if ( tableWidth ) {
@@ -198,6 +216,30 @@ export class TableScrollEditing extends Plugin {
 				writer.removeStyle( '--ck-table-scroll-offset', viewFigure );
 			}
 		} );
+	}
+
+	/**
+	 * Updates the overflow state of a table once the view is rendered. All tables queued before the render
+	 * are updated in a single view change.
+	 */
+	private _updateAfterRender( table: ModelElement ): void {
+		const { view } = this.editor.editing;
+
+		if ( !this._tablesToUpdateAfterRender.size ) {
+			view.once( 'render', () => {
+				const tables = Array.from( this._tablesToUpdateAfterRender );
+
+				this._tablesToUpdateAfterRender.clear();
+
+				view.change( () => {
+					for ( const table of tables ) {
+						this._updateTableScrollOverflowState( table );
+					}
+				} );
+			} );
+		}
+
+		this._tablesToUpdateAfterRender.add( table );
 	}
 
 	/**
@@ -355,21 +397,6 @@ function getCurrentlyResizingTable( editor: Editor ): ModelElement | null {
 	}
 
 	return plugins.get( 'TableColumnResizeEditing' ).resizingTable;
-}
-
-/**
- * Checks if given table width overflows container width.
- */
-function isTableWidthOverflowing( tableWidth: string, containerWidth: number ): boolean {
-	if ( tableWidth.endsWith( '%' ) ) {
-		return parseFloat( tableWidth ) > 100;
-	}
-
-	if ( tableWidth.endsWith( 'px' ) ) {
-		return parseFloat( tableWidth ) > containerWidth;
-	}
-
-	return false;
 }
 
 /**

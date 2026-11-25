@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'রংটি সঠিক নয়। "#FF0000" অথবা "rgb(255,0,0)" অথবা "লাল" ব্যাবহার করুন।\n',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'মানটি সঠিক নয়। "10px" বা "2em" বা সহজভাবে "2" ব্যবহার করে দেখুন।',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'মানটি সঠিক নয়। "10px" বা শুধু "10" ব্যবহার করে দেখুন।',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'টেবিল ক্যাপশন লিখুন',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

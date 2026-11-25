@@ -43,11 +43,12 @@ export function normalizeSpacing( htmlString: string ): string {
  * @internal
  */
 export function normalizeSpacerunSpans( htmlDocument: Document ): void {
+	// eslint-disable-next-line ckeditor5-rules/no-shadow-unsafe-dom-apis
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
 		const htmlElement = el as HTMLElement;
 		const innerTextLength = htmlElement.innerText.length || 0;
 
-		htmlElement.innerText = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
+		htmlElement.innerText = Array( innerTextLength + 1 ).join( '\u00A0 ' ).slice( 0, innerTextLength );
 	} );
 }
 
@@ -65,6 +66,6 @@ export function normalizeSpacerunSpans( htmlDocument: Document ): void {
  */
 function normalizeSafariSpaceSpans( htmlString: string ) {
 	return htmlString.replace( /<span(?: class="Apple-converted-space"|)>(\s+)<\/span>/g, ( fullMatch, spaces ) => {
-		return spaces.length === 1 ? ' ' : Array( spaces.length + 1 ).join( '\u00A0 ' ).substr( 0, spaces.length );
+		return spaces.length === 1 ? ' ' : Array( spaces.length + 1 ).join( '\u00A0 ' ).slice( 0, spaces.length );
 	} );
 }

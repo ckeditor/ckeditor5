@@ -12,6 +12,7 @@ import {
 	ViewCollection,
 	submitHandler,
 	FocusCycler,
+	ButtonView,
 	CollapsibleView,
 	type FocusableView
 } from '@ckeditor/ckeditor5-ui';
@@ -51,6 +52,11 @@ export class ImageInsertFormView extends View {
 	private readonly children: ViewCollection<FocusableView>;
 
 	/**
+	 * Indicates whether all integrations are buttons, so they can be navigated like a list using the arrow keys.
+	 */
+	private readonly _hasOnlyButtons: boolean;
+
+	/**
 	 * Creates a view for the dropdown panel of {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
 	 *
 	 * @param locale The localization services instance.
@@ -63,18 +69,16 @@ export class ImageInsertFormView extends View {
 		this.keystrokes = new KeystrokeHandler();
 		this._focusables = new ViewCollection();
 		this.children = this.createCollection();
+		this._hasOnlyButtons = integrations.every( view => view instanceof ButtonView );
 
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
-			actions: {
-				// Navigate form fields backwards using the Shift + Tab keystroke.
-				focusPrevious: 'shift + tab',
-
-				// Navigate form fields forwards using the Tab key.
-				focusNext: 'tab'
-			}
+			// If all integrations are buttons, navigate them like a list using the arrow keys. Otherwise, use the Tab key.
+			actions: this._hasOnlyButtons ?
+				{ focusPrevious: 'arrowup', focusNext: 'arrowdown' } :
+				{ focusPrevious: 'shift + tab', focusNext: 'tab' }
 		} );
 
 		for ( const view of integrations ) {
@@ -118,15 +122,17 @@ export class ImageInsertFormView extends View {
 		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element! );
 
-		const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
+		if ( !this._hasOnlyButtons ) {
+			const stopPropagation = ( data: KeyboardEvent ) => data.stopPropagation();
 
-		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
-		// keystroke handler would take over the key management in the URL input. We need to prevent
-		// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
-		this.keystrokes.set( 'arrowright', stopPropagation );
-		this.keystrokes.set( 'arrowleft', stopPropagation );
-		this.keystrokes.set( 'arrowup', stopPropagation );
-		this.keystrokes.set( 'arrowdown', stopPropagation );
+			// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
+			// keystroke handler would take over the key management in the text fields of custom integrations.
+			// We need to prevent this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
+			this.keystrokes.set( 'arrowright', stopPropagation );
+			this.keystrokes.set( 'arrowleft', stopPropagation );
+			this.keystrokes.set( 'arrowup', stopPropagation );
+			this.keystrokes.set( 'arrowdown', stopPropagation );
+		}
 	}
 
 	/**

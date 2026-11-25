@@ -92,16 +92,23 @@ describe( 'PasteFromOffice - filters', () => {
 				expect( stylesString ).toBe( '' );
 			} );
 
-			it( 'should remove a `<style>` block located in the body', () => {
+			it( 'should move a `<style>` block located in the body out of the body and extract its rules', () => {
 				const html = '<body><style>p { color: red; }</style><p>Foo Bar</p></body>';
-				const { body, bodyString } = parsePasteOfficeHtml( html );
+				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
 				expect( body ).toBeInstanceOf( ViewDocumentFragment );
 				expect( body.childCount ).toBe( 1 );
 				expect( bodyString ).toBe( '<p>Foo Bar</p>' );
+
+				expect( styles.length ).toBe( 1 );
+				expect( styles[ 0 ] ).toBeInstanceOf( CSSStyleSheet );
+				expect( styles[ 0 ].cssRules.length ).toBe( 1 );
+				expect( styles[ 0 ].cssRules[ 0 ].style.color ).toBe( 'red' );
+				expect( stylesString ).toBe( 'p { color: red; }' );
 			} );
 
-			it( 'should remove a `<style>` block nested in the body (e.g. Excel Online)', () => {
+			// See https://github.com/ckeditor/ckeditor5/issues/20188.
+			it( 'should move a `<style>` block nested in the body out of the body and extract its rules (e.g. Excel Online)', () => {
 				// Excel Online wraps a full document inside a `<div>`, which flattens the `<style>` into the body.
 				const html =
 					'<div ccp_infra_version=\'3\' data-ccp-timestamp=\'1780896911866\'>' +
@@ -113,12 +120,66 @@ describe( 'PasteFromOffice - filters', () => {
 						'</body></html>' +
 					'</div>';
 
-				const { body, bodyString } = parsePasteOfficeHtml( html );
+				const { body, bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
 
 				expect( body ).toBeInstanceOf( ViewDocumentFragment );
 				expect( bodyString ).not.toContain( '<style>' );
 				expect( bodyString ).not.toContain( 'font-size:48.0pt' );
 				expect( bodyString ).toContain( 'Hello' );
+
+				expect( styles.length ).toBe( 1 );
+				expect( styles[ 0 ].cssRules.length ).toBe( 2 );
+				expect( styles[ 0 ].cssRules[ 1 ].selectorText ).toBe( '.xl63' );
+				expect( stylesString ).toBe( 'td { color:black; } .xl63 { font-size:48.0pt; }' );
+			} );
+
+			it( 'should extract rules of a `<style>` block placed in the body by desktop Excel', () => {
+				// Recent desktop Excel builds use the Excel Online clipboard format: the `<meta>` tags and the `<style>`
+				// block defining the `.xl*` cell classes sit inside `<body>`, wrapped in a `ccp_infra` div.
+				const html =
+					'<meta charset=\'utf-8\'><html><head></head><body>' +
+						'<div ccp_infra_version=\'3\' ccp_infra_timestamp=\'1780896911866\'>' +
+							'<meta name="ProgId" content="Excel.Sheet">' +
+							'<meta name="Generator" content="Microsoft Excel 15">' +
+							'<style>' +
+								'td { border:none; } ' +
+								'.xl107 { color:white; font-weight:700; border-top:.5pt solid #D0D0D0; background:#5C00D7; }' +
+							'</style>' +
+							'<table><tr><td class="xl107">Productivity Pack Features</td></tr></table>' +
+						'</div>' +
+					'</body></html>';
+
+				const { bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
+
+				expect( bodyString ).not.toContain( '<style>' );
+				expect( bodyString ).not.toContain( '#5C00D7' );
+				expect( bodyString ).toContain( 'Productivity Pack Features' );
+
+				expect( styles.length ).toBe( 1 );
+				expect( styles[ 0 ].cssRules.length ).toBe( 2 );
+
+				const xl107 = styles[ 0 ].cssRules[ 1 ];
+
+				expect( xl107.selectorText ).toBe( '.xl107' );
+				expect( xl107.style.color ).toBe( 'white' );
+				expect( xl107.style[ 'font-weight' ] ).toBe( '700' );
+				expect( stylesString ).toContain( '.xl107' );
+			} );
+
+			it( 'should keep `<style>` blocks from the head before the ones moved from the body', () => {
+				const html =
+					'<html><head><style>p { color: red; }</style></head>' +
+					'<body><style>p { color: blue; }</style><p>Foo</p><style>a { color: green; }</style></body></html>';
+
+				const { bodyString, styles, stylesString } = parsePasteOfficeHtml( html );
+
+				expect( bodyString ).toBe( '<p>Foo</p>' );
+
+				expect( styles.length ).toBe( 3 );
+				expect( styles[ 0 ].cssRules[ 0 ].style.color ).toBe( 'red' );
+				expect( styles[ 1 ].cssRules[ 0 ].style.color ).toBe( 'blue' );
+				expect( styles[ 2 ].cssRules[ 0 ].style.color ).toBe( 'green' );
+				expect( stylesString ).toBe( 'p { color: red; } p { color: blue; } a { color: green; }' );
 			} );
 
 			it( 'should not remove `<style>` blocks located in the head', () => {

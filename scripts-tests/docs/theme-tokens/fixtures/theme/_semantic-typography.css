@@ -1,0 +1,60 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/**
+ * The text, the sizes, and the focus of the fixture theme, one token for each preview that a value or a rule decides.
+ */
+:root,
+:host {
+	/**
+	 * The weight of the strong text.
+	 */
+	--ck-font-weight-strong: 600;
+
+	/**
+	 * A weight that a rule asks a preview for, but that is not a number.
+	 */
+	--ck-font-weight-inherit: inherit;
+
+	/**
+	 * The size of the text in the controls.
+	 */
+	--ck-font-size-control: 14px;
+
+	/**
+	 * A size that a rule asks a preview for, but that is not a length.
+	 */
+	--ck-font-size-toolbar: inherit;
+
+	/**
+	 * The font of the controls, with quotes that the preview must escape.
+	 */
+	--ck-font-family-control: "Segoe UI", sans-serif;
+
+	/**
+	 * A font that a rule asks a preview for, but whose value resolves to nothing, because it names no declared token.
+	 */
+	--ck-font-family-unresolved: var(--ck-font-family-missing);
+
+	/**
+	 * A width that is not a single length, so no rule gives it a preview.
+	 */
+	--ck-width-dialog: min(400px, 90vw);
+
+	/**
+	 * The channels of a color, which are not a color themselves.
+	 */
+	--ck-color-focus-coordinates: 220, 80%, 50%;
+
+	/**
+	 * A border that is recognized by its value.
+	 */
+	--ck-focus-ring: 1px solid var(--ck-color-blue-500);
+
+	/**
+	 * A shadow that is recognized by its value.
+	 */
+	--ck-focus-shadow: 0 0 0 3px hsla(220, 80%, 50%, 0.2);
+}

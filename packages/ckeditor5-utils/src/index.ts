@@ -135,7 +135,9 @@ export { getVisualViewportOffset } from './dom/getvisualviewportoffset.js';
 export {
 	scrollAncestorsToShowTarget,
 	scrollViewportToShowTarget,
-	type IfTrue
+	type IfTrue,
+	type AncestorScrollPadding,
+	type AncestorScrollPaddingCallback
 } from './dom/scroll.js';
 
 export {

@@ -147,7 +147,7 @@ export function upcastTable( options: { enableFooters?: boolean } ) {
 }
 
 /**
- * A conversion helper that skips empty <tr> elements from upcasting at the beginning of the table.
+ * A conversion helper that skips empty `<tr>` elements from upcasting at the beginning of the table.
  *
  * An empty row is considered a table model error but when handling clipboard data there could be rows that contain only row-spanned cells
  * and empty TR-s are used to maintain the table structure (also {@link module:table/tablewalker~TableWalker} assumes that there are only

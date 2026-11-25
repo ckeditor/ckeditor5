@@ -12,6 +12,8 @@ See the {@link module:undo/undo~Undo} plugin documentation.
 
 This plugin is usually enabled by the {@link module:essentials/essentials~Essentials} plugin from the {@link api/essentials `@ckeditor/ckeditor5-essentials`} package (which also enables other fundamental editing features).
 
+See the {@link features/undo-redo undo/redo} guide.
+
 ## Installation
 
 This package is part of our open-source aggregate package.

@@ -27,7 +27,7 @@ const translations: Translations = {
 			// The label for the image text alternative input.
 			'Text alternative': 'Альтернативный текст',
 			// The placeholder text for the image caption displayed when the caption is empty.
-			'Enter image caption': 'Подпись к изображению',
+			'Enter image caption': 'Введите подпись к изображению',
 			// The label for the insert image toolbar button.
 			'Insert image': 'Вставить изображение',
 			// The label for the replace image toolbar button.

@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': '유효하지 않은 색입니다. "#FF0000"이나 "rgb(255,0,0)", 또는 "red"를 입력해 보세요.',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': '유효하지 않은 값입니다. "10px"나 "2em" 또는 그냥 "2"를 입력해 보세요.',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': '유효하지 않은 값입니다. "10px"나 그냥 "10"을 입력해 보세요.',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': '테이블 캡션 입력',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

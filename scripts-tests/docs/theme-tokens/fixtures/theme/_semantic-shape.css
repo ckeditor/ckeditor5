@@ -1,0 +1,62 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/**
+ * The shapes, sizes, layers, and motion of the fixture theme, one token for each kind of preview.
+ */
+:root,
+:host {
+	/**
+	 * The radius of the controls.
+	 */
+	--ck-border-radius-control: 4px;
+
+	/**
+	 * The width of the borders.
+	 */
+	--ck-border-width-control: 1px;
+
+	/**
+	 * The border of the controls.
+	 */
+	--ck-border-control: var(--ck-border-width-control) solid var(--ck-color-gray-500);
+
+	/**
+	 * The space inside of the controls.
+	 */
+	--ck-spacing-control: calc(var(--ck-spacing-base) / 2);
+
+	/* A step of a scale gets no description. */
+	--ck-spacing-control-large: calc(var(--ck-spacing-base) * 2);
+
+	/**
+	 * The shadow of the raised surfaces.
+	 */
+	--ck-shadow-raised:
+		0 1px 2px hsla(0, 0%, 0%, 0.2),
+		0 2px 8px hsla(0, 0%, 0%, 0.1);
+
+	/**
+	 * The layer of the panels, above the content.
+	 */
+	--ck-layer-panel: calc(var(--ck-layer-base) + 10);
+
+	/**
+	 * The duration of the transitions.
+	 */
+	--ck-motion-duration-short: 120ms;
+
+	/**
+	 * A token without a preview.
+	 */
+	--ck-motion-easing-default: ease-out;
+
+	@media (prefers-reduced-motion: reduce) {
+		/**
+		 * Tokens in at-rules are not part of the default theme.
+		 */
+		--ck-motion-duration-short: 0ms;
+	}
+}

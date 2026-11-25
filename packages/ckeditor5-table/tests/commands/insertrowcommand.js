@@ -9,9 +9,12 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { TableSelection } from '../../src/tableselection.js';
+import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
 import { InsertRowCommand } from '../../src/commands/insertrowcommand.js';
@@ -101,7 +104,7 @@ describe( 'InsertRowCommand', () => {
 				], { headingRows: 3 } ) );
 			} );
 
-			it( 'should not update table heading rows attribute when inserting row after headings section', () => {
+			it( 'should update table heading rows attribute when inserting row below the last heading row', () => {
 				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10[]', '11' ],
@@ -115,6 +118,23 @@ describe( 'InsertRowCommand', () => {
 					[ '10[]', '11' ],
 					[ '', '' ],
 					[ '20', '21' ]
+				], { headingRows: 3 } ) );
+			} );
+
+			it( 'should not update table heading rows attribute when inserting row below the first body row', () => {
+				_setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20[]', '21' ]
+				], { headingRows: 2 } ) );
+
+				command.execute();
+
+				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20[]', '21' ],
+					[ '', '' ]
 				], { headingRows: 2 } ) );
 			} );
 
@@ -173,9 +193,9 @@ describe( 'InsertRowCommand', () => {
 				// | 00 | 01 | 02 |
 				// +    +----+----+
 				// |    | 11 | 12 |
-				// +----+----+----+ <-- heading rows
-				// |    |    |    |
 				// +----+----+----+
+				// |    |    |    |
+				// +----+----+----+ <-- heading rows
 				// | 20 | 21 | 22 |
 				// +----+----+----+
 				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
@@ -183,7 +203,7 @@ describe( 'InsertRowCommand', () => {
 					[ '11[]', '12' ],
 					[ '', '', '' ],
 					[ '20', '21', '22' ]
-				], { headingRows: 2 } ) );
+				], { headingRows: 3 } ) );
 			} );
 
 			it( 'should properly calculate columns if next row has colspans', () => {
@@ -206,9 +226,9 @@ describe( 'InsertRowCommand', () => {
 				// | 00 | 01 | 02 |
 				// +    +----+----+
 				// |    | 11 | 12 |
-				// +----+----+----+ <-- heading rows
-				// |    |    |    |
 				// +----+----+----+
+				// |    |    |    |
+				// +----+----+----+ <-- heading rows
 				// | 20           |
 				// +----+----+----+
 				expect( _getModelData( model ) ).toEqualMarkup( modelTable( [
@@ -216,7 +236,7 @@ describe( 'InsertRowCommand', () => {
 					[ '11[]', '12' ],
 					[ '', '', '' ],
 					[ { contents: '20', colspan: 3 } ]
-				], { headingRows: 2 } ) );
+				], { headingRows: 3 } ) );
 			} );
 
 			it( 'should insert rows at the end of a table', () => {
@@ -514,5 +534,88 @@ describe( 'InsertRowCommand', () => {
 			);
 			expect( command.isEnabled ).toBe( false );
 		} );
+	} );
+} );
+
+describe( 'InsertRowCommand - inheriting formatting', () => {
+	let editor, model;
+
+	const style = { tableCellBackgroundColor: 'red', tableCellPadding: '3px' };
+	const otherStyle = { tableCellBackgroundColor: 'green' };
+
+	beforeEach( async () => {
+		editor = await ModelTestEditor.create( {
+			plugins: [ Paragraph, TableEditing, TableSelection, TableCellPropertiesEditing, BoldEditing, UndoEditing ]
+		} );
+
+		model = editor.model;
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
+	it( 'should inherit the formatting of the selected row when inserting a row below', () => {
+		_setModelData( model, modelTable( [
+			[ { contents: '00', ...otherStyle } ],
+			[ { contents: '<paragraph><$text bold="true">1[]0</$text></paragraph>', ...style } ],
+			[ { contents: '20', ...otherStyle } ]
+		] ) );
+
+		editor.execute( 'insertTableRowBelow' );
+
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+			[ { contents: '00', ...otherStyle } ],
+			[ { contents: '<paragraph><$text bold="true">10</$text></paragraph>', ...style } ],
+			[ { contents: '<paragraph selection:bold="true"></paragraph>', ...style } ],
+			[ { contents: '20', ...otherStyle } ]
+		] ) );
+	} );
+
+	it( 'should inherit the formatting of the selected row when inserting a row above', () => {
+		_setModelData( model, modelTable( [
+			[ { contents: '00', ...otherStyle } ],
+			[ { contents: '1[]0', ...style } ],
+			[ { contents: '20', ...otherStyle } ]
+		] ) );
+
+		editor.execute( 'insertTableRowAbove' );
+
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+			[ { contents: '00', ...otherStyle } ],
+			[ { contents: '', ...style } ],
+			[ { contents: '10', ...style } ],
+			[ { contents: '20', ...otherStyle } ]
+		] ) );
+	} );
+
+	it( 'should inherit the formatting of the outermost selected row when multiple rows are selected', () => {
+		_setModelData( model, modelTable( [
+			[ { contents: '00', isSelected: true, ...style } ],
+			[ { contents: '10', isSelected: true, ...otherStyle } ]
+		] ) );
+
+		editor.execute( 'insertTableRowBelow' );
+		editor.execute( 'insertTableRowAbove' );
+
+		expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+			[ { contents: '', ...style } ],
+			[ { contents: '00', ...style } ],
+			[ { contents: '10', ...otherStyle } ],
+			[ { contents: '', ...otherStyle } ]
+		] ) );
+	} );
+
+	it( 'should undo the inserted row with the inherited formatting in a single step', () => {
+		const initialData = modelTable( [
+			[ { contents: '<paragraph><$text bold="true">0[]0</$text></paragraph>', ...style } ]
+		] );
+
+		_setModelData( model, initialData );
+
+		editor.execute( 'insertTableRowBelow' );
+		editor.execute( 'undo' );
+
+		expect( _getModelData( model ) ).toEqualMarkup( initialData );
 	} );
 } );

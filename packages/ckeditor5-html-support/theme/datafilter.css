@@ -11,11 +11,11 @@
 .ck-widget.html-object-embed {
 	font-size: var(--ck-font-size-normal, var(--ck-font-size-base));
 	background-color: var(--ck-color-surface-subtle);
-	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-spacing-small` first if overridden. */
 	padding: var(--ck-spacing-small, var(--ck-spacing-sm));
 	/* Leave space for label */
 	padding-top: calc(var(--ck-font-size-tiny, var(--ck-font-size-xs)) + var(--ck-spacing-large, var(--ck-spacing-lg)));
-	/* Backward compatibility: falls back to legacy --ck-spacing-standard if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-spacing-standard` first if overridden. */
 	min-width: calc(76px + var(--ck-spacing-standard, var(--ck-spacing-base)));
 
 	&:not(.ck-widget_selected):not(:hover) {
@@ -28,16 +28,16 @@
 		position: absolute;
 		content: attr(data-html-object-embed-label);
 		top: 0;
-		/* Backward compatibility: falls back to legacy --ck-spacing-standard if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-spacing-standard` first if overridden. */
 		left: var(--ck-spacing-standard, var(--ck-spacing-base));
 		background: var(--ck-color-base-text-light);
 		transition: background var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 		padding: calc(var(--ck-spacing-tiny, var(--ck-spacing-xs)) + var(--ck-html-object-embed-unfocused-outline-width)) var(--ck-spacing-small, var(--ck-spacing-sm)) var(--ck-spacing-tiny, var(--ck-spacing-xs));
-		/* Backward compatibility: falls back to legacy --ck-border-radius if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-border-radius` first if overridden. */
 		border-radius: 0 0 var(--ck-border-radius, var(--ck-radius-base)) var(--ck-border-radius, var(--ck-radius-base));
 		color: var(--ck-color-base-background);
 		font-size: var(--ck-font-size-tiny, var(--ck-font-size-xs));
-		/* Backward compatibility: falls back to legacy --ck-font-face if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-font-face` first if overridden. */
 		font-family: var(--ck-font-face, var(--ck-font-family));
 	}
 

@@ -41,7 +41,7 @@
 		}
 
 		&.ck-search__query_with-icon {
-			/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+			/* Backward compatibility: reads the legacy `--ck-spacing-medium` first if overridden. */
 			--ck-labeled-field-label-default-position-x: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-base))));
 
 			& .ck-icon {
@@ -57,13 +57,13 @@
 				width: 100%;
 
 				[dir="ltr"] & {
-					/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+					/* Backward compatibility: reads the legacy `--ck-spacing-medium` first if overridden. */
 					padding-left: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-base))));
 				}
 
 				[dir="rtl"] & {
 					&:not(.ck-input-text_empty) {
-						/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+						/* Backward compatibility: reads the legacy `--ck-spacing-medium` first if overridden. */
 						padding-left: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-base))));
 					}
 				}
@@ -71,11 +71,11 @@
 		}
 
 		&.ck-search__query_with-reset {
-			/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+			/* Backward compatibility: reads the legacy `--ck-spacing-medium` first if overridden. */
 			--ck-labeled-field-empty-unfocused-max-width: 100% - 2 * var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-base))));
 
 			&.ck-labeled-field-view_empty {
-				/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+				/* Backward compatibility: reads the legacy `--ck-spacing-medium` first if overridden. */
 				--ck-labeled-field-empty-unfocused-max-width: 100% - var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-base)))) - var(--ck-spacing-control-icon-gap);
 			}
 
@@ -105,13 +105,13 @@
 
 				[dir="ltr"] & {
 					&:not(.ck-input-text_empty) {
-						/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+						/* Backward compatibility: reads the legacy `--ck-spacing-medium` first if overridden. */
 						padding-right: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-base))));
 					}
 				}
 
 				[dir="rtl"] & {
-					/* Backward compatibility: falls back to legacy --ck-spacing-medium if overridden. */
+					/* Backward compatibility: reads the legacy `--ck-spacing-medium` first if overridden. */
 					padding-right: var(--ck-search-field-view-horizontal-spacing, calc(var(--ck-icon-size) + var(--ck-spacing-medium, var(--ck-spacing-base))));
 				}
 			}

@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Tablerowresize</title>
+		<script type="module" src="./tablerowresize.ts"></script>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h1>Table row resize</h1>
+
+			<h2>Loading and saving</h2>
+			<ol>
+				<li>
+					Verify that the row heights from the source are stored in the model as the <code>rowHeight</code>
+					attribute of <code>tableRow</code> (for example with <code>window.editor</code> or the inspector) in the
+					"px", "pt", "Row and cell heights", "Merged rows", "Nested table" and "Resized columns" tables.
+				</li>
+				<li>
+					Verify that in the "pt" table the heights are converted to pixels (21pt to 28px, 45pt to 60px).
+				</li>
+				<li>
+					Verify that in the "Unsupported units" table no row has the <code>rowHeight</code> attribute, and that the
+					data has no row heights there.
+				</li>
+				<li>
+					Switch to the source editing mode and verify that the data contains <code>&lt;tr style="height:…"&gt;</code>
+					for each stored row height.
+				</li>
+				<li>
+					In the "Row and cell heights" table, verify that the row is as high as the larger of the two heights.
+				</li>
+			</ol>
+
+			<h2>Setting the height in the cell properties</h2>
+			<ol>
+				<li>
+					Open the cell properties of any cell: the "Height" field should show the height of the row. Change it: the row
+					height should change at once, "Cancel" should revert it, and "Save" should keep it.
+				</li>
+				<li>
+					In the "Row and cell heights" table, open the cell properties of the second cell of the first row: the field
+					should show 40px (the row height, even though the 100px height of the other cell makes the row higher), and
+					changing it should remove that cell height.
+				</li>
+				<li>
+					In the third row of the "Row and cell heights" table (no row height), open the cell properties of the first cell:
+					the field should show its 60px cell height. Changing it should set the row height and remove the cell height.
+				</li>
+				<li>Type <code>21pt</code>, <code>3em</code> or <code>50%</code>: an error message should be shown and nothing should change.</li>
+				<li>
+					In the "Merged rows" table, open the cell properties of the merged cell: the field should show the height of the
+					second row, and changing it should resize the second row.
+				</li>
+			</ol>
+
+			<h2>Resizing by dragging</h2>
+			<ol>
+				<li>
+					Hover the bottom edge of a cell: a handle should be highlighted across the whole table width and the cursor
+					should change. Drag it down and up: the row height should follow the mouse and be saved after releasing it.
+				</li>
+				<li>
+					Drag an edge up as far as possible: the row should stop at the height its content requires (no clipped content).
+				</li>
+				<li>Resize the row without a height in the "Row heights in px" table: it should get a height.</li>
+				<li>
+					In the "Row and cell heights" table, shrink the first row: it should get lower than the 100px cell height,
+					and the cell height should be removed.
+				</li>
+				<li>
+					In the "Merged rows" table, drag the bottom edge of the merged cell: the second row should be resized.
+				</li>
+				<li>
+					In the "Nested table" table, resize a row of the nested table: the outer row should not get a height.
+				</li>
+				<li>In the "Resized columns" table, resize rows and columns: they should not interfere with each other.</li>
+				<li>
+					In the "Table wider than the editor" table, resize the last row: its bottom edge should be grabbable from
+					inside the table.
+				</li>
+				<li>Undo after a drag: the whole drag should be reverted in a single step.</li>
+				<li>A click on an edge without moving the mouse should not change anything.</li>
+				<li>Toggle the read-only mode: the handles should disappear.</li>
+				<li>
+					Click "Enable read-only in 3 seconds" and start dragging an edge: when the read-only mode kicks in,
+					the row should go back to its previous height and nothing should be saved.
+				</li>
+				<li>Repeat some of the above in the RTL editor.</li>
+				<li>Pick the open and the closed shadow DOM mode below and repeat the resizing of rows and columns.</li>
+			</ol>
+		</ck-manual-header>
+
+		<ck-manual-shadow-mode default="none" overlay-container></ck-manual-shadow-mode>
+
+		<button id="read-only">Toggle read-only</button>
+		<button id="read-only-delayed">Enable read-only in 3 seconds</button>
+
+		<h1>LTR editor</h1>
+
+		<div id="editor">
+			<h3>Row heights in px</h3>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr style="height: 40px">
+							<td>11</td>
+							<td>12</td>
+							<td>13</td>
+						</tr>
+						<tr style="height: 80px">
+							<td>21</td>
+							<td>22</td>
+							<td>23</td>
+						</tr>
+						<tr>
+							<td>31 (no height)</td>
+							<td>32</td>
+							<td>33</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<h3>Row heights in pt</h3>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr style="height: 21pt">
+							<td>11</td>
+							<td>12</td>
+						</tr>
+						<tr style="height: 45pt">
+							<td>21</td>
+							<td>22</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<h3>Unsupported units</h3>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr style="height: 50%">
+							<td>11 (50%)</td>
+							<td>12</td>
+						</tr>
+						<tr style="height: 5em">
+							<td>21 (5em)</td>
+							<td>22</td>
+						</tr>
+						<tr style="height: auto">
+							<td>31 (auto)</td>
+							<td>32</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<h3>Row and cell heights</h3>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr style="height: 40px">
+							<td style="height: 100px">11 (row 40px, cell 100px)</td>
+							<td>12</td>
+						</tr>
+						<tr style="height: 100px">
+							<td style="height: 40px">21 (row 100px, cell 40px)</td>
+							<td>22</td>
+						</tr>
+						<tr>
+							<td style="height: 60px">31 (no row height, cell 60px)</td>
+							<td>32</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<h3>Merged rows</h3>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr style="height: 40px">
+							<td rowspan="2">11 (rowspan="2")</td>
+							<td>12</td>
+							<td>13</td>
+						</tr>
+						<tr style="height: 60px">
+							<td>22</td>
+							<td>23</td>
+						</tr>
+						<tr style="height: 40px">
+							<td>31</td>
+							<td colspan="2">32 (colspan="2")</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<h3>Nested table</h3>
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr style="height: 40px">
+							<td>11</td>
+							<td>
+								<figure class="table">
+									<table>
+										<tbody>
+											<tr style="height: 60px">
+												<td>Nested 11</td>
+												<td>Nested 12</td>
+											</tr>
+											<tr>
+												<td>Nested 21</td>
+												<td>Nested 22</td>
+											</tr>
+										</tbody>
+									</table>
+								</figure>
+							</td>
+						</tr>
+						<tr>
+							<td>21</td>
+							<td>22</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<h3>Table wider than the editor (TableScroll)</h3>
+			<figure class="table" style="width: 2000px">
+				<table>
+					<tbody>
+						<tr style="height: 40px">
+							<td>11</td>
+							<td>12</td>
+							<td>13</td>
+						</tr>
+						<tr style="height: 60px">
+							<td>21 (last row)</td>
+							<td>22</td>
+							<td>23</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<h3>Resized columns</h3>
+			<figure class="table" style="width: 400px">
+				<table>
+					<colgroup>
+						<col style="width: 30%" />
+						<col style="width: 70%" />
+					</colgroup>
+					<thead>
+						<tr style="height: 50px">
+							<th>Header 1</th>
+							<th>Header 2</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="height: 70px">
+							<td>11</td>
+							<td>12</td>
+						</tr>
+						<tr>
+							<td>21</td>
+							<td>22</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+
+			<h3>Layout table</h3>
+			<table class="table layout-table" role="presentation" style="width: 400px; height: 300px">
+				<tbody>
+					<tr style="height: 60px">
+						<td>11</td>
+						<td>12</td>
+					</tr>
+					<tr>
+						<td>21</td>
+						<td>22</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<h1>RTL editor</h1>
+
+		<div id="editor-rtl">
+			<figure class="table">
+				<table>
+					<tbody>
+						<tr style="height: 40px">
+							<td>11</td>
+							<td>12</td>
+						</tr>
+						<tr style="height: 80px">
+							<td>21</td>
+							<td>22</td>
+						</tr>
+					</tbody>
+				</table>
+			</figure>
+		</div>
+	</body>
+</html>

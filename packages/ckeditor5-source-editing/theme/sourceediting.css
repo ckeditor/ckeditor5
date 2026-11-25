@@ -5,7 +5,6 @@
 
 :root,
 :host {
-	/* Backward compatibility: falls back to the legacy --ck-rounded-corners-radius if overridden. */
 	--ck-source-editing-area-border-radius: var(--ck-radius-md);
 	--ck-source-editing-area-font-size: var(--ck-font-size-md);
 }
@@ -42,6 +41,7 @@
 	overflow: hidden;
 	box-sizing: border-box;
 	border-color: var(--ck-color-base-border);
+	/* Backward compatibility: reads the legacy `--ck-rounded-corners-radius` first if overridden. */
 	border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
@@ -49,6 +49,8 @@
 	&:not([readonly]):focus {
 		outline: none;
 		border: var(--ck-interactive-focus-ring);
-		box-shadow: var(--ck-inner-shadow, var(--ck-inset-shadow-sm)), 0 0;
+		/* The textarea replaces the editing area, so it reads the focus shadow of the editing area.
+		   Backward compatibility: reads the legacy `--ck-inner-shadow` first if overridden. */
+		box-shadow: var(--ck-inner-shadow, var(--ck-editor-editable-focus-shadow, var(--ck-inset-shadow-sm))), 0 0;
 	}
 }

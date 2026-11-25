@@ -548,14 +548,16 @@ function expandTableSize( table: ModelElement, expectedHeight: number, expectedW
 	if ( expectedWidth > tableWidth ) {
 		tableUtils.insertColumns( table, {
 			at: tableWidth,
-			columns: expectedWidth - tableWidth
+			columns: expectedWidth - tableWidth,
+			referenceColumn: tableWidth - 1
 		} );
 	}
 
 	if ( expectedHeight > tableHeight ) {
 		tableUtils.insertRows( table, {
 			at: tableHeight,
-			rows: expectedHeight - tableHeight
+			rows: expectedHeight - tableHeight,
+			referenceRow: tableHeight - 1
 		} );
 	}
 }

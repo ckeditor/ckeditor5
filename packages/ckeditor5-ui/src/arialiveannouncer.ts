@@ -14,6 +14,11 @@ import { type ViewCollection } from './viewcollection.js';
 import { View } from './view.js';
 
 /**
+ * The time (in milliseconds) after which an announcement is removed from its `aria-live` region.
+ */
+const ANNOUNCEMENT_LIFETIME = 5000;
+
+/**
  * The politeness level of an `aria-live` announcement.
  *
  * Available keys are:
@@ -157,9 +162,9 @@ export class AriaLiveAnnouncerRegionView extends View {
 	private _domConverter: ViewDomConverter;
 
 	/**
-	 * Interval used to remove additions. It prevents accumulation of added nodes in region.
+	 * Pending timeouts that remove announcements from the region.
 	 */
-	private _pruneAnnouncementsInterval: ReturnType<typeof setInterval> | null;
+	private readonly _removalTimeouts = new Set<ReturnType<typeof setTimeout>>();
 
 	constructor( editor: Editor, politeness: AriaLiveAnnouncerPolitenessValue ) {
 		super( editor.locale );
@@ -183,21 +188,8 @@ export class AriaLiveAnnouncerRegionView extends View {
 			]
 		} );
 
-		editor.on( 'destroy', () => {
-			/* v8 ignore else -- @preserve */
-			if ( this._pruneAnnouncementsInterval !== null ) {
-				clearInterval( this._pruneAnnouncementsInterval! );
-				this._pruneAnnouncementsInterval = null;
-			}
-		} );
-
 		this.politeness = politeness;
 		this._domConverter = editor.data.htmlProcessor.domConverter;
-		this._pruneAnnouncementsInterval = setInterval( () => {
-			if ( this.element && this._listElement!.firstChild ) {
-				this._listElement!.firstChild!.remove();
-			}
-		}, 5000 );
 	}
 
 	/**
@@ -217,6 +209,33 @@ export class AriaLiveAnnouncerRegionView extends View {
 		}
 
 		this._listElement!.appendChild( messageListItem );
+
+		// Screen readers announce additions only, so an announcement that was read out is dead weight:
+		// it would pile up and stay reachable in the browse mode. Remove it once it had time to be read.
+		//
+		// The timeout is scheduled with the global `setTimeout()`, that is in the DOM window that runs the editor code,
+		// not in the DOM window that displays this region. Timeout identifiers are valid only in the DOM window
+		// that created them, so scheduling all of them in one DOM window lets `destroy()` cancel them with the global
+		// `clearTimeout()`, without tracking which DOM window each one belongs to.
+		const timeout = setTimeout( () => {
+			this._removalTimeouts.delete( timeout );
+			messageListItem.remove();
+		}, ANNOUNCEMENT_LIFETIME );
+
+		this._removalTimeouts.add( timeout );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		for ( const timeout of this._removalTimeouts ) {
+			clearTimeout( timeout );
+		}
+
+		this._removalTimeouts.clear();
+
+		super.destroy();
 	}
 
 	/**

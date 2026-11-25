@@ -1,0 +1,18 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/**
+ * The foundation tokens of the fixture theme, which the semantic tokens follow.
+ */
+:root,
+:host {
+	--ck-color-white: hsl(0, 0%, 100%);
+	--ck-color-black: hsl(0, 0%, 0%);
+	--ck-color-gray-100: hsl(0, 0%, 95%);
+	--ck-color-gray-500: hsl(0, 0%, 60%);
+	--ck-color-blue-500: hsl(220, 80%, 50%);
+	--ck-spacing-base: 8px;
+	--ck-layer-base: 1;
+}

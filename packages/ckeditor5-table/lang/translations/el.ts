@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'Το χρώμα δεν είναι έγκυρο. Δοκιμάστε «#FF0000» ή «rgb(255,0,0)» ή «red».',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'Η τιμή δεν είναι έγκυρη. Δοκιμάστε «10px» ή «2em» ή απλά «2».',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'Η τιμή δεν είναι έγκυρη. Δοκιμάστε «10px» ή απλά «10».',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'Εισαγωγή λεζάντας πίνακα',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

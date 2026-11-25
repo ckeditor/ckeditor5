@@ -13,9 +13,9 @@ const translations: Translations = {
 			// The label of the styles dropdown button in the toolbar displayed when multiple styles are currently active.
 			'Multiple styles': 'Несколько стилей',
 			// The label of the group in the styles dropdown containing styles applicable to blocks only (paragraphs, headings, etc.).
-			'Block styles': 'Блочные стили',
+			'Block styles': 'Стили блоков',
 			// The label of the group in the styles dropdown containing inline applicable to text only.
-			'Text styles': 'Стиль текста'
+			'Text styles': 'Стили текста'
 		}
 	}
 };

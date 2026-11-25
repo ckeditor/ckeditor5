@@ -8,7 +8,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles';
-import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine';
+import { _setModelData, _getModelData, _parseModel } from '@ckeditor/ckeditor5-engine';
 import { ListPropertiesEditing } from '../../src/listproperties/listpropertiesediting.js';
 import { modelList } from '../list/_utils/utils.js';
 import { stubUid } from '../list/_utils/uid.js';
@@ -1253,6 +1253,363 @@ describe( 'ListPropertiesEditing', () => {
 					'foo 2.2.' +
 				'</paragraph>'
 			);
+		} );
+
+		describe( 'keeping the list properties on insert', () => {
+			// See https://github.com/ckeditor/ckeditor5/issues/20264.
+			const listProperties = 'listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered"';
+			const defaultListProperties = 'listReversed="false" listStart="1" listStyle="default" listType="numbered"';
+			const otherListProperties = 'listReversed="false" listStart="7" listStyle="upper-roman" listType="numbered"';
+			const otherListData =
+				`<paragraph listIndent="0" listItemId="x" ${ otherListProperties }>x</paragraph>` +
+				`<paragraph listIndent="0" listItemId="y" ${ otherListProperties }>y</paragraph>`;
+
+			describe( 'inserting or replacing a block object in the first list item', () => {
+				beforeEach( () => {
+					model.schema.register( 'blockWidget', { inheritAllFrom: '$blockObject' } );
+					editor.conversion.elementToElement( { model: 'blockWidget', view: 'div' } );
+				} );
+
+				it( 'should keep the list properties when inserting at the start of the item', () => {
+					_setModelData( model,
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'[]foo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+
+					model.change( writer => {
+						model.insertObject( writer.createElement( 'blockWidget' ), null, null, { findOptimalPosition: 'auto' } );
+					} );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<blockWidget listIndent="0" listItemId="a" ${ listProperties }>` +
+						'</blockWidget>' +
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'foo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should keep the nested list properties when inserting at the start of the first nested item', () => {
+					_setModelData( model,
+						`<paragraph listIndent="0" listItemId="p" ${ defaultListProperties }>` +
+							'p' +
+						'</paragraph>' +
+						`<paragraph listIndent="1" listItemId="a" ${ listProperties }>` +
+							'[]foo' +
+						'</paragraph>'
+					);
+
+					model.change( writer => {
+						model.insertObject( writer.createElement( 'blockWidget' ), null, null, { findOptimalPosition: 'auto' } );
+					} );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph listIndent="0" listItemId="p" ${ defaultListProperties }>` +
+							'p' +
+						'</paragraph>' +
+						`<blockWidget listIndent="1" listItemId="a" ${ listProperties }>` +
+						'</blockWidget>' +
+						`<paragraph listIndent="1" listItemId="a" ${ listProperties }>` +
+							'foo' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should keep the list properties when replacing the first block of the list with a paragraph', () => {
+					_setModelData( model,
+						`[<blockWidget listIndent="0" listItemId="a" ${ listProperties }></blockWidget>]` +
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'foo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+
+					model.deleteContent( model.document.selection );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'foo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+				} );
+			} );
+
+			describe( 'inserting content into the first list item', () => {
+				it( 'should keep the list properties when inserting paragraphs', () => {
+					_setModelData( model,
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'[]foo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+
+					model.insertContent( _parseModel( '<paragraph>x</paragraph><paragraph>y</paragraph>', model.schema ) );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph listIndent="0" listItemId="a00" ${ listProperties }>` +
+							'x' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="a01" ${ listProperties }>` +
+							'yfoo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should apply the target list properties to inserted list items at the same level', () => {
+					_setModelData( model,
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'[]foo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+
+					model.insertContent( _parseModel( otherListData, model.schema ) );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph listIndent="0" listItemId="x" ${ listProperties }>` +
+							'x' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="y" ${ listProperties }>` +
+							'yfoo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should keep the properties of inserted nested list items', () => {
+					_setModelData( model,
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'[]foo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+
+					model.insertContent( _parseModel(
+						'<paragraph listIndent="0" listItemId="x" listType="numbered">x</paragraph>' +
+						`<paragraph listIndent="1" listItemId="y" ${ otherListProperties }>y</paragraph>` +
+						'<paragraph listIndent="0" listItemId="z" listType="numbered">z</paragraph>',
+						model.schema
+					) );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph listIndent="0" listItemId="x" ${ listProperties }>` +
+							'x' +
+						'</paragraph>' +
+						`<paragraph listIndent="1" listItemId="y" ${ otherListProperties }>` +
+							'y' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="z" ${ listProperties }>` +
+							'zfoo' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should keep the properties of inserted lists that follow lower-level items', () => {
+					_setModelData( model,
+						`<paragraph listIndent="0" listItemId="p" ${ defaultListProperties }>` +
+							'p' +
+						'</paragraph>' +
+						`<paragraph listIndent="1" listItemId="a" ${ listProperties }>` +
+							'[]foo' +
+						'</paragraph>'
+					);
+
+					model.insertContent( _parseModel(
+						'<paragraph listIndent="1" listItemId="w" listType="numbered">w</paragraph>' +
+						'<paragraph listIndent="0" listItemId="x" listType="numbered">x</paragraph>' +
+						`<paragraph listIndent="1" listItemId="y" ${ otherListProperties }>y</paragraph>` +
+						'<paragraph listIndent="0" listItemId="z" listType="numbered">z</paragraph>' +
+						`<paragraph listIndent="1" listItemId="v" ${ otherListProperties }>v</paragraph>`,
+						model.schema
+					) );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph listIndent="0" listItemId="p" ${ defaultListProperties }>` +
+							'p' +
+						'</paragraph>' +
+						`<paragraph listIndent="1" listItemId="w" ${ listProperties }>` +
+							'w' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="x" ${ defaultListProperties }>` +
+							'x' +
+						'</paragraph>' +
+						`<paragraph listIndent="1" listItemId="y" ${ otherListProperties }>` +
+							'y' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="z" ${ defaultListProperties }>` +
+							'z' +
+						'</paragraph>' +
+						`<paragraph listIndent="1" listItemId="v" ${ otherListProperties }>` +
+							'vfoo' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should keep the properties of an inserted list that follows a lower-level item at the end of the list', () => {
+					_setModelData( model,
+						`<paragraph listIndent="0" listItemId="p" ${ defaultListProperties }>` +
+							'p' +
+						'</paragraph>' +
+						`<paragraph listIndent="1" listItemId="a" ${ listProperties }>` +
+							'foo[]' +
+						'</paragraph>'
+					);
+
+					model.insertContent( _parseModel(
+						'<paragraph listIndent="1" listItemId="w" listType="numbered">w</paragraph>' +
+						'<paragraph listIndent="0" listItemId="x" listType="numbered">x</paragraph>' +
+						`<paragraph listIndent="1" listItemId="y" ${ otherListProperties }>y</paragraph>`,
+						model.schema
+					) );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph listIndent="0" listItemId="p" ${ defaultListProperties }>` +
+							'p' +
+						'</paragraph>' +
+						`<paragraph listIndent="1" listItemId="a" ${ listProperties }>` +
+							'foow' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="x" ${ defaultListProperties }>` +
+							'x' +
+						'</paragraph>' +
+						`<paragraph listIndent="1" listItemId="y" ${ otherListProperties }>` +
+							'y' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should keep the list properties when inserting into an empty first item', () => {
+					_setModelData( model,
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'[]' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+
+					model.insertContent( _parseModel( otherListData, model.schema ) );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph listIndent="0" listItemId="x" ${ listProperties }>` +
+							'x' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="y" ${ listProperties }>` +
+							'y' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'bar' +
+						'</paragraph>'
+					);
+				} );
+
+				for ( const [ name, ...data ] of [
+					[ 'an empty list', '[]' ],
+					[ 'the whole selected list', '[foo', 'bar]' ],
+					[ 'the whole selected list with an empty item', '[foo', ']' ]
+				] ) {
+					it( `should keep the properties of an inserted list that replaces ${ name }`, () => {
+						_setModelData( model, data.map( ( content, index ) =>
+							`<paragraph listIndent="0" listItemId="${ index }" ${ listProperties }>${ content }</paragraph>`
+						).join( '' ) );
+
+						model.insertContent( _parseModel( otherListData, model.schema ) );
+
+						expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+							`<paragraph listIndent="0" listItemId="x" ${ otherListProperties }>` +
+								'x' +
+							'</paragraph>' +
+							`<paragraph listIndent="0" listItemId="y" ${ otherListProperties }>` +
+								'y' +
+							'</paragraph>'
+						);
+					} );
+				}
+
+				it( 'should apply the list properties to inserted list items that replace the selected end of the list', () => {
+					_setModelData( model,
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'a' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="b" ${ listProperties }>` +
+							'[b' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="c" ${ listProperties }>` +
+							'c' +
+						'</paragraph>' +
+						'<paragraph>' +
+							'd]' +
+						'</paragraph>'
+					);
+
+					model.insertContent( _parseModel( otherListData, model.schema ) );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph listIndent="0" listItemId="a" ${ listProperties }>` +
+							'a' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="x" ${ listProperties }>` +
+							'x' +
+						'</paragraph>' +
+						`<paragraph listIndent="0" listItemId="y" ${ listProperties }>` +
+							'y' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should not copy non-list attributes of the target item', () => {
+					model.schema.extend( '$block', { allowAttributes: 'blockId' } );
+					model.schema.setAttributeProperties( 'blockId', { copyOnReplace: true } );
+
+					_setModelData( model,
+						`<paragraph blockId="foo" listIndent="0" listItemId="a" ${ listProperties }>` +
+							'[]foo' +
+						'</paragraph>'
+					);
+
+					model.insertContent( _parseModel(
+						'<paragraph blockId="x">x</paragraph><paragraph blockId="y">y</paragraph>',
+						model.schema
+					) );
+
+					expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+						`<paragraph blockId="x" listIndent="0" listItemId="a00" ${ listProperties }>` +
+							'x' +
+						'</paragraph>' +
+						`<paragraph blockId="y" listIndent="0" listItemId="a01" ${ listProperties }>` +
+							'yfoo' +
+						'</paragraph>'
+					);
+				} );
+			} );
 		} );
 	} );
 } );

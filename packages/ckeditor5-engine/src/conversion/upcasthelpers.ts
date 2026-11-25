@@ -158,7 +158,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * 		key: 'fontSize',
 	 * 		value: ( viewElement, conversionApi ) => {
 	 * 			const fontSize = viewElement.getStyle( 'font-size' );
-	 * 			const value = fontSize.substr( 0, fontSize.length - 2 );
+	 * 			const value = fontSize.slice( 0, -2 );
 	 *
 	 * 			if ( value <= 10 ) {
 	 * 				return 'small';

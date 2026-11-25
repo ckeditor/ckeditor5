@@ -3,26 +3,102 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* Surface color tokens. Shadow-related surface tokens are in ../_semantic-surface.css. */
+/**
+ * The surface and border color roles of the editor UI: the backgrounds that the UI is drawn on and the borders
+ * around them. To change one kind of surface across the UI, override its role. To change one component, override
+ * its component token instead.
+ */
 :root,
 :host {
+	/* Shadow-related surface tokens are in `../_semantic-surface.css`. */
+
+	/**
+	 * Base background of the editor UI. Set it to change the background of every surface that has no override
+	 * of its own.
+	 * @pair --ck-color-text-primary
+	 * @pair --ck-color-text-secondary
+	 * @pair --ck-color-text-accent
+	 * @pair --ck-color-text-placeholder
+	 */
 	--ck-color-surface-canvas: var(--ck-color-base-background);
+
+	/**
+	 * Background of form fields and list items, such as text inputs and dropdown lists.
+	 * @pair --ck-color-text-primary
+	 * @pair --ck-color-text-error
+	 */
 	--ck-color-surface-control: var(--ck-color-surface-canvas);
+
+	/**
+	 * Background of floating and framing containers, such as toolbars, dropdown panels, balloons, and dialogs.
+	 * @pair --ck-color-text-primary
+	 * @pair --ck-color-text-secondary
+	 * @pair --ck-color-text-error
+	 */
 	--ck-color-surface-container: var(--ck-color-surface-canvas);
+
+	/**
+	 * Reversed background of small overlays, such as tooltips and the size label of a resized widget.
+	 * @pair --ck-color-text-inverse
+	 */
 	--ck-color-surface-inverse: var(--ck-color-base-text);
-	/* A muted panel or placeholder surface, slightly darker than the canvas. */
+
+	/**
+	 * Muted background of placeholders and secondary areas, such as an embed placeholder or the background around
+	 * the editor in the fullscreen mode.
+	 * Disabled form fields, such as text inputs, use `--ck-color-interactive-disabled-surface` instead.
+	 * @pair --ck-color-text-primary
+	 * @pair --ck-color-text-secondary
+	 */
 	--ck-color-surface-subtle: var(--ck-color-base-foreground);
-	/* Intentionally hardcoded: no foundation equivalent yet. The scrim behind modal dialogs. */
+
+	/**
+	 * Translucent scrim that dims the page behind a modal dialog.
+	 */
+	/* Hardcoded, because no foundation color fits. */
 	--ck-color-surface-overlay: hsl(0 0% 0% / .5);
-	/* Intentionally hardcoded: no foundation equivalent yet. The loading (shimmer) placeholder and its highlight. */
+
+	/**
+	 * Base color of a loading placeholder (skeleton), such as an image that is being processed.
+	 * The shimmer moves `--ck-color-surface-skeleton-highlight` across it, so change both together.
+	 */
+	/* Hardcoded: the default CKBox theme color, because no foundation color fits. */
 	--ck-color-surface-skeleton: hsl(220 10% 90%);
+
+	/**
+	 * Moving highlight of the loading placeholder shimmer, drawn over `--ck-color-surface-skeleton`.
+	 */
+	/* Hardcoded: the default CKBox theme color, because no foundation color fits. */
 	--ck-color-surface-skeleton-highlight: hsl(220 10% 98%);
 
+	/**
+	 * Border of form fields and other bordered controls, such as text inputs, the cells of the insert table grid,
+	 * and color tiles.
+	 */
 	--ck-color-border-control: var(--ck-color-base-border);
+
+	/**
+	 * Outer border of toolbars, panels, balloons, dialogs, and the editor frame, drawn around
+	 * `--ck-color-surface-container`.
+	 */
 	--ck-color-border-container: var(--ck-color-base-border);
+
+	/**
+	 * Light, low-contrast border for quiet outlines, such as the outline of a selected widget while the editor
+	 * is not focused.
+	 */
 	--ck-color-border-subtle: var(--ck-color-base-border-light);
-	/* Accent-colored borders and thin lines on the canvas, such as a selected tile or a resize handle. Follows the accent
-	   text, so a theme can set `--ck-color-text-accent` alone and override this one only to tell them apart. */
+
+	/**
+	 * Accent color of borders and lines, such as the border of a selected tile, a column resize handle, or the border
+	 * of a toggled-on surface button.
+	 * Set `--ck-color-text-accent` to change both the accent text and these lines. Override this token only to tell
+	 * them apart.
+	 */
 	--ck-color-border-accent: var(--ck-color-text-accent);
+
+	/**
+	 * Thin separator lines between groups of items and between sections of a panel.
+	 */
 	--ck-color-divider: var(--ck-color-base-border);
 }

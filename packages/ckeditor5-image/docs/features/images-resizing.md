@@ -220,7 +220,7 @@ The `image_resized` class is used to disable `max-width` assigned by the {@link 
 .ck-content .image-style-side {
 	max-width: 50%;
 	float: right;
-	margin-left: var(--ck-image-style-spacing);
+	margin-left: var(--ck-content-image-style-spacing);
 }
 ```
 

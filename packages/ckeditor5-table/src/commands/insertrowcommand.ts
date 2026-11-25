@@ -77,6 +77,10 @@ export class InsertRowCommand extends Command {
 		const row = insertAbove ? rowIndexes.first : rowIndexes.last;
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' )!;
 
-		tableUtils.insertRows( table, { at: insertAbove ? row : row + 1, copyStructureFromAbove: !insertAbove } );
+		tableUtils.insertRows( table, {
+			at: insertAbove ? row : row + 1,
+			copyStructureFromAbove: !insertAbove,
+			referenceRow: row
+		} );
 	}
 }

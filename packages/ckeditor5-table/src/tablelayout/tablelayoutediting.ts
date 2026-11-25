@@ -350,11 +350,18 @@ function resolveTableType( viewTable: ViewElement, preferredExternalTableType: T
 		return 'layout';
 	}
 
+	const parentFigure = viewTable.parent?.is( 'element', 'figure' ) ? viewTable.parent : null;
+
+	// The data downcast puts the `content-table` class on the `<figure>` that wraps a content table
+	// (see `dataDowncastLayoutTable()`), so it must take precedence over `preferredExternalTableType`.
+	// The `layout-table` class on the `<figure>` is not taken into account, because layout tables are never wrapped with `<figure>`.
+	if ( parentFigure?.hasClass( 'content-table' ) ) {
+		return 'content';
+	}
+
 	if ( preferredExternalTableType && TABLE_TYPES.includes( preferredExternalTableType ) ) {
 		return preferredExternalTableType;
 	}
-
-	const parent = viewTable.parent!;
 
 	/**
 	 * Checks if the table is a content table if any of the following conditions are met:
@@ -362,7 +369,7 @@ function resolveTableType( viewTable: ViewElement, preferredExternalTableType: T
 	 * - the `<table>` has a `<caption>` element.
 	 */
 	if (
-		parent.is( 'element', 'figure' ) ||
+		parentFigure ||
 		Array.from( viewTable.getChildren() ).some( child => child.is( 'element', 'caption' ) ) )
 	{
 		return 'content';

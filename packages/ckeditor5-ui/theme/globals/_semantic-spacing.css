@@ -3,24 +3,57 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The spacing roles of the editor UI: the padding of controls, and the padding and gap tiers that components pick
+ * their spacing from. To change the padding of controls across the UI, override a control role, such as
+ * `--ck-spacing-control-padding-inline`. The padding and gap tiers set a density, not a purpose: a component token
+ * names the purpose and reads a tier, such as `--ck-toolbar-padding: 0 var(--ck-spacing-padding-compact)`, so
+ * overriding a tier changes every component that reads it. To change the spacing of one component, override its
+ * component token instead.
+ */
 :root,
 :host {
-	/* Spacing used by controls like buttons and inputs. */
+	/**
+	 * Block padding of controls, such as buttons, list items, and the buttons of dropdown menus.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-spacing-small` first if overridden. */
 	--ck-spacing-control-padding-block: var(--ck-spacing-small, var(--ck-spacing-sm));
-	/* Backward compatibility: falls back to legacy --ck-spacing-standard if overridden. */
+
+	/**
+	 * Inline padding of controls, such as the buttons of dropdown menus and of the menu bar. Dropdowns also use it
+	 * to place their arrow.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-spacing-standard` first if overridden. */
 	--ck-spacing-control-padding-inline: var(--ck-spacing-standard, var(--ck-spacing-base));
-	/* Backward compatibility: falls back to legacy --ck-spacing-small if overridden. */
+
+	/**
+	 * Smaller inline padding of compact controls, such as a dropdown button with only an icon and the list items
+	 * with a check mark.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-spacing-small` first if overridden. */
 	--ck-spacing-control-padding-inline-compact: var(--ck-spacing-small, var(--ck-spacing-sm));
-	/* Backward compatibility: falls back to legacy --ck-spacing-tiny if overridden. */
+
+	/**
+	 * Smaller inline start padding of compact controls.
+	 */
+	/* The default theme does not read it. Backward compatibility: reads the legacy `--ck-spacing-tiny` first
+	   if overridden. */
 	--ck-spacing-control-padding-inline-start-compact: var(--ck-spacing-tiny, var(--ck-spacing-xs));
+
+	/**
+	 * Smaller block padding of compact controls.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-spacing-tiny` first if overridden. */
 	--ck-spacing-control-padding-block-compact: var(--ck-spacing-tiny, var(--ck-spacing-xs));
+
+	/**
+	 * Gap between the icon and the label of a control, such as a menu bar button or a form header.
+	 */
+	/* Backward compatibility: reads the legacy `--ck-spacing-medium-small` first if overridden. */
 	--ck-spacing-control-icon-gap: var(--ck-spacing-medium-small, var(--ck-spacing-md));
 
-	/*
-	 * Padding density scale. A value tier, not a purpose: pick the comfort level here,
-	 * and let the component token name the purpose — e.g.
-	 * `--ck-toolbar-padding: 0 var(--ck-spacing-padding);`.
-	 */
+	/* Backward compatibility: the tiers, except `--ck-spacing-padding` and `--ck-spacing-gap`, read the legacy name
+	   of their step first if overridden, such as `--ck-spacing-tiny` for `--ck-spacing-xs`. */
 	--ck-spacing-padding-tight: var(--ck-spacing-tiny, var(--ck-spacing-xs)); /* 2px */
 	--ck-spacing-padding-compact: var(--ck-spacing-small, var(--ck-spacing-sm)); /* 4px */
 	--ck-spacing-padding-snug: var(--ck-spacing-medium-small, var(--ck-spacing-md)); /* 6px */
@@ -28,7 +61,6 @@
 	--ck-spacing-padding-comfortable: var(--ck-spacing-large, var(--ck-spacing-lg)); /* 12px */
 	--ck-spacing-padding-spacious: var(--ck-spacing-extra-large, var(--ck-spacing-xl)); /* 16px */
 
-	/* Gap density scale — same values as padding, for gaps and margins. */
 	--ck-spacing-gap-tight: var(--ck-spacing-tiny, var(--ck-spacing-xs)); /* 2px */
 	--ck-spacing-gap-compact: var(--ck-spacing-small, var(--ck-spacing-sm)); /* 4px */
 	--ck-spacing-gap-snug: var(--ck-spacing-medium-small, var(--ck-spacing-md)); /* 6px */

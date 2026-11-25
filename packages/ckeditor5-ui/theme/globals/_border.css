@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The border width scale of the editor UI. To change the border width of one group of elements, such as controls,
+ * override its semantic border width role, such as `--ck-border-width-control`, instead.
+ */
 :root,
 :host {
 	--ck-border-width-thin: 1px;

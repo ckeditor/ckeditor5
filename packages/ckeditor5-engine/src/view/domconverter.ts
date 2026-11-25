@@ -1727,7 +1727,7 @@ export class ViewDomConverter {
 			const prevEndsWithSpace = prevNode && prevNode.is( '$textProxy' ) && this._nodeEndsWithSpace( prevNode as ViewTextProxy );
 
 			if ( prevEndsWithSpace || !prevNode ) {
-				data = '\u00A0' + data.substr( 1 );
+				data = '\u00A0' + data.slice( 1 );
 			}
 		}
 
@@ -1745,7 +1745,7 @@ export class ViewDomConverter {
 			const nextStartsWithSpace = nextNode && nextNode.is( '$textProxy' ) && nextNode.data.charAt( 0 ) == ' ';
 
 			if ( data.charAt( data.length - 2 ) == ' ' || !nextNode || nextStartsWithSpace ) {
-				data = data.substr( 0, data.length - 1 ) + '\u00A0';
+				data = data.slice( 0, -1 ) + '\u00A0';
 			}
 		}
 
@@ -1908,7 +1908,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Return a <span> element with a special attribute holding the name of the original element.
+	 * Return a `<span>` element with a special attribute holding the name of the original element.
 	 * Optionally, copy all the attributes of the original element if that element is provided.
 	 *
 	 * @param elementName The name of view element.

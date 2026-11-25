@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': '颜色无效。尝试使用"#FF0000"、"rgb(255,0,0)"或者"red"。',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': '无效值。尝试使用“10px”、“2ex”或者只写“2”。',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': '无效值。尝试使用“10px”或者只写“10”。',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': '输入表标题',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

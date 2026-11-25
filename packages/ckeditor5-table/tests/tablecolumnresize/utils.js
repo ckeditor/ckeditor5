@@ -15,7 +15,6 @@ import { TableColumnResize } from '../../src/tablecolumnresize.js';
 import {
 	getColumnEdgesIndexes,
 	getChangedResizedTables,
-	toPrecision,
 	clamp,
 	createFilledArray,
 	sumArray,
@@ -465,19 +464,6 @@ describe( 'TableColumnResize utils', () => {
 			expect(
 				getColumnEdgesIndexes( cell02, tableUtils )
 			).toEqual( { leftEdge: 2, rightEdge: 5 } );
-		} );
-	} );
-
-	describe( 'toPrecision()', () => {
-		it( 'should properly round numbers to defined precision', () => {
-			expect( toPrecision( 1 ) ).toEqual( 1 );
-			expect( toPrecision( 10000 ) ).toEqual( 10000 );
-			expect( toPrecision( 1.1 ) ).toEqual( 1.1 );
-			expect( toPrecision( 1.12 ) ).toEqual( 1.12 );
-			expect( toPrecision( 1.123 ) ).toEqual( 1.12 );
-			expect( toPrecision( 1.125 ) ).toEqual( 1.13 );
-			expect( toPrecision( 0.99 ) ).toEqual( 0.99 );
-			expect( toPrecision( 0.999 ) ).toEqual( 1 );
 		} );
 	} );
 

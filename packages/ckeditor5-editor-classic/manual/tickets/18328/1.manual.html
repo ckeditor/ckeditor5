@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>1</title>
+		<script type="module" src="./1.ts"></script>
+		<style>
+			.scrollable {
+				height: 300px;
+				overflow: auto;
+				border: 1px solid #ccc;
+				margin: 20px 0 60px;
+			}
+
+			.wrapper {
+				padding: 120px 20px 400px;
+			}
+
+			.spacer {
+				height: 1500px;
+				width: 150vw;
+			}
+		</style>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>
+				The sticky toolbar inside a containing block of fixed elements
+				<a href="https://github.com/ckeditor/ckeditor5/issues/18328">#18328</a>
+			</h3>
+			<p>
+				Each editor is in a wrapper with the CSS property picked below, which makes the wrapper
+				the containing block of the <code>position: fixed</code> sticky toolbar instead of the viewport.
+			</p>
+			<ol>
+				<li>Focus the first editor and scroll its container.</li>
+				<li>Focus the second editor and scroll the page, also horizontally.</li>
+				<li>Repeat with each value of the picker, and with "none".</li>
+				<li>In Safari, repeat while pinch-zoomed in (with the trackpad on desktop).</li>
+			</ol>
+			<p><strong>Expected:</strong></p>
+			<ul>
+				<li>
+					The toolbar sticks to the top of the scrolled container (the first editor)
+					or the viewport (the second editor) and stays there while scrolling.
+				</li>
+				<li>It does not jump, and it stays aligned with the editor when the page is scrolled horizontally.</li>
+			</ul>
+			<p>
+				<label>
+					Wrapper style:
+					<select id="wrapper-style">
+						<option value="transform: translateZ(0)">transform: translateZ(0)</option>
+						<option value="filter: blur(0)">filter: blur(0)</option>
+						<option value="contain: layout">contain: layout</option>
+						<option value="will-change: transform">will-change: transform</option>
+						<option value="">none</option>
+					</select>
+				</label>
+			</p>
+		</ck-manual-header>
+
+		<h2>In a scrollable container</h2>
+		<div class="scrollable">
+			<div class="wrapper">
+				<div id="editor-scrollable" class="editor"></div>
+			</div>
+		</div>
+
+		<h2>In the page</h2>
+		<div class="wrapper">
+			<div id="editor-page" class="editor"></div>
+		</div>
+
+		<div class="spacer"></div>
+	</body>
+</html>

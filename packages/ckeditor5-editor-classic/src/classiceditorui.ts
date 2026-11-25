@@ -21,7 +21,7 @@ import {
 	enableViewPlaceholder,
 	type ViewScrollToTheSelectionEvent
 } from '@ckeditor/ckeditor5-engine';
-import { ElementReplacer, Rect, type EventInfo } from '@ckeditor/ckeditor5-utils';
+import { ElementReplacer, Rect, containsNode, type EventInfo } from '@ckeditor/ckeditor5-utils';
 import { type ClassicEditorUIView } from './classiceditoruiview.js';
 
 /**
@@ -266,7 +266,7 @@ export class ClassicEditorUI extends EditorUI {
 	 * Provides an integration between the sticky toolbar and {@link module:utils/dom/scroll~scrollViewportToShowTarget}.
 	 * It allows the UI-agnostic engine method to consider the geometry of the
 	 * {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#stickyPanel} that pins to the
-	 * edge of the viewport and can obscure the user caret after scrolling the window.
+	 * edge of the viewport or of a scrollable ancestor of the editor, and can obscure the user caret after scrolling.
 	 *
 	 * @param evt The `scrollToTheSelection` event info.
 	 * @param data The payload carried by the `scrollToTheSelection` event.
@@ -281,8 +281,28 @@ export class ClassicEditorUI extends EditorUI {
 
 		if ( stickyPanel.isSticky ) {
 			const stickyPanelHeight = new Rect( stickyPanel.element! ).height;
+			const editorElement = this.view.element!;
+			const getAncestorScrollPadding = data.getAncestorScrollPadding;
 
 			data.viewportOffset.top += stickyPanelHeight;
+
+			// The panel sticks to the top edge of the visible part of the editor, which is set by the viewport and by the
+			// scrollable ancestors that contain the editor. The viewport is handled by `viewportOffset` above, and this
+			// reserves the panel height at the top of those ancestors, so the selection is not revealed behind the panel.
+			data.getAncestorScrollPadding = ancestor => {
+				const padding = getAncestorScrollPadding?.( ancestor ) || null;
+
+				// Only the ancestors around the editor decide where the panel sticks. Elements inside the editor
+				// (for example, a scrollable editable) and the ancestors of an iframe that holds the editor do not.
+				if ( containsNode( ancestor, editorElement ) ) {
+					return {
+						...padding,
+						top: ( padding?.top || 0 ) + stickyPanelHeight
+					};
+				}
+
+				return padding;
+			};
 		} else {
 			const scrollViewportOnPanelGettingSticky = () => {
 				this.editor.editing.view.scrollToTheSelection( originalArgs );

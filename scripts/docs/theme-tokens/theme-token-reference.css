@@ -1,0 +1,349 @@
+/**
+ * @license Copyright (c) 2003-2026, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/* The page uses the design tokens of the documentation theme (Gloria), with fallbacks. */
+
+.ck-token-ref__filter {
+	position: sticky;
+	top: var(--header-height, 110px);
+	z-index: 1;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--spacing-2, .5rem) var(--spacing-3, .75rem);
+	padding: var(--spacing-3, .75rem) 0;
+	background: var(--color-common-white, hsl(0 0% 100%));
+}
+
+.ck-token-ref__filter label {
+	font-weight: var(--font-weight-semibold, 600);
+}
+
+.ck-token-ref__filter-input {
+	flex: 1 1 240px;
+	padding: var(--spacing-2, .5rem) var(--spacing-3, .75rem);
+	border: 1px solid var(--color-gray-500, hsl(210 3% 85%));
+	border-radius: var(--radius-1-5, .375rem);
+	font: inherit;
+}
+
+.ck-token-ref__filter-input:focus {
+	outline: 2px solid var(--color-primary, hsl(263 59% 52%));
+	outline-offset: 1px;
+}
+
+.ck-token-ref__count,
+.ck-token-ref__empty {
+	color: var(--color-text-secondary, hsl(214 4% 36%));
+}
+
+.ck-token-ref__empty {
+	flex-basis: 100%;
+	margin: 0;
+}
+
+/* The status and the separators are read by screen readers and kept in the Markdown, but not shown. */
+.ck-token-ref__status,
+.ck-token-ref__sep {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.ck-token-ref__copy {
+	all: unset;
+	display: inline-flex;
+	align-items: center;
+	margin-left: var(--spacing-1-5, .375rem);
+	cursor: pointer;
+	border-radius: var(--radius-1, .25rem);
+	color: var(--color-text-secondary, hsl(214 4% 36%));
+}
+
+.ck-token-ref__copy:hover {
+	color: var(--color-primary, hsl(263 59% 52%));
+}
+
+.ck-token-ref__copy:focus-visible {
+	outline: 2px solid var(--color-primary, hsl(263 59% 52%));
+	outline-offset: 2px;
+}
+
+.ck-token-ref__copy svg {
+	width: 14px;
+	height: 14px;
+}
+
+/* The page script uses the highlight only in the browsers that support the CSS Custom Highlight API. */
+/* eslint-disable-next-line css/use-baseline */
+::highlight(ck-token-ref-match) {
+	background-color: var(--color-warning-200, hsl(40 100% 79%));
+	color: var(--color-common-black, hsl(0 0% 0%));
+}
+
+.ck-token-ref__copied {
+	display: none;
+	margin-left: var(--spacing-2, .5rem);
+	font-family: var(--font-family-sans, sans-serif);
+	font-size: var(--font-size-xs, .75rem);
+	font-weight: normal;
+	color: var(--color-success-600, hsl(150 100% 25%));
+}
+
+.ck-token-ref__copy_done .ck-token-ref__copied {
+	display: inline;
+}
+
+.ck-token-ref__deprecated {
+	margin-left: var(--spacing-2, .5rem);
+	padding: 0 var(--spacing-1-5, .375rem);
+	border: 1px solid var(--color-gray-500, hsl(210 3% 85%));
+	border-radius: var(--radius-1, .25rem);
+	font-size: var(--font-size-xs, .75rem);
+	font-weight: var(--font-weight-semibold, 600);
+	color: var(--color-text-secondary, hsl(214 4% 36%));
+}
+
+.ck-token-ref__anchor {
+	margin-left: var(--spacing-1-5, .375rem);
+	color: var(--color-text-secondary, hsl(214 4% 36%));
+	text-decoration: none;
+	font-weight: normal;
+}
+
+.ck-token-ref__source {
+	font-size: var(--font-size-sm, .875rem);
+	color: var(--color-text-secondary, hsl(214 4% 36%));
+}
+
+.ck-token-ref__list {
+	margin: var(--spacing-3, .75rem) 0 var(--spacing-8, 2rem);
+	padding: 0;
+	list-style: none;
+	border-top: 1px solid var(--color-gray-500, hsl(210 3% 85%));
+}
+
+/* The next file of the same topic follows closer than the next topic, unless the filter hides that file. */
+.ck-token-ref__list:has(+ .ck-token-ref__source:not([hidden])) {
+	margin-bottom: var(--spacing-5, 1.25rem);
+}
+
+.ck-token-ref__item {
+	margin: 0;
+	padding: 0;
+}
+
+.ck-token-ref__item::before,
+.ck-token-ref__meta li::before {
+	content: none;
+}
+
+.ck-token-ref__token {
+	padding: var(--spacing-2-5, .625rem) var(--spacing-2, .5rem);
+	border-bottom: 1px solid var(--color-gray-500, hsl(210 3% 85%));
+}
+
+/* One row per token: the name and the description on the left, the value on the right, the details below. */
+.ck-token-ref__row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 15rem);
+	grid-template-areas: "head value" "description value";
+	column-gap: var(--spacing-6, 1.5rem);
+	margin: 0;
+}
+
+.ck-token-ref__head {
+	grid-area: head;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	min-width: 0;
+}
+
+/* The page script marks the target itself, because it changes the address with the history API. */
+.ck-token-ref:not(.ck-token-ref_enhanced) .ck-token-ref__token:target,
+.ck-token-ref__token_target {
+	background: var(--color-primary-50, hsl(228 100% 98%));
+	box-shadow: inset 3px 0 0 var(--color-primary, hsl(263 59% 52%));
+}
+
+.ck-token-ref__value {
+	grid-area: value;
+	display: flex;
+	align-items: flex-start;
+	gap: var(--spacing-2, .5rem);
+	min-width: 0;
+}
+
+.ck-token-ref__value code {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	min-width: 0;
+	font-size: var(--font-size-sm, .875rem);
+}
+
+.ck-token-ref__details {
+	margin-top: var(--spacing-1, .25rem);
+}
+
+.ck-token-ref__details summary {
+	cursor: pointer;
+	width: fit-content;
+	font-size: var(--font-size-xs, .75rem);
+	color: var(--color-text-secondary, hsl(214 4% 36%));
+}
+
+.ck-token-ref__details[open] summary {
+	margin-bottom: var(--spacing-1-5, .375rem);
+}
+
+@media (max-width: 640px) {
+	.ck-token-ref__row {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-areas: "head" "description" "value";
+	}
+
+	.ck-token-ref__value {
+		margin-top: var(--spacing-1-5, .375rem);
+	}
+}
+
+.ck-token-ref__preview {
+	flex: none;
+	width: 40px;
+	height: 24px;
+	border-radius: var(--radius-1, .25rem);
+	border: 1px solid var(--color-gray-500, hsl(210 3% 85%));
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.ck-token-ref__preview_shadow {
+	border: 0;
+	background: var(--color-common-white, hsl(0 0% 100%));
+}
+
+.ck-token-ref__preview_plain {
+	border-style: dashed;
+	font-family: var(--font-family-monospace, monospace);
+	font-size: var(--font-size-xs, .75rem);
+	overflow: hidden;
+}
+
+.ck-token-ref__preview_none {
+	border-style: dashed;
+	color: var(--color-text-secondary, hsl(214 4% 36%));
+}
+
+.ck-token-ref__preview_radius {
+	background: var(--color-primary-50, hsl(228 100% 98%));
+	border-color: var(--color-primary, hsl(263 59% 52%));
+}
+
+.ck-token-ref__bar {
+	display: block;
+	height: 10px;
+	max-width: 36px;
+	background: var(--color-primary, hsl(263 59% 52%));
+	border-radius: 2px;
+}
+
+.ck-token-ref__line {
+	display: block;
+	width: 28px;
+	background: var(--color-primary, hsl(263 59% 52%));
+}
+
+.ck-token-ref__name {
+	font-family: var(--font-family-monospace, monospace);
+	font-weight: var(--font-weight-semibold, 600);
+	word-break: break-all;
+}
+
+.ck-token-ref__description {
+	grid-area: description;
+	display: block;
+	margin: var(--spacing-1, .25rem) 0 0;
+	font-size: var(--font-size-sm, .875rem);
+	line-height: 1.45;
+}
+
+.ck-token-ref__more {
+	margin: 0 0 var(--spacing-1-5, .375rem);
+	font-size: var(--font-size-sm, .875rem);
+	line-height: 1.45;
+}
+
+.ck-token-ref__meta {
+	font-size: var(--font-size-sm, .875rem);
+	color: var(--color-text-secondary, hsl(214 4% 36%));
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--spacing-1, .25rem) var(--spacing-4, 1rem);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ck-token-ref__meta li {
+	margin: 0;
+	padding: 0;
+}
+
+/* A group of the details, such as the contrast pairs, takes a line of its own, with one item below another. */
+.ck-token-ref__meta-group {
+	flex-basis: 100%;
+}
+
+.ck-token-ref__sublist {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-1, .25rem);
+	margin: var(--spacing-1, .25rem) 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ck-token-ref__meta .ck-token-ref__sublist > li {
+	margin-inline-start: var(--spacing-4, 1rem);
+}
+
+.ck-token-ref__meta code {
+	word-break: break-all;
+}
+
+.ck-token-ref__pair {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--spacing-1-5, .375rem);
+}
+
+.ck-token-ref__pair-sample {
+	display: inline-block;
+	padding: 0 var(--spacing-1-5, .375rem);
+	border-radius: var(--radius-1, .25rem);
+	border: 1px solid var(--color-gray-500, hsl(210 3% 85%));
+}
+
+.ck-token-ref__ratio_none {
+	color: var(--color-text-secondary, hsl(214 4% 36%));
+	font-style: italic;
+}
+
+/* The parts of the page set their own display, which would override the hidden attribute. */
+.ck-token-ref__token[hidden],
+.ck-token-ref__filter[hidden],
+[data-file-part][hidden],
+[data-topic-part][hidden],
+[data-layer-part][hidden],
+.b-heading[hidden],
+.ck-token-ref__item:has(> .ck-token-ref__token[hidden]) {
+	display: none;
+}

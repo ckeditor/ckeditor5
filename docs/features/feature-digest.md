@@ -680,15 +680,15 @@ Enables the selection of all content within the editor with a single command or 
 
 ### Tables
 
-CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.
+CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns and rows, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.
 
 <ck:columns>
 	<ck:card>
 		<ck:card-title level='4' heading-id='columns-resizing'>
-			Column resizing <ck:badge variant='premium' />
+			Column and row resizing <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
-			The TableColumnResize plugin lets you resize tables and individual table columns. It gives you complete control over column width, whether you drag the column edge or enter an exact value, in percentages or pixels.
+			The TableColumnResize and TableRowResize plugins let you resize tables, table columns, and table rows. You can drag the edge of a column or a row, or enter an exact value.
 		</ck:card-description>
 		<ck:card-footer>
 			<ck:button-link size='sm' variant='secondary' href='{@link features/tables-resize}'>

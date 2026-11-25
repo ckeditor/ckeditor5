@@ -127,6 +127,7 @@ export { default as IconListStyleUpperLatin } from '../theme/icons/list-style-up
 export { default as IconListStyleUpperRoman } from '../theme/icons/list-style-upper-roman.svg';
 export { default as IconListStyleArabicIndic } from '../theme/icons/list-style-arabic-indic.svg';
 export { default as IconLocal } from '../theme/icons/local.svg';
+export { default as IconLocate } from '../theme/icons/locate.svg';
 export { default as IconLock } from '../theme/icons/lock.svg';
 export { default as IconLoupe } from '../theme/icons/loupe.svg';
 export { default as IconLowVision } from '../theme/icons/low-vision.svg';

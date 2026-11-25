@@ -41,7 +41,7 @@ The easiest way to start using CKEditor&nbsp;5 with all the features you need is
 
 ### Build with AI
 
-You can also set up CKEditor&nbsp;5 with an AI coding agent such as Claude Code, Cursor, Codex, or Copilot. Install the official CKEditor skill, and your agent will handle the installation, configuration, and licensing for you. See the [Build with AI](https://ckeditor.com/docs/ckeditor5/latest/getting-started/ai-coding-agents.html) guide.
+You can also set up CKEditor&nbsp;5 with an AI coding agent such as Claude Code, Cursor, Codex, or Copilot. Install the official CKEditor skill, and your agent will handle the installation, configuration, and licensing for you. Other available skills can update the editor you already have, or build and upload the editor bundle for CKEditor Cloud Services. See the [Build with AI](https://ckeditor.com/docs/ckeditor5/latest/getting-started/ai-coding-agents.html) guide.
 
 ### TypeScript support
 

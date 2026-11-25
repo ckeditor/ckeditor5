@@ -28,6 +28,10 @@ Put the caret anywhere inside the table to open the table toolbar. Click the tab
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </snippet-footer>
 
+## Styles of new rows and columns
+
+When you insert a row or column, the new cells keep the cell styles of the row or column you insert them next to: borders, background color, padding, and horizontal and vertical alignment. You do not need to style them again. The new cells do not copy the cell width and height. Learn more in the {@link features/tables#inserting-rows-and-columns Inserting rows and columns} section of the tables overview guide.
+
 ## Installation
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
@@ -347,7 +351,7 @@ The {@link module:table/tableproperties~TableProperties} and {@link module:table
 </table>
 
 <info-box important>
-	When the {@link features/tables-resize table column resize} feature is enabled and the table has been resized, the cell **Width** field sets the width of the whole column through the `'tableColumnWidth'` command, rather than the width of a single cell.
+	When the {@link features/tables-resize table column and row resize} features are enabled, the cell **Width** and **Height** fields apply to the whole column and row, rather than to a single cell. The **Width** field sets the column width through the `'tableColumnWidth'` command once the table has been resized. The **Height** field sets the row height through the `'tableRowHeight'` command.
 </info-box>
 
 <info-box>

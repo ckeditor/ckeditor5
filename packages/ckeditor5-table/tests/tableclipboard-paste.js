@@ -4934,6 +4934,39 @@ describe( 'table clipboard', () => {
 		}
 	} );
 
+	describe( 'Clipboard integration - paste (expanding a styled table)', () => {
+		beforeEach( async () => {
+			await createEditor( [ TableCellPropertiesEditing ] );
+		} );
+
+		it( 'should inherit the formatting of the last row and column in the added cells not covered by the pasted table', () => {
+			_setModelData( model, modelTable( [
+				[ { contents: '00', tableCellBackgroundColor: 'red' }, { contents: '01', tableCellBackgroundColor: 'green' } ],
+				[ { contents: '10', tableCellBackgroundColor: 'blue' }, { contents: '11[]', tableCellBackgroundColor: 'yellow' } ]
+			] ) );
+
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] ),
+				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			pasteTable( [
+				[ 'aa', 'ab' ],
+				[ 'ba', 'bb' ]
+			] );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup( modelTable( [
+				[
+					{ contents: '00', tableCellBackgroundColor: 'red' },
+					{ contents: '01', tableCellBackgroundColor: 'green' },
+					{ contents: '', tableCellBackgroundColor: 'green' }
+				],
+				[ { contents: '10', tableCellBackgroundColor: 'blue' }, 'aa', 'ab' ],
+				[ { contents: '', tableCellBackgroundColor: 'blue' }, 'ba', 'bb' ]
+			] ) );
+		} );
+	} );
+
 	describe( 'getTableIfOnlyTableInContent()', () => {
 		let tableClipboard;
 

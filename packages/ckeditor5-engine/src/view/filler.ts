@@ -108,10 +108,10 @@ export const INLINE_FILLER: string = '\u2060'.repeat( INLINE_FILLER_LENGTH );
  */
 export function startsWithFiller( domNode: Node | string ): boolean {
 	if ( typeof domNode == 'string' ) {
-		return domNode.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER;
+		return domNode.slice( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER;
 	}
 
-	return isText( domNode ) && ( domNode.data.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
+	return isText( domNode ) && ( domNode.data.slice( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
 }
 
 /**

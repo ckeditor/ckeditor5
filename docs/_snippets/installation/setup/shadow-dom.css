@@ -4,37 +4,278 @@
  */
 
 @layer snippets {
-	/* --- Demo layout ------------------------------------------------------------------------ */
+	/* --- Release picker --------------------------------------------------------------------- */
 
-	.shadow-dom-demo__editors {
-		margin: 1.5em 0;
-		display: grid;
-		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
-		gap: 1.5em;
-	}
+	/* The checkboxes are in the guide, above the snippet. */
+	.shadow-dom-demo-picker {
+		margin: 1.5em 0 1em;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5em 1.5em;
 
-	@media (max-width: 800px) {
-		.shadow-dom-demo__editors {
-			grid-template-columns: minmax( 0, 1fr );
+		& .shadow-dom-demo-picker__label {
+			font-weight: bold;
 		}
 	}
 
-	.shadow-dom-demo__label {
-		margin-bottom: 0.5em;
-		font-weight: bold;
+	/* An app shell inspired by Salesforce Lightning, with a blue waterline under the header. */
+	.shadow-dom-demo {
+		--shadow-dom-demo-accent: hsl(207, 99%, 42%);
+		--shadow-dom-demo-radius: 4px;
+		--shadow-dom-demo-gap: 20px;
+
+		/* --- App frame ---------------------------------------------------------------------- */
+
+		& .shadow-dom-demo__frame {
+			margin: 0 0 1.5em;
+			overflow: hidden;
+			border: 1px solid hsl(0, 0%, 90%);
+			border-radius: calc( var( --shadow-dom-demo-radius ) * 2.5 );
+			background: hsl(0, 0%, 95%);
+			color: hsl(0, 0%, 9%);
+		}
+
+		& .shadow-dom-demo__frame-bar {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 11px 18px;
+			border-bottom: 3px solid var( --shadow-dom-demo-accent );
+			background: hsl(0, 0%, 100%);
+			color: hsl(213, 94%, 19%);
+			font: 600 13.5px/1 system-ui, sans-serif;
+		}
+
+		& .shadow-dom-demo__frame-logo {
+			flex: none;
+			width: 18px;
+			height: 18px;
+			border-radius: var( --shadow-dom-demo-radius );
+			background: var( --shadow-dom-demo-accent );
+		}
+
+		& .shadow-dom-demo__frame-tabs {
+			display: flex;
+			gap: 2px;
+			padding: 0 18px;
+			background: hsl(0, 0%, 100%);
+			border-bottom: 1px solid hsl(0, 0%, 90%);
+		}
+
+		& .shadow-dom-demo__frame-tab {
+			padding: 10px 14px;
+			border-bottom: 3px solid transparent;
+			color: hsl(0, 0%, 27%);
+			font: 600 12.5px/1 system-ui, sans-serif;
+
+			&.shadow-dom-demo__frame-tab_active {
+				border-bottom-color: var( --shadow-dom-demo-accent );
+				color: var( --shadow-dom-demo-accent );
+			}
+		}
+
+		& .shadow-dom-demo__frame-body {
+			display: grid;
+			grid-template-columns: 170px minmax( 0, 1fr );
+
+			@media (max-width: 1200px) {
+				grid-template-columns: minmax( 0, 1fr );
+			}
+		}
+
+		/* --- Sidebar of the app ------------------------------------------------------------- */
+
+		& .shadow-dom-demo__frame-side {
+			min-width: 0;
+			padding: 16px 14px;
+			border-right: 1px solid hsl(0, 0%, 90%);
+			background: hsl(0, 0%, 100%);
+			font: 13px/1.5 system-ui, sans-serif;
+
+			& ul {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+
+			& li {
+				margin: 0;
+				padding: 4px 8px;
+				border-radius: var( --shadow-dom-demo-radius );
+			}
+
+			& .shadow-dom-demo__side-card {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				margin-bottom: 12px;
+			}
+
+			& .shadow-dom-demo__side-avatar {
+				flex: none;
+				width: 34px;
+				height: 34px;
+				border-radius: calc( var( --shadow-dom-demo-radius ) * 1.5 );
+				background: var( --shadow-dom-demo-accent );
+				color: hsl(0, 0%, 100%);
+				font: 700 13px/34px system-ui, sans-serif;
+				text-align: center;
+			}
+
+			& .shadow-dom-demo__side-kicker {
+				color: hsl(36, 2%, 43%);
+				font-size: 11px;
+				letter-spacing: 0.04em;
+				text-transform: uppercase;
+			}
+
+			& .shadow-dom-demo__side-name {
+				color: hsl(213, 94%, 19%);
+				font-size: 15px;
+				font-weight: 700;
+			}
+
+			@media (max-width: 1200px) {
+				display: none;
+			}
+		}
+
+		/* --- Content of the app ------------------------------------------------------------- */
+
+		& .shadow-dom-demo__frame-main {
+			min-width: 0;
+			padding: var( --shadow-dom-demo-gap );
+
+			& .shadow-dom-demo__app-kicker {
+				margin: 0 0 0.25em;
+				font-size: 12px;
+				letter-spacing: 0.04em;
+				text-transform: uppercase;
+				opacity: 0.7;
+			}
+
+			& .shadow-dom-demo__app-release {
+				margin: 1em 0 0;
+				font-style: italic;
+			}
+
+			@media (max-width: 800px) {
+				padding: 12px;
+			}
+		}
+
+		& .shadow-dom-demo__app-before {
+			margin-bottom: 1.5em;
+
+			& > :first-child {
+				margin-top: 0;
+			}
+		}
+
+		& .shadow-dom-demo__app-after {
+			margin-top: 1.5em;
+		}
+
+		& .shadow-dom-demo__app-fields {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5em 1.5em;
+			margin: 0;
+			padding: 0;
+			list-style: none;
+
+			& li {
+				margin: 0;
+			}
+		}
+
+		& .shadow-dom-demo__app-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 8px;
+
+			& span {
+				padding: 7px 14px;
+				border: 1px solid hsl(0, 0%, 79%);
+				border-radius: var( --shadow-dom-demo-radius );
+				background: hsl(0, 0%, 100%);
+				color: var( --shadow-dom-demo-accent );
+				font: 600 13px/1 system-ui, sans-serif;
+			}
+
+			& .shadow-dom-demo__app-action_primary {
+				border-color: var( --shadow-dom-demo-accent );
+				background: var( --shadow-dom-demo-accent );
+				color: hsl(0, 0%, 100%);
+			}
+		}
+
+		/* --- Releases of the app ------------------------------------------------------------ */
+
+		/* The content rules of each release are in the snippet script. These ones restyle the app shell to match. */
+		&.shadow-dom-demo_redesign {
+			--shadow-dom-demo-radius: 10px;
+
+			& .shadow-dom-demo__app-actions span {
+				border-radius: 999px;
+			}
+		}
+
+		&.shadow-dom-demo_rebrand {
+			--shadow-dom-demo-accent: hsl(272, 60%, 38%);
+		}
+
+		&.shadow-dom-demo_compact {
+			--shadow-dom-demo-gap: 10px;
+
+			& .shadow-dom-demo__frame-bar {
+				padding-block: 7px;
+			}
+
+			& .shadow-dom-demo__frame-tab {
+				padding-block: 7px;
+			}
+		}
+
+		/* --- Demo layout -------------------------------------------------------------------- */
+
+		& .shadow-dom-demo__editors {
+			display: grid;
+			grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+			gap: 1.5em;
+
+			@media (max-width: 800px) {
+				grid-template-columns: minmax( 0, 1fr );
+			}
+		}
+
+		& .shadow-dom-demo__label {
+			margin-bottom: 0.5em;
+			font-weight: bold;
+		}
+
+		/* --- Editor size -------------------------------------------------------------------- */
+
+		& .ck.ck-editor {
+			margin: 0;
+		}
+
+		& .ck.ck-editor__main > .ck-editor__editable {
+			box-sizing: border-box;
+			min-height: 300px;
+		}
 	}
 
-	/* --- Editor size ------------------------------------------------------------------------ */
+	/* The same editor size inside the shadow root, where the `.shadow-dom-demo` ancestor is not visible. */
+	:host(.shadow-dom-demo__shadow-host) {
+		& .ck.ck-editor {
+			margin: 0;
+		}
 
-	.shadow-dom-demo .ck.ck-editor,
-	:host(.shadow-dom-demo__shadow-host) .ck.ck-editor {
-		margin: 0;
-	}
-
-	.shadow-dom-demo .ck.ck-editor__main > .ck-editor__editable,
-	:host(.shadow-dom-demo__shadow-host) .ck.ck-editor__main > .ck-editor__editable {
-		box-sizing: border-box;
-		height: 300px;
-		overflow-y: auto;
+		& .ck.ck-editor__main > .ck-editor__editable {
+			box-sizing: border-box;
+			min-height: 300px;
+		}
 	}
 }

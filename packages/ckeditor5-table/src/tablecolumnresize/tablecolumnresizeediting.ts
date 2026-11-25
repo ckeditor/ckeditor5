@@ -12,8 +12,6 @@ import { throttle, isEqual } from 'es-toolkit/compat';
 import {
 	global,
 	DomEmitterMixin,
-	Rect,
-	toUnit,
 	type EventInfo,
 	type DomEmitter,
 	type ObservableChangeEvent
@@ -25,7 +23,6 @@ import type {
 	Batch,
 	Differ,
 	ViewDocumentDomEventData,
-	DowncastInsertEvent,
 	ViewDowncastWriter,
 	ModelElement,
 	ModelWriter,
@@ -54,29 +51,33 @@ import {
 	getContainerContentWidth,
 	getTableWidthInPixels,
 	normalizeColumnWidths,
-	toPrecision,
 	getDomCellOuterWidth,
 	updateColumnElements,
 	getColumnGroupElement,
 	getTableColumnElements,
 	getTableColumnsWidths,
 	isTableWidthInPixels,
-	isColumnWidthsInPixels,
-	getEditableContentWidth
+	isColumnWidthsInPixels
 } from './utils.js';
 import { getSelectionAffectedTable } from '../utils/common.js';
+import {
+	RESIZE_DISTANCE_THRESHOLD,
+	fitResizerToTable,
+	registerResizerInserter,
+	resetResizerStyles,
+	toPrecision,
+	toggleResizingCursor,
+	toggleResizingDisabledClass
+} from '../utils/resize.js';
 
 import {
 	COLUMN_MIN_WIDTH_AS_PERCENTAGE,
 	COLUMN_MIN_WIDTH_IN_PIXELS,
-	COLUMN_RESIZE_DISTANCE_THRESHOLD,
 	TABLE_WIDTH_GROWTH_RESISTANCE_IN_PIXELS,
 	TABLE_WIDTH_SNAP_THRESHOLD_IN_PIXELS
 } from './constants.js';
 
 import type { TableColumnResize } from '../tablecolumnresize.js';
-
-const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 type ResizingData = {
 	columnPosition: number;
@@ -197,20 +198,11 @@ export class TableColumnResizeEditing extends Plugin {
 		this._tableUtilsPlugin = editor.plugins.get( 'TableUtils' );
 
 		this.on<ObservableChangeEvent<boolean>>( 'change:_isResizingAllowed', ( evt, name, value ) => {
-			// Toggling the `ck-column-resize_disabled` class shows and hides the resizers through CSS.
-			const classAction = value ? 'removeClass' : 'addClass';
-
-			editor.editing.view.change( writer => {
-				for ( const root of editor.editing.view.document.roots ) {
-					writer[ classAction ]( 'ck-column-resize_disabled', editor.editing.view.document.getRoot( root.rootName )! );
-				}
-			} );
+			toggleResizingDisabledClass( editor.editing.view, 'ck-column-resize_disabled', value );
 		} );
 
 		this.on<ObservableChangeEvent<boolean>>( 'change:_isResizingActive', ( evt, name, value ) => {
-			const classAction = value ? 'add' : 'remove';
-
-			global.document.body.classList[ classAction ]( 'ck-table-column-resize__resizing-cursor' );
+			toggleResizingCursor( 'ck-table-column-resize__resizing-cursor', 'col-resize', value );
 		} );
 	}
 
@@ -222,7 +214,7 @@ export class TableColumnResizeEditing extends Plugin {
 		this._registerPostFixer();
 		this._registerConverters();
 		this._registerResizingListeners();
-		this._registerResizerInserter();
+		registerResizerInserter( this.editor, 'ck-table-column-resizer' );
 
 		this.decorate( '_setResizingTableWidth' );
 		this.decorate( '_getResizingTableWidth' );
@@ -864,49 +856,6 @@ export class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * Calculate and set `top` and `bottom` styles to the column resizer element to fit the height of the table.
-	 *
-	 * @param viewResizer The column resizer element.
-	 */
-	private _recalculateResizerElement( viewResizer: ViewElement ): void {
-		const editor = this.editor;
-		const domConverter = editor.editing.view.domConverter;
-
-		// Get DOM target figure ancestor element.
-		const domTable = domConverter.mapViewToDom( viewResizer.findAncestor( 'table' )! )!;
-
-		// Get DOM table cell element.
-		const domCell = domConverter.mapViewToDom(
-			viewResizer.findAncestor( item => [ 'td', 'th' ].includes( item.name ) )!
-		)!;
-
-		const rectTable = new Rect( domTable );
-		const rectCell = new Rect( domCell );
-
-		// Calculate the top, and bottom positions of the column resizer element.
-		const targetTopPosition = toPx( Number( ( rectTable.top - rectCell.top ).toFixed( 4 ) ) );
-		const targetBottomPosition = toPx( Number( ( rectCell.bottom - rectTable.bottom ).toFixed( 4 ) ) );
-
-		// Set `top` and `bottom` styles to the column resizer element.
-		editor.editing.view.change( viewWriter => {
-			viewWriter.setStyle( 'top', targetTopPosition, viewResizer );
-			viewWriter.setStyle( 'bottom', targetBottomPosition, viewResizer );
-		} );
-	}
-
-	/**
-	 * Remove `top` and `bottom` styles of the column resizer element.
-	 *
-	 * @param viewResizer The column resizer element.
-	 */
-	private _resetResizerStyles( viewResizer: ViewElement ): void {
-		this.editor.editing.view.change( viewWriter => {
-			viewWriter.removeStyle( 'top', viewResizer );
-			viewWriter.removeStyle( 'bottom', viewResizer );
-		} );
-	}
-
-	/**
 	 * Handles the `mouseover` event on column resizer element.
 	 * Recalculates the `top` and `bottom` styles of the column resizer element to fit the height of the table.
 	 *
@@ -924,7 +873,7 @@ export class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		this._recalculateResizerElement( target );
+		fitResizerToTable( this.editor.editing.view, target, 'column' );
 	}
 
 	/**
@@ -949,7 +898,7 @@ export class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		this._resetResizerStyles( target );
+		resetResizerStyles( this.editor.editing.view, target, 'column' );
 	}
 
 	/**
@@ -1122,7 +1071,7 @@ export class TableColumnResizeEditing extends Plugin {
 			const mouseEvent = this._initialMouseEventData.domEvent as MouseEvent;
 			const distanceX = Math.abs( mouseEventData.clientX - mouseEvent.clientX );
 
-			if ( distanceX >= COLUMN_RESIZE_DISTANCE_THRESHOLD ) {
+			if ( distanceX >= RESIZE_DISTANCE_THRESHOLD ) {
 				this._startResizingAfterThreshold();
 				this._initialMouseEventData = null;
 			} else {
@@ -1166,10 +1115,11 @@ export class TableColumnResizeEditing extends Plugin {
 			}
 		} = this._resizingData!;
 
+		const domRoot = this.editor.editing.view.getDomRoot( modelTable.root.rootName! )!;
 		const dxLowerBound = -leftColumnWidth + COLUMN_MIN_WIDTH_IN_PIXELS;
 		const tableScrollPlugin = plugins.has( 'TableScrollEditing' ) ? plugins.get( 'TableScrollEditing' ) : null;
 		const isTableScrollActive = !!tableScrollPlugin && isTableScrollAllowed;
-		const containerWidth = getEditableContentWidth( this.editor, modelTable.root.rootName! )!;
+		const containerWidth = getContainerContentWidth( domRoot );
 
 		let dxUpperBound: number;
 
@@ -1261,7 +1211,7 @@ export class TableColumnResizeEditing extends Plugin {
 			}
 		} );
 
-		this._recalculateResizerElement( viewResizer );
+		fitResizerToTable( this.editor.editing.view, viewResizer, 'column' );
 	}
 
 	/**
@@ -1368,7 +1318,7 @@ export class TableColumnResizeEditing extends Plugin {
 		const element = editingView.domConverter.mapViewToDom( viewResizer )!;
 
 		if ( !element.matches( ':hover' ) ) {
-			this._resetResizerStyles( viewResizer );
+			resetResizerStyles( editingView, viewResizer, 'column' );
 		}
 
 		this._isResizingActive = false;
@@ -1421,7 +1371,8 @@ export class TableColumnResizeEditing extends Plugin {
 		const tableWidth = getTableWidthInPixels( modelTable, editor );
 		const leftColumnWidth = columnWidths[ leftColumnIndex ];
 		const rightColumnWidth = isRightEdge ? undefined : columnWidths[ leftColumnIndex + 1 ];
-		const isTableWidthWithinContainerAtDragStart = tableWidth <= getEditableContentWidth( editor, modelTable.root.rootName! )!;
+		const domRoot = editor.editing.view.getDomRoot( modelTable.root.rootName! )!;
+		const isTableWidthWithinContainerAtDragStart = tableWidth <= getContainerContentWidth( domRoot );
 
 		// Whether the `TableScrollEditing` plugin considers this specific table eligible to overflow its
 		// container (see `TableScrollEditing#_isTableScrollable`). Computed once, at the start of the drag,
@@ -1456,24 +1407,6 @@ export class TableColumnResizeEditing extends Plugin {
 				rightColumnWidth
 			}
 		};
-	}
-
-	/**
-	 * Registers a listener ensuring that each resizable cell have a resizer handle.
-	 */
-	private _registerResizerInserter() {
-		this.editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			dispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert:tableCell', ( evt, data, conversionApi ) => {
-				const modelElement = data.item;
-				const viewElement = conversionApi.mapper.toViewElement( modelElement );
-				const viewWriter = conversionApi.writer;
-
-				viewWriter.insert(
-					viewWriter.createPositionAt( viewElement!, 'end' ),
-					viewWriter.createUIElement( 'div', { class: 'ck-table-column-resizer' } )
-				);
-			}, { priority: 'lowest' } );
-		} );
 	}
 }
 

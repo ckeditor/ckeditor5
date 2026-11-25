@@ -27,7 +27,7 @@ const translations: Translations = {
 			// Label of a button that allows selecting a font background color.
 			'Font Background Color': 'Цвет фона',
 			// Title of a color picker section containing the colors currently used in the document.
-			'Document colors': 'Цвет страницы'
+			'Document colors': 'Цвета документа'
 		}
 	}
 };

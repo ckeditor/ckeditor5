@@ -64,7 +64,7 @@ export function dumpTrees( document: any, version: any ): void {
 		string += root.printTree() + '\n';
 	}
 
-	document[ treeDump ][ version ] = string.substr( 0, string.length - 1 ); // Remove the last "\n".
+	document[ treeDump ][ version ] = string.slice( 0, -1 ); // Remove the last "\n".
 
 	const overflow = document[ treeDump ].length - maxTreeDumpLength;
 

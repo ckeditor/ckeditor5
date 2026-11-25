@@ -3,10 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The disabled state of the editor UI. To change how disabled controls look across the UI, override
+ * `--ck-opacity-disabled`. To change one component, override its component token instead, such as
+ * `--ck-button-opacity-disabled`.
+ */
 :root,
 :host {
 	/**
-	 * An opacity value of disabled UI item.
+	 * Opacity of the parts of disabled controls, such as the label and the icon of a button. The background and
+	 * the border keep their colors.
 	 */
+	/* Outline buttons fade as a whole instead, border included, and action buttons stay opaque and show the state
+	   with a faded fill (`--ck-color-interactive-primary-surface-disabled`). */
+	/* Backward compatibility: the components read the legacy `--ck-disabled-opacity` first if overridden. */
 	--ck-opacity-disabled: .5;
 }

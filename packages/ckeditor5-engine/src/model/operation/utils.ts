@@ -237,8 +237,8 @@ function _splitNodeAtPosition( position: ModelPosition ): void {
 
 		element._removeChildren( index, 1 );
 
-		const firstPart = new ModelText( textNode.data.substr( 0, offsetDiff ), textNode.getAttributes() );
-		const secondPart = new ModelText( textNode.data.substr( offsetDiff ), textNode.getAttributes() );
+		const firstPart = new ModelText( textNode.data.slice( 0, offsetDiff ), textNode.getAttributes() );
+		const secondPart = new ModelText( textNode.data.slice( offsetDiff ), textNode.getAttributes() );
 
 		element._insertChild( index, [ firstPart, secondPart ] );
 	}

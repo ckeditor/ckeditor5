@@ -12,7 +12,7 @@ import type { HtmlSupportDataSchemaBlockElementDefinition, HtmlSupportDataSchema
 /**
  * Skipped elements due to HTML deprecation:
  * * noframes (not sure if we should provide support for this element. CKE4 is not supporting frameset and frame,
- *   but it will unpack <frameset><noframes>foobar</noframes></frameset> to <noframes>foobar</noframes>, so there
+ *   but it will unpack `<frameset><noframes>foobar</noframes></frameset>` to `<noframes>foobar</noframes>`, so there
  *   may be some content loss. Although using noframes as a standalone element seems invalid)
  * * keygen (this one is also empty)
  * * applet (support is limited mostly to old IE)

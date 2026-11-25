@@ -109,6 +109,117 @@ describe( 'Drag and Drop target', () => {
 		}
 	} );
 
+	describe( 'drop target line position', () => {
+		let frame, frameEditor, pageFiller, styleElement;
+
+		beforeEach( () => {
+			// The theme styles are not loaded in tests.
+			styleElement = document.createElement( 'style' );
+			styleElement.textContent =
+				'.ck-hidden { display: none !important; } .ck.ck-clipboard-drop-target-line { position: absolute; }';
+
+			document.head.appendChild( styleElement );
+		} );
+
+		afterEach( async () => {
+			styleElement.remove();
+
+			if ( frameEditor ) {
+				await frameEditor.destroy();
+				frameEditor = null;
+			}
+
+			if ( frame ) {
+				frame.remove();
+				frame = null;
+			}
+
+			if ( pageFiller ) {
+				window.scrollTo( 0, 0 );
+				pageFiller.remove();
+				pageFiller = null;
+			}
+		} );
+
+		it( 'should place the line between the blocks when the overlay layer is in the document body', () => {
+			_setModelData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+
+			expectLineBetweenBlocks( editor );
+		} );
+
+		it( 'should place the line between the blocks when the overlay layer is in the document body and the page is scrolled', () => {
+			pageFiller = document.createElement( 'div' );
+			pageFiller.setAttribute( 'style', 'height: 3000px; width: 3000px;' );
+			document.body.appendChild( pageFiller );
+
+			// Set the data before scrolling, as scroll anchoring would move the page when the editor grows.
+			_setModelData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+
+			window.scrollTo( 50, 100 );
+
+			expect( window.scrollX ).toBe( 50 );
+			expect( window.scrollY ).toBe( 100 );
+
+			expectLineBetweenBlocks( editor );
+		} );
+
+		it( 'should place the line between the blocks when the overlay layer is in a scrolled, positioned container', async () => {
+			frame = document.createElement( 'div' );
+			frame.setAttribute( 'style', 'position: relative; overflow: auto; height: 200px; margin: 30px; border: 10px solid;' );
+
+			const spacer = document.createElement( 'div' );
+			spacer.setAttribute( 'style', 'height: 100px;' );
+
+			const filler = document.createElement( 'div' );
+			filler.setAttribute( 'style', 'height: 500px;' );
+
+			const frameEditorElement = document.createElement( 'div' );
+
+			frame.append( spacer, frameEditorElement, filler );
+			document.body.appendChild( frame );
+
+			frameEditor = await ClassicTestEditor.create( frameEditorElement, {
+				plugins: [ DragDrop, Paragraph ],
+				ui: {
+					overlayContainer: frame
+				}
+			} );
+
+			_setModelData( frameEditor.model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+
+			frame.scrollTop = 40;
+
+			expectLineBetweenBlocks( frameEditor );
+		} );
+
+		function expectLineBetweenBlocks( targetEditor ) {
+			const domConverter = targetEditor.editing.view.domConverter;
+			const modelRoot = targetEditor.model.document.getRoot();
+			const domRoot = targetEditor.editing.view.getDomRoot();
+
+			const domFirst = domConverter.mapViewToDom( targetEditor.editing.mapper.toViewElement( modelRoot.getChild( 0 ) ) );
+			const domSecond = domConverter.mapViewToDom( targetEditor.editing.mapper.toViewElement( modelRoot.getChild( 1 ) ) );
+
+			targetEditor.model.change( writer => {
+				writer.addMarker( 'drop-target', {
+					range: writer.createRange( writer.createPositionAt( modelRoot, 1 ) ),
+					usingOperation: false
+				} );
+			} );
+
+			const lineElement = targetEditor.plugins.get( DragDropTarget )._dropTargetLineView.element;
+			const lineRect = lineElement.getBoundingClientRect();
+
+			const expectedTop = ( domFirst.getBoundingClientRect().bottom + domSecond.getBoundingClientRect().top ) / 2;
+			const expectedLeft = domRoot.getBoundingClientRect().left + domRoot.clientLeft +
+				parseFloat( window.getComputedStyle( domRoot ).paddingLeft );
+
+			expect( lineElement.classList.contains( 'ck-hidden' ) ).toBe( false );
+			expect( lineRect.top ).toBeCloseTo( expectedTop, 0 );
+			expect( lineRect.left ).toBeCloseTo( expectedLeft, 0 );
+		}
+	} );
+
 	describe( 'getFinalDropRange', () => {
 		it( 'should return drop position after paragraph', () => {
 			_setModelData( model,

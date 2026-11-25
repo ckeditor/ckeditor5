@@ -39,7 +39,7 @@ Starting this release, a new {@link module:html-support/emptyblock~EmptyBlock} p
 
 ### Enhanced support for the `<hr>` element
 
-We have enhanced support for the `<hr>` element in the [General HTML Support](https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html) plugin. Now, the attributes of the `<hr>` element are properly preserved if configuration allows it.
+We have enhanced support for the `<hr>` element in the {@link features/general-html-support General HTML Support} plugin. Now, the attributes of the `<hr>` element are properly preserved if configuration allows it.
 
 ### Enhanced emoji support
 
@@ -59,7 +59,7 @@ Released on February 20, 2025. ([See full release notes](https://github.com/cked
 
 During a recent internal audit, we identified a cross-site scripting (XSS) vulnerability in the CKEditor 5 real-time collaboration package ([`CVE-2025-25299`](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh)). This vulnerability can lead to unauthorized JavaScript code execution and affects user markers, which represent users' positions within the document.
 
-This vulnerability affects only installations with [real-time collaborative editing](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html) enabled.
+This vulnerability affects only installations with {@link features/real-time-collaboration real-time collaborative editing} enabled.
 
 You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh) and [contact us](mailto:security@cksource.com) if you have more questions.
 

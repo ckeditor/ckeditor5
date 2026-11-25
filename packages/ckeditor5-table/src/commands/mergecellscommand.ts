@@ -16,6 +16,7 @@ import { Command } from '@ckeditor/ckeditor5-core';
 import { TableUtils } from '../tableutils.js';
 import { updateNumericAttribute } from '../utils/common.js';
 import { removeEmptyRowsColumns } from '../utils/structure.js';
+import { areTableCellsOfSameType } from '../tablecellproperties/tablecellpropertiesutils.js';
 
 /**
  * The merge cells command.
@@ -36,7 +37,9 @@ export class MergeCellsCommand extends Command {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		const selectedTableCells = tableUtils.getSelectedTableCells( this.editor.model.document.selection );
-		this.isEnabled = tableUtils.isSelectionRectangular( selectedTableCells );
+
+		this.isEnabled = tableUtils.isSelectionRectangular( selectedTableCells ) &&
+			areTableCellsOfSameType( selectedTableCells );
 	}
 
 	/**

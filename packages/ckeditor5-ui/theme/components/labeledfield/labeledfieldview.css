@@ -15,7 +15,7 @@
 }
 
 .ck.ck-labeled-field-view {
-	/* Backward compatibility: falls back to legacy --ck-rounded-corners-radius if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-rounded-corners-radius` first if overridden. */
 	border-radius: var(--ck-rounded-corners-radius, var(--ck-radius-corners));
 
 	& .ck.ck-label {
@@ -33,7 +33,7 @@
 			pointer-events: none;
 			/* Fallback to `--ck-color-labeled-field-label-background` for backward compatibility. */
 			background: var(--ck-color-labeled-field-label-background, var(--ck-labeled-field-label-background-color));
-			/* Backward compatibility: falls back to legacy --ck-font-size-tiny if overridden. */
+			/* Backward compatibility: reads the legacy `--ck-font-size-tiny` first if overridden. */
 			padding: 0 calc(.5 * var(--ck-font-size-tiny, var(--ck-font-size-xs)));
 			line-height: initial;
 			font-size: var(--ck-labeled-field-label-font-size);
@@ -81,7 +81,7 @@
 	}
 
 	& .ck-labeled-field-view__status {
-		/* Backward compatibility: falls back to legacy --ck-font-size-small if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-font-size-small` first if overridden. */
 		font-size: var(--ck-font-size-small, var(--ck-font-size-sm));
 		margin-top: var(--ck-spacing-gap-compact);
 

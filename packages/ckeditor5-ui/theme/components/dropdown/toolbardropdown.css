@@ -19,7 +19,7 @@
 .ck.ck-toolbar-dropdown > .ck-dropdown__panel {
 	/* https://github.com/ckeditor/ckeditor5/issues/5586 */
 	width: max-content;
-	/* Backward compatibility: falls back to legacy --ck-toolbar-dropdown-max-width if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-toolbar-dropdown-max-width` first if overridden. */
 	max-width: var(--ck-toolbar-dropdown-max-width, 60vw);
 
 	& .ck-button {

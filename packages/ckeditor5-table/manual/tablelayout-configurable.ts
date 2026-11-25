@@ -475,7 +475,6 @@ const config = {
 		TableCellProperties,
 		TableColumnResize,
 		TableCaption,
-		PlainTableOutput,
 		TableLayout
 	],
 	toolbar: [
@@ -508,13 +507,6 @@ const config = {
 	}
 };
 
-let editor = await ClassicEditor.create( {
-	...config,
-	attachTo: document.querySelector( '#editor' ) as HTMLElement
-} );
-
-window.editor = editor;
-
 const configTableTypes = {
 	default: {},
 	content: {
@@ -527,30 +519,55 @@ const configTableTypes = {
 			preferredExternalTableType: 'layout'
 		}
 	}
-};
+} as const;
 
 const tableTypeSelect = document.querySelector( '#tableType' ) as HTMLSelectElement;
+const plainTableOutputCheckbox = document.querySelector( '#plainTableOutput' ) as HTMLInputElement;
 
-tableTypeSelect.addEventListener( 'change', async () => {
-	await editor.destroy();
+let editor: ClassicEditor | null = null;
 
-	const newConfig = {
+/**
+ * (Re)creates the editor using the current state of the configuration controls.
+ * Reading the controls here (and not only in the `change` handlers) makes the test respect
+ * the values restored by the browser after a page reload.
+ */
+async function createEditor() {
+	if ( editor ) {
+		await editor.destroy();
+		editor = null;
+	}
+
+	const tableType = tableTypeSelect.value as keyof typeof configTableTypes;
+
+	editor = await ClassicEditor.create( {
 		...config,
+		plugins: plainTableOutputCheckbox.checked ?
+			[ ...config.plugins, PlainTableOutput ] :
+			config.plugins,
+		table: {
+			...config.table,
+			...configTableTypes[ tableType ]
+		},
 		root: {
 			...config.root,
 			initialData: initialHTML
-		}
-	};
-
-	newConfig.table = {
-		...newConfig.table,
-		...configTableTypes[ tableTypeSelect.value as keyof typeof configTableTypes ]
-	};
-
-	editor = await ClassicEditor.create( {
-		...newConfig,
+		},
 		attachTo: document.querySelector( '#editor' ) as HTMLElement
 	} );
 
 	window.editor = editor;
-} );
+}
+
+// Serialize re-creations so quick consecutive changes do not create two editors at the same time.
+let editorQueue: Promise<void> = Promise.resolve();
+
+function recreateEditor() {
+	editorQueue = editorQueue.then( createEditor );
+
+	return editorQueue;
+}
+
+tableTypeSelect.addEventListener( 'change', recreateEditor );
+plainTableOutputCheckbox.addEventListener( 'change', recreateEditor );
+
+await recreateEditor();

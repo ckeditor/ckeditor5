@@ -140,6 +140,8 @@ const translations: Translations = {
 			'The color is invalid. Try "#FF0000" or "rgb(255,0,0)" or "red".': 'この色は無効です。「#FF0000」、「rgb（255,0,0」または「赤」をお試しください。',
 			// The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value.
 			'The value is invalid. Try "10px" or "2em" or simply "2".': 'この値は無効です。「10px」、「2em」または単純に「2」をお試しください。',
+			// The localized error string that can be displayed next to the table cell height field that sets the row height when it has an invalid value.
+			'The value is invalid. Try "10px" or simply "10".': 'この値は無効です。「10px」またはそのまま「10」と入力してください。',
 			// The placeholder text for the table caption displayed when the caption is empty.
 			'Enter table caption': 'テーブルキャプションを入力',
 			// Accessibility help dialog header text displayed before the list of keystrokes that can be used in a table cell.

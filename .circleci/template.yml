@@ -14,16 +14,53 @@ parameters:
 commands:
   prepare_environment_command:
     description: "Prepare environment (browsers, fonts, etc.)"
+    parameters:
+      browser:
+        description: "The web crawler only needs `chrome-headless-shell`, which uses less CPU than Chrome."
+        type: enum
+        enum: [ chrome, chrome-headless-shell ]
+        default: chrome
     steps:
-      - browser-tools/install_chrome:
-          chrome_version: << pipeline.parameters.chromeVersion >>
-          use_cache: true
-          timeout: 5m
+      - when:
+          condition:
+            equal: [ chrome, << parameters.browser >> ]
+          steps:
+            - browser-tools/install_chrome:
+                chrome_version: << pipeline.parameters.chromeVersion >>
+                use_cache: true
+                timeout: 5m
+      - when:
+          condition:
+            equal: [ chrome-headless-shell, << parameters.browser >> ]
+          steps:
+            - install_chrome_headless_shell_command
       - run:
           name: Install newest emoji to enable emoji picker testing
           command: |
             sudo apt-get update
             sudo apt install fonts-noto-color-emoji
+
+  # Installs the same version as Chrome in other jobs, and makes Puppeteer use it instead of the version it is pinned to.
+  # It runs `pnpm exec`, so it requires installed dependencies.
+  install_chrome_headless_shell_command:
+    description: "Install chrome-headless-shell"
+    steps:
+      - restore_cache:
+          name: Restore chrome-headless-shell cache
+          keys:
+            - chrome-headless-shell-v1-<< pipeline.parameters.chromeVersion >>-{{ arch }}
+      - run:
+          name: Install chrome-headless-shell
+          command: |
+            BIN="$(pnpm exec puppeteer browsers install "chrome-headless-shell@<< pipeline.parameters.chromeVersion >>" --format '{{path}}')"
+            [[ -x "$BIN" ]] || { echo "chrome-headless-shell not found at '$BIN'."; exit 1; }
+            echo "Using chrome-headless-shell at $BIN"
+            echo "export PUPPETEER_EXECUTABLE_PATH=\"$BIN\"" >> "$BASH_ENV"
+      - save_cache:
+          name: Save chrome-headless-shell cache
+          key: chrome-headless-shell-v1-<< pipeline.parameters.chromeVersion >>-{{ arch }}
+          paths:
+            - ~/.cache/puppeteer/chrome-headless-shell
 
   install_ssh_keys_command:
     description: "Install SSH keys"
@@ -75,12 +112,11 @@ jobs:
     steps:
       - checkout_command
       - bootstrap_repository_command
-      - prepare_environment_command
+      - prepare_environment_command:
+          browser: chrome-headless-shell
       - run:
           name: Verify CKEditor 5 manual tests
-          command: |
-            export PUPPETEER_EXECUTABLE_PATH="$(command -v google-chrome)"
-            pnpm run manual:verify
+          command: pnpm run manual:verify
 
   cke5_validators:
     docker:
@@ -135,8 +171,12 @@ jobs:
           command: pnpm run check-css-imports
       - run:
           when: always
-          name: Check if the editor and content stylesheets consume only declared CSS custom properties
+          name: Check if the stylesheets, the source code, and the documentation consume only declared CSS custom properties
           command: pnpm run check-css-variables
+      - run:
+          when: always
+          name: Check if the theme token doc comments follow the format
+          command: pnpm run check-css-token-docs
       - run:
           when: always
           name: Check if all package members are exported correctly from the index.ts file

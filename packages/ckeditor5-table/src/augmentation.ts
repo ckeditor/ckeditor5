@@ -15,11 +15,13 @@ import type {
 	TableCellProperties,
 	TableCellPropertiesEditing,
 	TableCellPropertiesUI,
+	TableCellHeightEditing,
 	TableCellWidthEditing,
 	TableClipboard,
 	TableColumnResize,
 	TableColumnResizeEditing,
 	TableEditing,
+	TableHeightEditing,
 	TableKeyboard,
 	TableLayout,
 	TableLayoutEditing,
@@ -27,6 +29,8 @@ import type {
 	TableProperties,
 	TablePropertiesEditing,
 	TablePropertiesUI,
+	TableRowResize,
+	TableRowResizeEditing,
 	TableScroll,
 	TableSelection,
 	TableToolbar,
@@ -60,6 +64,8 @@ import type {
 	TableCellVerticalAlignmentCommand,
 	TableCellWidthCommand,
 	TableColumnWidthCommand,
+	TableRowHeightCommand,
+	TableRowHeightsCommand,
 	TableAlignmentCommand,
 	TableBackgroundColorCommand,
 	TableBorderColorCommand,
@@ -91,11 +97,13 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableCellProperties.pluginName ]: TableCellProperties;
 		[ TableCellPropertiesEditing.pluginName ]: TableCellPropertiesEditing;
 		[ TableCellPropertiesUI.pluginName ]: TableCellPropertiesUI;
+		[ TableCellHeightEditing.pluginName ]: TableCellHeightEditing;
 		[ TableCellWidthEditing.pluginName ]: TableCellWidthEditing;
 		[ TableClipboard.pluginName ]: TableClipboard;
 		[ TableColumnResize.pluginName ]: TableColumnResize;
 		[ TableColumnResizeEditing.pluginName ]: TableColumnResizeEditing;
 		[ TableEditing.pluginName ]: TableEditing;
+		[ TableHeightEditing.pluginName ]: TableHeightEditing;
 		[ TableKeyboard.pluginName ]: TableKeyboard;
 		[ TableLayout.pluginName ]: TableLayout;
 		[ TableLayoutEditing.pluginName ]: TableLayoutEditing;
@@ -103,6 +111,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableProperties.pluginName ]: TableProperties;
 		[ TablePropertiesEditing.pluginName ]: TablePropertiesEditing;
 		[ TablePropertiesUI.pluginName ]: TablePropertiesUI;
+		[ TableRowResize.pluginName ]: TableRowResize;
+		[ TableRowResizeEditing.pluginName ]: TableRowResizeEditing;
 		[ TableScroll.pluginName ]: TableScroll;
 		[ TableScrollEditing.pluginName ]: TableScrollEditing;
 		[ TableSelection.pluginName ]: TableSelection;
@@ -144,6 +154,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		tableCellVerticalAlignment: TableCellVerticalAlignmentCommand;
 		tableCellWidth: TableCellWidthCommand;
 		tableColumnWidth: TableColumnWidthCommand;
+		tableRowHeight: TableRowHeightCommand;
+		resizeRowHeights: TableRowHeightsCommand;
 		tableCellType: TableCellTypeCommand;
 		tableAlignment: TableAlignmentCommand;
 		tableBackgroundColor: TableBackgroundColorCommand;

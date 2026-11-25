@@ -3,10 +3,29 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The typography scale of the editor UI. Set `--ck-font-size-base` on `:root` to resize every font size step.
+ * It does not change the edited content, which uses `--ck-content-font-size`.
+ * To change the font size of one group of elements, such as controls, override its semantic font size role,
+ * such as `--ck-font-size-control`, instead. For font weights, use the semantic `--ck-font-weight-ui-*` roles,
+ * not these steps.
+ */
 :root,
 :host {
+	/* Backward compatibility: the theme reads the legacy `--ck-font-size-normal` first if overridden. */
 	--ck-font-size-base: 16px;
+
+	/**
+	 * Default line height across the UI. Keep it unitless, because components multiply it by a font size.
+	 * It does not change the edited content, which uses `--ck-content-line-height`.
+	 */
 	--ck-line-height-base: 1.5;
+
+	/**
+	 * Default font stack across the UI. It does not change the font of the edited content,
+	 * which uses `--ck-content-font-family`.
+	 */
+	/* Backward compatibility: the theme reads the legacy `--ck-font-face` first if overridden. */
 	--ck-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
 	--ck-font-size-xs: calc(0.625 * var(--ck-font-size-normal, var(--ck-font-size-base)));  /* 10px */

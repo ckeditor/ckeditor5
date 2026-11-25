@@ -284,3 +284,39 @@ export function getShorthandStylesValues( string: string ): Array<string> {
 
 	return Array.from( matches ).map( i => i[ 0 ] );
 }
+
+/**
+ * Normalizes a numerical style value, so equivalent notations of the same value are equal.
+ *
+ * ```ts
+ * normalizeLengthStyleValue( '2.0em' ); // '2em'
+ * normalizeLengthStyleValue( '02.50PX' ); // '2.5px'
+ * normalizeLengthStyleValue( '150.0%' ); // '150%'
+ * normalizeLengthStyleValue( 'small' ); // 'small'
+ * ```
+ *
+ * Values that are not a number followed by a unit, e.g. keywords, `calc()` or `var()`, are returned unchanged.
+ *
+ * @param value The style value to normalize.
+ * @returns The normalized value.
+ */
+export function normalizeLengthStyleValue( value: string ): string {
+	// The number ends with its last digit and the unit is everything after it, e.g. `2.0` + `em`.
+	let numberEnd = 0;
+
+	for ( let i = 0; i < value.length; i++ ) {
+		if ( value[ i ] >= '0' && value[ i ] <= '9' ) {
+			numberEnd = i + 1;
+		}
+	}
+
+	const number = value.slice( 0, numberEnd );
+	const unit = value.slice( numberEnd ).trim().toLowerCase();
+
+	// Not a number followed by a unit, e.g. `small` or `calc( 2px + 1em )`.
+	if ( !number.trim() || isNaN( Number( number ) ) ) {
+		return value;
+	}
+
+	return Number( number ) + unit;
+}

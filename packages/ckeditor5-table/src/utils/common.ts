@@ -8,15 +8,17 @@
  */
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
-import type {
-	Conversion,
-	ModelElement,
-	ModelItem,
-	ModelPosition,
-	ModelSchema,
-	ModelWriter,
-	ModelDocumentSelection
+import {
+	ModelDocumentSelection,
+	type Conversion,
+	type ModelElement,
+	type ModelItem,
+	type ModelPosition,
+	type ModelSchema,
+	type ModelWriter,
+	type ViewElement
 } from '@ckeditor/ckeditor5-engine';
+import { _getCopyOnEnterAttributes } from '@ckeditor/ckeditor5-enter';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute } from '../converters/tableproperties.js';
 import { type TableUtils } from '../tableutils.js';
@@ -49,19 +51,111 @@ export function updateNumericAttribute(
  * @param writer The model writer.
  * @param insertPosition The position at which the table cell should be inserted.
  * @param attributes The element attributes.
+ * @param paragraphAttributes The attributes of the paragraph created inside the table cell.
  * @returns Created table cell.
  */
 export function createEmptyTableCell(
 	writer: ModelWriter,
 	insertPosition: ModelPosition,
-	attributes: Record<string, unknown> = {}
+	attributes: Record<string, unknown> = {},
+	paragraphAttributes: Record<string, unknown> = {}
 ): ModelElement {
 	const tableCell = writer.createElement( 'tableCell', attributes );
 
-	writer.insertElement( 'paragraph', tableCell );
+	writer.insertElement( 'paragraph', paragraphAttributes, tableCell );
 	writer.insert( tableCell, insertPosition );
 
 	return tableCell;
+}
+
+/**
+ * Attributes of a table cell created next to a reference table cell, inherited from that reference cell.
+ *
+ * @internal
+ */
+export interface InheritedTableCellAttributes {
+
+	/**
+	 * The formatting attributes of the table cell, for example, its border, background color, padding, or alignment.
+	 */
+	cellAttributes: Record<string, unknown>;
+
+	/**
+	 * The attributes of the paragraph in the table cell: its block formatting attributes (for example, alignment)
+	 * and text formatting attributes stored as selection attributes, so typing in the empty paragraph continues them.
+	 */
+	paragraphAttributes: Record<string, unknown>;
+}
+
+/**
+ * Table cell attributes that are never inherited from the reference table cell, as they describe the dimensions
+ * of the table column and row.
+ */
+const NON_INHERITABLE_TABLE_CELL_ATTRIBUTES = new Set( [ 'tableCellWidth', 'tableCellHeight' ] );
+
+/**
+ * Returns attributes that a new table cell should inherit from the reference table cell (a neighboring cell,
+ * for example, from the row or column the user inserted the new one next to):
+ *
+ * * Table cell formatting attributes (marked as `isFormatting` in the schema), for example, borders or background color.
+ * * Block formatting attributes of the first block in the reference cell, for example, alignment.
+ * * Text formatting attributes (marked as `copyOnEnter` in the schema) found at the start of the reference cell content.
+ *   They are stored as selection attributes of the new paragraph so typing in the new cell continues the formatting.
+ *
+ * @internal
+ * @param options.inheritCellType Whether the `tableCellType` attribute should be inherited. It depends on the position
+ * of the cell in the table, so it should be inherited only by cells created in the same section as the reference cell,
+ * for example, when splitting the reference cell.
+ */
+export function getInheritedTableCellAttributes(
+	schema: ModelSchema,
+	referenceCell: ModelElement,
+	options: { inheritCellType?: boolean } = {}
+): InheritedTableCellAttributes {
+	const cellAttributes: Record<string, unknown> = {};
+	const paragraphAttributes: Record<string, unknown> = {};
+
+	for ( const [ key, value ] of referenceCell.getAttributes() ) {
+		if (
+			!NON_INHERITABLE_TABLE_CELL_ATTRIBUTES.has( key ) &&
+			( key != 'tableCellType' || options.inheritCellType ) &&
+			schema.getAttributeProperties( key ).isFormatting
+		) {
+			cellAttributes[ key ] = value;
+		}
+	}
+
+	const firstBlock = referenceCell.getChild( 0 );
+
+	if ( !firstBlock || !firstBlock.is( 'element' ) || !schema.checkChild( firstBlock, '$text' ) ) {
+		return { cellAttributes, paragraphAttributes };
+	}
+
+	const paragraphContext = schema.createContext( referenceCell ).push( 'paragraph' );
+	const textAttributes: Array<[ string, unknown ]> = [];
+
+	for ( const [ key, value ] of firstBlock.getAttributes() ) {
+		if ( ModelDocumentSelection._isStoreAttributeKey( key ) ) {
+			// The reference cell is empty but has stored text formatting, for example, it was inserted just before.
+			if ( firstBlock.isEmpty ) {
+				textAttributes.push( [ ModelDocumentSelection._dropStoreAttributeKeyPrefix( key ), value ] );
+			}
+		} else if ( schema.getAttributeProperties( key ).isFormatting && schema.checkAttribute( paragraphContext, key ) ) {
+			paragraphAttributes[ key ] = value;
+		}
+	}
+
+	const firstTextNode = Array.from( firstBlock.getChildren() ).find( node => node.is( '$text' ) );
+
+	if ( firstTextNode ) {
+		textAttributes.push( ...firstTextNode.getAttributes() );
+	}
+
+	for ( const [ key, value ] of _getCopyOnEnterAttributes( schema, textAttributes ) ) {
+		paragraphAttributes[ ModelDocumentSelection._getStoreAttributeKey( key ) ] = value;
+	}
+
+	return { cellAttributes, paragraphAttributes };
 }
 
 /**
@@ -105,6 +199,43 @@ export function enableProperty(
 
 	upcastStyleToAttribute( conversion, { viewElement: /^(td|th)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
+}
+
+/**
+ * Enables conversion for an attribute for simple view (figure) to model (table) mappings.
+ *
+ * @internal
+ * @param options.defaultValue The default value for the specified `modelAttribute`.
+ */
+export function enableTableToFigureProperty(
+	schema: ModelSchema,
+	conversion: Conversion,
+	options: {
+		modelAttribute: string;
+		styleName: string;
+		attributeName?: string;
+		attributeType?: 'length' | 'color';
+		defaultValue: string;
+	}
+): void {
+	const { modelAttribute } = options;
+
+	schema.extend( 'table', {
+		allowAttributes: [ modelAttribute ]
+	} );
+
+	schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
+
+	upcastStyleToAttribute( conversion, {
+		viewElement: /^(table|figure)$/,
+		shouldUpcast: ( viewElement: ViewElement ) => !(
+			viewElement.name == 'table' && viewElement.parent!.name == 'figure' ||
+			viewElement.name == 'figure' && !viewElement.hasClass( 'table' )
+		),
+		...options
+	} );
+
+	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }
 
 /**

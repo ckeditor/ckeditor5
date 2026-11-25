@@ -23,11 +23,71 @@
 				border: 1px dashed hsl(0, 0%, 70%);
 				padding: 0 1px;
 			}
+
+			.data-preview-section {
+				margin-top: 32px;
+				padding-top: 16px;
+				border-top: 1px solid hsl(0, 0%, 85%);
+			}
+
+			.data-preview-header {
+				display: flex;
+				align-items: baseline;
+				gap: 16px;
+			}
+
+			.data-preview-columns {
+				display: flex;
+				gap: 24px;
+				flex-wrap: wrap;
+				align-items: flex-start;
+			}
+
+			.data-preview-columns > div {
+				min-width: 0;
+			}
+
+			.data-preview-columns > div:last-child {
+				flex: 1;
+				min-width: 320px;
+			}
+
+			.data-preview {
+				resize: horizontal;
+				overflow: auto;
+				width: 600px;
+				border: 1px dashed hsl(0, 0%, 70%);
+				padding: 0 1px;
+			}
+
+			.data-preview-source {
+				margin: 0;
+				max-height: 600px;
+				overflow: auto;
+				font-size: 12px;
+				background: hsl(0, 0%, 96%);
+				border: 1px solid hsl(0, 0%, 85%);
+				padding: 8px;
+			}
+
+			#font {
+				font-size: 16px;
+			}
+
+			#font figure.table {
+				font-size: 20px;
+			}
 		</style>
 	</head>
 	<body>
 		<ck-manual-header>
 			Check if it's possible to scroll table using scrollbar.
+			Tables in the "Table widths in various units" section of the sidebar root should scroll too, except the "15em" one, which fits.
+			Captions of the "50em with a caption" and "40rem with a caption" tables should be as wide as their tables.
+			In the font root, the table uses a larger font (20px) than the root (16px), so its 30em (600px) should scroll,
+			although 30em of the root's font (480px) would fit.
+			The "Data preview" section shows the data of the selected root: there should be no width on captions
+			and no "ck-table-overflowing" class.
 		</ck-manual-header>
 
 		<div id="toolbar-container"></div>
@@ -166,6 +226,55 @@
 							</table>
 						</figure>
 
+						<h2>Table widths in various units</h2>
+
+						<h3>Control: 800px</h3>
+						<figure class="table" style="width:800px;">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+						</figure>
+
+						<h3>50em</h3>
+						<figure class="table" style="width:50em;">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+						</figure>
+
+						<h3>50em with a caption (caption as wide as the table)</h3>
+						<figure class="table" style="width:50em;">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+							<figcaption>Caption</figcaption>
+						</figure>
+
+						<h3>40rem</h3>
+						<figure class="table" style="width:40rem;">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+						</figure>
+
+						<h3>40rem with a caption (caption as wide as the table)</h3>
+						<figure class="table" style="width:40rem;">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+							<figcaption>Caption</figcaption>
+						</figure>
+
+						<h3>600pt</h3>
+						<figure class="table" style="width:600pt;">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+						</figure>
+
+						<h3>90vw</h3>
+						<figure class="table" style="width:90vw;">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+						</figure>
+
+						<h3>calc(100% + 200px)</h3>
+						<figure class="table" style="width:calc(100% + 200px);">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+						</figure>
+
+						<h3>15em (fits, should not scroll)</h3>
+						<figure class="table" style="width:15em;">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+						</figure>
+
 						<h3>Plain grid (layout-table candidate)</h3>
 						<table>
 							<tbody>
@@ -176,6 +285,48 @@
 							</tbody>
 						</table>
 					</div>
+				</div>
+			</div>
+
+			<div>
+				<h3>Root: font</h3>
+
+				<div class="root-controls">
+					<input type="number" class="root-width-input" data-root="font" value="550" min="150" max="1600" step="10">
+					<span>px</span>
+					<button type="button" class="root-width-apply" data-root="font">Apply</button>
+				</div>
+
+				<div id="root-wrapper-font" class="root-wrapper" data-root="font" style="width: 550px;">
+					<div id="font">
+						<h3>30em with a larger table font (should scroll)</h3>
+						<figure class="table" style="width:30em;">
+							<table><tbody><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></tbody></table>
+						</figure>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="data-preview-section">
+			<div class="data-preview-header">
+				<h2>Data preview</h2>
+
+				<label>
+					Root:
+					<select id="data-preview-root"></select>
+				</label>
+			</div>
+
+			<div class="data-preview-columns">
+				<div>
+					<h3>Rendered</h3>
+					<div id="data-preview" class="ck-content data-preview"></div>
+				</div>
+
+				<div>
+					<h3>HTML</h3>
+					<pre id="data-preview-source" class="data-preview-source"></pre>
 				</div>
 			</div>
 		</div>

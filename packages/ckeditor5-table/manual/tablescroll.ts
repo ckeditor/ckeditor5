@@ -4,6 +4,7 @@
  */
 
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
+import { formatHtml } from '@ckeditor/ckeditor5-utils';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { Table } from '../src/table.js';
 import { TableToolbar } from '../src/tabletoolbar.js';
@@ -58,7 +59,8 @@ MultiRootEditor
 	.create( {
 		roots: {
 			main: { element: document.querySelector( '#main' ) as HTMLElement },
-			sidebar: { element: document.querySelector( '#sidebar' ) as HTMLElement }
+			sidebar: { element: document.querySelector( '#sidebar' ) as HTMLElement },
+			font: { element: document.querySelector( '#font' ) as HTMLElement }
 		},
 		...editorConfig
 	} )
@@ -66,10 +68,37 @@ MultiRootEditor
 		window.editor = editor;
 
 		document.querySelector( '#toolbar-container' )!.appendChild( editor.ui.view.toolbar.element! );
+
+		setupDataPreview( editor );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+/**
+ * Shows the data of the root picked in the select, both rendered with the content styles and as HTML source.
+ */
+function setupDataPreview( editor: MultiRootEditor ) {
+	const select = document.querySelector( '#data-preview-root' ) as HTMLSelectElement;
+	const preview = document.querySelector( '#data-preview' ) as HTMLElement;
+	const source = document.querySelector( '#data-preview-source' ) as HTMLElement;
+
+	for ( const rootName of editor.model.document.getRootNames() ) {
+		select.add( new Option( rootName, rootName ) );
+	}
+
+	const update = () => {
+		const data = editor.getData( { rootName: select.value } );
+
+		preview.innerHTML = data;
+		source.textContent = formatHtml( data );
+	};
+
+	select.addEventListener( 'change', update );
+	editor.model.document.on( 'change:data', update );
+
+	update();
+}
 
 document.querySelectorAll<HTMLElement>( '.root-width-apply' ).forEach( button => {
 	button.addEventListener( 'click', () => {

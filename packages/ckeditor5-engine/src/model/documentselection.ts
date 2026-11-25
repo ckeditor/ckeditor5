@@ -1152,7 +1152,7 @@ class LiveSelection extends ModelSelection {
 		if ( this.isCollapsed && selectionParent.isEmpty ) {
 			for ( const key of selectionParent.getAttributeKeys() ) {
 				if ( key.startsWith( storePrefix ) ) {
-					const realKey = key.substr( storePrefix.length );
+					const realKey = key.slice( storePrefix.length );
 
 					yield [ realKey, selectionParent.getAttribute( key ) ];
 				}

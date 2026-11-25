@@ -6,12 +6,16 @@
 /*
  * Custom properties prefixed with `--_ck-` (note the underscore) are internal helpers, not theming tokens. They let
  * a component change what a button reads without redeclaring the public `--ck-button-*` tokens, which would shadow
- * `:root` overrides. Do not set them in themes; they may change or be removed without notice. Two kinds exist:
+ * `:root` overrides. Do not set them in themes; they may change or be removed without notice. Three kinds exist:
  *
  * - `--_ck-button-fallback-*` sits after the public token, so it only changes the default and a theme still wins.
  * - `--_ck-button-context-*` sits before the public token, so a container (for example the toolbar) can apply its own
  *   token to the buttons it owns. The container sets it on those buttons only, to keep it out of nested panels
  *   (a toolbar in a dropdown panel sets its own through the same rule).
+ * - `--_ck-button-state-*` sits before the context helper, so a state of the button (for example `.ck-on`) can apply
+ *   its own token without a new declaration of the property. The property stays declared only by `.ck.ck-button`,
+ *   so components keep overriding it with plain selectors. The button resets it to `initial` on itself, so it does
+ *   not cascade into nested buttons.
  */
 
 :root,
@@ -37,6 +41,10 @@
 	--ck-button-border-style: solid;
 	--ck-button-border-color: transparent;
 	--ck-button-border: var(--ck-button-border-width) var(--ck-button-border-style) var(--ck-button-border-color);
+	/* Border of a toggled-on button (`.ck-on`), as a shorthand like `--ck-button-border`. Declared `initial`, so an on
+	   button keeps the resting border (`--ck-button-border`, or `--ck-toolbar-button-border` in a toolbar). A focused
+	   on button keeps the width and style of this border, in the focus border color. */
+	--ck-button-on-border: initial;
 
 	/* Color */
 	--ck-button-default-background-color: transparent;
@@ -65,7 +73,22 @@
 
 	/* State / meta */
 	--ck-button-focus-border-color: var(--ck-interactive-focus-border-color);
-	/* Backward compatibility: falls back to legacy --ck-disabled-opacity if overridden. */
+	/* Border color of a pressed button (`:active`). Declared `initial` and read with `--ck-button-focus-border-color` as
+	   fallback, so a pressed button shows the focus border color, also when that is overridden in a narrower scope. */
+	--ck-button-active-border-color: initial;
+	/* Shadow of a focused or pressed button, and of a disabled one. Declared `initial` and read with
+	   `--ck-interactive-focus-shadow` and `--ck-interactive-focus-disabled-shadow` as fallbacks, so an override of the
+	   role, also a scoped one, still reaches buttons. Backward compatibility: reads the legacy `--ck-focus-outer-shadow`
+	   and `--ck-focus-disabled-outer-shadow` first if overridden. */
+	--ck-button-focus-shadow: initial;
+	--ck-button-disabled-focus-shadow: initial;
+	/* Outline of a button focused from the keyboard, and its offset. Declared `initial`, so there is no outline by
+	   default. The outline follows `:focus-visible`, while the focus border and shadow follow `:focus`, so it does not
+	   show after a mouse click. Components that hide the focus look on purpose (menus that move focus on hover) hide
+	   the outline too. */
+	--ck-button-focus-outline: initial;
+	--ck-button-focus-outline-offset: initial;
+	/* Backward compatibility: reads the legacy `--ck-disabled-opacity` first if overridden. */
 	--ck-button-opacity-disabled: var(--ck-disabled-opacity, var(--ck-opacity-disabled));
 
 	/* Minimum width for standard (form/dialog/balloon) action buttons. Defaults to the icon-button
@@ -111,6 +134,7 @@
 	--ck-button-hover-background: var(--ck-color-button-default-hover-background, var(--ck-button-default-hover-background-color));
 	--ck-button-active-background: var(--ck-color-button-default-active-background, var(--ck-button-default-active-background-color));
 	--ck-button-disabled-background: var(--ck-color-button-default-disabled-background, var(--ck-button-default-disabled-background-color));
+	--_ck-button-state-border: initial;
 
 	background: var(--ck-button-background);
 	/* Resting label/icon color; the on/action/save/cancel/outline variants override it. Until overridden it keeps the
@@ -153,8 +177,9 @@
 	}
 
 	/* `--_ck-button-context-border-radius` and `--_ck-button-context-border` (below) are internal helpers a container sets
-	   on the buttons it owns (for example the toolbar for its items) to apply its own token. They are unset by default,
-	   so the button reads its public tokens. */
+	   on the buttons it owns (for example the toolbar for its items) to apply its own token. `--_ck-button-state-border`
+	   (below) carries the border of a state, such as `--ck-button-on-border`. They are unset by default, so the button
+	   reads its public tokens. */
 	border-radius: var(--_ck-button-context-border-radius, var(--ck-button-border-radius));
 	white-space: nowrap;
 	cursor: default;
@@ -176,11 +201,11 @@
 
 	/* `<button>` does not inherit the font family, so set it explicitly. Inside the `.ck-reset_all` scope this matches
 	   the reset; elsewhere (for example in `.ck-reset_all-excluded` regions) the button would use the browser default.
-	   Backward compatibility: falls back to legacy --ck-font-face if overridden. */
+	   Backward compatibility: reads the legacy `--ck-font-face` first if overridden. */
 	font-family: var(--ck-font-face, var(--ck-font-family));
 
 	/* Avoid flickering when the foucs border shows up. */
-	border: var(--_ck-button-context-border, var(--ck-button-border));
+	border: var(--_ck-button-state-border, var(--_ck-button-context-border, var(--ck-button-border)));
 
 	/* Apply some smooth transition to the box-shadow and border. */
 	transition: var(--ck-transition-control);
@@ -202,7 +227,20 @@
 	&:focus {
 		outline: none;
 		border-color: var(--ck-button-focus-border-color);
-		box-shadow: var(--ck-focus-outer-shadow, var(--ck-interactive-focus-shadow)), 0 0;
+		box-shadow: var(--ck-focus-outer-shadow, var(--ck-button-focus-shadow, var(--ck-interactive-focus-shadow))), 0 0;
+	}
+
+	/* After the focus rule, at the same specificity, so a pressed button that also has focus (a click focuses a button
+	   in most browsers) shows the active border color. */
+	&:active {
+		border-color: var(--ck-button-active-border-color, var(--ck-button-focus-border-color));
+	}
+
+	/* The outline follows `:focus-visible`, so keyboard focus shows it and a mouse click does not. After the focus rule,
+	   at the same specificity, so it replaces `outline: none` there. */
+	&:focus-visible {
+		outline: var(--ck-button-focus-outline, none);
+		outline-offset: var(--ck-button-focus-outline-offset, 0);
 	}
 
 	/* Allow icon coloring using the text "color" property. */
@@ -255,7 +293,7 @@
 		&:active,
 		&:focus {
 			/* The disabled button should have a slightly less visible shadow when focused. */
-			box-shadow: var(--ck-focus-disabled-outer-shadow, var(--ck-interactive-focus-disabled-shadow)), 0 0;
+			box-shadow: var(--ck-focus-disabled-outer-shadow, var(--ck-button-disabled-focus-shadow, var(--ck-interactive-focus-disabled-shadow))), 0 0;
 		}
 
 		& .ck-button__icon {
@@ -325,6 +363,7 @@
 		--ck-button-hover-background: var(--ck-color-button-on-hover-background, var(--ck-button-on-hover-background-color));
 		--ck-button-active-background: var(--ck-color-button-on-active-background, var(--ck-button-on-active-background-color));
 		--ck-button-disabled-background: var(--ck-color-button-on-disabled-background, var(--ck-button-on-disabled-background-color));
+		--_ck-button-state-border: var(--ck-button-on-border);
 
 		color: var(--ck-color-button-on-color, var(--ck-button-on-text-color));
 	}
@@ -440,7 +479,8 @@
 			}
 		}
 
-		/* Dim the whole button (border included) when disabled and keep the label and icon fully opaque. */
+		/* Dim the whole button (border included) when disabled. The label and the icon reset their own opacity,
+		   so they do not fade twice. */
 		&:disabled,
 		&.ck-disabled {
 			opacity: var(--ck-button-opacity-disabled);

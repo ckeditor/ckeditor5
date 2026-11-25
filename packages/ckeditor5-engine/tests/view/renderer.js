@@ -1270,7 +1270,77 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 		} );
 
-		it( 'should handle typing in empty attribute, do nothing if changes are already applied', () => {
+		it( 'should handle typing in empty attribute, remove the filler if changes are already applied', () => {
+			const domSelection = document.getSelection();
+
+			// 1. Render <p><b>FILLER{}</b>foo</p>.
+
+			const { view: viewP, selection: newSelection } = _parseView(
+				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
+
+			viewRoot._appendChild( viewP );
+			selection._setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			// 2. Check the DOM.
+
+			const domP = domRoot.childNodes[ 0 ];
+
+			expect( domP.childNodes.length ).toBe( 2 );
+			expect( domP.childNodes[ 0 ].tagName.toLowerCase() ).toBe( 'b' );
+			expect( domP.childNodes[ 1 ].data ).toBe( 'foo' );
+
+			const domB = domP.childNodes[ 0 ];
+			const viewB = viewP.getChild( 0 );
+
+			expect( domB.childNodes.length ).toBe( 1 );
+			expect( domB.childNodes[ 0 ].data ).toBe( INLINE_FILLER );
+
+			expect( domSelection.rangeCount ).toBe( 1 );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).toBe( domB.childNodes[ 0 ] );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).toBe( INLINE_FILLER_LENGTH );
+			expect( domSelection.getRangeAt( 0 ).collapsed ).toBe( true );
+
+			// 3. Add text node to both the DOM and the view: <p><b>FILLERx</b>foo</p>.
+
+			const domText = domB.childNodes[ 0 ];
+
+			domText.data += 'x';
+
+			domSelection.removeAllRanges();
+			const domRange = document.createRange();
+			domRange.setStart( domText, INLINE_FILLER_LENGTH + 1 );
+			domRange.collapse( true );
+			domSelection.addRange( domRange );
+
+			const viewText = new ViewText( viewDocument, 'x' );
+			viewB._appendChild( viewText );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			// 4. The filler is not needed any more, it should be removed from the existing text node: <p><b>x{}</b>foo</p>.
+
+			expect( domB.childNodes.length ).toBe( 1 );
+			expect( domB.childNodes[ 0 ] ).toBe( domText );
+			expect( domText.data ).toBe( 'x' );
+
+			expect( domSelection.rangeCount ).toBe( 1 );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).toBe( domText );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).toBe( 1 );
+			expect( domSelection.getRangeAt( 0 ).collapsed ).toBe( true );
+
+			// 5. No mutation on second render.
+			renderer.markToSync( 'children', viewP );
+			renderAndExpectNoChanges( renderer, domRoot );
+		} );
+
+		it( 'should handle typing in empty attribute, do nothing if changes are already applied on Android', () => {
+			vi.spyOn( env, 'isAndroid', 'get' ).mockReturnValue( true );
+
 			const domSelection = document.getSelection();
 
 			// 1. Render <p><b>FILLER{}</b>foo</p>.
@@ -1319,6 +1389,162 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
+		} );
+
+		it( 'should remove the inline filler once the text is typed after it in case <p><b>foo</b>[]</p>', () => {
+			const domSelection = document.getSelection();
+
+			// 1. Render <p><b>foo</b>"FILLER{}"</p>.
+
+			const { view: viewP, selection: newSelection } = _parseView(
+				'<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
+
+			viewRoot._appendChild( viewP );
+			selection._setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domFiller = domP.childNodes[ 1 ];
+
+			expect( domP.childNodes.length ).toBe( 2 );
+			expect( domFiller.data ).toBe( INLINE_FILLER );
+
+			// 2. Type " bar" after the filler in both the DOM and the view: <p><b>foo</b>"FILLER bar{}"</p>.
+
+			domFiller.data += ' bar';
+
+			domSelection.removeAllRanges();
+			const domRange = document.createRange();
+			domRange.setStart( domFiller, INLINE_FILLER_LENGTH + 4 );
+			domRange.collapse( true );
+			domSelection.addRange( domRange );
+
+			const viewText = new ViewText( viewDocument, ' bar' );
+			viewP._appendChild( viewText );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 4, viewText, 4 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			// 3. The filler should not stick to the "foo" word: <p><b>foo</b>" bar{}"</p>.
+
+			expect( domP.childNodes.length ).toBe( 2 );
+			expect( domP.childNodes[ 0 ].childNodes[ 0 ].data ).toBe( 'foo' );
+			expect( domP.childNodes[ 1 ] ).toBe( domFiller );
+			expect( domFiller.data ).toBe( ' bar' );
+
+			expect( domSelection.rangeCount ).toBe( 1 );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).toBe( domFiller );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).toBe( 4 );
+			expect( domSelection.getRangeAt( 0 ).collapsed ).toBe( true );
+
+			// 4. No mutation on second render.
+			renderer.markToSync( 'children', viewP );
+			renderAndExpectNoChanges( renderer, domRoot );
+		} );
+
+		it( 'should not remove the inline filler with the text typed after it if the filler is still needed', () => {
+			const domSelection = document.getSelection();
+
+			// 1. Render <p><b>foo</b>"FILLER{}"</p>.
+
+			const { view: viewP, selection: newSelection } = _parseView(
+				'<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
+
+			viewRoot._appendChild( viewP );
+			selection._setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domFiller = domP.childNodes[ 1 ];
+
+			expect( domFiller.data ).toBe( INLINE_FILLER );
+
+			// 2. Type "x" in the filler, but the view puts it at the end of the <b> (like typing at the end of a highlight
+			// that grows with the typed text): DOM <p><b>foo</b>"FILLERx{}"</p>, view <p><b>foox</b>[]</p>.
+
+			domFiller.data += 'x';
+
+			domSelection.removeAllRanges();
+			const domRange = document.createRange();
+			domRange.setStart( domFiller, INLINE_FILLER_LENGTH + 1 );
+			domRange.collapse( true );
+			domSelection.addRange( domRange );
+
+			viewP.getChild( 0 ).getChild( 0 )._data = 'foox';
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
+
+			const removeSpy = vi.spyOn( renderer, '_removeInlineFiller' );
+
+			renderer.markToSync( 'text', viewP.getChild( 0 ).getChild( 0 ) );
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			// 3. The filler is kept in the same text node (it is still needed at the selection), only the typed text is moved.
+
+			expect( removeSpy ).not.toHaveBeenCalled();
+			expect( domP.childNodes.length ).toBe( 2 );
+			expect( domP.childNodes[ 0 ].childNodes[ 0 ].data ).toBe( 'foox' );
+			expect( domP.childNodes[ 1 ] ).toBe( domFiller );
+			expect( domFiller.data ).toBe( INLINE_FILLER );
+
+			expect( domSelection.getRangeAt( 0 ).startContainer ).toBe( domFiller );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).toBe( INLINE_FILLER_LENGTH );
+		} );
+
+		it( 'should not remove the inline filler with the text typed after it while composing', () => {
+			const domSelection = document.getSelection();
+
+			// 1. Render <p><b>foo</b>"FILLER{}"</p>.
+
+			const { view: viewP, selection: newSelection } = _parseView(
+				'<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
+
+			viewRoot._appendChild( viewP );
+			selection._setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domFiller = domP.childNodes[ 1 ];
+
+			expect( domFiller.data ).toBe( INLINE_FILLER );
+
+			// 2. Compose "x" after the filler: <p><b>foo</b>"FILLERx{}"</p>.
+
+			renderer.isComposing = true;
+
+			domFiller.data += 'x';
+
+			domSelection.removeAllRanges();
+			const domRange = document.createRange();
+			domRange.setStart( domFiller, INLINE_FILLER_LENGTH + 1 );
+			domRange.collapse( true );
+			domSelection.addRange( domRange );
+
+			const viewText = new ViewText( viewDocument, 'x' );
+			viewP._appendChild( viewText );
+			selection._setTo( ViewRange._createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderAndExpectNoChanges( renderer, domRoot );
+
+			expect( domFiller.data ).toBe( INLINE_FILLER + 'x' );
+
+			// 3. The filler is removed after the composition ends: <p><b>foo</b>"x{}"</p>.
+
+			renderer.isComposing = false;
+			renderer.render();
+
+			expect( domP.childNodes[ 1 ] ).toBe( domFiller );
+			expect( domFiller.data ).toBe( 'x' );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).toBe( domFiller );
+			expect( domSelection.getRangeAt( 0 ).startOffset ).toBe( 1 );
 		} );
 
 		it( 'should handle typing in empty attribute as a children change, render if needed', () => {

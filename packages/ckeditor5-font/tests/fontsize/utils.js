@@ -27,6 +27,32 @@ describe( 'FontSizeEditing Utils', () => {
 			] );
 		} );
 
+		it( 'should normalize "model" value of object definition', () => {
+			expect( normalizeOptions( [ {
+				title: 'Two',
+				model: '2.0EM',
+				view: { name: 'span', classes: 'text-two', priority: 7 }
+			} ] ) ).toEqual( [
+				{
+					title: 'Two',
+					model: '2em',
+					view: { name: 'span', classes: 'text-two', priority: 7 }
+				}
+			] );
+		} );
+
+		it( 'should not modify object definition passed in the configuration', () => {
+			const option = {
+				title: 'Two',
+				model: '2.0em',
+				view: { name: 'span', classes: 'text-two', priority: 7 }
+			};
+
+			normalizeOptions( [ option ] );
+
+			expect( option.model ).toEqual( '2.0em' );
+		} );
+
 		describe( 'named presets', () => {
 			it( 'should return defined presets', () => {
 				expect( normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ] ) ).toEqual( [
@@ -92,6 +118,14 @@ describe( 'FontSizeEditing Utils', () => {
 				] );
 			} );
 
+			it( 'should normalize generated presets', () => {
+				expect( normalizeOptions( [ '10.0', '012', 14.50 ] ) ).toEqual( [
+					{ title: '10.0', model: '10px', view: { name: 'span', styles: { 'font-size': '10px' }, priority: 7 } },
+					{ title: '012', model: '12px', view: { name: 'span', styles: { 'font-size': '12px' }, priority: 7 } },
+					{ title: '14.5', model: '14.5px', view: { name: 'span', styles: { 'font-size': '14.5px' }, priority: 7 } }
+				] );
+			} );
+
 			it( 'should add "view" definition if missing', () => {
 				const numericOption = {
 					title: '18',
@@ -100,6 +134,17 @@ describe( 'FontSizeEditing Utils', () => {
 
 				expect( normalizeOptions( [ numericOption ] ) ).toEqual( [
 					{ title: '18', model: '18px', view: { name: 'span', styles: { 'font-size': '18px' }, priority: 7 } }
+				] );
+			} );
+
+			it( 'should normalize "model" value if "view" definition is missing', () => {
+				const numericOption = {
+					title: 'Two',
+					model: '2.0EM'
+				};
+
+				expect( normalizeOptions( [ numericOption ] ) ).toEqual( [
+					{ title: 'Two', model: '2em', view: { name: 'span', styles: { 'font-size': '2em' }, priority: 7 } }
 				] );
 			} );
 

@@ -46,7 +46,7 @@ async function reloadEditor( options: any = {} ) {
 		toolbar: [
 			'heading', '|', 'fontSize', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
-		fontSize: { options: [ 10, 12, 14, 'default', 18, 20, 22 ] } as any
+		fontSize: { options: [ 10, 12, 14, 'default', 18, 20, 22, { title: '2em', model: '2em' } ] } as any
 	};
 
 	if ( options.supportAllValues ) {

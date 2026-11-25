@@ -7,6 +7,9 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { ListEditing } from '@ckeditor/ckeditor5-list';
+import { _setModelData } from '@ckeditor/ckeditor5-engine';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { TextTransformation } from '../src/texttransformation.js';
@@ -82,5 +85,53 @@ describe( 'Text transformation feature - integration', () => {
 			editor.execute( 'redo' );
 			expect( editor.getData() ).toEqual( '<p>foo bar baz©</p>' );
 		} );
+	} );
+
+	describe( 'with autoformat', () => {
+		beforeEach( () => {
+			return ClassicTestEditor
+				.create( editorElement, { plugins: [ Typing, Paragraph, TextTransformation, UndoEditing, Autoformat, ListEditing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					doc = model.document;
+				} );
+		} );
+
+		it( 'should create a numbered list from "8) " typed at the beginning of a paragraph', () => {
+			_setModelData( model, '<paragraph>[]</paragraph>' );
+
+			simulateTyping( '8) ' );
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			expect( paragraph.getAttribute( 'listType' ) ).toEqual( 'numbered' );
+			expect( paragraph.isEmpty ).toBe( true );
+		} );
+
+		// The feature is disabled and enabled again, for example, when the selection goes through inline code.
+		// Then the text transformation listener is added again, after the block autoformat listener. So the block
+		// autoformat change runs first and removes the matched text before the text transformation change runs.
+		it( 'should not fail when a block autoformat changes the matched text first', () => {
+			const textTransformation = editor.plugins.get( TextTransformation );
+
+			textTransformation.isEnabled = false;
+			textTransformation.isEnabled = true;
+
+			_setModelData( model, '<paragraph>[]</paragraph>' );
+
+			expect( () => simulateTyping( '8) ' ) ).not.toThrow();
+
+			const paragraph = doc.getRoot().getChild( 0 );
+
+			expect( paragraph.getAttribute( 'listType' ) ).toEqual( 'numbered' );
+			expect( paragraph.isEmpty ).toBe( true );
+		} );
+
+		function simulateTyping( text ) {
+			for ( const letter of text.split( '' ) ) {
+				editor.execute( 'insertText', { text: letter } );
+			}
+		}
 	} );
 } );

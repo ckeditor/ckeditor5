@@ -12,6 +12,12 @@
 	/* Radius */
 	--ck-list-item-button-border-radius: var(--ck-border-radius-control);
 
+	/* Border of a list item (dropdown lists, dropdown menus, and menu bar menus), as a shorthand like
+	   `--ck-button-border`. Declared `initial`, so a list item keeps the button border. An item in the "on" state
+	   reads `--ck-button-on-border` first. The top-level items of the menu bar are part of the bar, not of a list,
+	   so they keep the button border. */
+	--ck-list-item-button-border: initial;
+
 	/* Label/icon color in the rest and hover states. Declared `initial` and read at the point of use with the current
 	   value as fallback, so the default is unchanged. The hover color falls back to the resting color, so a single
 	   override carries over to the engaged states. */
@@ -94,6 +100,10 @@
 }
 
 .ck.ck-list-item-button {
+	/* The button reads its border through this helper (see `button.css`). Set in this block, so a container rule with
+	   a higher specificity (the top-level menu bar items) can reset it. */
+	--_ck-button-context-border: var(--ck-list-item-button-border);
+
 	min-height: unset;
 	width: 100%;
 	border-radius: var(--ck-list-item-button-border-radius);

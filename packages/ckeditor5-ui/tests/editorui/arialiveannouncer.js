@@ -19,7 +19,10 @@ describe( 'AriaLiveAnnouncer', () => {
 
 	afterEach( async () => {
 		sourceElement.remove();
-		await editor.destroy();
+
+		if ( editor ) {
+			await editor.destroy();
+		}
 	} );
 
 	describe( 'announce()', () => {
@@ -117,6 +120,27 @@ describe( 'AriaLiveAnnouncer', () => {
 			expect( firstRegion.element.querySelector( 'li' ).innerHTML ).toBe( '<h1>Foo</h1>' );
 		} );
 	} );
+
+	describe( 'editor destroy', () => {
+		beforeEach( () => {
+			vi.useFakeTimers();
+		} );
+
+		afterEach( () => {
+			vi.useRealTimers();
+		} );
+
+		it( 'should cancel pending announcement removals when the editor is destroyed', async () => {
+			announcer.announce( 'Foo' );
+			announcer.announce( 'Bar', 'assertive' );
+			expect( vi.getTimerCount() ).toBe( 2 );
+
+			await editor.destroy();
+			editor = null;
+
+			expect( vi.getTimerCount() ).toBe( 0 );
+		} );
+	} );
 } );
 
 describe( 'AriaLiveAnnouncerRegionView', () => {
@@ -151,28 +175,71 @@ describe( 'AriaLiveAnnouncerRegionView', () => {
 		expect( queryAllMessages().length ).toBe( 0 );
 	} );
 
-	it( 'should prune old announcements using interval', () => {
+	it( 'should remove each announcement 5 seconds after it was added', () => {
 		announcerRegionView.announce( { announcement: 'Foo' } );
+
+		vi.advanceTimersByTime( 3000 );
 		announcerRegionView.announce( { announcement: 'Bar' } );
-		expect( queryAllMessages().length ).toBe( 2 );
+		expect( queryAllMessages() ).toEqual( [ 'Foo', 'Bar' ] );
 
-		vi.advanceTimersByTime( 12000 );
-		expect( queryAllMessages().length ).toBe( 0 );
+		vi.advanceTimersByTime( 1999 );
+		expect( queryAllMessages() ).toEqual( [ 'Foo', 'Bar' ] );
 
-		announcerRegionView.announce( { announcement: 'Foo' } );
-		expect( queryAllMessages().length ).toBe( 1 );
+		vi.advanceTimersByTime( 1 );
+		expect( queryAllMessages() ).toEqual( [ 'Bar' ] );
 
-		vi.advanceTimersByTime( 6000 );
-		expect( queryAllMessages().length ).toBe( 0 );
+		vi.advanceTimersByTime( 2999 );
+		expect( queryAllMessages() ).toEqual( [ 'Bar' ] );
+
+		vi.advanceTimersByTime( 1 );
+		expect( queryAllMessages() ).toEqual( [] );
 	} );
 
-	it( 'should properly set and destroy interval', async () => {
-		expect( announcerRegionView._pruneAnnouncementsInterval ).not.toBeNull();
+	it( 'should keep each of many announcements added at once for 5 seconds', () => {
+		for ( let i = 0; i < 3; i++ ) {
+			announcerRegionView.announce( { announcement: `Message ${ i }` } );
+		}
 
-		await editor.destroy();
-		editor = null;
+		vi.advanceTimersByTime( 4999 );
+		expect( queryAllMessages() ).toEqual( [ 'Message 0', 'Message 1', 'Message 2' ] );
 
-		expect( announcerRegionView._pruneAnnouncementsInterval ).toBeNull();
+		vi.advanceTimersByTime( 1 );
+		expect( queryAllMessages() ).toEqual( [] );
+	} );
+
+	describe( 'timers', () => {
+		let editorTimerCount;
+
+		// The editor is created under fake timers, so its timers are counted in the baseline. The region view is created
+		// after reading the baseline, so that the timers it schedules are not.
+		beforeEach( () => {
+			editorTimerCount = vi.getTimerCount();
+
+			announcerRegionView = new AriaLiveAnnouncerRegionView( editor, 'polite' );
+			announcerRegionView.render();
+		} );
+
+		it( 'should not schedule any timer when there are no announcements', () => {
+			expect( vi.getTimerCount() ).toBe( editorTimerCount );
+		} );
+
+		it( 'should not leave any timer scheduled once all announcements were removed', () => {
+			announcerRegionView.announce( { announcement: 'Foo' } );
+			announcerRegionView.announce( { announcement: 'Bar' } );
+			expect( vi.getTimerCount() ).toBe( editorTimerCount + 2 );
+
+			vi.advanceTimersByTime( 5000 );
+			expect( vi.getTimerCount() ).toBe( editorTimerCount );
+		} );
+
+		it( 'should cancel pending announcement removals on destroy', () => {
+			announcerRegionView.announce( { announcement: 'Foo' } );
+			announcerRegionView.announce( { announcement: 'Bar' } );
+
+			announcerRegionView.destroy();
+
+			expect( vi.getTimerCount() ).toBe( editorTimerCount );
+		} );
 	} );
 
 	describe( 'announce()', () => {

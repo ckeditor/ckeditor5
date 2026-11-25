@@ -3,13 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/**
+ * The shadow roles of the surfaces of the editor UI. To change the shadow of one kind of surface across the UI,
+ * override its role. To change one component, override its component token instead.
+ */
 :root,
 :host {
-	/* Color surface roles are defined in ./colors/_semantic-surface.css. */
+	/* Color surface roles are in `./colors/_semantic-surface.css`. */
 
-	/* Generic floating surface shadows. */
+	/**
+	 * Shadow of floating surfaces, such as balloons, dropdown panels, dialogs, and the toolbar while it sticks
+	 * to the top of the viewport.
+	 */
+	/* Backward compatibility: most surfaces that read this role, such as balloons and dropdown panels, read
+	   the legacy `--ck-drop-shadow` first if overridden. Dialogs read the legacy `--ck-dialog-drop-shadow`
+	   instead, as in the legacy theme. */
 	--ck-shadow-surface-floating: var(--ck-shadow-xl);
 
-	/* Generic raised surface shadows. */
+	/**
+	 * Shadow of raised surfaces that sit on another surface.
+	 */
 	--ck-shadow-surface-raised: var(--ck-shadow-lg);
 }

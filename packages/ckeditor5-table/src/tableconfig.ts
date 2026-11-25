@@ -689,6 +689,8 @@ export interface TableLayoutConfig {
 	 * Sets the preferred type for loading external tables.
 	 *
 	 * This setting overrides the default detection method and uses the specified type ('content' or 'layout').
+	 * It does not apply to tables already marked with a table type in the editor output, that is, a `<table>` element
+	 * with the `content-table` or `layout-table` class, or a `<figure>` element with the `content-table` class.
 	 *
 	 * ```ts
 	 * ClassicEditor

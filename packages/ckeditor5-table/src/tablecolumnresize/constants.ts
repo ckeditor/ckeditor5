@@ -24,20 +24,6 @@ export const COLUMN_MIN_WIDTH_AS_PERCENTAGE = 5;
 export const COLUMN_MIN_WIDTH_IN_PIXELS = 40;
 
 /**
- * Determines how many digits after the decimal point are used to store the column width as a percentage value.
- *
- * @internal
- */
-export const COLUMN_WIDTH_PRECISION = 2;
-
-/**
- * The distance in pixels that the mouse has to move to start resizing the column.
- *
- * @internal
- */
-export const COLUMN_RESIZE_DISTANCE_THRESHOLD = 3;
-
-/**
  * The distance (in pixels) around the container's width within which a dragged table edge snaps to exactly
  * 100% of the container width, in either direction - making it easy to precisely land on that value.
  *

@@ -27,8 +27,9 @@ import { first } from '@ckeditor/ckeditor5-utils';
 import type { ViewDocumentClipboardOutputEvent } from '@ckeditor/ckeditor5-clipboard';
 
 import { TableEditing } from '../tableediting.js';
+import { TableHeightEditing } from '../tableheight/tableheightediting.js';
+import { enableTableToFigureProperty } from '../utils/common.js';
 import {
-	downcastAttributeToStyle,
 	downcastTableAttribute,
 	getDefaultValueAdjusted,
 	upcastBorderStyles,
@@ -42,7 +43,6 @@ import { TableBorderColorCommand } from './commands/tablebordercolorcommand.js';
 import { TableBorderStyleCommand } from './commands/tableborderstylecommand.js';
 import { TableBorderWidthCommand } from './commands/tableborderwidthcommand.js';
 import { TableWidthCommand } from './commands/tablewidthcommand.js';
-import { TableHeightCommand } from './commands/tableheightcommand.js';
 import { TableAlignmentCommand } from './commands/tablealignmentcommand.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 
@@ -96,8 +96,8 @@ export class TablePropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public static get requires(): PluginDependenciesOf<[ TableEditing ]> {
-		return [ TableEditing ];
+	public static get requires(): PluginDependenciesOf<[ TableEditing, TableHeightEditing ]> {
+		return [ TableEditing, TableHeightEditing ];
 	}
 
 	/**
@@ -143,15 +143,6 @@ export class TablePropertiesEditing extends Plugin {
 			defaultValue: defaultTableProperties.width
 		} );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, defaultTableProperties.width ) );
-
-		enableTableToFigureProperty( schema, conversion, {
-			modelAttribute: 'tableHeight',
-			styleName: 'height',
-			attributeName: 'height',
-			attributeType: 'length',
-			defaultValue: defaultTableProperties.height
-		} );
-		editor.commands.add( 'tableHeight', new TableHeightCommand( editor, defaultTableProperties.height ) );
 
 		editor.data.addStyleProcessorRules( addBackgroundStylesRules );
 		enableProperty( schema, conversion, {
@@ -519,40 +510,6 @@ function enableProperty(
 
 	upcastStyleToAttribute( conversion, { viewElement: 'table', ...options } );
 	downcastTableAttribute( conversion, options );
-}
-
-/**
- * Enables conversion for an attribute for simple view (figure) to model (table) mappings.
- */
-function enableTableToFigureProperty(
-	schema: ModelSchema,
-	conversion: Conversion,
-	options: {
-		modelAttribute: string;
-		styleName: string;
-		attributeName?: string;
-		attributeType?: 'length' | 'color';
-		defaultValue: string;
-	}
-) {
-	const { modelAttribute } = options;
-
-	schema.extend( 'table', {
-		allowAttributes: [ modelAttribute ]
-	} );
-
-	schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
-
-	upcastStyleToAttribute( conversion, {
-		viewElement: /^(table|figure)$/,
-		shouldUpcast: ( viewElement: ViewElement ) => !(
-			viewElement.name == 'table' && viewElement.parent!.name == 'figure' ||
-			viewElement.name == 'figure' && !viewElement.hasClass( 'table' )
-		),
-		...options
-	} );
-
-	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }
 
 /**

@@ -19,7 +19,7 @@ import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { ListProperties, TodoList } from '@ckeditor/ckeditor5-list';
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-import { TableCellProperties, TableProperties, TableCaption, TableColumnResize } from '@ckeditor/ckeditor5-table';
+import { TableCellProperties, TableProperties, TableCaption, TableColumnResize, TableRowResize } from '@ckeditor/ckeditor5-table';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 
@@ -36,7 +36,7 @@ ClassicEditor
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code,
 			FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
 			CodeBlock, TodoList, ListProperties, TableProperties, TableCellProperties, TableCaption,
-			TableColumnResize, EasyImage, ImageResize, LinkImage, HtmlEmbed,
+			TableColumnResize, TableRowResize, EasyImage, ImageResize, LinkImage, HtmlEmbed,
 			Alignment, IndentBlock,
 			PageBreak, HorizontalLine,
 			ImageUpload, CloudServices,

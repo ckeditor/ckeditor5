@@ -66,7 +66,7 @@
 
 .ck.ck-dialog {
 	border-radius: var(--ck-dialog-border-radius);
-	/* Backward compatibility: falls back to legacy --ck-dialog-drop-shadow if overridden. */
+	/* Backward compatibility: reads the legacy `--ck-dialog-drop-shadow` first if overridden. */
 	box-shadow: var(--ck-dialog-drop-shadow, var(--ck-dialog-shadow)), 0 0;
 
 	background: var(--ck-color-dialog-background, var(--ck-dialog-background-color));
@@ -78,7 +78,7 @@
 	position: absolute;
 
 	& .ck.ck-form__header {
-		/* Backward compatibility: falls back to legacy --ck-color-dialog-form-header-border if overridden. */
+		/* Backward compatibility: reads the legacy `--ck-color-dialog-form-header-border` first if overridden. */
 		border-bottom: var(--ck-color-dialog-form-header-border, var(--ck-border-divider));
 		/* Dialog-scoped header padding; defaults to the generic form-header padding. */
 		padding: var(--ck-dialog-header-padding);
