@@ -11,10 +11,6 @@ modified_at: 2026-11-05
 
 This page focuses on describing the usage of the multi-root editor in Angular applications. For other editor types, see the {@link getting-started/integrations-cdn/angular-default-cdn default Angular integration}.
 
-<info-box experimental>
-	The Angular multi-root editor integration is in early access. Its API is not stable and may change in any release without a major version bump.
-</info-box>
-
 <info-box hint>
 	The multi-root editors in Angular are supported since version 13.1.0 of this package.
 </info-box>

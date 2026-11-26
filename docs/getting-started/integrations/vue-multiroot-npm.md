@@ -11,10 +11,6 @@ modified_at: 2026-07-13
 
 This page focuses on describing the usage of the multi-root editor in Vue applications. For other editor types, see the {@link getting-started/integrations/vue-default-npm default Vue.js 3+ integration}.
 
-<info-box experimental>
-	The Vue multi-root editor integration is experimental. Its API is not stable and may change in any release without a major version bump.
-</info-box>
-
 <info-box hint>
 	The multi-root editors in Vue are supported since version 8.2.0 of this package.
 </info-box>

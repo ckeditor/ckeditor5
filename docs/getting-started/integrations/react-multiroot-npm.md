@@ -11,12 +11,6 @@ modified_at: 2026-05-25
 
 You can add the CKEditor&nbsp;5 multi-root editor to a React application using the `useMultiRootEditor` hook from the official CKEditor&nbsp;5 React integration. A multi-root editor has several separate editable areas (roots) that form a single document while sharing one toolbar, configuration, and undo stack. The hook returns the toolbar and editable elements to render, along with the editor instance and its data. For other editor types, see the {@link getting-started/integrations/react-default-npm default React integration}.
 
-<info-box hint>
-	The multi-root editors in React are supported since version 6.2.0 of this package.
-
-	Unlike the {@link getting-started/integrations/react-default-npm default integration}, we prepared the multi-root editor integration based on the hooks and new React mechanisms.
-</info-box>
-
 ## Quick start
 
 This guide assumes you already have a React project. If you want to create a new one, you can use the [Vite](https://vitejs.dev/guide/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
