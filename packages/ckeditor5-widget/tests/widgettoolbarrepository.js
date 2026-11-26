@@ -275,6 +275,18 @@ describe( 'WidgetToolbarRepository', () => {
 				expect( toolbarDefinition.view.items.length ).toBe( 1 );
 			} );
 		} );
+
+		it( 'should add only the widget toolbar class when balloonClassName is empty', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null,
+				balloonClassName: ''
+			} );
+
+			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+			expect( toolbarDefinition.balloonClassName ).toBe( 'ck-toolbar-container_widget' );
+		} );
 	} );
 
 	describe( 'integration tests', () => {

@@ -198,12 +198,10 @@ export class WidgetToolbarRepository extends Plugin {
 			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
-		const normalizedBalloonClassName = balloonClassName.split( /\s+/ ).filter( Boolean ).join( ' ' );
-
 		const toolbarDefinition: WidgetRepositoryToolbarDefinition = {
 			view: toolbarView,
 			getRelatedElement,
-			balloonClassName: `${ normalizedBalloonClassName } ck-toolbar-container_widget`,
+			balloonClassName: `${ balloonClassName } ck-toolbar-container_widget`.trim(),
 			itemsConfig: items,
 			positions,
 			initialized: false
