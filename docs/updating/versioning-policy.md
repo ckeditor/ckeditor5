@@ -1,7 +1,7 @@
 ---
 menu-title: Versioning policy
 meta-title: Versioning and release process | CKEditor 5 Documentation
-meta-description: How CKEditor 5 is versioned and released - aligned versions across packages, release channels (stable, nightly, alpha/RC), and guidance on staying up to date.
+meta-description: How CKEditor 5 is versioned and released - aligned versions across packages, release channels, LTS releases, and guidance on staying up to date.
 category: updating
 order: 40
 ---
@@ -63,13 +63,22 @@ Breaking changes are categorized based on which layer of the ecosystem they affe
 
 ## Release schedule
 
-We typically publish a **new major release of CKEditor 5 every 6 months**, though in some cases new majors may arrive sooner. Each new major replaces the previous one as the actively supported version, ensuring that all users benefit from the latest improvements, fixes, and compatibility updates.
+We aim to publish a **new major release of CKEditor 5 about every 6 months**. This is a target, not a guarantee, so a new major may arrive sooner or later than that. Each new major replaces the previous one as the actively supported version, ensuring that all users benefit from the latest improvements, fixes, and compatibility updates.
 
-For projects that need **long-term stability**, we also offer the commercial **CKEditor 5 LTS (Long-term Support) Edition**. Every two years, one major release (starting with **v47.0.0**) is designated as an LTS release, providing up to **3 years of guaranteed updates** &ndash; 6 months of active development followed by 2.5 years of maintenance with security and critical compatibility fixes. Read more in the {@link getting-started/setup/using-lts-edition CKEditor 5 LTS Edition} guide.
+## LTS releases
+
+Not every project can adopt each new major release. For projects that need **long-term stability**, we also offer the commercial **CKEditor&nbsp;5 LTS (Long-term Support) Edition**. Every two years, one major release (starting with **v47.0.0**) is designated as an LTS release, providing up to **3 years of guaranteed updates** in two phases:
+
+* **Active phase (first 6 months)** &ndash; New features and bug fixes with no breaking changes. A closed, pre-announced set of new features may introduce minor breaking changes.
+* **Maintenance phase (next 2.5 years)** &ndash; Security fixes and critical or high-severity third-party compatibility updates. Versions released in this phase are available to LTS Edition customers only.
+
+Regular releases do not have a Maintenance phase. Security and third-party compatibility fixes are delivered only in the latest version.
 
 <info-box>
-	For **v47.x**, the **Active phase ends in April 2026**, at which point the release enters the **Maintenance phase**. From then on, all new versions in the `v47.x` line will be distributed under a **commercial LTS Edition license**. Integrators without an LTS license should migrate to **v48.x** (the next regular release).
+	For **v47.x**, the **Active phase ended in April 2026** and the release is now in the **Maintenance phase**. New versions in the `v47.x` line are distributed under a **commercial LTS Edition license**. Integrators without an LTS license should migrate to the latest regular release.
 </info-box>
+
+For the full release schedule, installation instructions, warranties, and compatibility details, see the {@link getting-started/setup/using-lts-edition CKEditor&nbsp;5 LTS Edition} guide. For the LTS Edition changelog, see the {@link updating/changelog#lts-edition-releases LTS Edition releases} section of the Changelog guide.
 
 ## Release channels
 

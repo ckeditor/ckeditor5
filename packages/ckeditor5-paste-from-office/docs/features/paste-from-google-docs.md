@@ -61,19 +61,13 @@ ClassicEditor
 
 ## Support for other applications
 
-At the current stage, the focus of the `@ckeditor/ckeditor5-paste-from-office` package is on supporting content that comes from {@link features/paste-from-office Microsoft Word} and Google Docs. However, it does not mean that pasting from other similar applications (such as Microsoft Excel) is not supported.
+At the current stage, the focus of the `@ckeditor/ckeditor5-paste-from-office` package is on supporting content that comes from {@link features/paste-from-office Microsoft Word}, Microsoft Excel, and Google Docs. However, it does not mean that pasting from other similar applications (such as Microsoft PowerPoint) is not supported.
 
 By default, CKEditor&nbsp;5 will support pasting rich-text content from these applications, however, some styles and formatting may be lost, depending on the source application. Also, other minor bugs may appear.
 
 You can find more information regarding compatibility with other applications in [this ticket](https://github.com/ckeditor/ckeditor5/issues/1184#issuecomment-409828069).
 
-If you think that support for any of the applications needs improvements, add 👍 and comments in the following issues:
-
-* [Support pasting from Excel](https://github.com/ckeditor/ckeditor5/issues/2513).
-* [Support pasting from Libre Office](https://github.com/ckeditor/ckeditor5/issues/2520).
-* [Support pasting from Pages](https://github.com/ckeditor/ckeditor5/issues/2527).
-
-Feel free to open a [new feature request](https://github.com/ckeditor/ckeditor5/issues/new/choose) for other similar applications, too!
+If you need better support for other applications, such as LibreOffice or Pages, [contact us](https://ckeditor.com/contact/).
 
 ## Related features
 

@@ -30,6 +30,10 @@ For general tips on how to take care of your CKEditor&nbsp;5 installation, pleas
 
 Regular code releases bring new features and improvements to CKEditor5. Visit the {@link updating/versioning-policy Versioning policy} section to check release practices and versioning strategy.
 
+## CKEditor&nbsp;5 LTS Edition
+
+If your project cannot be updated with every major release, the commercial CKEditor&nbsp;5 LTS (Long-term Support) Edition provides up to 3 years of updates for a single major version. See the {@link updating/versioning-policy#lts-releases LTS releases} section of the Versioning policy guide.
+
 ## Updating your CKEditor&nbsp;5
 
 Visit the {@link updating/updating-ckeditor-5 Updating CKEditor&nbsp;5} guide for information on how to update your installation to the newest available stable version of the software. Visit the dedicated update guides for specific CKEditor&nbsp;5 release versions if you need to catch up with the latest release.
