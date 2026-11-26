@@ -130,8 +130,8 @@ export class WidgetToolbarRepository extends Plugin {
 	 * Registers toolbar in the WidgetToolbarRepository. It renders it in the `ContextualBalloon` based on the value of the invoked
 	 * `getRelatedElement` function. Toolbar items are gathered from `items` array.
 	 *
-	 * The balloon's CSS classes always include `ck-toolbar-container` and `ck-toolbar-container_widget`. Any custom classes passed via
-	 * the `balloonClassName` option are preserved and combined with them without duplicates.
+	 * The balloon's CSS classes always include `ck-toolbar-container_widget`. The `ck-toolbar-container` class is included by default
+	 * through the `balloonClassName` option, but can be replaced by providing custom classes. Any custom classes are preserved.
 	 *
 	 * Note: This method should be called in the {@link module:core/plugin~PluginInterface#afterInit `Plugin#afterInit()`}
 	 * callback (or later) to make sure that the given toolbar items were already registered by other plugins.
@@ -141,8 +141,9 @@ export class WidgetToolbarRepository extends Plugin {
 	 * @param options.ariaLabel Label used by assistive technologies to describe this toolbar element.
 	 * @param options.items Array of toolbar items.
 	 * @param options.getRelatedElement Callback which returns an element the toolbar should be attached to.
-	 * @param options.balloonClassName Additional CSS class(es) for the widget balloon. Custom classes are preserved, and
-	 * `ck-toolbar-container` and `ck-toolbar-container_widget` are added automatically.
+	 * @param options.balloonClassName CSS class(es) for the widget balloon. Defaults to `ck-toolbar-container`.
+	 * The `ck-toolbar-container_widget` class is always added automatically, while custom classes replace the default
+	 * `ck-toolbar-container` class unless explicitly included.
 	 */
 	public register(
 		toolbarId: string,
@@ -197,15 +198,12 @@ export class WidgetToolbarRepository extends Plugin {
 			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}
 
-		const balloonClasses = new Set( [
-			...balloonClassName.split( /\s+/ ).filter( Boolean ),
-			'ck-toolbar-container_widget'
-		] );
+		const normalizedBalloonClassName = balloonClassName.split( /\s+/ ).filter( Boolean ).join( ' ' );
 
 		const toolbarDefinition: WidgetRepositoryToolbarDefinition = {
 			view: toolbarView,
 			getRelatedElement,
-			balloonClassName: Array.from( balloonClasses ).join( ' ' ),
+			balloonClassName: `${ normalizedBalloonClassName } ck-toolbar-container_widget`,
 			itemsConfig: items,
 			positions,
 			initialized: false

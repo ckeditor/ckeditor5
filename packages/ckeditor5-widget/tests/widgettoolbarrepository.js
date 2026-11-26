@@ -109,20 +109,6 @@ describe( 'WidgetToolbarRepository', () => {
 			);
 		} );
 
-		it( 'should not duplicate the toolbar container class when provided in custom classes', () => {
-			widgetToolbarRepository.register( 'fake', {
-				items: editor.config.get( 'fake.toolbar' ),
-				getRelatedElement: () => null,
-				balloonClassName: 'my-custom-toolbar ck-toolbar-container'
-			} );
-
-			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
-
-			expect( toolbarDefinition.balloonClassName ).toBe(
-				'my-custom-toolbar ck-toolbar-container ck-toolbar-container_widget'
-			);
-		} );
-
 		describe( 'Focus handling and navigation across toolbars using keyboard', () => {
 			it( 'should register the toolbar as focusable toolbar in EditorUI with proper configuration', () => {
 				widgetToolbarRepository.register( 'fake', {

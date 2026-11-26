@@ -106,9 +106,9 @@ Until you set them, toolbar buttons use `--ck-button-border` and `--ck-button-bo
 
 An open dropdown or split button in a toolbar also uses `--ck-toolbar-button-border-radius`, ahead of `--ck-dropdown-panel-uniform-button-border-radius`. If you set both, for example `--ck-dropdown-panel-uniform-button-border-radius: initial` to keep the attached-corner look, the toolbar button radius wins for open dropdowns in toolbars. The vertical toolbar keeps its own `--ck-toolbar-vertical-button-border-radius`.
 
-#### Styling individual contextual toolbars
+#### Styling individual toolbar panels
 
-Toolbar panels have specific CSS classes that identify their purpose. You can use these classes to customize individual toolbars without applying the overrides to every toolbar panel:
+Toolbar panels have specific CSS classes that identify their purpose. You can use these classes to customize individual toolbar panels without applying the overrides to every toolbar:
 
 * `.ck-toolbar-container_editor` – the main toolbar panel of the inline editor.
 * `.ck-toolbar-container_balloon` – the balloon toolbar, including the selection toolbar in other editor types.
@@ -116,9 +116,10 @@ Toolbar panels have specific CSS classes that identify their purpose. You can us
 * `.ck-toolbar-container_block` – the block toolbar panel.
 * `.ck-toolbar-container_link` – the link toolbar balloon.
 
-For example, to customize buttons in the balloon toolbar:
+For example, you can customize buttons in specific toolbar panels:
 
 ```css
+/* Customize buttons in the balloon toolbar only. */
 .ck-toolbar-container_balloon {
 	--ck-toolbar-button-border: 1px solid hsl(0, 0%, 0%);
 	--ck-toolbar-button-border-radius: 0;
