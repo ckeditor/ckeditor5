@@ -145,12 +145,13 @@ export {
 } from './listproperties/utils/style.js';
 
 // ListFormatting.
-export { ListFormatting } from './listformatting.js';
+export { ListFormatting, type ListFormattingIsMarkerFromBlockEvent } from './listformatting.js';
 export { ListItemBoldIntegration } from './listformatting/listitemboldintegration.js';
 export { ListItemItalicIntegration } from './listformatting/listitemitalicintegration.js';
 export { ListItemFontSizeIntegration } from './listformatting/listitemfontsizeintegration.js';
 export { ListItemFontColorIntegration } from './listformatting/listitemfontcolorintegration.js';
 export { ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
+export { ListItemHeadingIntegration } from './listformatting/listitemheadingintegration.js';
 
 // TodoList/
 export { TodoList } from './todolist.js';

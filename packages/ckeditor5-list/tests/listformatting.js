@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Plugin } from '@ckeditor/ckeditor5-core';
@@ -19,6 +19,7 @@ import { ListItemBoldIntegration } from '../src/listformatting/listitemboldinteg
 import { ListItemItalicIntegration } from '../src/listformatting/listitemitalicintegration.js';
 import { ListItemFontSizeIntegration } from '../src/listformatting/listitemfontsizeintegration.js';
 import { ListItemFontColorIntegration } from '../src/listformatting/listitemfontcolorintegration.js';
+import { ListItemHeadingIntegration } from '../src/listformatting/listitemheadingintegration.js';
 
 describe( 'ListFormatting', () => {
 	let editor, model, docSelection;
@@ -80,7 +81,8 @@ describe( 'ListFormatting', () => {
 			ListItemItalicIntegration,
 			ListItemFontSizeIntegration,
 			ListItemFontColorIntegration,
-			ListItemFontFamilyIntegration
+			ListItemFontFamilyIntegration,
+			ListItemHeadingIntegration
 		] );
 	} );
 
@@ -917,6 +919,198 @@ describe( 'ListFormatting', () => {
 						'<$text inlineFormat="foo" inlineFormat2="baz">fo</$text>' +
 						'<$text inlineFormat="foo" inlineFormat2="bar">o</$text>' +
 					'</paragraph>'
+				);
+			} );
+		} );
+	} );
+
+	describe( 'registerMarkerFromBlockCheck()', () => {
+		let editor, model, checkSpy;
+
+		beforeEach( async () => {
+			checkSpy = vi.fn( block => block.getAttribute( 'blockStyle' ) == 'fancy' );
+
+			editor = await VirtualTestEditor.create( {
+				plugins: [ ListFormatting, Paragraph, BlockQuoteEditing ],
+				list: {
+					enableListItemMarkerFromBlock: true
+				}
+			} );
+
+			model = editor.model;
+
+			model.schema.extend( 'paragraph', { allowAttributes: 'blockStyle' } );
+			editor.conversion.attributeToAttribute( { model: 'blockStyle', view: 'data-block-style' } );
+
+			editor.plugins.get( ListFormatting ).registerMarkerFromBlockCheck( checkSpy );
+
+			stubUid();
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should set the attribute on all blocks of a list item if the check passes for its first block', () => {
+			_setModelData( model,
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="b" listType="bulleted">baz</paragraph>'
+			);
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listItemMarkerFromBlock="true" listType="bulleted">' +
+					'foo' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listItemMarkerFromBlock="true" listType="bulleted">bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="b" listType="bulleted">baz</paragraph>'
+			);
+		} );
+
+		it( 'should pass the first block of a list item to the check', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listType="bulleted">bar</paragraph>'
+			);
+
+			const root = model.document.getRoot();
+
+			expect( checkSpy ).toHaveBeenCalled();
+
+			for ( const [ block ] of checkSpy.mock.calls ) {
+				expect( block ).toBe( root.getChild( 0 ) );
+			}
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listType="bulleted">bar</paragraph>'
+			);
+		} );
+
+		it( 'should not call the check for a to-do list item', () => {
+			_setModelData( model,
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listType="todo">foo</paragraph>'
+			);
+
+			expect( checkSpy ).not.toHaveBeenCalled();
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listType="todo">foo</paragraph>'
+			);
+		} );
+
+		it( 'should update the attribute when an attribute of the first block changes', () => {
+			_setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">bar</paragraph>'
+			);
+
+			const firstBlock = model.document.getRoot().getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'blockStyle', 'fancy', firstBlock );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listItemMarkerFromBlock="true" listType="bulleted">' +
+					'foo' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listItemMarkerFromBlock="true" listType="bulleted">bar</paragraph>'
+			);
+
+			model.change( writer => {
+				writer.removeAttribute( 'blockStyle', firstBlock );
+			} );
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">bar</paragraph>'
+			);
+		} );
+
+		it( 'should allow opting out with a listener on the decorated isMarkerFromBlock() method', () => {
+			editor.plugins.get( ListFormatting ).on( 'isMarkerFromBlock', ( evt, [ block ] ) => {
+				if ( block.getAttribute( 'listType' ) == 'customNumbered' ) {
+					evt.return = false;
+					evt.stop();
+				}
+			}, { priority: 'high' } );
+
+			_setModelData( model,
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listType="customNumbered">foo</paragraph>' +
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="b" listType="numbered">bar</paragraph>'
+			);
+
+			expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listType="customNumbered">foo</paragraph>' +
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="b" listItemMarkerFromBlock="true" listType="numbered">' +
+					'bar' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should downcast the attribute as a class on <li>', () => {
+			_setModelData( model,
+				'<paragraph blockStyle="fancy" listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
+			);
+
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
+				'<ul><li class="ck-list-marker-from-block"><p data-block-style="fancy">foo</p></li></ul>'
+			);
+		} );
+
+		it( 'should keep the attribute consistent when the data is loaded', () => {
+			editor.setData(
+				'<ul>' +
+					'<li><p data-block-style="fancy">foo</p></li>' +
+					'<li class="ck-list-marker-from-block"><p>bar</p></li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqualMarkup(
+				'<ul>' +
+					'<li class="ck-list-marker-from-block"><p data-block-style="fancy">foo</p></li>' +
+					'<li>bar</li>' +
+				'</ul>'
+			);
+		} );
+	} );
+
+	describe( 'enableListItemMarkerFromBlock', () => {
+		it( 'should be disabled by default', () => {
+			expect( editor.config.get( 'list.enableListItemMarkerFromBlock' ) ).toBe( false );
+		} );
+
+		describe( 'when not enabled', () => {
+			let editor, model, checkSpy;
+
+			beforeEach( async () => {
+				checkSpy = vi.fn( () => true );
+
+				editor = await VirtualTestEditor.create( {
+					plugins: [ ListFormatting, Paragraph ]
+				} );
+
+				model = editor.model;
+
+				editor.plugins.get( ListFormatting ).registerMarkerFromBlockCheck( checkSpy );
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			it( 'should not call the registered checks nor set the attribute', () => {
+				_setModelData( model,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'alignment', 'right', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( checkSpy ).not.toHaveBeenCalled();
+				expect( _getModelData( model, { withoutSelection: true } ) ).toEqualMarkup(
+					'<paragraph alignment="right" listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>'
 				);
 			} );
 		} );

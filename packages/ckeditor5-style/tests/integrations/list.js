@@ -699,7 +699,119 @@ describe( 'ListStyleSupport', () => {
 		);
 	} );
 
-	async function createEditor( styleDefinitions ) {
+	describe( 'list marker formatting', () => {
+		beforeEach( async () => {
+			editorElement.remove();
+			await editor.destroy();
+
+			await createEditor( [
+				{ name: 'LI style', element: 'li', classes: [ 'li-styled' ] },
+				{ name: 'OL style', element: 'ol', classes: [ 'ol-styled' ] },
+				{ name: 'P style', element: 'p', classes: [ 'p-styled' ] },
+				{ name: 'Blockquote style', element: 'blockquote', classes: [ 'bq-styled' ] }
+			], { enableListItemMarkerFromBlock: true } );
+		} );
+
+		it( 'should not render the marker by the block when enableListItemMarkerFromBlock is not set', async () => {
+			editorElement.remove();
+			await editor.destroy();
+
+			await createEditor( [
+				{ name: 'P style', element: 'p', classes: [ 'p-styled' ] }
+			] );
+
+			editor.setData( '<ol><li><p class="p-styled">foo</p></li></ol>' );
+
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ol><li><p class="p-styled">foo</p></li></ol>' );
+		} );
+
+		it( 'should render the marker by the first block when a block style is applied to it', () => {
+			editor.setData( '<ol><li><p>foo</p><p>bar</p></li></ol>' );
+
+			model.change( writer => {
+				writer.setSelection( root.getChild( 0 ), 0 );
+			} );
+
+			command.execute( { styleName: 'P style' } );
+
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual(
+				'<ol><li class="ck-list-marker-from-block"><p class="p-styled">foo</p><p>bar</p></li></ol>'
+			);
+			expect( root.getChild( 1 ).getAttribute( 'listItemMarkerFromBlock' ) ).toBe( true );
+		} );
+
+		it( 'should restore the default marker when the block style is removed', () => {
+			editor.setData( '<ol><li><p class="p-styled">foo</p></li></ol>' );
+
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual(
+				'<ol><li class="ck-list-marker-from-block"><p class="p-styled">foo</p></li></ol>'
+			);
+
+			model.change( writer => {
+				writer.setSelection( root.getChild( 0 ), 0 );
+			} );
+
+			command.execute( { styleName: 'P style' } );
+
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ol><li>foo</li></ol>' );
+		} );
+
+		it( 'should not render the marker by the block when the style is applied to a block that is not first in the list item', () => {
+			editor.setData( '<ol><li><p>foo</p><p class="p-styled">bar</p></li></ol>' );
+
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual( '<ol><li><p>foo</p><p class="p-styled">bar</p></li></ol>' );
+		} );
+
+		it( 'should not render the marker by the block for list item and list styles', () => {
+			editor.setData(
+				'<ol class="ol-styled">' +
+					'<li class="li-styled"><p>foo</p></li>' +
+				'</ol>'
+			);
+
+			expect( root.getChild( 0 ).hasAttribute( 'listItemMarkerFromBlock' ) ).toBe( false );
+		} );
+
+		it( 'should not render the marker by the block for a styled block that is not a text block', () => {
+			editor.setData( '<ol><li><blockquote class="bq-styled"><p>foo</p></blockquote></li></ol>' );
+
+			expect( root.getChild( 0 ).name ).toBe( 'blockQuote' );
+			expect( root.getChild( 0 ).hasAttribute( 'listItemMarkerFromBlock' ) ).toBe( false );
+		} );
+
+		it( 'should work without style definitions', async () => {
+			editorElement.remove();
+			await editor.destroy();
+
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Paragraph, Heading, List, GeneralHtmlSupport, Style ],
+				list: {
+					enableListItemMarkerFromBlock: true
+				}
+			} );
+
+			editor.setData( '<ol><li><p>foo</p></li><li><h2>bar</h2></li></ol>' );
+
+			expect( editor.getData( { skipListItemIds: true } ) ).toEqual(
+				'<ol><li>foo</li><li class="ck-list-marker-from-block"><h2>bar</h2></li></ol>'
+			);
+		} );
+
+		it( 'should not render the marker by the block for a to-do like list type change', () => {
+			editor.setData( '<ul><li><p class="p-styled">foo</p></li></ul>' );
+
+			expect( root.getChild( 0 ).getAttribute( 'listItemMarkerFromBlock' ) ).toBe( true );
+
+			changeListType( root.getChild( 0 ), 'todo' );
+
+			expect( root.getChild( 0 ).hasAttribute( 'listItemMarkerFromBlock' ) ).toBe( false );
+		} );
+	} );
+
+	async function createEditor( styleDefinitions, listConfig = {} ) {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
@@ -709,7 +821,8 @@ describe( 'ListStyleSupport', () => {
 			],
 			style: {
 				definitions: styleDefinitions
-			}
+			},
+			list: listConfig
 		} );
 
 		model = editor.model;

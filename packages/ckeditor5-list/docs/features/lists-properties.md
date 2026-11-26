@@ -81,6 +81,8 @@ The list item marker formatting feature automatically applies text formatting to
 
 When this feature is enabled, if the whole list item content is consistently styled using any of the supported formats, the bullet or number marker will reflect the same style automatically. For example, if a list item is entirely bold, its marker will appear bold as well.
 
+The marker can also reflect the styles of the block that starts the list item. This is disabled by default, see [Markers of list items that start with a heading or a styled block](#markers-of-list-items-that-start-with-a-heading-or-a-styled-block) below. When it is enabled and the first block of a bulleted or numbered list item is a {@link features/headings heading} or has a block style applied with the {@link features/style style feature} (for example, `<p class="lead">`), the marker takes the font size, font family, font weight, font style, and color of that block. This includes the styles defined in your own style sheets, so a heading in a list looks the same as its marker.
+
 ### Demo
 
 Select the entire content of a list item and apply a format like bold, italic, or a font style. If the whole item is formatted, the list marker will automatically update to match.
@@ -112,6 +114,52 @@ The feature sets the variables on the `<li>` element itself, so redefining them 
 
 <info-box info>
 	By default, the {@link features/font#configuring-the-font-size-feature font size feature} uses named presets. For a preset, the feature adds the `ck-list-marker-font-size-tiny`, `ck-list-marker-font-size-small`, `ck-list-marker-font-size-big`, or `ck-list-marker-font-size-huge` class to the list item, and the marker size comes from the matching `--ck-content-font-size-*` variable. The `ck-list-marker-font-size` class and the `--ck-content-list-marker-font-size` variable are used when the feature is configured with {@link features/font#using-numerical-values numerical values}. Include all these classes in your selector if you want every marker to keep one size.
+</info-box>
+
+### Markers of list items that start with a heading or a styled block
+
+To make the marker follow the block that starts the list item, set the {@link module:list/listconfig~ListConfig#enableListItemMarkerFromBlock `list.enableListItemMarkerFromBlock`} option to `true`. It requires list item marker formatting to be enabled (which is the default):
+
+```js
+ClassicEditor
+	.create( {
+		attachTo: document.querySelector( '#editor' ),
+		// ... Other configuration options ...
+		list: {
+			enableListItemMarkerFromBlock: true
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+When the marker follows the block that starts the list item, the feature adds the `ck-list-marker-from-block` class to the `<li>` element. The content styles then render the marker with the first child of the list item instead of the `<li>` element itself:
+
+```css
+.ck-content li.ck-list-marker-from-block {
+	display: block;
+}
+
+.ck-content li.ck-list-marker-from-block > :first-child {
+	display: list-item;
+}
+```
+
+The block stays in the same list, so the numbering continues, and the marker keeps the list style type, such as `upper-roman`. Formatting applied to the whole content of the list item, for example a smaller font size of the entire heading text, still takes precedence over the styles of the block.
+
+If you style the markers with your own CSS, target the first child of such list items as well. Rules for the `::marker` of the `<li>` element itself (for example `.ck-content li::marker { color: gray; }` or a list item style from the style feature) do not apply to these list items, because the marker belongs to the block:
+
+```css
+.ck-content li::marker,
+.ck-content li.ck-list-marker-from-block > :first-child::marker {
+	color: gray;
+}
+```
+
+<info-box info>
+	This applies only to bulleted and numbered lists with native markers. To-do lists and {@link features/multi-level-lists multi-level lists} render their own markers, so their list items never get the `ck-list-marker-from-block` class. A multi-level list marker is rendered inside the block, so it reflects the block styles anyway. A feature that renders its own markers can opt out by listening to the decorated `ListFormatting#isMarkerFromBlock()` method.
+
+	The marker is rendered by the first child element of the list item. If your integration inserts a custom element before the first block of a bulleted or numbered list item (for example, with a custom list item marker downcast strategy), do not enable this option or override the styles above.
 </info-box>
 
 ### Marker width and list alignment

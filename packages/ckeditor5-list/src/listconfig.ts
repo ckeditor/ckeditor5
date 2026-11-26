@@ -54,12 +54,38 @@ export interface ListConfig {
 	 * * {@link module:list/listformatting/listitemfontcolorintegration~ListItemFontColorIntegration Font color}
 	 * * {@link module:list/listformatting/listitemboldintegration~ListItemBoldIntegration Bold}
 	 * * {@link module:list/listformatting/listitemitalicintegration~ListItemItalicIntegration Italic}
+	 * * {@link module:list/listformatting/listitemheadingintegration~ListItemHeadingIntegration Heading}
+	 *   (requires {@link #enableListItemMarkerFromBlock})
 	 *
 	 * **Note:** This is enabled by default.
 	 *
 	 * @default true
 	 */
 	enableListItemMarkerFormatting?: boolean;
+
+	/**
+	 * When set to `true`, the marker of a bulleted or numbered list item that starts with a heading (or with a block
+	 * that has a style from the style feature) is rendered by that block instead of the `<li>` element, so the marker
+	 * looks like the block. Such `<li>` elements get the `ck-list-marker-from-block` class.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		attachTo: document.querySelector( '#editor' ),
+	 * 		list: {
+	 * 			enableListItemMarkerFromBlock: true
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * **Note:** This option requires {@link #enableListItemMarkerFormatting} to be enabled. When it is enabled, custom
+	 * `li::marker` styles no longer apply to such list items. Target `li.ck-list-marker-from-block > :first-child::marker` instead.
+	 *
+	 * @default false
+	 */
+	enableListItemMarkerFromBlock?: boolean;
 
 	/**
 	 * When set to `true`, list items can be indented by more than one level relative to their parent.

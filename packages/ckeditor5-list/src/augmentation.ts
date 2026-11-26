@@ -32,6 +32,7 @@ import type {
 	ListItemFontSizeIntegration,
 	ListItemFontColorIntegration,
 	ListItemFontFamilyIntegration,
+	ListItemHeadingIntegration,
 
 	LegacyList,
 	LegacyListEditing,
@@ -81,6 +82,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ListItemFontSizeIntegration.pluginName ]: ListItemFontSizeIntegration;
 		[ ListItemFontColorIntegration.pluginName ]: ListItemFontColorIntegration;
 		[ ListItemFontFamilyIntegration.pluginName ]: ListItemFontFamilyIntegration;
+		[ ListItemHeadingIntegration.pluginName ]: ListItemHeadingIntegration;
 
 		[ LegacyList.pluginName ]: LegacyList;
 		[ LegacyListEditing.pluginName ]: LegacyListEditing;

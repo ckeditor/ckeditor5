@@ -37,6 +37,23 @@
 	}
 
 	/*
+	 * When the first block of a list item has its own typography (for example, it is a heading), the marker is rendered
+	 * by that block instead of the `<li>` element. Thanks to that, the marker inherits all the block styles (font size,
+	 * family, weight, style and color), including the ones defined outside of the editor. The block still belongs to the
+	 * same list, so it continues the numbering and inherits `list-style-type` from the list.
+	 *
+	 * The explicit marker formatting (see below) is applied to the marker rendered by the block as well,
+	 * so the formatting of the list item content takes precedence over the block styles.
+	 */
+	&.ck-list-marker-from-block {
+		display: block;
+
+		& > :first-child {
+			display: list-item;
+		}
+	}
+
+	/*
 	 * `::marker` is not Baseline "widely available" because of a Safari partial-implementation flag, but that gap
 	 * is about unrelated properties (content, text-shadow, line-height, letter-spacing, direction,
 	 * unicode-bidi, text-combine-upright, font-kerning - see https://bugs.webkit.org/show_bug.cgi?id=204163),
@@ -46,39 +63,48 @@
 	 * so there is no alternative CSS mechanism to fall back to.
 	 */
 	/* eslint-disable css/use-baseline */
-	&.ck-list-marker-bold::marker {
+	&.ck-list-marker-bold::marker,
+	&.ck-list-marker-from-block.ck-list-marker-bold > :first-child::marker {
 		font-weight: bold;
 	}
 
-	&.ck-list-marker-italic::marker {
+	&.ck-list-marker-italic::marker,
+	&.ck-list-marker-from-block.ck-list-marker-italic > :first-child::marker {
 		font-style: italic;
 	}
 
-	&.ck-list-marker-color::marker {
+	&.ck-list-marker-color::marker,
+	&.ck-list-marker-from-block.ck-list-marker-color > :first-child::marker {
 		color: var(--ck-content-list-marker-color);
 	}
 
-	&.ck-list-marker-font-family::marker {
+	&.ck-list-marker-font-family::marker,
+	&.ck-list-marker-from-block.ck-list-marker-font-family > :first-child::marker {
 		font-family: var(--ck-content-list-marker-font-family);
 	}
 
-	&.ck-list-marker-font-size::marker {
+	&.ck-list-marker-font-size::marker,
+	&.ck-list-marker-from-block.ck-list-marker-font-size > :first-child::marker {
 		font-size: var(--ck-content-list-marker-font-size);
 	}
 
-	&.ck-list-marker-font-size-tiny::marker {
+	&.ck-list-marker-font-size-tiny::marker,
+	&.ck-list-marker-from-block.ck-list-marker-font-size-tiny > :first-child::marker {
 		font-size: var(--ck-content-font-size-tiny);
 	}
 
-	&.ck-list-marker-font-size-small::marker {
+	&.ck-list-marker-font-size-small::marker,
+	&.ck-list-marker-from-block.ck-list-marker-font-size-small > :first-child::marker {
 		font-size: var(--ck-content-font-size-small);
 	}
 
-	&.ck-list-marker-font-size-big::marker {
+	&.ck-list-marker-font-size-big::marker,
+	&.ck-list-marker-from-block.ck-list-marker-font-size-big > :first-child::marker {
 		font-size: var(--ck-content-font-size-big);
 	}
 
-	&.ck-list-marker-font-size-huge::marker {
+	&.ck-list-marker-font-size-huge::marker,
+	&.ck-list-marker-from-block.ck-list-marker-font-size-huge > :first-child::marker {
 		font-size: var(--ck-content-font-size-huge);
 	}
 	/* eslint-enable css/use-baseline */

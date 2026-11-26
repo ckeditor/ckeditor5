@@ -132,7 +132,7 @@
 		{
 			"name": "List formatting",
 			"className": "ListFormatting",
-			"description": "Enables integration with formatting plugins to style the list marker. Supports font color, font size, font family, bold, and italic formatting.",
+			"description": "Enables integration with formatting plugins to style the list marker. Supports font color, font size, font family, bold, and italic formatting. Optionally, makes the marker of a list item that starts with a heading or a styled block look like that block.",
 			"docs": "features/lists/lists-properties.html#list-item-marker-formatting",
 			"path": "src/listformatting.ts",
 			"requires": [
@@ -140,7 +140,8 @@
 				"ListItemItalicIntegration",
 				"ListItemFontSizeIntegration",
 				"ListItemFontColorIntegration",
-				"ListItemFontFamilyIntegration"
+				"ListItemFontFamilyIntegration",
+				"ListItemHeadingIntegration"
 			]
 		},
 		{
@@ -229,6 +230,22 @@
 					"elements": "li",
 					"classes": "ck-list-marker-font-family",
 					"styles": "--ck-content-list-marker-font-family"
+				}
+			]
+		},
+		{
+			"name": "List item heading integration",
+			"className": "ListItemHeadingIntegration",
+			"description": "Makes the marker of a bulleted or numbered list item that starts with a heading look like that heading. Requires the `list.enableListItemMarkerFromBlock` option to be enabled.",
+			"docs": "features/lists/lists-properties.html#markers-of-list-items-that-start-with-a-heading-or-a-styled-block",
+			"path": "src/listformatting/listitemheadingintegration.ts",
+			"requires": [
+				"ListEditing"
+			],
+			"htmlOutput": [
+				{
+					"elements": "li",
+					"classes": "ck-list-marker-from-block"
 				}
 			]
 		},

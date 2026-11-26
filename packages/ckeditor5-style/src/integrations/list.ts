@@ -9,10 +9,10 @@
 
 import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
 import type { ModelElement } from '@ckeditor/ckeditor5-engine';
-import type { ListType, ListUtils } from '@ckeditor/ckeditor5-list';
+import type { ListFormatting, ListType, ListUtils } from '@ckeditor/ckeditor5-list';
 import type { TemplateDefinition } from '@ckeditor/ckeditor5-ui';
 
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { GeneralHtmlSupport, type DataSchema } from '@ckeditor/ckeditor5-html-support';
 
 import {
 	StyleUtils,
@@ -96,6 +96,22 @@ export class ListStyleSupport extends Plugin {
 				evt.stop();
 			}
 		}, { priority: 'high' } );
+
+		// Make the list marker look like the first block of the list item if that block has a style (for example `p.lead`).
+		// Styles of `<ol>`, `<ul>` and `<li>` are skipped, as the marker inherits them from `<li>` anyway.
+		// The check is used only when the `list.enableListItemMarkerFromBlock` option is enabled.
+		const listFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
+		const dataSchema: DataSchema = editor.plugins.get( 'DataSchema' );
+		const blockStyles = this._styleUtils.normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) ).block
+			.filter( ( { element } ) => ![ 'ol', 'ul', 'li' ].includes( element ) );
+
+		listFormatting.registerMarkerFromBlockCheck( block =>
+			// Only text blocks, so a styled table or block quote keeps the default marker.
+			editor.model.schema.checkChild( block, '$text' ) &&
+			blockStyles.some( definition =>
+				definition.modelElements.includes( block.name ) && this._styleUtils.isStyleActiveForBlock( definition, block )
+			)
+		);
 	}
 
 	/**

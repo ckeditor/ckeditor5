@@ -14,11 +14,13 @@ import { ListItemItalicIntegration } from './listformatting/listitemitalicintegr
 import { ListItemFontSizeIntegration } from './listformatting/listitemfontsizeintegration.js';
 import { ListItemFontColorIntegration } from './listformatting/listitemfontcolorintegration.js';
 import { ListItemFontFamilyIntegration } from './listformatting/listitemfontfamilyintegration.js';
+import { ListItemHeadingIntegration } from './listformatting/listitemheadingintegration.js';
 
 import type {
 	Model,
 	ModelElement,
-	ModelWriter
+	ModelWriter,
+	UpcastElementEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import {
@@ -26,6 +28,8 @@ import {
 	getAllListItemBlocks,
 	isFirstBlockOfListItem
 } from './list/utils/model.js';
+
+import type { DecoratedMethodEvent } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The list formatting plugin.
@@ -39,12 +43,19 @@ import {
  * * Font family.
  * * Bold.
  * * Italic.
+ * * Heading (and other block styles registered with {@link #registerMarkerFromBlockCheck}), when
+ * {@link module:list/listconfig~ListConfig#enableListItemMarkerFromBlock `list.enableListItemMarkerFromBlock`} is enabled.
  */
 export class ListFormatting extends Plugin {
 	/**
 	 * The list of loaded formatting.
 	 */
 	private readonly _loadedFormatting: Record<string, string> = {};
+
+	/**
+	 * Callbacks that decide if the marker should be rendered by the first block of a list item.
+	 */
+	private readonly _markerFromBlockChecks: Array<( block: ModelElement ) => boolean> = [];
 
 	/**
 	 * @inheritDoc
@@ -68,14 +79,16 @@ export class ListFormatting extends Plugin {
 		ListItemItalicIntegration,
 		ListItemFontSizeIntegration,
 		ListItemFontColorIntegration,
-		ListItemFontFamilyIntegration
+		ListItemFontFamilyIntegration,
+		ListItemHeadingIntegration
 	]> {
 		return [
 			ListItemBoldIntegration,
 			ListItemItalicIntegration,
 			ListItemFontSizeIntegration,
 			ListItemFontColorIntegration,
-			ListItemFontFamilyIntegration
+			ListItemFontFamilyIntegration,
+			ListItemHeadingIntegration
 		];
 	}
 
@@ -86,17 +99,79 @@ export class ListFormatting extends Plugin {
 		super( editor );
 
 		editor.config.define( 'list.enableListItemMarkerFormatting', true );
+		editor.config.define( 'list.enableListItemMarkerFromBlock', false );
+
+		this.decorate( 'isMarkerFromBlock' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public init(): void {
+		if ( !this._isMarkerFromBlockEnabled() ) {
+			return;
+		}
+
+		// The `listItemMarkerFromBlock` attribute adds a class to `<li>`. The content styles then let the first
+		// block of the list item (for example `<h2>`) render the marker, so the marker looks like that block.
+		this.editor.plugins.get( 'ListEditing' ).registerDowncastStrategy( {
+			scope: 'item',
+			attributeName: 'listItemMarkerFromBlock',
+
+			setAttributeOnDowncast( writer, value, viewElement ) {
+				/* v8 ignore next -- Downcast callbacks are only registered for meaningful list marker formatting values. */
+				if ( value ) {
+					writer.addClass( 'ck-list-marker-from-block', viewElement );
+				}
+			}
+		} );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public afterInit(): void {
-		if ( !this.editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
+		const editor = this.editor;
+
+		if ( !this._isMarkerFromBlockEnabled() ) {
+			// Consume the class even if the feature is disabled, so it is not preserved by the general HTML support
+			// (and does not hide the marker of a list item that no longer starts with a heading).
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on<UpcastElementEvent>( 'element:li', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { classes: 'ck-list-marker-from-block' } );
+				} );
+			} );
+		}
+
+		if ( !editor.config.get( 'list.enableListItemMarkerFormatting' ) ) {
 			return;
 		}
 
+		if ( this._isMarkerFromBlockEnabled() ) {
+			editor.model.schema.extend( '$listItem', { allowAttributes: 'listItemMarkerFromBlock' } );
+			editor.model.schema.addAttributeCheck( context => {
+				if ( !context.last.getAttribute( 'listItemId' ) ) {
+					return false;
+				}
+			}, 'listItemMarkerFromBlock' );
+
+			editor.conversion.for( 'upcast' ).attributeToAttribute( {
+				model: 'listItemMarkerFromBlock',
+				view: { name: 'li', classes: 'ck-list-marker-from-block' }
+			} );
+		}
+
 		this._registerPostfixerForListItemFormatting();
+	}
+
+	/**
+	 * Registers a callback that decides if the marker of a bulleted or numbered list item should be rendered
+	 * by the first block of that list item (for example, a heading) instead of the `<li>` element.
+	 *
+	 * @param check The callback that receives the first block of a list item.
+	 */
+	public registerMarkerFromBlockCheck( check: ( block: ModelElement ) => boolean ): void {
+		this._markerFromBlockChecks.push( check );
 	}
 
 	/**
@@ -105,6 +180,7 @@ export class ListFormatting extends Plugin {
 	 */
 	private _registerPostfixerForListItemFormatting(): void {
 		const model = this.editor.model;
+		const isMarkerFromBlockEnabled = this._isMarkerFromBlockEnabled();
 
 		model.document.registerPostFixer( writer => {
 			const changes = model.document.differ.getChanges();
@@ -125,6 +201,15 @@ export class ListFormatting extends Plugin {
 						else if ( isListItemBlock( entry.range.start.parent ) ) {
 							modifiedListItems.add( entry.range.start.parent );
 						}
+					}
+					// A block attribute (for example, a class added by the style feature) may change the marker-from-block state.
+					// The list attributes (such as `listIndent` or the ones set by this post-fixer) do not affect it.
+					else if (
+						isMarkerFromBlockEnabled &&
+						!entry.attributeKey.startsWith( 'list' ) &&
+						isListItemBlock( entry.range.start.nodeAfter )
+					) {
+						modifiedListItems.add( entry.range.start.nodeAfter );
 					}
 				}
 				else {
@@ -165,6 +250,21 @@ export class ListFormatting extends Plugin {
 						returnValue = true;
 					}
 				}
+
+				if ( !isMarkerFromBlockEnabled ) {
+					continue;
+				}
+
+				const firstBlock = isFirstBlockOfListItem( listItem ) ? listItem : getAllListItemBlocks( listItem )[ 0 ];
+
+				if ( this.isMarkerFromBlock( firstBlock ) ) {
+					if ( setFormattingToListItem( writer, listItem, 'listItemMarkerFromBlock', true ) ) {
+						returnValue = true;
+					}
+				}
+				else if ( removeFormattingFromListItem( writer, listItem, 'listItemMarkerFromBlock' ) ) {
+					returnValue = true;
+				}
 			}
 
 			return returnValue;
@@ -181,6 +281,38 @@ export class ListFormatting extends Plugin {
 	 */
 	public registerFormatAttribute( formatAttribute: string, listItemFormatAttribute: string ): void {
 		this._loadedFormatting[ formatAttribute ] = listItemFormatAttribute;
+	}
+
+	/**
+	 * Returns true if the marker of the list item that starts with the given block should be rendered by that block,
+	 * that is, if the list item is bulleted or numbered and any of the registered checks passes.
+	 *
+	 * The method is decorated, so a feature that renders its own list markers (for example, the multi-level list)
+	 * can opt out:
+	 *
+	 * ```ts
+	 * listFormatting.on( 'isMarkerFromBlock', ( evt, [ block ] ) => {
+	 * 	if ( block.getAttribute( 'listType' ) == 'customNumbered' ) {
+	 * 		evt.return = false;
+	 * 		evt.stop();
+	 * 	}
+	 * }, { priority: 'high' } );
+	 * ```
+	 *
+	 * @param block The first block of a list item.
+	 */
+	public isMarkerFromBlock( block: ModelElement ): boolean {
+		return isNumberedOrBulletedList( block ) && this._markerFromBlockChecks.some( check => check( block ) );
+	}
+
+	/**
+	 * Returns true if the marker of a list item can be rendered by the first block of that list item, that is,
+	 * if both `list.enableListItemMarkerFormatting` and `list.enableListItemMarkerFromBlock` are enabled.
+	 */
+	private _isMarkerFromBlockEnabled(): boolean {
+		const config = this.editor.config;
+
+		return !!config.get( 'list.enableListItemMarkerFormatting' ) && !!config.get( 'list.enableListItemMarkerFromBlock' );
 	}
 
 	/**
@@ -273,7 +405,7 @@ function setFormattingToListItem(
 	writer: ModelWriter,
 	listItem: ModelElement,
 	attributeKey: string,
-	attributeValue: string
+	attributeValue: unknown
 ): boolean {
 	// Multi-block items should have consistent formatting.
 	const listItemBlocks = getAllListItemBlocks( listItem );
@@ -317,3 +449,8 @@ function removeFormattingFromListItem(
 function isNumberedOrBulletedList( listItem: ModelElement ): boolean {
 	return [ 'numbered', 'bulleted', 'customNumbered', 'customBulleted' ].includes( listItem.getAttribute( 'listType' ) as string );
 }
+
+/**
+ * Event fired by the decorated {@link module:list/listformatting~ListFormatting#isMarkerFromBlock} method.
+ */
+export type ListFormattingIsMarkerFromBlockEvent = DecoratedMethodEvent<ListFormatting, 'isMarkerFromBlock'>;

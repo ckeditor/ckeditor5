@@ -106,7 +106,8 @@ describe( 'ListEditing', () => {
 	it( 'should define config', () => {
 		expect( editor.config.get( 'list' ) ).toEqual( {
 			multiBlock: true,
-			enableListItemMarkerFormatting: true
+			enableListItemMarkerFormatting: true,
+			enableListItemMarkerFromBlock: false
 		} );
 	} );
 

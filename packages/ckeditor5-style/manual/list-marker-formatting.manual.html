@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>List marker formatting with block styles</title>
+		<script type="module" src="./list-marker-formatting.ts"></script>
+		<style>
+			/* Integrator styles that the list markers should reflect. */
+			.ck-content h2 {
+				font-family: Georgia, serif;
+				color: hsl(220, 70%, 40%);
+			}
+
+			.ck-content h3 {
+				color: hsl(350, 70%, 40%);
+			}
+
+			.ck-content h2.fancy-heading {
+				font-style: italic;
+				color: hsl(150, 60%, 30%);
+			}
+
+			.ck-content p.lead {
+				font-size: 1.3em;
+				color: hsl(30, 80%, 40%);
+			}
+		</style>
+	</head>
+	<body>
+		<ck-manual-header>
+			<h3>List marker formatting: block styles</h3>
+			<p>
+				When the first block of a bulleted or numbered list item is a heading (or a block with a style from the style feature),
+				the list marker is rendered by that block, so it has the same font size, family, weight, style and color as the block.
+				The page defines custom styles for <code>h2</code>, <code>h3</code>, <code>h2.fancy-heading</code> and
+				<code>p.lead</code> to verify that the markers reflect the integrator styles too.
+			</p>
+			<h3>Testing</h3>
+			<ol>
+				<li>
+					Verify the loaded content: markers of list items that start with a heading or a <em>Lead paragraph</em> look like
+					that block. Other markers look as usual.
+				</li>
+				<li>Verify that the numbering of the numbered lists is continuous (including the list that starts at 5 and the reversed one).</li>
+				<li>Change a list item paragraph into a heading and back. The marker should follow.</li>
+				<li>Apply and remove the <em>Lead paragraph</em> and <em>Fancy heading</em> styles on the first block of a list item.</li>
+				<li>Apply a style on the second block of a multi-block list item. The marker should not change.</li>
+				<li>Make the whole heading text bold, italic or change its font size or color. The marker should follow the inline formatting.</li>
+				<li>Change the list type to a to-do list. The checkbox should be rendered as usual.</li>
+				<li>Check the source editing mode. The <code>&lt;li&gt;</code> elements should have the <code>ck-list-marker-from-block</code> class.</li>
+				<li>Repeat the checks in Chrome, Firefox and Safari.</li>
+			</ol>
+		</ck-manual-header>
+
+		<div id="editor">
+			<h2>Numbered list</h2>
+			<ol>
+				<li><p>Paragraph item</p></li>
+				<li><h2>Heading 1 item</h2></li>
+				<li><h3>Heading 2 item</h3><p>Second block of the item.</p></li>
+				<li><p>Paragraph item</p>
+					<ol>
+						<li><p>Nested paragraph item</p></li>
+						<li><h4>Nested heading 3 item</h4></li>
+					</ol>
+				</li>
+				<li><h2 class="fancy-heading">Heading with the "Fancy heading" style</h2></li>
+				<li><p class="lead">Paragraph with the "Lead paragraph" style</p></li>
+				<li><p>Paragraph item followed by a heading</p><h2>Heading as the second block</h2></li>
+				<li><p>Paragraph item followed by a styled paragraph</p><p class="lead">Lead paragraph as the second block</p></li>
+			</ol>
+
+			<h2>Bulleted list</h2>
+			<ul>
+				<li><p>Paragraph item</p></li>
+				<li><h2>Heading 1 item</h2></li>
+				<li><h3><span class="text-tiny">Heading 2 item with tiny font size</span></h3></li>
+			</ul>
+
+			<h2>List properties</h2>
+			<ol start="5" style="list-style-type:upper-roman;">
+				<li><p>Starts at 5</p></li>
+				<li><h2>Heading 1 item</h2></li>
+				<li><p>Paragraph item</p></li>
+			</ol>
+			<p>A reversed list:</p>
+			<ol reversed="reversed">
+				<li><p>Reversed</p></li>
+				<li><h3>Heading 2 item</h3></li>
+				<li><p>Paragraph item</p></li>
+			</ol>
+		</div>
+	</body>
+</html>
