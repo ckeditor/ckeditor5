@@ -129,7 +129,9 @@ export class WidgetToolbarRepository extends Plugin {
 	/**
 	 * Registers toolbar in the WidgetToolbarRepository. It renders it in the `ContextualBalloon` based on the value of the invoked
 	 * `getRelatedElement` function. Toolbar items are gathered from `items` array.
-	 * The balloon's CSS class is by default `ck-toolbar-container` and may be override with the `balloonClassName` option.
+	 *
+	 * The balloon's CSS classes always include `ck-toolbar-container_widget`. The `ck-toolbar-container` class is included by default
+	 * through the `balloonClassName` option, but can be replaced by providing custom classes. Any custom classes are preserved.
 	 *
 	 * Note: This method should be called in the {@link module:core/plugin~PluginInterface#afterInit `Plugin#afterInit()`}
 	 * callback (or later) to make sure that the given toolbar items were already registered by other plugins.
@@ -139,7 +141,9 @@ export class WidgetToolbarRepository extends Plugin {
 	 * @param options.ariaLabel Label used by assistive technologies to describe this toolbar element.
 	 * @param options.items Array of toolbar items.
 	 * @param options.getRelatedElement Callback which returns an element the toolbar should be attached to.
-	 * @param options.balloonClassName CSS class for the widget balloon.
+	 * @param options.balloonClassName CSS class(es) for the widget balloon. Defaults to `ck-toolbar-container`.
+	 * The `ck-toolbar-container_widget` class is always added automatically, while custom classes replace the default
+	 * `ck-toolbar-container` class unless explicitly included.
 	 */
 	public register(
 		toolbarId: string,
@@ -197,7 +201,7 @@ export class WidgetToolbarRepository extends Plugin {
 		const toolbarDefinition: WidgetRepositoryToolbarDefinition = {
 			view: toolbarView,
 			getRelatedElement,
-			balloonClassName,
+			balloonClassName: `${ balloonClassName } ck-toolbar-container_widget`.trim(),
 			itemsConfig: items,
 			positions,
 			initialized: false

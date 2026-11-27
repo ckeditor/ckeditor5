@@ -255,7 +255,7 @@ export class BlockToolbar extends Plugin {
 		const panelView = new BalloonPanelView( editor.locale );
 
 		panelView.content.add( this.toolbarView );
-		panelView.class = 'ck-toolbar-container';
+		panelView.class = 'ck-toolbar-container ck-toolbar-container_block';
 		editor.ui.view.body.add( panelView );
 
 		// Close #panelView on `Esc` press.

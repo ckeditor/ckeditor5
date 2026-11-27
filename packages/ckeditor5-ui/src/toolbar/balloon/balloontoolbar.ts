@@ -271,7 +271,7 @@ export class BalloonToolbar extends Plugin {
 		this._balloon.add( {
 			view: this.toolbarView,
 			position: this._getBalloonPositionData(),
-			balloonClassName: 'ck-toolbar-container'
+			balloonClassName: 'ck-toolbar-container ck-toolbar-container_balloon'
 		} );
 	}
 

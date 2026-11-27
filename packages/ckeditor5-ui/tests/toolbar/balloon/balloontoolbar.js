@@ -292,9 +292,11 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 
+			expect( balloon.view.class ).toBe( 'ck-toolbar-container ck-toolbar-container_balloon' );
+
 			expect( balloonAddSpy ).toHaveBeenCalledWith( {
 				view: balloonToolbar.toolbarView,
-				balloonClassName: 'ck-toolbar-container',
+				balloonClassName: 'ck-toolbar-container ck-toolbar-container_balloon',
 				position: {
 					target: expect.any( Function ),
 					positions: [
@@ -356,9 +358,11 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 
+			expect( balloon.view.class ).toBe( 'ck-toolbar-container ck-toolbar-container_balloon' );
+
 			expect( balloonAddSpy ).toHaveBeenCalledWith( {
 				view: balloonToolbar.toolbarView,
-				balloonClassName: 'ck-toolbar-container',
+				balloonClassName: 'ck-toolbar-container ck-toolbar-container_balloon',
 				position: {
 					target: expect.any( Function ),
 					positions: [

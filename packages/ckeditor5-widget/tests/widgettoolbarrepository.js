@@ -82,6 +82,33 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).toBeTypeOf( 'object' );
 		} );
 
+		it( 'should add the widget toolbar CSS classes by default', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null
+			} );
+
+			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+			expect( toolbarDefinition.balloonClassName ).toBe(
+				'ck-toolbar-container ck-toolbar-container_widget'
+			);
+		} );
+
+		it( 'should preserve custom balloon classes and add the widget toolbar class', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null,
+				balloonClassName: 'my-custom-toolbar'
+			} );
+
+			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+			expect( toolbarDefinition.balloonClassName ).toBe(
+				'my-custom-toolbar ck-toolbar-container_widget'
+			);
+		} );
+
 		describe( 'Focus handling and navigation across toolbars using keyboard', () => {
 			it( 'should register the toolbar as focusable toolbar in EditorUI with proper configuration', () => {
 				widgetToolbarRepository.register( 'fake', {
@@ -247,6 +274,18 @@ describe( 'WidgetToolbarRepository', () => {
 				expect( balloon.visibleView ).toBe( toolbarDefinition.view );
 				expect( toolbarDefinition.view.items.length ).toBe( 1 );
 			} );
+		} );
+
+		it( 'should add only the widget toolbar class when balloonClassName is empty', () => {
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: () => null,
+				balloonClassName: ''
+			} );
+
+			const toolbarDefinition = widgetToolbarRepository._toolbarDefinitions.get( 'fake' );
+
+			expect( toolbarDefinition.balloonClassName ).toBe( 'ck-toolbar-container_widget' );
 		} );
 	} );
 
@@ -628,7 +667,7 @@ describe( 'WidgetToolbarRepository', () => {
 						defaultPositions.viewportStickyNorth
 					]
 				},
-				balloonClassName: 'ck-toolbar-container'
+				balloonClassName: 'ck-toolbar-container ck-toolbar-container_widget'
 			} );
 		} );
 
@@ -662,7 +701,7 @@ describe( 'WidgetToolbarRepository', () => {
 						defaultPositions.northArrowSouth
 					]
 				},
-				balloonClassName: 'ck-toolbar-container'
+				balloonClassName: 'ck-toolbar-container ck-toolbar-container_widget'
 			} );
 
 			// Reposition check.

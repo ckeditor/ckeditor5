@@ -1201,15 +1201,17 @@ describe( 'LinkUI', () => {
 			expect( linkUIFeature.toolbarView ).toBeInstanceOf( ToolbarView );
 		} );
 
-		it( 'should add #toolbarView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
-			'that link',
-		() => {
+		it( 'should add #toolbarView to the balloon with the link toolbar CSS class', () => {
 			_setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 			linkUIFeature._addToolbarView();
 			toolbarView = linkUIFeature.toolbarView;
 
 			expect( balloon.visibleView ).toBe( toolbarView );
+
+			expect( balloon.view.class ).toBe(
+				'ck-toolbar-container ck-toolbar-container_link'
+			);
 		} );
 	} );
 
