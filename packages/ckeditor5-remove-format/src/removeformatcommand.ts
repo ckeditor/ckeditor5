@@ -42,15 +42,19 @@ export class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * @fires execute
+	 * @param options Command options.
 	 */
-	public override execute(): void {
+	public override execute( options: RemoveFormatCommandOptions = {} ): void {
 		const model = this.editor.model;
+		const textFormattingOnly = !!options._textFormattingOnly;
 
 		model.change( writer => {
-			for ( const item of this._getFormattingItems( model.document.selection ) ) {
+			for ( const item of this._getFormattingItems( model.document.selection, textFormattingOnly ) ) {
 				if ( item.is( 'selection' ) ) {
-					for ( const attributeName of this._getFormattingAttributes( item ) ) {
+					for ( const attributeName of this._getFormattingAttributes( item, textFormattingOnly ) ) {
 						writer.removeSelectionAttribute( attributeName );
 					}
 				} else {
@@ -58,7 +62,7 @@ export class RemoveFormatCommand extends Command {
 					// https://github.com/ckeditor/ckeditor5-remove-format/pull/1#pullrequestreview-220515609
 					const itemRange = writer.createRangeOn( item );
 
-					for ( const attributeName of this._getFormattingAttributes( item ) ) {
+					for ( const attributeName of this._getFormattingAttributes( item, textFormattingOnly ) ) {
 						this._removeFormatting( attributeName, item, itemRange, writer );
 					}
 				}
@@ -100,13 +104,15 @@ export class RemoveFormatCommand extends Command {
 	/**
 	 * Returns an iterable of items in a selection (including the selection itself) that have formatting model
 	 * attributes to be removed by the feature.
+	 *
+	 * @param textFormattingOnly Whether to take into account only the formatting attributes allowed on `$text`.
 	 */
-	private* _getFormattingItems( selection: ModelDocumentSelection ) {
+	private* _getFormattingItems( selection: ModelDocumentSelection, textFormattingOnly = false ) {
 		const model = this.editor.model;
 		const schema = model.schema;
 
 		const itemHasRemovableFormatting = ( item: ModelItem | ModelDocumentSelection ) => {
-			return !!first( this._getFormattingAttributes( item ) );
+			return !!first( this._getFormattingAttributes( item, textFormattingOnly ) );
 		};
 
 		// Check formatting on selected items.
@@ -141,13 +147,18 @@ export class RemoveFormatCommand extends Command {
 	 *
 	 * **Note:** Formatting items have the `isFormatting` property set to `true`.
 	 *
+	 * @param textFormattingOnly Whether to return only the formatting attributes allowed on `$text`.
 	 * @returns The names of formatting attributes found in a given item.
 	 */
-	private* _getFormattingAttributes( item: ModelItem | ModelDocumentSelection ) {
+	private* _getFormattingAttributes( item: ModelItem | ModelDocumentSelection, textFormattingOnly = false ) {
 		const { schema } = this.editor.model;
 
 		for ( const [ attributeName ] of item.getAttributes() ) {
 			const nonSelectionAttributeName = toNonSelectionAttribute( attributeName );
+
+			if ( textFormattingOnly && !schema.checkAttribute( '$text', nonSelectionAttributeName ) ) {
+				continue;
+			}
 
 			for ( const { isFormatting } of this._customAttributesHandlers ) {
 				if ( isFormatting( nonSelectionAttributeName, item ) ) {
@@ -162,6 +173,22 @@ export class RemoveFormatCommand extends Command {
 			}
 		}
 	}
+}
+
+/**
+ * The options of the {@link module:remove-format/removeformatcommand~RemoveFormatCommand#execute remove format command}.
+ */
+export interface RemoveFormatCommandOptions {
+
+	/**
+	 * If set to `true`, the command removes only the formatting attributes that the schema allows on `$text`.
+	 * The formatting of blocks and other elements, for example alignment or table cell properties, is kept.
+	 * The check is made for `$text` regardless of its position in the content, so an attribute allowed on text
+	 * only in a specific context is kept. The option is not taken into account by `isEnabled`. Defaults to `false`.
+	 *
+	 * @internal
+	 */
+	_textFormattingOnly?: boolean;
 }
 
 /**

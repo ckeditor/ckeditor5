@@ -341,6 +341,112 @@ describe( 'RemoveFormatCommand', () => {
 		} );
 	} );
 
+	describe( 'execute() with the _textFormattingOnly option', () => {
+		const expectModelToBeEqual = expectedValue => expect( _getModelData( model ) ).toEqual( expectedValue );
+
+		beforeEach( () => {
+			model.schema.extend( '$text', { allowAttributes: [ 'bold', 'fooText' ] } );
+
+			model.schema.register( 'mockInline', {
+				inheritAllFrom: '$inlineObject',
+				allowAttributes: 'someInlineFormatting'
+			} );
+
+			model.schema.setAttributeProperties( 'someInlineFormatting', {
+				isFormatting: true
+			} );
+		} );
+
+		const cases = {
+			'text formatting removed and block formatting kept': {
+				input: '<p someBlockFormatting="foo">f[oo <$text bold="true">bar</$text> ba]z</p>',
+				assert: () => expectModelToBeEqual( '<p someBlockFormatting="foo">f[oo bar ba]z</p>' )
+			},
+
+			'formatting of a selected cell and its blocks kept while the text formatting in it is removed': {
+				input:
+					'<mockTable>' +
+						'[<mockCell someBlockFormatting="yellow">' +
+							'<p someBlockFormatting="orange"><$text bold="true">Bar</$text> Baz</p>' +
+						'</mockCell>]' +
+					'</mockTable>',
+				assert: () => expectModelToBeEqual(
+					'<mockTable>' +
+						'[<mockCell someBlockFormatting="yellow">' +
+							'<p someBlockFormatting="orange">Bar Baz</p>' +
+						'</mockCell>]' +
+					'</mockTable>'
+				)
+			},
+
+			'text formatting of an inline object removed and its other formatting kept': {
+				input: '<p>[foo<mockInline bold="true" someInlineFormatting="bar"></mockInline>]</p>',
+				assert: () => expectModelToBeEqual( '<p>[foo<mockInline someInlineFormatting="bar"></mockInline>]</p>' )
+			},
+
+			'text formatting stored in an empty block where the selection starts removed': {
+				input: '<p>[</p><p>bar]</p>',
+				beforeAssert: () => {
+					model.change( writer => {
+						writer.setAttribute( 'selection:bold', true, model.document.getRoot().getChild( 0 ) );
+					} );
+				},
+				assert: () => expectModelToBeEqual( '<p>[</p><p>bar]</p>' )
+			},
+
+			'text formatting stored in an empty block inside the selection removed': {
+				input: '<p>f[oo</p><p></p><p>ba]r</p>',
+				beforeAssert: () => {
+					model.change( writer => {
+						writer.setAttribute( 'selection:bold', true, model.document.getRoot().getChild( 1 ) );
+					} );
+				},
+				assert: () => expectModelToBeEqual( '<p>f[oo</p><p></p><p>ba]r</p>' )
+			},
+
+			'text formatting of the selection removed': {
+				input: '<p>fo[]o</p>',
+				setDataOptions: {
+					selectionAttributes: {
+						bold: true,
+						irrelevant: true
+					}
+				},
+				assert: () => {
+					expect( model.document.selection.hasAttribute( 'bold' ) ).toBe( false );
+					expect( model.document.selection.hasAttribute( 'irrelevant' ) ).toBe( true );
+				}
+			},
+
+			'custom text formatting removed and custom block formatting kept': {
+				input: '<p fooA="bar">f[oo <$text fooText="baz">bar</$text>]</p>',
+				assert: () => expectModelToBeEqual( '<p fooA="bar">f[oo <$text fooText="BAZ">bar</$text>]</p>' )
+			}
+		};
+
+		generateTypicalUseCases( cases, {
+			beforeAssert: () => command.execute( { _textFormattingOnly: true } )
+		} );
+
+		it( 'keeps the command enabled when the selection has block formatting only', () => {
+			_setModelData( model, '<p someBlockFormatting="foo">f[]oo</p>' );
+
+			expect( command.isEnabled ).toBe( true );
+
+			command.execute( { _textFormattingOnly: true } );
+
+			expect( _getModelData( model ) ).toBe( '<p someBlockFormatting="foo">f[]oo</p>' );
+		} );
+
+		it( 'removes all formatting when the option is set to false', () => {
+			_setModelData( model, '<p someBlockFormatting="foo">f[oo <$text bold="true">bar</$text> ba]z</p>' );
+
+			command.execute( { _textFormattingOnly: false } );
+
+			expect( _getModelData( model ) ).toBe( '<p>f[oo bar ba]z</p>' );
+		} );
+	} );
+
 	function generateTypicalUseCases( useCases, options ) {
 		for ( const [ key, testConfig ] of Object.entries( useCases ) ) {
 			it( 'handles ' + key, () => {

@@ -12,6 +12,7 @@ export { RemoveFormatEditing } from './removeformatediting.js';
 export { RemoveFormatUI } from './removeformatui.js';
 export {
 	RemoveFormatCommand,
+	type RemoveFormatCommandOptions,
 	type IsFormattingCallback,
 	type RemoveFormattingCallback
 } from './removeformatcommand.js';
