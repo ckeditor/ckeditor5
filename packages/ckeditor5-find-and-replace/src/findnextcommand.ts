@@ -37,16 +37,19 @@ export class FindNextCommand extends Command {
 
 		this.isEnabled = false;
 
-		this.listenTo( this._state.results, 'change', () => {
-			this.isEnabled = this._state.results.length > 1;
-		} );
+		this.listenTo( this._state.results, 'change', () => this.refresh() );
+		this.listenTo( this._state, 'change:highlightedResult', () => this.refresh() );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		this.isEnabled = this._state.results.length > 1;
+		const { results, highlightedResult } = this._state;
+
+		// When nothing is highlighted (e.g. the highlighted result was edited), the command highlights a result,
+		// so it is useful even with a single result.
+		this.isEnabled = results.length > 1 || results.length == 1 && !highlightedResult;
 	}
 
 	/**

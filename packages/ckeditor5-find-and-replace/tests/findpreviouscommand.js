@@ -51,11 +51,21 @@ describe( 'FindPreviousCommand', () => {
 			expect( command.isEnabled ).toBe( false );
 		} );
 
-		it( 'is disabled when there is just one result', () => {
-			command._state.results.clear();
-			command._state.results.add( {} );
+		it( 'is disabled when there is just one result and it is highlighted', () => {
+			_setModelData( model, '<paragraph>foo</paragraph>' );
+
+			editor.execute( 'find', 'foo' );
 
 			expect( command.isEnabled ).toBe( false );
+		} );
+
+		it( 'is enabled when there is just one result and nothing is highlighted', () => {
+			_setModelData( model, '<paragraph>foo</paragraph>' );
+
+			editor.execute( 'find', 'foo' );
+			command._state.highlightedResult = null;
+
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'is enabled when there are more than one result', () => {

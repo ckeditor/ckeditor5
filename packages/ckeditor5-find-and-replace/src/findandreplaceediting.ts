@@ -8,11 +8,10 @@
  */
 
 import { Plugin, type PluginDependenciesOf } from '@ckeditor/ckeditor5-core';
-import type { DifferItem, DifferItemAttribute, ModelElement, ModelNode } from '@ckeditor/ckeditor5-engine';
+import type { DifferItem, DifferItemAttribute, ModelElement, ModelNode, ModelRange } from '@ckeditor/ckeditor5-engine';
 import {
 	scrollViewportToShowTarget,
 	type Collection,
-	type GetCallback,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
@@ -21,7 +20,7 @@ import { ReplaceCommand } from './replacecommand.js';
 import { ReplaceAllCommand } from './replaceallcommand.js';
 import { FindNextCommand } from './findnextcommand.js';
 import { FindPreviousCommand } from './findpreviouscommand.js';
-import { FindAndReplaceState, sortSearchResultsByMarkerPositions, type FindCallback } from './findandreplacestate.js';
+import { FindAndReplaceState, type FindCallback } from './findandreplacestate.js';
 import { FindAndReplaceUtils } from './findandreplaceutils.js';
 import type { FindResultType } from './findandreplace.js';
 
@@ -84,6 +83,12 @@ export class FindAndReplaceEditing extends Plugin {
 	public declare _isSearchActive: boolean;
 
 	/**
+	 * Set while the highlight is updated to follow the changes in the content. The editor does not scroll to such
+	 * a highlight, as the user may be typing far from it.
+	 */
+	private _isHighlightFollowingChanges = false;
+
+	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
@@ -118,10 +123,13 @@ export class FindAndReplaceEditing extends Plugin {
 		} );
 
 		/* v8 ignore next -- @preserve */
-		const scrollToHighlightedResult: GetCallback<ObservableChangeEvent> = ( eventInfo, name, newValue ) => {
-			if ( newValue ) {
+		const scrollToHighlightedResult = () => {
+			// Use the highlighted result from the time of the scroll, as it might be re-created in the meantime.
+			const highlightedResult = this.state!.highlightedResult;
+
+			if ( highlightedResult ) {
 				const domConverter = this.editor.editing.view.domConverter;
-				const viewRange = this.editor.editing.mapper.toViewRange( newValue.marker.getRange() );
+				const viewRange = this.editor.editing.mapper.toViewRange( highlightedResult.marker!.getRange() );
 
 				scrollViewportToShowTarget( {
 					target: domConverter.viewRangeToDom( viewRange ),
@@ -130,9 +138,14 @@ export class FindAndReplaceEditing extends Plugin {
 			}
 		};
 
-		const debouncedScrollListener = debounce( scrollToHighlightedResult.bind( this ), 32 );
+		const debouncedScrollListener = debounce( scrollToHighlightedResult, 32 );
+
 		// Debounce scroll as highlight might be changed very frequently, e.g. when there's a replace all command.
-		this.listenTo<ObservableChangeEvent>( this.state, 'change:highlightedResult', debouncedScrollListener, { priority: 'low' } );
+		this.listenTo<ObservableChangeEvent>( this.state, 'change:highlightedResult', ( evt, name, newValue ) => {
+			if ( newValue && !this._isHighlightFollowingChanges ) {
+				debouncedScrollListener();
+			}
+		}, { priority: 'low' } );
 
 		// It's possible that the editor will get destroyed before debounced call kicks in.
 		// This would result with accessing a view three that is no longer in DOM.
@@ -228,6 +241,7 @@ export class FindAndReplaceEditing extends Plugin {
 		const removedMarkers = new Set<string>();
 		const model = this.editor.model;
 		const { results } = this.state!;
+		const hadResultsBeforeChange = results.length > 0;
 
 		const changes = model.document.differ.getChanges() as Array<Exclude<DifferItem, DifferItemAttribute>>;
 		const changedMarkers = model.document.differ.getChangedMarkers();
@@ -263,6 +277,11 @@ export class FindAndReplaceEditing extends Plugin {
 			markersInNode.forEach( marker => removedMarkers.add( marker.name ) );
 		} );
 
+		let isHighlightedResultRemoved = false;
+
+		// The range of the removed highlighted result. It is `null` if its marker was removed too (e.g. with its root).
+		let highlightedResultRange: ModelRange | null = null;
+
 		// Remove results from the changed part of content.
 		removedMarkers.forEach( markerName => {
 			if ( !results.has( markerName ) ) {
@@ -287,6 +306,8 @@ export class FindAndReplaceEditing extends Plugin {
 			}
 
 			if ( results.get( markerName ) === this.state!.highlightedResult ) {
+				isHighlightedResultRemoved = true;
+				highlightedResultRange = model.markers.get( markerName )?.getRange() || null;
 				this.state!.highlightedResult = null;
 			}
 
@@ -333,13 +354,20 @@ export class FindAndReplaceEditing extends Plugin {
 			}
 		} );
 
-		if ( !this.state!.highlightedResult && changedSearchResults.length ) {
-			// If there are found phrases but none is selected, select the first one.
+		// The search above re-creates all results in a changed node. This includes the highlighted result
+		// if it was not edited (for example, the user typed elsewhere in its paragraph), so keep it highlighted.
+		// If the highlighted result itself was edited, leave nothing highlighted until the user moves to another result.
+		const recreatedHighlightedResult = isHighlightedResultRemoved && highlightedResultRange && results.find(
+			result => result.marker!.getRange().isEqual( highlightedResultRange! )
+		);
+
+		if ( recreatedHighlightedResult ) {
+			this._isHighlightFollowingChanges = true;
+			this.state!.highlightedResult = recreatedHighlightedResult;
+			this._isHighlightFollowingChanges = false;
+		} else if ( !this.state!.highlightedResult && !hadResultsBeforeChange && changedSearchResults.length ) {
+			// If the first phrases were found (e.g. the user typed one), select the first one.
 			this.state!.highlightedResult = changedSearchResults[ 0 ];
-		} else if ( !this.state!.highlightedResult && results.length ) {
-			// The highlighted result was removed without a re-scan of its content (e.g. together with its root),
-			// so there is nothing new to highlight there. Highlight the first remaining result instead.
-			this.state!.highlightedResult = sortSearchResultsByMarkerPositions( model, [ ...results ] )[ 0 ];
 		} else {
 			// If there is already highlight item then refresh highlight offset after appending new items.
 			this.state!.refreshHighlightOffset( model );

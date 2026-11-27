@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
 
@@ -182,6 +182,319 @@ describe( 'FindAndReplaceEditing', () => {
 			expect( _getModelData( model, { withoutSelection: true } ) ).toBe( '<paragraph>baz bar foo</paragraph>' );
 		} );
 
+		it( 'should leave nothing highlighted when the highlighted result is edited', () => {
+			_setModelData( model,
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>'
+			);
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+			editor.execute( 'findNext' );
+			editor.execute( 'findNext' );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 2 ), 2 ) );
+			} );
+
+			expect( state.results ).toHaveLength( 3 );
+			expect( state.highlightedResult ).toBeNull();
+			expect( state.highlightedOffset ).toBe( 0 );
+			expect( getSearchResultHTML() ).toBe(
+				'<p><span class="ck-find-result">Chleb</span></p>' +
+				'<p><span class="ck-find-result">Chleb</span></p>' +
+				'<p>Chxleb</p>' +
+				'<p><span class="ck-find-result">Chleb</span></p>'
+			);
+		} );
+
+		it( 'should move to the first or the last result when nothing is highlighted', () => {
+			_setModelData( model,
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>'
+			);
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+			editor.execute( 'findNext' );
+			editor.execute( 'findNext' );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 2 ), 2 ) );
+			} );
+
+			editor.execute( 'findNext' );
+
+			expect( state.highlightedResult.marker.getStart().parent ).toBe( root.getChild( 0 ) );
+
+			state.highlightedResult = null;
+			editor.execute( 'findPrevious' );
+
+			expect( state.highlightedResult.marker.getStart().parent ).toBe( root.getChild( 3 ) );
+		} );
+
+		it( 'should leave nothing highlighted when the highlighted result is typed over', () => {
+			_setModelData( model,
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>'
+			);
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+			editor.execute( 'findNext' );
+			editor.execute( 'findNext' );
+
+			// Replacing the whole result moves its marker to the graveyard.
+			model.change( writer => {
+				writer.remove( writer.createRangeIn( root.getChild( 2 ) ) );
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 2 ), 0 ) );
+			} );
+
+			expect( state.results ).toHaveLength( 3 );
+			expect( state.highlightedResult ).toBeNull();
+			expect( state.highlightedOffset ).toBe( 0 );
+		} );
+
+		it( 'should keep nothing highlighted on the next change in the edited paragraph', () => {
+			_setModelData( model, '<paragraph>Chleb Chleb Chleb Chleb</paragraph>' );
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+			editor.execute( 'findNext' );
+			editor.execute( 'findNext' );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 0 ), 14 ) );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 0 ), 15 ) );
+			} );
+
+			expect( state.results ).toHaveLength( 3 );
+			expect( state.highlightedResult ).toBeNull();
+			expect( getSearchResultHTML() ).toBe(
+				'<p><span class="ck-find-result">Chleb</span> <span class="ck-find-result">Chleb</span> Chxxleb ' +
+				'<span class="ck-find-result">Chleb</span></p>'
+			);
+		} );
+
+		it( 'should keep the highlight when another paragraph with a result is edited', () => {
+			_setModelData( model,
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>'
+			);
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+			editor.execute( 'findNext' );
+
+			const highlightedResult = state.highlightedResult;
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 0 ), 'end' ) );
+			} );
+
+			expect( state.results ).toHaveLength( 2 );
+			expect( state.highlightedResult ).toBe( highlightedResult );
+			expect( state.highlightedOffset ).toBe( 2 );
+		} );
+
+		describe( 'scrolling to the highlighted result', () => {
+			let viewRangeToDomSpy;
+
+			beforeEach( () => {
+				vi.useFakeTimers();
+				viewRangeToDomSpy = vi.spyOn( editor.editing.view.domConverter, 'viewRangeToDom' );
+			} );
+
+			afterEach( () => {
+				vi.useRealTimers();
+			} );
+
+			it( 'should scroll to the result highlighted with the "findNext" command', () => {
+				_setModelData( model, '<paragraph>Chleb Chleb</paragraph>' );
+
+				findAndReplaceEditing.find( 'Chleb' );
+				vi.runAllTimers();
+				viewRangeToDomSpy.mockClear();
+
+				editor.execute( 'findNext' );
+				vi.runAllTimers();
+
+				expect( viewRangeToDomSpy ).toHaveBeenCalledOnce();
+			} );
+
+			it( 'should scroll to the next result in the same paragraph after the "replace" command', () => {
+				_setModelData( model, '<paragraph>Chleb Chleb</paragraph>' );
+
+				findAndReplaceEditing.find( 'Chleb' );
+				vi.runAllTimers();
+				viewRangeToDomSpy.mockClear();
+
+				editor.execute( 'replace', 'Bread', findAndReplaceEditing.state.highlightedResult );
+				vi.runAllTimers();
+
+				expect( viewRangeToDomSpy ).toHaveBeenCalled();
+			} );
+
+			it( 'should not scroll to the highlighted result when typing elsewhere in its paragraph', () => {
+				_setModelData( model, '<paragraph>Chleb bar</paragraph>' );
+
+				findAndReplaceEditing.find( 'Chleb' );
+				vi.runAllTimers();
+				viewRangeToDomSpy.mockClear();
+
+				model.change( writer => {
+					writer.insertText( 'x', writer.createPositionAt( root.getChild( 0 ), 'end' ) );
+				} );
+				vi.runAllTimers();
+
+				expect( viewRangeToDomSpy ).not.toHaveBeenCalled();
+			} );
+
+			it( 'should not scroll after the highlighted result is edited', () => {
+				_setModelData( model, '<paragraph>Chleb</paragraph><paragraph>Chleb</paragraph>' );
+
+				findAndReplaceEditing.find( 'Chleb' );
+				vi.runAllTimers();
+				viewRangeToDomSpy.mockClear();
+
+				model.change( writer => {
+					writer.insertText( 'x', writer.createPositionAt( root.getChild( 0 ), 2 ) );
+				} );
+				vi.runAllTimers();
+
+				expect( findAndReplaceEditing.state.highlightedResult ).toBeNull();
+				expect( viewRangeToDomSpy ).not.toHaveBeenCalled();
+			} );
+		} );
+
+		it( 'should keep the highlight when typing outside the highlighted result in its paragraph', () => {
+			_setModelData( model,
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb bar</paragraph>'
+			);
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+			editor.execute( 'findNext' );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 1 ), 'end' ) );
+			} );
+
+			expect( state.results ).toHaveLength( 2 );
+			expect( state.highlightedResult ).toBe( state.results.get( 1 ) );
+			expect( state.highlightedOffset ).toBe( 2 );
+			expect( getSearchResultHTML() ).toBe(
+				'<p><span class="ck-find-result">Chleb</span></p>' +
+				'<p><span class="ck-find-result"><span class="ck-find-result_selected">Chleb</span></span> barx</p>'
+			);
+		} );
+
+		it( 'should keep the highlight on the same result when typing before it in its paragraph', () => {
+			_setModelData( model, '<paragraph>Chleb Chleb</paragraph>' );
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+			editor.execute( 'findNext' );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 0 ), 0 ) );
+			} );
+
+			expect( state.results ).toHaveLength( 2 );
+			expect( state.highlightedResult ).toBe( state.results.get( 1 ) );
+			expect( state.highlightedOffset ).toBe( 2 );
+			expect( getSearchResultHTML() ).toBe(
+				'<p>x<span class="ck-find-result">Chleb</span> ' +
+				'<span class="ck-find-result"><span class="ck-find-result_selected">Chleb</span></span></p>'
+			);
+		} );
+
+		it( 'should keep the highlight when an earlier result in its paragraph is edited', () => {
+			_setModelData( model, '<paragraph>Chleb Chleb Chleb</paragraph>' );
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+			editor.execute( 'findNext' );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 0 ), 2 ) );
+			} );
+
+			expect( state.results ).toHaveLength( 2 );
+			expect( state.highlightedOffset ).toBe( 1 );
+			expect( getSearchResultHTML() ).toBe(
+				'<p>Chxleb <span class="ck-find-result"><span class="ck-find-result_selected">Chleb</span></span> ' +
+				'<span class="ck-find-result">Chleb</span></p>'
+			);
+		} );
+
+		it( 'should highlight a new result typed in when nothing is highlighted', () => {
+			_setModelData( model,
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chlb</paragraph>'
+			);
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+
+			// Edit the highlighted result, so nothing is highlighted.
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 0 ), 2 ) );
+			} );
+
+			expect( state.highlightedResult ).toBeNull();
+
+			model.change( writer => {
+				writer.insertText( 'e', writer.createPositionAt( root.getChild( 1 ), 3 ) );
+			} );
+
+			expect( state.results ).toHaveLength( 1 );
+			expect( state.highlightedResult ).toBe( state.results.get( 0 ) );
+			expect( state.highlightedOffset ).toBe( 1 );
+		} );
+
+		it( 'should not highlight a new result typed in when other results exist and nothing is highlighted', () => {
+			_setModelData( model,
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chleb</paragraph>' +
+				'<paragraph>Chlb</paragraph>'
+			);
+
+			const { state } = findAndReplaceEditing;
+
+			findAndReplaceEditing.find( 'Chleb' );
+
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( root.getChild( 0 ), 2 ) );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'e', writer.createPositionAt( root.getChild( 2 ), 3 ) );
+			} );
+
+			expect( state.results ).toHaveLength( 2 );
+			expect( state.highlightedResult ).toBeNull();
+		} );
+
 		it( 'basic formatting works on highlighted search results', () => {
 			editor.setData( '<p>test</p>' );
 
@@ -305,7 +618,7 @@ describe( 'FindAndReplaceEditing', () => {
 			expect( findAndReplaceEditing.state.results ).toHaveLength( 1 );
 		} );
 
-		it( 'should highlight the remaining result after removal of a root with the highlighted result', () => {
+		it( 'should leave nothing highlighted after removal of a root with the highlighted result', () => {
 			const { state } = findAndReplaceEditing;
 
 			findAndReplaceEditing.find( 'Foo' );
@@ -316,8 +629,15 @@ describe( 'FindAndReplaceEditing', () => {
 			multiRootModel.change( writer => writer.detachRoot( 'second' ) );
 
 			expect( state.results ).toHaveLength( 1 );
+			expect( state.highlightedResult ).toBeNull();
+			expect( state.highlightedOffset ).toBe( 0 );
+
+			// The remaining result can still be highlighted with the "Next result" button.
+			expect( multiRootEditor.commands.get( 'findNext' ).isEnabled ).toBe( true );
+
+			multiRootEditor.execute( 'findNext' );
+
 			expect( state.highlightedResult ).toBe( state.results.get( 0 ) );
-			expect( state.highlightedOffset ).toBe( 1 );
 		} );
 
 		it( 'should update search results list after adding root', () => {

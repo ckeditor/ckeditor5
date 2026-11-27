@@ -941,8 +941,11 @@ describe( 'FindAndReplaceFormView', () => {
 				editor.setData( 'CupCake' );
 				expect( matchCounterElement.textContent ).toBe( '1 of 1' );
 
+				// The highlighted result is replaced, so nothing is highlighted and there is nothing to replace.
 				editor.setData( 'CupCake CupCake' );
-				expect( matchCounterElement.textContent ).toBe( '1 of 2' );
+				expect( matchCounterElement.textContent ).toBe( '0 of 2' );
+				expect( replaceButton.isEnabled ).toBe( false );
+				expect( replaceAllButton.isEnabled ).toBe( true );
 
 				editor.setData( '' );
 				expect( matchCounterElement.textContent ).toBe( '0 of 0' );

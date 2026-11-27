@@ -566,10 +566,12 @@ export class FindAndReplaceFormView extends View {
 	private _createActionButtonsDiv(): View {
 		const actionsDivView = new View( this.locale );
 
+		// The "Replace" button replaces the highlighted result, so it is disabled when nothing is highlighted.
 		this._replaceButtonView.bind( 'isEnabled' ).to(
 			this, '_areCommandsEnabled',
 			this, '_searchResultsFound',
-			( { replace }, resultsFound ) => replace && resultsFound );
+			this, 'highlightOffset',
+			( { replace }, resultsFound, highlightOffset ) => replace && resultsFound && highlightOffset > 0 );
 
 		this._replaceAllButtonView.bind( 'isEnabled' ).to(
 			this, '_areCommandsEnabled',

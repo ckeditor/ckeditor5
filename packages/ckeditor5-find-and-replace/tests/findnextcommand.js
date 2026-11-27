@@ -52,11 +52,40 @@ describe( 'FindNextCommand', () => {
 			expect( command.isEnabled ).toBe( false );
 		} );
 
-		it( 'is disabled when there is just one result', () => {
-			command._state.results.clear();
-			command._state.results.add( {} );
+		it( 'is disabled when there is just one result and it is highlighted', () => {
+			_setModelData( model, '<paragraph>foo</paragraph>' );
+
+			editor.execute( 'find', 'foo' );
 
 			expect( command.isEnabled ).toBe( false );
+		} );
+
+		it( 'is disabled when the only result left after the "replace" command is highlighted', () => {
+			_setModelData( model, '<paragraph>foo foo foo</paragraph>' );
+
+			editor.plugins.get( 'FindAndReplaceEditing' ).find( 'foo' );
+			command.execute();
+
+			// Edit the highlighted result, so nothing is highlighted, and highlight the first one again.
+			model.change( writer => {
+				writer.insertText( 'x', writer.createPositionAt( model.document.getRoot().getChild( 0 ), 5 ) );
+			} );
+			command.execute();
+
+			editor.execute( 'replace', 'bar', command._state.highlightedResult );
+
+			expect( command._state.results ).toHaveLength( 1 );
+			expect( command._state.highlightedResult ).toBe( command._state.results.get( 0 ) );
+			expect( command.isEnabled ).toBe( false );
+		} );
+
+		it( 'is enabled when there is just one result and nothing is highlighted', () => {
+			_setModelData( model, '<paragraph>foo</paragraph>' );
+
+			editor.execute( 'find', 'foo' );
+			command._state.highlightedResult = null;
+
+			expect( command.isEnabled ).toBe( true );
 		} );
 
 		it( 'is enabled when there are more than one result', () => {
