@@ -12,6 +12,7 @@ import type {
 	DragDropBlockToolbar,
 	ClipboardMarkersUtils
 } from './index.js';
+import type { DragDropConfig } from './dragdropconfig.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
@@ -22,5 +23,17 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ DragDrop.pluginName ]: DragDrop;
 		[ DragDropTarget.pluginName ]: DragDropTarget;
 		[ DragDropBlockToolbar.pluginName ]: DragDropBlockToolbar;
+	}
+
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the drag and drop feature.
+		 *
+		 * Read more in {@link module:clipboard/dragdropconfig~DragDropConfig}.
+		 */
+		clipboard?: {
+			dragDrop?: DragDropConfig;
+		};
 	}
 }
