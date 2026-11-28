@@ -29,8 +29,6 @@ declare module '@ckeditor/ckeditor5-core' {
 
 		/**
 		 * The configuration of the drag and drop feature.
-		 *
-		 * Read more in {@link module:clipboard/dragdropconfig~DragDropConfig}.
 		 */
 		clipboard?: {
 			dragDrop?: DragDropConfig;
