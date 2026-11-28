@@ -2262,6 +2262,95 @@ describe( 'Drag and Drop', () => {
 		} );
 
 		describe( 'drop', () => {
+			it( 'should insert an external block object between blocks when dropped in a paragraph', () => {
+				_setModelData( model, '<paragraph>foo[]bar</paragraph><paragraph>baz</paragraph>' );
+
+				const dataTransferMock = createDataTransfer( { 'text/html': '<hr>' } );
+				fireDrop( dataTransferMock, model.createPositionAt( root.getChild( 0 ), 3 ) );
+
+				expect( _getModelData( model ) ).toBe(
+					'<paragraph>foobar</paragraph>[<horizontalLine></horizontalLine>]<paragraph>baz</paragraph>'
+				);
+			} );
+
+			it( 'should preserve inline positioning for external content', () => {
+				_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
+
+				const dataTransferMock = createDataTransfer( { 'text/html': '<strong>baz</strong>' } );
+				fireDrop( dataTransferMock, model.createPositionAt( root.getChild( 0 ), 3 ) );
+
+				expect( _getModelData( model ) ).toBe( '<paragraph>foo<$text bold="true">baz[]</$text>bar</paragraph>' );
+			} );
+
+			it( 'should use the configured external block drop mode', () => {
+				const getDropMode = vi.fn().mockReturnValue( 'block' );
+				editor.config.set( 'clipboard.dragDrop.getDropMode', getDropMode );
+				_setModelData( model, '<paragraph>[]foobar</paragraph><paragraph>baz</paragraph>' );
+
+				const dataTransferMock = createDataTransfer( { Files: '' } );
+				fireDragging( dataTransferMock, model.createPositionAt( root.getChild( 0 ), 3 ) );
+
+				expect( getDropMode ).toHaveBeenCalledWith( dataTransferMock );
+				expect( editor.plugins.get( DragDropTarget )._dropTargetLineView.isVisible ).toBe( true );
+			} );
+
+			it( 'should use the configured external inline drop mode', () => {
+				editor.config.set( 'clipboard.dragDrop.getDropMode', () => 'inline' );
+				_setModelData( model, '<paragraph>[]foobar</paragraph>' );
+
+				const dataTransferMock = createDataTransfer( { Files: '' } );
+				fireDragging( dataTransferMock, model.createPositionAt( root.getChild( 0 ), 3 ) );
+
+				expect( editor.plugins.get( DragDropTarget )._dropTargetLineView.isVisible ).toBe( false );
+				expect( model.markers.get( 'drop-target' ).getRange().isCollapsed ).toBe( true );
+			} );
+
+			it( 'should preserve the fallback mode when the configured mode is undefined', () => {
+				editor.config.set( 'clipboard.dragDrop.getDropMode', () => undefined );
+				_setModelData( model, '<paragraph>[]foobar</paragraph>' );
+
+				fireDragging( createDataTransfer( { Files: '' } ), model.createPositionAt( root.getChild( 0 ), 3 ) );
+
+				expect( editor.plugins.get( DragDropTarget )._dropTargetLineView.isVisible ).toBe( false );
+				expect( model.markers.get( 'drop-target' ).getRange().isCollapsed ).toBe( true );
+			} );
+
+			it( 'should not infer block mode for a multi-element external fragment', () => {
+				const dragDropTarget = editor.plugins.get( DragDropTarget );
+				const getFinalDropRange = vi.spyOn( dragDropTarget, 'getFinalDropRange' );
+				_setModelData( model, '<paragraph>[]foobar</paragraph>' );
+
+				fireDrop( createDataTransfer( { 'text/html': '<strong>one</strong><strong>two</strong>' } ),
+					model.createPositionAt( root.getChild( 0 ), 3 ) );
+
+				expect( getFinalDropRange.mock.calls.at( -1 )[ 4 ] ).toBe( false );
+			} );
+
+			it( 'should not let the external callback override an internal block drag', () => {
+				editor.config.set( 'clipboard.dragDrop.getDropMode', () => 'inline' );
+				_setModelData( model, '<paragraph>[]foo</paragraph><horizontalLine></horizontalLine>' );
+
+				const getDropMode = vi.fn().mockReturnValue( 'inline' );
+				editor.config.set( 'clipboard.dragDrop.getDropMode', getDropMode );
+				const viewElement = viewDocument.getRoot().getChild( 1 );
+				const dataTransferMock = createDataTransfer();
+				const eventData = {
+					domTarget: domConverter.mapViewToDom( viewElement ),
+					target: viewElement,
+					domEvent: {}
+				};
+
+				viewDocument.fire( 'dragstart', {
+					...eventData,
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {},
+					preventDefault: () => {}
+				} );
+				fireDragging( dataTransferMock, model.createPositionAt( root, 0 ) );
+
+				expect( getDropMode ).not.toHaveBeenCalled();
+			} );
+
 			// TODO: to be discussed.
 			it.skip( 'should update targetRanges', () => {
 				_setModelData( model,
@@ -2764,6 +2853,8 @@ describe( 'Drag and Drop', () => {
 
 	function createDataTransfer( data = {} ) {
 		return {
+			types: Object.keys( data ),
+
 			setData( type, value ) {
 				data[ type ] = value;
 			},

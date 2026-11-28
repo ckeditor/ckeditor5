@@ -30,6 +30,7 @@ export { plainTextToHtml } from './utils/plaintexttohtml.js';
 export { viewToPlainText } from './utils/viewtoplaintext.js';
 
 export { DragDrop } from './dragdrop.js';
+export { type DragDropConfig, type DragDropMode } from './dragdropconfig.js';
 export { PastePlainText } from './pasteplaintext.js';
 export { DragDropTarget } from './dragdroptarget.js';
 export { DragDropBlockToolbar } from './dragdropblocktoolbar.js';

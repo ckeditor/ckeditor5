@@ -17,6 +17,8 @@ import {
 	type Model,
 	type ModelRange,
 	type ModelPosition,
+	type ModelDocumentFragment,
+	type ViewRange,
 	type ViewElement,
 	type ViewDocumentDomEventData,
 	type ViewDocumentInputEvent,
@@ -178,6 +180,14 @@ export class DragDrop extends Plugin {
 	// TODO configure to use block, inline or both
 	private _blockMode: boolean = false;
 
+	/** Drop information saved before the clipboard pipeline replaces target ranges. */
+	private _dropData: {
+		target: ViewElement;
+		targetRanges: Array<ViewRange> | null;
+		clientX: number;
+		clientY: number;
+	} | null = null;
+
 	/**
 	 * DOM Emitter.
 	 */
@@ -219,6 +229,9 @@ export class DragDrop extends Plugin {
 		this._draggedRange = null;
 		this._draggingUid = '';
 		this._draggableElement = null;
+		editor.config.define( 'clipboard.dragDrop', {
+			getDropMode: undefined
+		} );
 
 		view.addObserver( ClipboardObserver );
 		view.addObserver( PointerObserver );
@@ -340,6 +353,7 @@ export class DragDrop extends Plugin {
 		// Reset block dragging mode even if dropped outside the editable.
 		this._domEmitter.listenTo( global.document, 'dragend', () => {
 			this._blockMode = false;
+			this._dropData = null;
 		}, { useCapture: true } );
 
 		// Dragging over the editable.
@@ -373,7 +387,7 @@ export class DragDrop extends Plugin {
 				data.targetRanges,
 				clientX,
 				clientY,
-				this._blockMode,
+				this._getDropMode( data.dataTransfer ),
 				this._draggedRange
 			);
 
@@ -419,12 +433,18 @@ export class DragDrop extends Plugin {
 			}
 
 			const { clientX, clientY } = ( data as ViewDocumentDomEventData<DragEvent> ).domEvent;
+			this._dropData = {
+				target: data.target,
+				targetRanges: data.targetRanges,
+				clientX,
+				clientY
+			};
 			const targetRange = dragDropTarget.getFinalDropRange(
 				data.target,
 				data.targetRanges,
 				clientX,
 				clientY,
-				this._blockMode,
+				this._getDropMode( data.dataTransfer ),
 				this._draggedRange
 			);
 
@@ -467,6 +487,21 @@ export class DragDrop extends Plugin {
 		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
 			if ( !this.isEnabled || data.method !== 'drop' ) {
 				return;
+			}
+
+			if ( !this._draggedRange && this._isSingleExternalBlockObject( data.content ) && this._dropData ) {
+				const targetRange = this.editor.plugins.get( DragDropTarget ).getFinalDropRange(
+					this._dropData.target,
+					this._dropData.targetRanges,
+					this._dropData.clientX,
+					this._dropData.clientY,
+					true,
+					null
+				);
+
+				if ( targetRange ) {
+					data.targetRanges = [ this.editor.editing.mapper.toViewRange( targetRange ) ];
+				}
 			}
 
 			// Update the selection to the target range in the same change block to avoid selection post-fixing
@@ -585,6 +620,7 @@ export class DragDrop extends Plugin {
 		}
 
 		this._draggingUid = '';
+		this._dropData = null;
 
 		if ( this._previewContainer ) {
 			this._previewContainer.remove();
@@ -617,6 +653,25 @@ export class DragDrop extends Plugin {
 
 		this._draggedRange.detach();
 		this._draggedRange = null;
+	}
+
+	private _getDropMode( dataTransfer: ViewDataTransfer ): boolean {
+		if ( this._draggedRange ) {
+			return this._blockMode;
+		}
+
+		const getDropMode = this.editor.config.get( 'clipboard.dragDrop.getDropMode' );
+
+		return getDropMode ? getDropMode( dataTransfer ) == 'block' : false;
+	}
+
+	private _isSingleExternalBlockObject( content: ModelDocumentFragment ): boolean {
+		if ( content.childCount != 1 ) {
+			return false;
+		}
+
+		const child = content.getChild( 0 )!;
+		return child.is( 'element' ) && this.editor.model.schema.isObject( child ) && this.editor.model.schema.isBlock( child );
 	}
 
 	/**
